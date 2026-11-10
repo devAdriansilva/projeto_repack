@@ -264,4 +264,93 @@ class EstoqueLojinha
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
+
+    /**
+     * Retorna a lista de produtos formatada para a Vitrine da Lojinha
+     * Fórmula obrigatória: Disponível = Total - Reserva Oculta - Bloqueios em Carrinho Ativo
+     * Conforme docs/FSD.md Seções 6.3, 9, 12.2, 13.3 e 26
+     * @param int $loteId
+     * @param int $usuarioId
+     * @return array
+     */
+    public static function listarProdutosVitrine(int $loteId, int $usuarioId): array
+    {
+        $pdo = Database::getConnection();
+
+        // 1. Limpa carrinhos expirados
+        $pdo->exec("DELETE FROM carrinho_temporario WHERE expiracao_em < NOW()");
+
+        // 2. Consulta os produtos ativos com saldos dinâmicos
+        $stmt = $pdo->prepare("
+            SELECT p.id AS produto_id, p.codigo, p.nome, p.foto_url, p.pacote_padrao,
+                   COALESCE(el.quantidade_total, 0) AS quantidade_total,
+                   COALESCE(el.quantidade_reservada_gestao, 0) AS quantidade_reservada_gestao,
+                   COALESCE((
+                       SELECT SUM(ct.quantidade)
+                       FROM carrinho_temporario ct
+                       WHERE ct.produto_id = p.id 
+                         AND ct.expiracao_em > NOW()
+                         AND ct.usuario_id != :uid_outros_1
+                   ), 0) AS bloqueios_outros_carrinhos,
+                   COALESCE((
+                       SELECT SUM(ct.quantidade)
+                       FROM carrinho_temporario ct
+                       WHERE ct.produto_id = p.id 
+                         AND ct.usuario_id = :uid_meu 
+                         AND ct.lote_id = :lote_id 
+                         AND ct.expiracao_em > NOW()
+                   ), 0) AS no_meu_carrinho,
+                   GREATEST(0, COALESCE(el.quantidade_total, 0) - COALESCE(el.quantidade_reservada_gestao, 0) - COALESCE((
+                       SELECT SUM(ct.quantidade)
+                       FROM carrinho_temporario ct
+                       WHERE ct.produto_id = p.id 
+                         AND ct.expiracao_em > NOW()
+                         AND ct.usuario_id != :uid_outros_2
+                   ), 0)) AS saldo_disponivel
+            FROM produtos p
+            LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
+            WHERE p.ativo = 1 
+              AND p.deleted_at IS NULL
+            ORDER BY saldo_disponivel DESC, p.nome ASC
+        ");
+
+        $stmt->execute([
+            'uid_outros_1' => $usuarioId,
+            'uid_meu' => $usuarioId,
+            'lote_id' => $loteId,
+            'uid_outros_2' => $usuarioId
+        ]);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Retorna o saldo disponível atualizado de um produto específico
+     * @param int $produtoId
+     * @return int
+     */
+    public static function obterSaldoDisponivel(int $produtoId): int
+    {
+        $pdo = Database::getConnection();
+        $pdo->exec("DELETE FROM carrinho_temporario WHERE expiracao_em < NOW()");
+
+        $stmt = $pdo->prepare("
+            SELECT GREATEST(0, COALESCE(el.quantidade_total, 0) - COALESCE(el.quantidade_reservada_gestao, 0) - COALESCE((
+                SELECT SUM(ct.quantidade)
+                FROM carrinho_temporario ct
+                WHERE ct.produto_id = :produto_id_ct 
+                  AND ct.expiracao_em > NOW()
+            ), 0)) AS saldo_disponivel
+            FROM produtos p
+            LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
+            WHERE p.id = :produto_id_p AND p.ativo = 1 AND p.deleted_at IS NULL
+            LIMIT 1
+        ");
+        $stmt->execute([
+            'produto_id_ct' => $produtoId,
+            'produto_id_p' => $produtoId
+        ]);
+        $val = $stmt->fetchColumn();
+        return $val !== false ? max(0, (int)$val) : 0;
+    }
 }

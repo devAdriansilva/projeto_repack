@@ -41,8 +41,10 @@ require_once __DIR__ . '/../app/controllers/AvariaController.php';
 require_once __DIR__ . '/../app/controllers/ProdutividadeController.php';
 require_once __DIR__ . '/../app/controllers/AuthController.php';
 require_once __DIR__ . '/../app/controllers/GestaoController.php';
+require_once __DIR__ . '/../app/controllers/LojinhaController.php';
 require_once __DIR__ . '/../app/models/Usuario.php';
 require_once __DIR__ . '/../app/models/Produto.php';
+require_once __DIR__ . '/../app/models/Pedido.php';
 
 // Roteador
 switch ($route) {
@@ -152,6 +154,60 @@ switch ($route) {
         break;
 
     // -------------------------------------------------------------
+    // Rotas da Vitrine e Carrinho da Lojinha (Colaborador)
+    // -------------------------------------------------------------
+    case '/lojinha':
+        (new LojinhaController())->vitrine();
+        break;
+
+    case '/lojinha/login':
+        (new LojinhaController())->login();
+        break;
+
+    case '/lojinha/logout':
+        (new LojinhaController())->logout();
+        break;
+
+    case '/lojinha/carrinho':
+    case '/lojinha/sacola':
+        (new LojinhaController())->carrinho();
+        break;
+
+    case '/lojinha/carrinho/remover':
+        (new LojinhaController())->removerItem();
+        break;
+
+    case '/lojinha/carrinho/esvaziar':
+        (new LojinhaController())->esvaziar();
+        break;
+
+    case '/lojinha/checkout':
+        (new LojinhaController())->checkout();
+        break;
+
+    case '/lojinha/sucesso':
+        (new LojinhaController())->sucesso();
+        break;
+
+    // -------------------------------------------------------------
+    // Endpoints de API da Lojinha (Carrinho e Saldo)
+    // -------------------------------------------------------------
+    case '/api/carrinho/adicionar':
+    case '/api/carrinho/adicionar.php':
+        (new LojinhaController())->apiAdicionarCarrinho();
+        break;
+
+    case '/api/carrinho/remover':
+    case '/api/carrinho/remover.php':
+        (new LojinhaController())->apiRemoverCarrinho();
+        break;
+
+    case '/api/estoque/saldo':
+    case '/api/estoque/saldo.php':
+        (new LojinhaController())->apiSaldo();
+        break;
+
+    // -------------------------------------------------------------
     // Endpoints de API para Operador e PWA Offline
     // -------------------------------------------------------------
     case '/api/bo/salvar':
@@ -203,6 +259,8 @@ switch ($route) {
             $totalBO = (int)$pdo->query("SELECT COUNT(*) FROM apontamentos_bo")->fetchColumn();
             $totalProd = (int)$pdo->query("SELECT COUNT(*) FROM apontamentos_produtividade")->fetchColumn();
             $totalLotes = (int)$pdo->query("SELECT COUNT(*) FROM lotes_venda WHERE deleted_at IS NULL")->fetchColumn();
+            $totalPedidos = (int)$pdo->query("SELECT COUNT(*) FROM pedidos WHERE deleted_at IS NULL")->fetchColumn();
+            $totalCarrinho = (int)$pdo->query("SELECT COUNT(*) FROM carrinho_temporario WHERE expiracao_em > NOW()")->fetchColumn();
 
             echo json_encode([
                 'status' => 'success',
@@ -215,7 +273,9 @@ switch ($route) {
                     'total_tables' => count($tables),
                     'total_bo' => $totalBO,
                     'total_produtividade' => $totalProd,
-                    'total_lotes' => $totalLotes
+                    'total_lotes' => $totalLotes,
+                    'total_pedidos' => $totalPedidos,
+                    'total_carrinho_ativo' => $totalCarrinho
                 ],
                 'timestamp' => date('Y-m-d H:i:s')
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);

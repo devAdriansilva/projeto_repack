@@ -203,4 +203,72 @@ class LoteVenda
         ");
         return $stmt->execute(['id' => $id]);
     }
+
+    /**
+     * Busca o lote aberto ativo compatível com o setor informado
+     * Conforme docs/FSD.md Seções 6, 8, 12.2, 13.3 e 16
+     * @param string $setor
+     * @return array|null
+     */
+    public static function buscarLoteAtivoParaSetor(string $setor): ?array
+    {
+        $setorAlvo = mb_strtolower(trim($setor));
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            SELECT lv.*, u.nome AS criado_por_nome
+            FROM lotes_venda lv
+            INNER JOIN usuarios u ON u.id = lv.criado_por_usuario_id
+            WHERE lv.status = 'aberto'
+              AND lv.data_inicio <= NOW()
+              AND lv.data_fim >= NOW()
+              AND lv.deleted_at IS NULL
+            ORDER BY lv.data_inicio DESC
+        ");
+        $stmt->execute();
+        $lotes = $stmt->fetchAll();
+
+        foreach ($lotes as $lote) {
+            $setoresRaw = $lote['setores_autorizados'] ?? '';
+            $decoded = json_decode($setoresRaw, true);
+            $setoresLista = is_array($decoded) ? $decoded : array_map('trim', explode(',', $setoresRaw));
+
+            foreach ($setoresLista as $s) {
+                $sFormat = mb_strtolower(trim((string)$s));
+                if ($sFormat === '*' || $sFormat === 'todos' || $sFormat === $setorAlvo) {
+                    $lote['setores_lista'] = $setoresLista;
+                    return $lote;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Busca o próximo lote com status planejado para informar ao colaborador
+     * @return array|null
+     */
+    public static function buscarProximoLotePlanejado(): ?array
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            SELECT *
+            FROM lotes_venda
+            WHERE status = 'planejado'
+              AND data_inicio > NOW()
+              AND deleted_at IS NULL
+            ORDER BY data_inicio ASC
+            LIMIT 1
+        ");
+        $stmt->execute();
+        $lote = $stmt->fetch();
+        if (!$lote) {
+            return null;
+        }
+
+        $setoresRaw = $lote['setores_autorizados'] ?? '';
+        $decoded = json_decode($setoresRaw, true);
+        $lote['setores_lista'] = is_array($decoded) ? $decoded : array_map('trim', explode(',', $setoresRaw));
+        return $lote;
+    }
 }

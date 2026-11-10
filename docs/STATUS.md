@@ -1,8 +1,8 @@
 # STATUS DO PROJETO
 
 ## Estado Atual
-- **Fase Atual:** Fase 4 - Vitrine e Carrinho da Lojinha (Pendente de Início)
-- **Status Geral:** Fase 3 (Painel Oculto da Gestão) construída e validada com sucesso absoluto. Autenticação administrativa restrita (engrenagem camuflada `#D1D5DB`, proteção de sessão de 30 min, `password_verify` e tokens CSRF) implementada em `AuthController`. Módulo completo da Gestão (`GestaoController`) operacional com: Dashboard consolidado de indicadores de perdas vs. recuperação e tempo de ciclo; Catálogo de produtos com upload seguro de imagens (JPEG/PNG/WEBP até 2MB, renomeação aleatória); Planejamento e abertura de lotes de venda com controle de vigência, seleção de setores autorizados e limite individual por colaborador; Gestão de estoque com histórico formal de Reservas Ocultas e Baixas Administrativas; Auditoria e retificação de B.O. com justificativa obrigatória e rebalanceamento automático de saldos da Lojinha; e duplo mecanismo de auditoria (`logs_sistema` com fallback seguro em `logs/app_errors.log` e `logs/security.log`).
+- **Fase Atual:** Fase 5 - Lista de Separação, Relatórios e Testes Integrados (Pendente de Início)
+- **Status Geral:** Fase 4 (Vitrine e Carrinho da Lojinha) construída e validada com sucesso absoluto. Identificação rápida do colaborador por matrícula corporativa com validação de lote aberto e permissão por setor implementada; Catálogo responsivo da Vitrine (`/lojinha`) com cards visuais, fotos, cálculo dinâmico de saldo real ($\text{Disponível} = \text{Total} - \text{Reserva} - \text{Carrinhos Outros}$) e botões operacionais de 80px; Trava temporal de concorrência no carrinho (`carrinho_temporario`) com validade estrita de 10 minutos e rotina automática de limpeza de reservas expiradas; Verificação de teto máximo de compras individual por colaborador no lote; Checkout atômico transacional via PDO (`BEGIN TRANSACTION` / `COMMIT`) com abate definitivo do saldo físico em `estoque_lojinha`, criação de registros em `pedidos` e `pedido_itens` e emissão de código único de pedido (`PED-YYYYMMDD-XXXXXX`); Tela de comprovante digital com instruções de retirada física; e endpoints assíncronos (`/api/carrinho/adicionar`, `/api/carrinho/remover`, `/api/estoque/saldo`).
 
 ---
 
@@ -45,10 +45,19 @@
   - [x] View Estoque & Reservas: `app/views/gestao/estoque.php` (fórmula Total - Reserva = Disponível, histórico de ajustes de reservas e baixas administrativas)
   - [x] View Correção de B.O.: `app/views/gestao/correcao_bo.php` (filtros por período/produto/operador/destino e modal com justificativa obrigatória)
   - [x] Roteador Central Atualizado: `public/index.php` (rotas `/gestao/*` integradas com segurança)
-- [ ] **Fase 4: Vitrine e Carrinho da Lojinha**
+- [x] **Fase 4: Vitrine e Carrinho da Lojinha (Testada e Validada)**
+  - [x] Model Pedido & Carrinho: `app/models/Pedido.php` (reservas temporárias de 10 min, limpeza automática de expirações, validação de teto por comprador, checkout atômico transacional `FOR UPDATE` e busca de pedidos)
+  - [x] Aprimoramento de Lotes e Estoque: `app/models/LoteVenda.php` e `app/models/EstoqueLojinha.php` (método `buscarLoteAtivoParaSetor`, catálogo `listarProdutosVitrine` com fórmula de concorrência, `obterSaldoDisponivel` e helpers de log)
+  - [x] Controller da Lojinha: `app/controllers/LojinhaController.php` (identificação de colaborador, vitrine, sacola com contagem regressiva, checkout transacional, comprovante digital e endpoints assíncronos)
+  - [x] Layouts da Lojinha: `app/views/layouts/lojinha_header.php` e `app/views/layouts/lojinha_footer.php` (badge de identificação de setor, contador dinâmico de sacola e atalho de saída)
+  - [x] View Identificação: `app/views/lojinha/login.php` (entrada rápida por matrícula corporativa e verificação de lotes abertos para o setor)
+  - [x] View Vitrine: `app/views/lojinha/vitrine.php` (banner de vigência e cota do lote, cards de produtos com fotos e botões de 80px)
+  - [x] View Sacola: `app/views/lojinha/carrinho.php` (cronômetro regressivo da reserva de 10 minutos, listagem com remoção e botão 80px "Finalizar Pedido")
+  - [x] View Comprovante: `app/views/lojinha/sucesso.php` (código de retirada em destaque `headline-xl` 32px, tabela de itens e instruções de galpão)
+  - [x] Roteador Central Atualizado: `public/index.php` (rotas `/lojinha/*` e endpoints `/api/carrinho/*` e `/api/estoque/saldo` integrados)
 - [ ] **Fase 5: Lista de Separação, Relatórios e Testes Integrados**
 
 ---
 
 ## Próximo Passo
-Iniciar a implementação técnica da **Fase 4: Vitrine e Carrinho da Lojinha**, construindo a identificação do colaborador por matrícula e validação de setor no lote aberto, catálogo responsivo com cards e fórmula de saldo real, carrinho temporário com trava de concorrência de 10 minutos (`carrinho_temporario`), endpoints assíncronos e finalização transacional do pedido com comprovante digital.
+Iniciar a implementação técnica da **Fase 5: Lista de Separação, Relatórios e Testes Integrados**, construindo a lista unificada de separação física no galpão agrupada por matrícula e colaborador (`/gestao/separacao`), o `RelatorioController` com extratos de esforço/produtividade e perdas de repack, validação final dos logs e execução dos testes integrados de aceitação.

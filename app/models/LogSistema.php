@@ -47,6 +47,26 @@ class LogSistema
         }
     }
 
+    public static function info(string $mensagem, ?array $contexto = null): bool
+    {
+        return self::registrar('INFO', $mensagem, $contexto);
+    }
+
+    public static function warning(string $mensagem, ?array $contexto = null): bool
+    {
+        return self::registrar('WARNING', $mensagem, $contexto);
+    }
+
+    public static function error(string $mensagem, ?array $contexto = null): bool
+    {
+        return self::registrar('ERROR', $mensagem, $contexto);
+    }
+
+    public static function security(string $mensagem, ?array $contexto = null): bool
+    {
+        return self::registrar('SECURITY', $mensagem, $contexto);
+    }
+
     /**
      * Grava log em arquivo de contingência
      * @param string $nivel
