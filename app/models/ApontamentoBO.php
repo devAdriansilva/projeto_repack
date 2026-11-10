@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /**
  * Projeto Repack - Model ApontamentoBO
- * Baseado estritamente em docs/FSD.md (Seções 6, 11, 13.1 e 14)
+ * Baseado estritamente em docs/FSD.md (Seções 6, 11, 12.3, 13.1, 14 e 17)
  */
 
 require_once __DIR__ . '/../config/database.php';
@@ -152,5 +152,176 @@ class ApontamentoBO
         }
 
         return $resultados;
+    }
+
+    /**
+     * Busca um B.O. pelo ID com dados complementares de produto, operador e corretor
+     * @param int $id
+     * @return array|null
+     */
+    public static function buscarPorId(int $id): ?array
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            SELECT bo.*, p.nome AS produto_nome, p.codigo AS produto_codigo,
+                   u.nome AS operador_nome, u.matricula AS operador_matricula,
+                   uc.nome AS corretor_nome
+            FROM apontamentos_bo bo
+            INNER JOIN produtos p ON p.id = bo.produto_id
+            INNER JOIN usuarios u ON u.id = bo.usuario_id
+            LEFT JOIN usuarios uc ON uc.id = bo.corrigido_por_usuario_id
+            WHERE bo.id = :id AND bo.deleted_at IS NULL
+            LIMIT 1
+        ");
+        $stmt->execute(['id' => $id]);
+        $bo = $stmt->fetch();
+        return $bo ?: null;
+    }
+
+    /**
+     * Lista apontamentos com filtros para o painel de gestão
+     * @param array $filtros
+     * @return array
+     */
+    public static function listarComFiltros(array $filtros = []): array
+    {
+        $pdo = Database::getConnection();
+        $sql = "
+            SELECT bo.*, p.nome AS produto_nome, p.codigo AS produto_codigo,
+                   u.nome AS operador_nome, u.matricula AS operador_matricula,
+                   uc.nome AS corretor_nome
+            FROM apontamentos_bo bo
+            INNER JOIN produtos p ON p.id = bo.produto_id
+            INNER JOIN usuarios u ON u.id = bo.usuario_id
+            LEFT JOIN usuarios uc ON uc.id = bo.corrigido_por_usuario_id
+            WHERE bo.deleted_at IS NULL
+        ";
+        $params = [];
+
+        if (!empty($filtros['data_inicio'])) {
+            $sql .= " AND bo.created_at >= :data_inicio";
+            $params['data_inicio'] = $filtros['data_inicio'] . ' 00:00:00';
+        }
+        if (!empty($filtros['data_fim'])) {
+            $sql .= " AND bo.created_at <= :data_fim";
+            $params['data_fim'] = $filtros['data_fim'] . ' 23:59:59';
+        }
+        if (!empty($filtros['produto_id'])) {
+            $sql .= " AND bo.produto_id = :produto_id";
+            $params['produto_id'] = (int)$filtros['produto_id'];
+        }
+        if (!empty($filtros['usuario_id'])) {
+            $sql .= " AND bo.usuario_id = :usuario_id";
+            $params['usuario_id'] = (int)$filtros['usuario_id'];
+        }
+        if (!empty($filtros['destino'])) {
+            $sql .= " AND bo.destino = :destino";
+            $params['destino'] = $filtros['destino'];
+        }
+        if (!empty($filtros['tipo_avaria'])) {
+            $sql .= " AND bo.tipo_avaria = :tipo_avaria";
+            $params['tipo_avaria'] = $filtros['tipo_avaria'];
+        }
+
+        $sql .= " ORDER BY bo.created_at DESC";
+
+        $limite = (int)($filtros['limite'] ?? 100);
+        $sql .= " LIMIT " . max(1, min(500, $limite));
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Retifica um apontamento incorreto feito pelo operador, mantendo integridade com o estoque
+     * @param int $id ID do apontamento
+     * @param array $novosDados Contendo: quantidade, tipo_avaria
+     * @param int $gestorId ID do usuário gestor autenticado
+     * @param string $motivo Justificativa formal obrigatória
+     * @return bool
+     * @throws InvalidArgumentException
+     */
+    public static function corrigir(int $id, array $novosDados, int $gestorId, string $motivo): bool
+    {
+        $motivo = trim($motivo);
+        if ($motivo === '') {
+            throw new InvalidArgumentException("O motivo da retificação é estritamente obrigatório.");
+        }
+
+        $novaQtd = (int)($novosDados['quantidade'] ?? 0);
+        if ($novaQtd <= 0) {
+            throw new InvalidArgumentException("A nova quantidade deve ser maior que zero.");
+        }
+
+        $novoTipo = (string)($novosDados['tipo_avaria'] ?? '');
+        $novoDestino = self::determinarDestino($novoTipo);
+
+        $pdo = Database::getConnection();
+        $pdo->beginTransaction();
+
+        try {
+            // Busca o registro original
+            $boOriginal = self::buscarPorId($id);
+            if (!$boOriginal) {
+                throw new InvalidArgumentException("Apontamento de B.O. #{$id} não encontrado.");
+            }
+
+            $produtoId = (int)$boOriginal['produto_id'];
+            $antigoDestino = (string)$boOriginal['destino'];
+            $antigaQtd = (int)$boOriginal['quantidade'];
+
+            // Ajuste reflexo no estoque da lojinha
+            if ($antigoDestino === 'lojinha' && $novoDestino === 'lojinha') {
+                $dif = $novaQtd - $antigaQtd;
+                if ($dif !== 0) {
+                    $stmtEstoque = $pdo->prepare("
+                        UPDATE estoque_lojinha 
+                        SET quantidade_total = GREATEST(0, quantidade_total + :dif),
+                            updated_at = NOW()
+                        WHERE produto_id = :produto_id
+                    ");
+                    $stmtEstoque->execute(['dif' => $dif, 'produto_id' => $produtoId]);
+                }
+            } elseif ($antigoDestino === 'lojinha' && $novoDestino === 'descarte') {
+                // Remove o que havia sido creditado na lojinha
+                $stmtEstoque = $pdo->prepare("
+                    UPDATE estoque_lojinha 
+                    SET quantidade_total = GREATEST(0, quantidade_total - :antiga_qtd),
+                        updated_at = NOW()
+                    WHERE produto_id = :produto_id
+                ");
+                $stmtEstoque->execute(['antiga_qtd' => $antigaQtd, 'produto_id' => $produtoId]);
+            } elseif ($antigoDestino === 'descarte' && $novoDestino === 'lojinha') {
+                // Credita o novo valor na lojinha
+                EstoqueLojinha::incrementarSaldo($produtoId, $novaQtd);
+            }
+
+            // Atualiza o apontamento de B.O. com autoria e justificativa
+            $stmtUpdate = $pdo->prepare("
+                UPDATE apontamentos_bo 
+                SET quantidade = :quantidade,
+                    tipo_avaria = :tipo_avaria,
+                    destino = :destino,
+                    motivo_correcao = :motivo,
+                    corrigido_por_usuario_id = :gestor_id,
+                    updated_at = NOW()
+                WHERE id = :id AND deleted_at IS NULL
+            ");
+            $stmtUpdate->execute([
+                'quantidade' => $novaQtd,
+                'tipo_avaria' => $novoTipo,
+                'destino' => $novoDestino,
+                'motivo' => $motivo,
+                'gestor_id' => $gestorId,
+                'id' => $id
+            ]);
+
+            $pdo->commit();
+            return true;
+        } catch (\Throwable $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
     }
 }

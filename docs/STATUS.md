@@ -1,8 +1,8 @@
 # STATUS DO PROJETO
 
 ## Estado Atual
-- **Fase Atual:** Fase 3 - Painel Oculto da Gestão (Pendente de Início)
-- **Status Geral:** Fase 2 (Interface do Operador - Urna Eletrônica) construída e validada com sucesso. Design System da Urna Eletrônica aplicado com alvos de toque mínimos de 80px, manipulação para luvas industriais (`touch-action: manipulation`), fluxos lineares passo a passo com dupla confirmação ("Corrigir" em laranja e "Confirmar" em verde), roteamento inteligente e automático de B.O. (incremento de saldo na lojinha para avarias leves e destino descarte estrito para furos), cronômetro de produtividade operacional com visor 32px e arquitetura PWA Offline-First com IndexedDB e sincronização em lote em segundo plano.
+- **Fase Atual:** Fase 4 - Vitrine e Carrinho da Lojinha (Pendente de Início)
+- **Status Geral:** Fase 3 (Painel Oculto da Gestão) construída e validada com sucesso absoluto. Autenticação administrativa restrita (engrenagem camuflada `#D1D5DB`, proteção de sessão de 30 min, `password_verify` e tokens CSRF) implementada em `AuthController`. Módulo completo da Gestão (`GestaoController`) operacional com: Dashboard consolidado de indicadores de perdas vs. recuperação e tempo de ciclo; Catálogo de produtos com upload seguro de imagens (JPEG/PNG/WEBP até 2MB, renomeação aleatória); Planejamento e abertura de lotes de venda com controle de vigência, seleção de setores autorizados e limite individual por colaborador; Gestão de estoque com histórico formal de Reservas Ocultas e Baixas Administrativas; Auditoria e retificação de B.O. com justificativa obrigatória e rebalanceamento automático de saldos da Lojinha; e duplo mecanismo de auditoria (`logs_sistema` com fallback seguro em `logs/app_errors.log` e `logs/security.log`).
 
 ---
 
@@ -32,11 +32,23 @@
   - [x] Models MVC: `app/models/Usuario.php`, `app/models/Produto.php`, `app/models/EstoqueLojinha.php`, `app/models/ApontamentoBO.php` e `app/models/ApontamentoProdutividade.php`
   - [x] Controllers MVC: `app/controllers/OperadorController.php`, `app/controllers/AvariaController.php` e `app/controllers/ProdutividadeController.php`
   - [x] Endpoints assíncronos: `/api/bo/salvar.php`, `/api/bo/sincronizar.php`, `/api/produtividade/salvar.php`, `/api/produtividade/sincronizar.php`, `/api/operadores`, `/api/produtos` e `/api/gestao/login`
-- [ ] **Fase 3: Painel Oculto da Gestão**
+- [x] **Fase 3: Painel Oculto da Gestão (Testada e Validada)**
+  - [x] Autenticação e Segurança: `app/controllers/AuthController.php` (login via modal engrenagem, `password_verify()`, controle de inatividade de 30 min, middleware guard `exigirGestao()` e tokens CSRF)
+  - [x] Controller Administrativo: `app/controllers/GestaoController.php` (métodos para dashboard, produtos, lotes, estoque/reservas e retificação de B.O.)
+  - [x] Model Log e Auditoria: `app/models/LogSistema.php` (gravação em `logs_sistema` com fallback para `logs/app_errors.log` e `logs/security.log`)
+  - [x] Model Lotes de Venda: `app/models/LoteVenda.php` (regras de vigência, status, limite por comprador e setores autorizados em JSON)
+  - [x] Aprimoramento de Models: `app/models/Produto.php`, `app/models/EstoqueLojinha.php`, `app/models/ApontamentoBO.php` e `app/models/Usuario.php` (CRUD seguro, unicidade de SKU, histórico de reservas/baixas e retificação com rebalanceamento de estoque)
+  - [x] Layouts Administrativos: `app/views/layouts/gestao_header.php` e `app/views/layouts/gestao_footer.php` (navegação superior, identificação da Coordenadora, alertas flash e retorno ao quiosque)
+  - [x] View Dashboard: `app/views/gestao/dashboard.php` (indicadores de perdas vs. recuperação, taxa %, saldos da lojinha, tempo de bancada e atalhos)
+  - [x] View Produtos: `app/views/gestao/produtos.php` (tabela de catálogo, miniaturas, ativação/inativação e modal com upload de fotos até 2MB)
+  - [x] View Lotes: `app/views/gestao/lotes.php` (planejamento, abertura/fechamento instantâneo, definição de setores via checkboxes e limites)
+  - [x] View Estoque & Reservas: `app/views/gestao/estoque.php` (fórmula Total - Reserva = Disponível, histórico de ajustes de reservas e baixas administrativas)
+  - [x] View Correção de B.O.: `app/views/gestao/correcao_bo.php` (filtros por período/produto/operador/destino e modal com justificativa obrigatória)
+  - [x] Roteador Central Atualizado: `public/index.php` (rotas `/gestao/*` integradas com segurança)
 - [ ] **Fase 4: Vitrine e Carrinho da Lojinha**
 - [ ] **Fase 5: Lista de Separação, Relatórios e Testes Integrados**
 
 ---
 
 ## Próximo Passo
-Iniciar a implementação técnica da **Fase 3: Painel Oculto da Gestão**, construindo a autenticação segura da engrenagem minimalista, dashboard consolidado, módulos de produtos com upload seguro de imagens (até 2MB), planejamento de lotes de venda por setor, controle de reservas ocultas e retificação de B.O.
+Iniciar a implementação técnica da **Fase 4: Vitrine e Carrinho da Lojinha**, construindo a identificação do colaborador por matrícula e validação de setor no lote aberto, catálogo responsivo com cards e fórmula de saldo real, carrinho temporário com trava de concorrência de 10 minutos (`carrinho_temporario`), endpoints assíncronos e finalização transacional do pedido com comprovante digital.

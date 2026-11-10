@@ -30,6 +30,23 @@ class Usuario
     }
 
     /**
+     * Retorna todos os colaboradores ativos
+     * @return array
+     */
+    public static function listarTodos(): array
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            SELECT id, matricula, nome, perfil, setor, ativo, created_at
+            FROM usuarios 
+            WHERE deleted_at IS NULL 
+            ORDER BY nome ASC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /**
      * Busca um usuário pelo ID
      * @param int $id
      * @return array|null
@@ -67,5 +84,27 @@ class Usuario
         $stmt->execute(['matricula' => $matricula]);
         $result = $stmt->fetch();
         return $result ?: null;
+    }
+
+    /**
+     * Retorna lista única de setores cadastrados na base para parametrização de lotes
+     * @return array
+     */
+    public static function listarSetores(): array
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->query("
+            SELECT DISTINCT setor 
+            FROM usuarios 
+            WHERE setor IS NOT NULL AND setor != '' AND deleted_at IS NULL 
+            ORDER BY setor ASC
+        ");
+        $setores = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        // Garante setores padrão se a base estiver enxuta
+        $padroes = ['Logística', 'Operações', 'Envase', 'Comercial', 'Financeiro', 'Recursos Humanos', 'Qualidade'];
+        $todos = array_unique(array_merge($setores, $padroes));
+        sort($todos);
+        return $todos;
     }
 }

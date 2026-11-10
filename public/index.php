@@ -35,10 +35,12 @@ if ($route === '//' || $route === '') {
     $route = '/';
 }
 
-// Controllers da Fase 2
+// Controllers
 require_once __DIR__ . '/../app/controllers/OperadorController.php';
 require_once __DIR__ . '/../app/controllers/AvariaController.php';
 require_once __DIR__ . '/../app/controllers/ProdutividadeController.php';
+require_once __DIR__ . '/../app/controllers/AuthController.php';
+require_once __DIR__ . '/../app/controllers/GestaoController.php';
 require_once __DIR__ . '/../app/models/Usuario.php';
 require_once __DIR__ . '/../app/models/Produto.php';
 
@@ -74,6 +76,79 @@ switch ($route) {
 
     case '/operador/cronometro/resumo':
         (new ProdutividadeController())->resumo();
+        break;
+
+    // -------------------------------------------------------------
+    // Rotas de Autenticação da Gestão
+    // -------------------------------------------------------------
+    case '/gestao/login':
+    case '/api/gestao/login':
+        (new AuthController())->login();
+        break;
+
+    case '/gestao/logout':
+        (new AuthController())->logout();
+        break;
+
+    // -------------------------------------------------------------
+    // Rotas do Painel Administrativo da Gestão
+    // -------------------------------------------------------------
+    case '/gestao':
+    case '/gestao/dashboard':
+        (new GestaoController())->dashboard();
+        break;
+
+    // Produtos
+    case '/gestao/produtos':
+        (new GestaoController())->produtos();
+        break;
+
+    case '/gestao/produtos/salvar':
+        (new GestaoController())->salvarProduto();
+        break;
+
+    case '/gestao/produtos/toggle':
+        (new GestaoController())->toggleStatusProduto();
+        break;
+
+    // Lotes de Venda
+    case '/gestao/lotes':
+        (new GestaoController())->lotes();
+        break;
+
+    case '/gestao/lotes/salvar':
+        (new GestaoController())->salvarLote();
+        break;
+
+    case '/gestao/lotes/status':
+        (new GestaoController())->alterarStatusLote();
+        break;
+
+    case '/gestao/lotes/excluir':
+        (new GestaoController())->excluirLote();
+        break;
+
+    // Estoque & Reservas
+    case '/gestao/estoque':
+        (new GestaoController())->estoque();
+        break;
+
+    case '/gestao/estoque/reserva':
+        (new GestaoController())->salvarReserva();
+        break;
+
+    case '/gestao/estoque/baixa':
+        (new GestaoController())->salvarBaixa();
+        break;
+
+    // Correção de B.O.
+    case '/gestao/bo':
+    case '/gestao/correcao_bo':
+        (new GestaoController())->correcaoBo();
+        break;
+
+    case '/gestao/bo/corrigir':
+        (new GestaoController())->salvarCorrecaoBo();
         break;
 
     // -------------------------------------------------------------
@@ -115,25 +190,6 @@ switch ($route) {
         ], JSON_UNESCAPED_UNICODE);
         break;
 
-    case '/api/gestao/login':
-        header('Content-Type: application/json; charset=UTF-8');
-        $raw = file_get_contents('php://input');
-        $dados = json_decode($raw, true) ?? [];
-        $matricula = trim($dados['matricula'] ?? '');
-        $senha = (string)($dados['senha'] ?? '');
-
-        $usuario = Usuario::buscarPorMatricula($matricula);
-        if ($usuario && $usuario['perfil'] === 'gestao' && !empty($usuario['senha_hash']) && password_verify($senha, $usuario['senha_hash'])) {
-            $_SESSION['usuario_id'] = $usuario['id'];
-            $_SESSION['perfil'] = 'gestao';
-            $_SESSION['nome'] = $usuario['nome'];
-            echo json_encode(['status' => 'success', 'message' => 'Login realizado com sucesso.']);
-        } else {
-            http_response_code(401);
-            echo json_encode(['status' => 'error', 'message' => 'Matrícula ou senha incorretos.']);
-        }
-        break;
-
     case '/api/health':
         header('Content-Type: application/json; charset=UTF-8');
         try {
@@ -146,6 +202,7 @@ switch ($route) {
 
             $totalBO = (int)$pdo->query("SELECT COUNT(*) FROM apontamentos_bo")->fetchColumn();
             $totalProd = (int)$pdo->query("SELECT COUNT(*) FROM apontamentos_produtividade")->fetchColumn();
+            $totalLotes = (int)$pdo->query("SELECT COUNT(*) FROM lotes_venda WHERE deleted_at IS NULL")->fetchColumn();
 
             echo json_encode([
                 'status' => 'success',
@@ -157,7 +214,8 @@ switch ($route) {
                     'migrations_applied' => $totalMigrations,
                     'total_tables' => count($tables),
                     'total_bo' => $totalBO,
-                    'total_produtividade' => $totalProd
+                    'total_produtividade' => $totalProd,
+                    'total_lotes' => $totalLotes
                 ],
                 'timestamp' => date('Y-m-d H:i:s')
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
