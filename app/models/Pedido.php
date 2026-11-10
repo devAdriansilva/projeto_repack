@@ -609,4 +609,180 @@ class Pedido
         ]);
         return $stmt->fetchAll();
     }
+
+    /**
+     * Lista consolidada de pedidos para separação física no galpão agrupada por colaborador
+     * Conforme docs/FSD.md Seções 6, 16 (Tela 6) e 22.1
+     * @param int $loteId ID do lote
+     * @param string|null $statusFiltro Filtro de status opcional
+     * @return array
+     */
+    public static function listarParaSeparacao(int $loteId, ?string $statusFiltro = null): array
+    {
+        $pdo = Database::getConnection();
+        $sql = "
+            SELECT 
+                p.id AS pedido_id,
+                p.codigo_pedido,
+                p.status AS pedido_status,
+                p.quantidade_total,
+                p.created_at AS pedido_data,
+                u.id AS usuario_id,
+                u.matricula AS usuario_matricula,
+                u.nome AS usuario_nome,
+                u.setor AS usuario_setor,
+                pi.id AS item_id,
+                pi.quantidade AS item_quantidade,
+                pr.id AS produto_id,
+                pr.codigo AS produto_codigo,
+                pr.nome AS produto_nome,
+                pr.pacote_padrao,
+                pr.foto_url
+            FROM pedidos p
+            INNER JOIN usuarios u ON u.id = p.usuario_id
+            INNER JOIN pedido_itens pi ON pi.pedido_id = p.id
+            INNER JOIN produtos pr ON pr.id = pi.produto_id
+            WHERE p.lote_id = :lote_id
+              AND p.deleted_at IS NULL
+        ";
+
+        $params = ['lote_id' => $loteId];
+        if (!empty($statusFiltro)) {
+            $sql .= " AND p.status = :status";
+            $params['status'] = $statusFiltro;
+        } else {
+            $sql .= " AND p.status != 'cancelado'";
+        }
+
+        $sql .= " ORDER BY u.nome ASC, p.id ASC, pr.nome ASC";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $linhas = $stmt->fetchAll();
+
+        $agrupado = [];
+        foreach ($linhas as $linha) {
+            $uId = (int)$linha['usuario_id'];
+            if (!isset($agrupado[$uId])) {
+                $agrupado[$uId] = [
+                    'usuario_id' => $uId,
+                    'matricula' => $linha['usuario_matricula'],
+                    'nome' => $linha['usuario_nome'],
+                    'setor' => $linha['usuario_setor'],
+                    'total_geral_itens' => 0,
+                    'pedidos' => []
+                ];
+            }
+
+            $pId = (int)$linha['pedido_id'];
+            if (!isset($agrupado[$uId]['pedidos'][$pId])) {
+                $agrupado[$uId]['pedidos'][$pId] = [
+                    'pedido_id' => $pId,
+                    'codigo_pedido' => $linha['codigo_pedido'],
+                    'status' => $linha['pedido_status'],
+                    'quantidade_total' => (int)$linha['quantidade_total'],
+                    'created_at' => $linha['pedido_data'],
+                    'itens' => []
+                ];
+                $agrupado[$uId]['total_geral_itens'] += (int)$linha['quantidade_total'];
+            }
+
+            $agrupado[$uId]['pedidos'][$pId]['itens'][] = [
+                'item_id' => (int)$linha['item_id'],
+                'produto_id' => (int)$linha['produto_id'],
+                'codigo' => $linha['produto_codigo'],
+                'nome' => $linha['produto_nome'],
+                'pacote_padrao' => $linha['pacote_padrao'],
+                'foto_url' => $linha['foto_url'],
+                'quantidade' => (int)$linha['item_quantidade']
+            ];
+        }
+
+        // Converte os pedidos associativos para listas indexadas
+        foreach ($agrupado as $uId => &$dadosUsuario) {
+            $dadosUsuario['pedidos'] = array_values($dadosUsuario['pedidos']);
+        }
+        unset($dadosUsuario);
+
+        return array_values($agrupado);
+    }
+
+    /**
+     * Atualiza o status do pedido (ex: confirmado -> separado -> entregue -> cancelado)
+     * @param int $pedidoId
+     * @param string $novoStatus
+     * @param int|null $gestorId
+     * @return bool
+     */
+    public static function atualizarStatus(int $pedidoId, string $novoStatus, ?int $gestorId = null): bool
+    {
+        $statusValidos = [
+            self::STATUS_CONFIRMADO,
+            self::STATUS_SEPARADO,
+            self::STATUS_ENTREGUE,
+            self::STATUS_CANCELADO
+        ];
+
+        if (!in_array($novoStatus, $statusValidos, true)) {
+            throw new InvalidArgumentException("Status '{$novoStatus}' inválido para pedido.");
+        }
+
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            UPDATE pedidos
+            SET status = :status,
+                updated_at = NOW()
+            WHERE id = :id AND deleted_at IS NULL
+        ");
+        $stmt->execute([
+            'status' => $novoStatus,
+            'id' => $pedidoId
+        ]);
+
+        if ($stmt->rowCount() > 0) {
+            LogSistema::registrar('INFO', "Status do pedido #{$pedidoId} alterado para {$novoStatus}", [
+                'pedido_id' => $pedidoId,
+                'status' => $novoStatus,
+                'gestor_id' => $gestorId
+            ]);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Retorna estatísticas de separação física para um lote específico
+     * @param int $loteId
+     * @return array
+     */
+    public static function obterEstatisticasSeparacao(int $loteId): array
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            SELECT 
+                COUNT(*) AS total_pedidos,
+                COALESCE(SUM(quantidade_total), 0) AS total_itens,
+                COUNT(DISTINCT usuario_id) AS total_colaboradores,
+                COUNT(CASE WHEN status = 'confirmado' THEN 1 END) AS total_confirmados,
+                COUNT(CASE WHEN status = 'separado' THEN 1 END) AS total_separados,
+                COUNT(CASE WHEN status = 'entregue' THEN 1 END) AS total_entregues,
+                COUNT(CASE WHEN status = 'cancelado' THEN 1 END) AS total_cancelados
+            FROM pedidos
+            WHERE lote_id = :lote_id 
+              AND deleted_at IS NULL
+        ");
+        $stmt->execute(['lote_id' => $loteId]);
+        $stats = $stmt->fetch();
+
+        return [
+            'total_pedidos' => (int)($stats['total_pedidos'] ?? 0),
+            'total_itens' => (int)($stats['total_itens'] ?? 0),
+            'total_colaboradores' => (int)($stats['total_colaboradores'] ?? 0),
+            'total_confirmados' => (int)($stats['total_confirmados'] ?? 0),
+            'total_separados' => (int)($stats['total_separados'] ?? 0),
+            'total_entregues' => (int)($stats['total_entregues'] ?? 0),
+            'total_cancelados' => (int)($stats['total_cancelados'] ?? 0)
+        ];
+    }
 }

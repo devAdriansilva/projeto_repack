@@ -42,6 +42,7 @@ require_once __DIR__ . '/../app/controllers/ProdutividadeController.php';
 require_once __DIR__ . '/../app/controllers/AuthController.php';
 require_once __DIR__ . '/../app/controllers/GestaoController.php';
 require_once __DIR__ . '/../app/controllers/LojinhaController.php';
+require_once __DIR__ . '/../app/controllers/RelatorioController.php';
 require_once __DIR__ . '/../app/models/Usuario.php';
 require_once __DIR__ . '/../app/models/Produto.php';
 require_once __DIR__ . '/../app/models/Pedido.php';
@@ -151,6 +152,28 @@ switch ($route) {
 
     case '/gestao/bo/corrigir':
         (new GestaoController())->salvarCorrecaoBo();
+        break;
+
+    // Lista de Separação Física no Galpão (docs/FSD.md Seções 16 e 22.1)
+    case '/gestao/separacao':
+        (new RelatorioController())->separacao();
+        break;
+
+    case '/gestao/separacao/status':
+        (new RelatorioController())->atualizarStatusSeparacao();
+        break;
+
+    case '/gestao/separacao/exportar':
+        (new RelatorioController())->exportarSeparacaoCsv();
+        break;
+
+    // Relatórios e Extratos Analíticos (docs/FSD.md Seções 22.2 e 22.3)
+    case '/gestao/relatorios':
+        (new RelatorioController())->relatorios();
+        break;
+
+    case '/gestao/relatorios/exportar':
+        (new RelatorioController())->exportarRelatoriosCsv();
         break;
 
     // -------------------------------------------------------------

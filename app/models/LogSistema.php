@@ -28,6 +28,11 @@ class LogSistema
         $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
         $contextoJson = $contexto ? json_encode($contexto, JSON_UNESCAPED_UNICODE) : null;
 
+        // Se for evento de segurança, registra imediatamente no arquivo security.log
+        if ($nivel === 'SECURITY') {
+            self::gravarArquivoFallback('SECURITY', $mensagem, $contexto, null);
+        }
+
         try {
             $pdo = Database::getConnection();
             $stmt = $pdo->prepare("

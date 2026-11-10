@@ -131,4 +131,142 @@ class ApontamentoProdutividade
 
         return $resultados;
     }
+
+    /**
+     * Extrato Analítico de Produtividade da Equipe de Repack
+     * Conforme docs/FSD.md Seções 6 e 22.3
+     * @param string|null $dataInicio
+     * @param string|null $dataFim
+     * @return array
+     */
+    public static function obterExtratoAnalitico(?string $dataInicio = null, ?string $dataFim = null): array
+    {
+        $pdo = Database::getConnection();
+
+        $where = "WHERE ap.deleted_at IS NULL";
+        $params = [];
+
+        if (!empty($dataInicio)) {
+            $where .= " AND ap.created_at >= :data_inicio";
+            $params['data_inicio'] = $dataInicio . ' 00:00:00';
+        }
+        if (!empty($dataFim)) {
+            $where .= " AND ap.created_at <= :data_fim";
+            $params['data_fim'] = $dataFim . ' 23:59:59';
+        }
+
+        // 1. Totais Gerais
+        $stmtTotais = $pdo->prepare("
+            SELECT 
+                COUNT(*) AS total_ciclos,
+                COALESCE(SUM(ap.pacotes_refeitos), 0) AS total_pacotes,
+                COALESCE(SUM(ap.duracao_segundos), 0) AS total_segundos
+            FROM apontamentos_produtividade ap
+            {$where}
+        ");
+        $stmtTotais->execute($params);
+        $totais = $stmtTotais->fetch();
+
+        $totalCiclos = (int)($totais['total_ciclos'] ?? 0);
+        $totalPacotes = (int)($totais['total_pacotes'] ?? 0);
+        $totalSegundos = (int)($totais['total_segundos'] ?? 0);
+
+        $totalHoras = $totalSegundos > 0 ? round($totalSegundos / 3600, 2) : 0.0;
+        $mediaGeralPacotesPorHora = $totalHoras > 0 ? round($totalPacotes / $totalHoras, 1) : 0.0;
+        $tempoMedioGeralPorPacote = $totalPacotes > 0 ? round($totalSegundos / $totalPacotes, 1) : 0.0;
+
+        // 2. Produtividade por Operador
+        $stmtOperadores = $pdo->prepare("
+            SELECT 
+                u.id AS usuario_id,
+                u.matricula AS usuario_matricula,
+                u.nome AS usuario_nome,
+                COUNT(ap.id) AS total_ciclos,
+                COALESCE(SUM(ap.pacotes_refeitos), 0) AS total_pacotes,
+                COALESCE(SUM(ap.duracao_segundos), 0) AS total_segundos
+            FROM apontamentos_produtividade ap
+            INNER JOIN usuarios u ON u.id = ap.usuario_id
+            {$where}
+            GROUP BY u.id, u.matricula, u.nome
+            ORDER BY total_pacotes DESC
+        ");
+        $stmtOperadores->execute($params);
+        $linhasOperadores = $stmtOperadores->fetchAll();
+
+        $porOperador = [];
+        foreach ($linhasOperadores as $op) {
+            $segundos = (int)$op['total_segundos'];
+            $pacotes = (int)$op['total_pacotes'];
+            $ciclos = (int)$op['total_ciclos'];
+            $horas = $segundos > 0 ? ($segundos / 3600) : 0;
+            $pacotesHora = $horas > 0 ? round($pacotes / $horas, 1) : 0.0;
+            $tempoMedioCiclo = $ciclos > 0 ? round($segundos / $ciclos, 0) : 0;
+            $tempoMedioPacote = $pacotes > 0 ? round($segundos / $pacotes, 1) : 0.0;
+
+            $porOperador[] = [
+                'usuario_id' => (int)$op['usuario_id'],
+                'matricula' => $op['usuario_matricula'],
+                'nome' => $op['usuario_nome'],
+                'total_ciclos' => $ciclos,
+                'total_pacotes' => $pacotes,
+                'total_segundos' => $segundos,
+                'total_horas' => round($horas, 2),
+                'pacotes_por_hora' => $pacotesHora,
+                'tempo_medio_ciclo' => (int)$tempoMedioCiclo,
+                'tempo_medio_pacote' => $tempoMedioPacote
+            ];
+        }
+
+        // 3. Tempo Médio de Ciclo por Produto
+        $stmtProdutos = $pdo->prepare("
+            SELECT 
+                pr.id AS produto_id,
+                pr.codigo AS produto_codigo,
+                pr.nome AS produto_nome,
+                pr.pacote_padrao,
+                COUNT(ap.id) AS total_ciclos,
+                COALESCE(SUM(ap.pacotes_refeitos), 0) AS total_pacotes,
+                COALESCE(SUM(ap.duracao_segundos), 0) AS total_segundos
+            FROM apontamentos_produtividade ap
+            INNER JOIN produtos pr ON pr.id = ap.produto_id
+            {$where}
+            GROUP BY pr.id, pr.codigo, pr.nome, pr.pacote_padrao
+            ORDER BY total_pacotes DESC
+        ");
+        $stmtProdutos->execute($params);
+        $linhasProdutos = $stmtProdutos->fetchAll();
+
+        $porProduto = [];
+        foreach ($linhasProdutos as $p) {
+            $segundos = (int)$p['total_segundos'];
+            $pacotes = (int)$p['total_pacotes'];
+            $ciclos = (int)$p['total_ciclos'];
+            $horas = $segundos > 0 ? ($segundos / 3600) : 0;
+            $tempoMedioPacote = $pacotes > 0 ? round($segundos / $pacotes, 1) : 0.0;
+            $pacotesHora = $horas > 0 ? round($pacotes / $horas, 1) : 0.0;
+
+            $porProduto[] = [
+                'produto_id' => (int)$p['produto_id'],
+                'codigo' => $p['produto_codigo'],
+                'nome' => $p['produto_nome'],
+                'pacote_padrao' => $p['pacote_padrao'],
+                'total_ciclos' => $ciclos,
+                'total_pacotes' => $pacotes,
+                'total_segundos' => $segundos,
+                'tempo_medio_pacote_segundos' => $tempoMedioPacote,
+                'pacotes_por_hora' => $pacotesHora
+            ];
+        }
+
+        return [
+            'total_ciclos' => $totalCiclos,
+            'total_pacotes' => $totalPacotes,
+            'total_segundos' => $totalSegundos,
+            'total_horas' => $totalHoras,
+            'media_geral_pacotes_por_hora' => $mediaGeralPacotesPorHora,
+            'tempo_medio_geral_por_pacote' => $tempoMedioGeralPorPacote,
+            'por_operador' => $porOperador,
+            'por_produto' => $porProduto
+        ];
+    }
 }

@@ -324,4 +324,127 @@ class ApontamentoBO
             throw $e;
         }
     }
+
+    /**
+     * Relatório Sintético de Movimentação de Repack
+     * Conforme docs/FSD.md Seções 6 e 22.2
+     * @param string|null $dataInicio
+     * @param string|null $dataFim
+     * @return array
+     */
+    public static function obterRelatorioSintetico(?string $dataInicio = null, ?string $dataFim = null): array
+    {
+        $pdo = Database::getConnection();
+
+        $where = "WHERE deleted_at IS NULL";
+        $params = [];
+
+        if (!empty($dataInicio)) {
+            $where .= " AND created_at >= :data_inicio";
+            $params['data_inicio'] = $dataInicio . ' 00:00:00';
+        }
+        if (!empty($dataFim)) {
+            $where .= " AND created_at <= :data_fim";
+            $params['data_fim'] = $dataFim . ' 23:59:59';
+        }
+
+        // 1. Totais Gerais
+        $stmtTotais = $pdo->prepare("
+            SELECT 
+                COUNT(*) AS total_registros,
+                COALESCE(SUM(quantidade), 0) AS total_unidades,
+                COALESCE(SUM(CASE WHEN destino = 'lojinha' THEN quantidade ELSE 0 END), 0) AS unidades_lojinha,
+                COALESCE(SUM(CASE WHEN destino = 'descarte' THEN quantidade ELSE 0 END), 0) AS unidades_descarte
+            FROM apontamentos_bo
+            {$where}
+        ");
+        $stmtTotais->execute($params);
+        $totais = $stmtTotais->fetch();
+
+        $totalUnidades = (int)($totais['total_unidades'] ?? 0);
+        $unidadesLojinha = (int)($totais['unidades_lojinha'] ?? 0);
+        $unidadesDescarte = (int)($totais['unidades_descarte'] ?? 0);
+
+        $percentualLojinha = $totalUnidades > 0 ? round(($unidadesLojinha / $totalUnidades) * 100, 2) : 0.0;
+        $percentualDescarte = $totalUnidades > 0 ? round(($unidadesDescarte / $totalUnidades) * 100, 2) : 0.0;
+
+        // 2. Detalhamento por Tipo de Avaria
+        $stmtTipos = $pdo->prepare("
+            SELECT 
+                tipo_avaria,
+                destino,
+                COUNT(*) AS total_ocorrencias,
+                COALESCE(SUM(quantidade), 0) AS quantidade_total
+            FROM apontamentos_bo
+            {$where}
+            GROUP BY tipo_avaria, destino
+            ORDER BY quantidade_total DESC
+        ");
+        $stmtTipos->execute($params);
+        $linhasTipos = $stmtTipos->fetchAll();
+
+        $porTipo = [];
+        foreach ($linhasTipos as $tipo) {
+            $qtd = (int)$tipo['quantidade_total'];
+            $pct = $totalUnidades > 0 ? round(($qtd / $totalUnidades) * 100, 2) : 0.0;
+            $porTipo[] = [
+                'tipo_avaria' => $tipo['tipo_avaria'],
+                'destino' => $tipo['destino'],
+                'total_ocorrencias' => (int)$tipo['total_ocorrencias'],
+                'quantidade_total' => $qtd,
+                'percentual' => $pct
+            ];
+        }
+
+        // 3. Detalhamento por Produto
+        $whereProd = str_replace(['created_at', 'deleted_at'], ['bo.created_at', 'bo.deleted_at'], $where);
+        $stmtProdutos = $pdo->prepare("
+            SELECT 
+                p.id AS produto_id,
+                p.codigo AS produto_codigo,
+                p.nome AS produto_nome,
+                p.pacote_padrao,
+                COUNT(bo.id) AS total_ocorrencias,
+                COALESCE(SUM(bo.quantidade), 0) AS total_unidades,
+                COALESCE(SUM(CASE WHEN bo.destino = 'lojinha' THEN bo.quantidade ELSE 0 END), 0) AS unidades_lojinha,
+                COALESCE(SUM(CASE WHEN bo.destino = 'descarte' THEN bo.quantidade ELSE 0 END), 0) AS unidades_descarte
+            FROM apontamentos_bo bo
+            INNER JOIN produtos p ON p.id = bo.produto_id
+            {$whereProd}
+            GROUP BY p.id, p.codigo, p.nome, p.pacote_padrao
+            ORDER BY total_unidades DESC
+        ");
+        $stmtProdutos->execute($params);
+        $linhasProdutos = $stmtProdutos->fetchAll();
+
+        $porProduto = [];
+        foreach ($linhasProdutos as $prod) {
+            $tot = (int)$prod['total_unidades'];
+            $loj = (int)$prod['unidades_lojinha'];
+            $desc = (int)$prod['unidades_descarte'];
+            $taxaRecup = $tot > 0 ? round(($loj / $tot) * 100, 2) : 0.0;
+            $porProduto[] = [
+                'produto_id' => (int)$prod['produto_id'],
+                'codigo' => $prod['produto_codigo'],
+                'nome' => $prod['produto_nome'],
+                'pacote_padrao' => $prod['pacote_padrao'],
+                'total_ocorrencias' => (int)$prod['total_ocorrencias'],
+                'total_unidades' => $tot,
+                'unidades_lojinha' => $loj,
+                'unidades_descarte' => $desc,
+                'taxa_recuperacao' => $taxaRecup
+            ];
+        }
+
+        return [
+            'total_registros' => (int)($totais['total_registros'] ?? 0),
+            'total_unidades' => $totalUnidades,
+            'unidades_lojinha' => $unidadesLojinha,
+            'unidades_descarte' => $unidadesDescarte,
+            'percentual_lojinha' => $percentualLojinha,
+            'percentual_descarte' => $percentualDescarte,
+            'por_tipo' => $porTipo,
+            'por_produto' => $porProduto
+        ];
+    }
 }

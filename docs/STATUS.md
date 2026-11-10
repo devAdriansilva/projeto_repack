@@ -1,8 +1,8 @@
 # STATUS DO PROJETO
 
 ## Estado Atual
-- **Fase Atual:** Fase 5 - Lista de Separação, Relatórios e Testes Integrados (Pendente de Início)
-- **Status Geral:** Fase 4 (Vitrine e Carrinho da Lojinha) construída e validada com sucesso absoluto. Identificação rápida do colaborador por matrícula corporativa com validação de lote aberto e permissão por setor implementada; Catálogo responsivo da Vitrine (`/lojinha`) com cards visuais, fotos, cálculo dinâmico de saldo real ($\text{Disponível} = \text{Total} - \text{Reserva} - \text{Carrinhos Outros}$) e botões operacionais de 80px; Trava temporal de concorrência no carrinho (`carrinho_temporario`) com validade estrita de 10 minutos e rotina automática de limpeza de reservas expiradas; Verificação de teto máximo de compras individual por colaborador no lote; Checkout atômico transacional via PDO (`BEGIN TRANSACTION` / `COMMIT`) com abate definitivo do saldo físico em `estoque_lojinha`, criação de registros em `pedidos` e `pedido_itens` e emissão de código único de pedido (`PED-YYYYMMDD-XXXXXX`); Tela de comprovante digital com instruções de retirada física; e endpoints assíncronos (`/api/carrinho/adicionar`, `/api/carrinho/remover`, `/api/estoque/saldo`).
+- **Fase Atual:** Fase 5 - Lista de Separação, Relatórios e Testes Integrados (Concluída e Validada)
+- **Status Geral:** Sistema Repack 100% construído, integrado e validado. Todas as 5 fases foram finalizadas e atendem integralmente aos requisitos de arquitetura, segurança e design da "Urna Eletrônica". Todos os 9 critérios de aceitação técnica e funcional do `docs/FSD.md` foram checados e aprovados via testes automatizados (35/35 testes com sucesso). A lista de separação física no galpão (`/gestao/separacao`) com agrupamento por colaborador, caixas de checagem física, atualização em tempo real de status do pedido e comprovante com linhas de assinatura manual para prancheta impressa está plenamente funcional; o `RelatorioController` (`/gestao/relatorios`) gera o Relatório Sintético de Movimentação de Repack (avarias recuperadas para a lojinha vs perdas em descarte) e o Extrato Analítico de Produtividade da Equipe (pacotes montados por hora por operador e tempo médio de ciclo por produto), ambos com suporte a exportação CSV (BOM UTF-8) e impressão em alta definição.
 
 ---
 
@@ -55,9 +55,19 @@
   - [x] View Sacola: `app/views/lojinha/carrinho.php` (cronômetro regressivo da reserva de 10 minutos, listagem com remoção e botão 80px "Finalizar Pedido")
   - [x] View Comprovante: `app/views/lojinha/sucesso.php` (código de retirada em destaque `headline-xl` 32px, tabela de itens e instruções de galpão)
   - [x] Roteador Central Atualizado: `public/index.php` (rotas `/lojinha/*` e endpoints `/api/carrinho/*` e `/api/estoque/saldo` integrados)
-- [ ] **Fase 5: Lista de Separação, Relatórios e Testes Integrados**
+- [x] **Fase 5: Lista de Separação, Relatórios e Testes Integrados (Testada e Validada)**
+  - [x] Model Pedido & Separação: `app/models/Pedido.php` (métodos `listarParaSeparacao` com agrupamento por colaborador/matrícula, `atualizarStatus` de pedido e `obterEstatisticasSeparacao`)
+  - [x] Model Relatório B.O.: `app/models/ApontamentoBO.php` (método `obterRelatorioSintetico` com apuração de volume recebido, taxa de recuperação para a lojinha, descarte e agrupamentos por tipo e por produto)
+  - [x] Model Extrato de Produtividade: `app/models/ApontamentoProdutividade.php` (método `obterExtratoAnalitico` com cálculo de pacotes montados por hora por operador e tempo médio de ciclo por produto)
+  - [x] Model Log do Sistema: `app/models/LogSistema.php` (auditoria imediata em `logs/security.log` e contingência no banco de dados)
+  - [x] Controller de Relatórios: `app/controllers/RelatorioController.php` (rotas `/gestao/separacao`, `/gestao/separacao/status`, `/gestao/separacao/exportar`, `/gestao/relatorios` e `/gestao/relatorios/exportar`)
+  - [x] View Separação Física: `app/views/gestao/separacao.php` (cards analíticos por colaborador, checkboxes de conferência interativos para tablet, alteração assíncrona de status, campos de assinatura manual e CSS de impressão para prancheta física de galpão)
+  - [x] View Relatórios e Extratos: `app/views/gestao/relatorios.php` (filtros dinâmicos de período, barras visuais de proporção de avarias, tabelas detalhadas e exportação CSV para Excel)
+  - [x] Layout Gestão Atualizado: `app/views/layouts/gestao_header.php` (links diretos para Separação e Relatórios)
+  - [x] Roteador Central Atualizado: `public/index.php` (rotas `/gestao/separacao*` e `/gestao/relatorios*` integradas)
+  - [x] Testes Integrados Automatizados: `tests/test_fase5.php` e `tests/test_router.php` (35 asserções validadas cobrindo integralmente os 9 critérios de aceitação do `docs/FSD.md` Seção 26)
 
 ---
 
 ## Próximo Passo
-Iniciar a implementação técnica da **Fase 5: Lista de Separação, Relatórios e Testes Integrados**, construindo a lista unificada de separação física no galpão agrupada por matrícula e colaborador (`/gestao/separacao`), o `RelatorioController` com extratos de esforço/produtividade e perdas de repack, validação final dos logs e execução dos testes integrados de aceitação.
+Todas as 5 fases do plano de desenvolvimento incremental foram construídas, integradas e aprovadas com sucesso absoluto. O sistema Repack está pronto para homologação e uso em produção.

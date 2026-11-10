@@ -235,6 +235,16 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                         📋 Correção de B.O.
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/separacao') === 0 ? 'active' : '' ?>" href="/gestao/separacao">
+                        📝 Separação
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/relatorios') === 0 ? 'active' : '' ?>" href="/gestao/relatorios">
+                        📈 Relatórios
+                    </a>
+                </li>
             </ul>
 
             <div class="d-flex align-items-center gap-3">
