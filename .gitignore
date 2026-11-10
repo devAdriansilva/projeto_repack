@@ -1,0 +1,67 @@
+# ==========================================
+# Projeto Repack - .gitignore
+# Stack: PHP 8.1+ (MVC), MySQL 8.0, HTML5/CSS3/JS, PWA
+# ==========================================
+
+# Arquivos de Ambiente e Credenciais Sensíveis
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.cert
+*.crt
+
+# Caches e Arquivos Temporários do Sistema / SO
+.DS_Store
+Thumbs.db
+Desktop.ini
+*$*
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+nbproject/
+.project
+.settings/
+
+# Logs e Relatórios de Falha (preservar estrutura via .gitkeep)
+logs/*.log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Uploads Dinâmicos de Usuários (ignorar arquivos carregados, mas preservar estrutura de pastas e .gitkeep)
+public/uploads/**
+!public/uploads/
+!public/uploads/**/
+!public/uploads/**/.gitkeep
+
+# Dumps e Backups de Banco de Dados
+*.sql.gz
+*.sql.bak
+*.dump
+backup/
+backups/
+dumps/
+
+# Dependências Reconstruíveis / Caches de Pacotes
+vendor/
+node_modules/
+
+# Cache do PHP / Sessões / Webserver
+session/
+sessions/
+cache/
+tmp/
+
+# Preservar arquivos .gitkeep em pastas estruturais
+!.gitkeep

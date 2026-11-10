@@ -1,0 +1,39 @@
+# ==========================================
+# Projeto Repack - .gitattributes
+# Normalização de quebras de linha e tipos de arquivo
+# ==========================================
+
+# Auto-detect text files and normalize line endings to LF
+* text=auto eol=lf
+
+# Backend & Migrations
+*.php text eol=lf diff=php
+*.sql text eol=lf
+
+# Frontend & Configurações
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.svg text eol=lf
+*.htaccess text eol=lf
+
+# Documentação & Markdown
+*.md text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Binários & Mídias
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
