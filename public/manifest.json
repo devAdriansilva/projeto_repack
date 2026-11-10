@@ -1,0 +1,22 @@
+{
+  "name": "Projeto Repack - Urna Eletrônica",
+  "short_name": "Repack",
+  "description": "Sistema PWA Offline-First para o setor de reembalagem e lojinha interna de bebidas",
+  "start_url": "/operador",
+  "display": "standalone",
+  "background_color": "#F3F4F6",
+  "theme_color": "#10B981",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/assets/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
