@@ -351,6 +351,11 @@
     - **Garantia de Inicialização Limpa na Produção:** Inclusão de reset forçado (`?novo=1`) ao clicar em "REGISTRAR PRODUÇÃO" a partir da Home (`app/views/operador/home.php`), limpando ciclos residuais anteriores do `localStorage` e da sessão para garantir a exibição imediata do Momento 1 (com `CÓDIGO DO PRODUTO:`, `placeholder="9068"`, `INICIAR ➔` centralizado e `← ✕ CANCELAR` abaixo).
     - **Remoção de Bloco Duplicado no Momento 2:** Correção de tag de fechamento prematura em `app/views/operador/cronometro.php`.
     - **Incremento de Versão:** Versão elevada para `v1.35` com cache-busting do Service Worker `repack-pwa-v1.35`.
+  - [x] **MANUT-036 (11/11/2026):** Filtragem de estoque positivo na Lojinha, rótulo de Quantidade Reservada e Motivo opcional.
+    - **Filtro de Itens com Estoque Efetivo:** No Model `app/models/EstoqueLojinha.php` (`listarVisaoGeral()`), adicionado o filtro estrito `AND COALESCE(el.quantidade_total, 0) > 0`, ocultando automaticamente os mais de 400 produtos cadastrados que ainda possuem saldo zerado.
+    - **Ajuste de Rótulo de Reserva:** Em `app/views/gestao/estoque.php`, descrição do campo alterada para `Quantidade Reservada *`.
+    - **Flexibilização do Motivo de Reserva:** O campo `Motivo do Ajuste` no modal de reserva foi tornado opcional (removido `required` do frontend) e no backend (`EstoqueLojinha::ajustarReservaOculta()`) foi adicionado fallback automático (`Ajuste manual de reserva`), permitindo salvar reservas rapidamente sem bloqueios.
+    - **Incremento de Versão:** Versão elevada para `v1.36` com cache-busting do Service Worker `repack-pwa-v1.36`.
 
 ---
 

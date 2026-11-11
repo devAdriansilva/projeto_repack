@@ -189,14 +189,14 @@ require __DIR__ . '/../layouts/gestao_header.php';
                     </div>
 
                     <div class="mb-3">
-                        <label for="reserva_quantidade" class="form-label fw-bold small text-uppercase">Quantidade Fixa da Reserva (Oculta da Vitrine) *</label>
+                        <label for="reserva_quantidade" class="form-label fw-bold small text-uppercase">Quantidade Reservada *</label>
                         <input type="number" class="form-control" id="reserva_quantidade" name="quantidade_reserva" required min="0" style="height: 48px;">
                         <div class="form-text">As unidades reservadas não são exibidas nem vendidas na lojinha virtual.</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="reserva_motivo" class="form-label fw-bold small text-uppercase">Motivo do Ajuste *</label>
-                        <textarea class="form-control" id="reserva_motivo" name="motivo" required rows="3" placeholder="Ex: Reserva para evento interno ou contingência de segurança..."></textarea>
+                        <label for="reserva_motivo" class="form-label fw-bold small text-uppercase">Motivo do Ajuste (Opcional)</label>
+                        <textarea class="form-control" id="reserva_motivo" name="motivo" rows="3" placeholder="Ex: Reserva para evento interno ou contingência de segurança..."></textarea>
                     </div>
                 </div>
 

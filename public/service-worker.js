@@ -3,7 +3,7 @@
  * Baseado estritamente em docs/FSD.md e AGENTS.md
  */
 
-const CACHE_NAME = 'repack-pwa-v1.35';
+const CACHE_NAME = 'repack-pwa-v1.36';
 const STATIC_ASSETS = [
     '/',
     '/operador',

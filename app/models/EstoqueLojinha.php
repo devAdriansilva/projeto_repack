@@ -72,6 +72,7 @@ class EstoqueLojinha
             FROM produtos p
             LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
             WHERE p.deleted_at IS NULL
+              AND COALESCE(el.quantidade_total, 0) > 0
             ORDER BY p.nome ASC
         ");
         $stmt->execute();
@@ -94,7 +95,7 @@ class EstoqueLojinha
         }
         $motivo = trim($motivo);
         if ($motivo === '') {
-            throw new InvalidArgumentException("O motivo do ajuste de reserva é obrigatório.");
+            $motivo = 'Ajuste manual de reserva';
         }
 
         $pdo = Database::getConnection();
