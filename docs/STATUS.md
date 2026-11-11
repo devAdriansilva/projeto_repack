@@ -114,6 +114,11 @@
     - Simplificação radical da barra superior, mantendo exclusivamente o ícone de engrenagem protegido contra toques acidentais (requer pressionar e segurar por 5 segundos contínuos com anel de progresso visual SVG e resposta tátil).
     - Unificação das funções de exibição do operador ativo, troca de operador, status de conexão e autenticação da gestão dentro do modal da engrenagem.
     - Validação com 35/35 testes automatizados aprovados (`php tests/test_fase5.php`).
+  - [x] **MANUT-005 (11/11/2026):** Ampliação ergonômica dos cards operacionais da bancada.
+    - Expansão da largura máxima dos cards para 520px e preenchimento harmônico de 95% da viewport mobile.
+    - Aumento da moldura das ilustrações para 210px de altura (com imagens em 185px de alta visibilidade).
+    - Elevação da faixa de toque do botão para 88px de altura mínima (superando o requisito de 80px para luvas anti-corte), tipografia em 26px negrito e ícones em 32px.
+    - Validação com 35/35 testes automatizados aprovados (`php tests/test_fase5.php`).
 
 ---
 
