@@ -334,6 +334,18 @@
       - Restauração do layout em 2 momentos da Urna Eletrônica alinhado ao Registro de B.O. (título monumental `REGISTRAR PRODUÇÃO`, seletor monumental de pacotes refeitos de 160px com botões circulares e display, botões de ação duplos `CANCELAR` em amarelo e `INICIAR PRODUÇÃO ➔` / `FINALIZAR ➔` em verde).
       - Manutenção integral do suporte aos marcadores de início/fim, função de pausa e integração com o backend.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-034 (11/11/2026):** Refinamento da Produção (CÓDIGO DO PRODUTO, Placeholder 9068, Botão INICIAR centralizado e CANCELAR abaixo) e Gestão Remota de Operador Padrão (Adriano Silva e Pedro Cruz).
+    - **Aba Registrar Produção (`app/views/operador/cronometro.php`):**
+      - Legenda ajustada para `CÓDIGO DO PRODUTO:` e placeholder definido como `9068`.
+      - Botão de início reformulado para `INICIAR ➔` centralizado em destaque principal verde monumental.
+      - Botão `← ✕ CANCELAR` posicionado logo abaixo em pilha vertical para retorno à bancada.
+      - Remoção no Momento 2 da legenda redundante `PRODUÇÃO EM ANDAMENTO` e dos detalhes de embalagem secundária (`cx/fardo`), exibindo estritamente Produto, SKU e Início.
+    - **Governança de Operadores e Sincronização Remota de Dispositivos:**
+      - Migration `005_configurar_operadores_e_padrao.sql` executada via CLI, criando `configuracoes_sistema` e garantindo os 2 operadores ativos oficiais: **Adriano Silva** (OP01) e **Pedro Cruz** (OP02).
+      - Criação do Model `app/models/Configuracao.php` para persistência de parâmetros globais.
+      - Adição do endpoint `/api/operador/definir-padrao` em `app/controllers/OperadorController.php` e `public/index.php`.
+      - Seletor de "Operador Padrão do Repack" integrado tanto ao Modal da Engrenagem (`app/views/layouts/header.php`) quanto ao Dashboard da Gestão (`app/views/gestao/dashboard.php`), permitindo à coordenadora alterar o operador padrão a partir de qualquer dispositivo móvel/desktop com sincronização imediata na bancada.
+      - Validação com 35/35 testes integrados da suíte oficial e teste dedicado em `tests/test_operador_padrao.php`.
 
 ---
 

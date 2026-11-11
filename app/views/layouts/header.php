@@ -7,9 +7,23 @@ declare(strict_types=1);
  */
 
 require_once __DIR__ . '/../../models/Usuario.php';
+require_once __DIR__ . '/../../models/Configuracao.php';
 
-// Operador ativo da sessão do quiosque
+// Operadores ativos e operador padrão global configurado no banco
 $operadoresAtivos = Usuario::listarOperadoresAtivos();
+$operadorPadrao = Configuracao::obterOperadorPadrao();
+$operadorPadraoId = $operadorPadrao ? (int)$operadorPadrao['id'] : null;
+
+// Sincronização remota entre dispositivos:
+// Se o gestor alterou o operador padrão no banco em outro dispositivo,
+// sincroniza automaticamente a bancada com a nova definição!
+$ultimoPadraoId = $_SESSION['ultimo_padrao_id'] ?? null;
+if ($operadorPadraoId && $ultimoPadraoId !== $operadorPadraoId) {
+    $_SESSION['operador_id'] = $operadorPadraoId;
+    $_SESSION['operador_nome'] = $operadorPadrao['nome'];
+    $_SESSION['ultimo_padrao_id'] = $operadorPadraoId;
+}
+
 $operadorAtivoId = $_SESSION['operador_id'] ?? null;
 $operadorAtivoNome = 'Selecionar Operador';
 
@@ -20,12 +34,12 @@ if ($operadorAtivoId) {
             break;
         }
     }
-} elseif (!empty($operadoresAtivos)) {
-    // Se nenhum estiver setado, default para o primeiro operador ativo do quiosque
-    $_SESSION['operador_id'] = $operadoresAtivos[0]['id'];
-    $_SESSION['operador_nome'] = $operadoresAtivos[0]['nome'];
-    $operadorAtivoNome = $operadoresAtivos[0]['nome'];
-    $operadorAtivoId = $operadoresAtivos[0]['id'];
+} elseif ($operadorPadrao) {
+    $_SESSION['operador_id'] = $operadorPadrao['id'];
+    $_SESSION['operador_nome'] = $operadorPadrao['nome'];
+    $_SESSION['ultimo_padrao_id'] = $operadorPadrao['id'];
+    $operadorAtivoNome = $operadorPadrao['nome'];
+    $operadorAtivoId = $operadorPadrao['id'];
 }
 ?>
 <!DOCTYPE html>
@@ -50,7 +64,12 @@ if ($operadorAtivoId) {
 <body>
 
 <!-- Barra Superior Minimalista do Quiosque -->
-<header class="quiosque-header" style="justify-content: flex-end; padding: 6px 16px; min-height: 52px; background-color: var(--surface); border-bottom: 2px solid var(--border);">
+<header class="quiosque-header" style="justify-content: space-between; align-items: center; padding: 6px 16px; min-height: 52px; background-color: var(--surface); border-bottom: 2px solid var(--border);">
+    <!-- Identificador Discreto de Versão -->
+    <div style="font-size: 13px; font-weight: 700; color: #94A3B8; letter-spacing: 0.5px; user-select: none;">
+        REPACK <span style="font-weight: 600; font-size: 11px; color: #64748B; background: #F1F5F9; padding: 2px 6px; border-radius: 6px; margin-left: 4px; border: 1px solid #E2E8F0;"><?= APP_VERSION ?></span>
+    </div>
+
     <!-- Botão de Configurações / Gestão com Ícone Azul de Alta Visibilidade (Proteção 5s) -->
     <div style="position: relative; display: inline-flex; align-items: center;">
         <button type="button" 
@@ -100,6 +119,29 @@ if ($operadorAtivoId) {
             </div>
         </div>
 
+        <!-- Seção: Operador Padrão do Sistema (Sincronizado entre dispositivos) -->
+        <div class="urna-card" style="margin-bottom: 16px; padding: 16px; border-radius: 14px; background: #F8FAFC; border: 2px solid #E2E8F0;">
+            <div style="font-size: 13px; font-weight: 800; color: #1E293B; text-transform: uppercase; margin-bottom: 6px;">
+                ⭐ Operador Padrão do Repack
+            </div>
+            <p style="font-size: 13px; color: #64748B; margin-bottom: 10px; line-height: 1.3;">
+                Define qual operador inicia conectado por padrão em todos os dispositivos da bancada.
+            </p>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <select id="selectOperadorPadraoModal" class="form-select" style="min-height: 46px; font-size: 15px; font-weight: 700;">
+                    <?php foreach ($operadoresAtivos as $op): ?>
+                        <option value="<?= (int)$op['id'] ?>" <?= ((int)$op['id'] === (int)($operadorPadrao['id'] ?? 0)) ? 'selected' : '' ?>>
+                            <?= sanitize_html($op['nome']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="button" class="btn-urna btn-urna-primary" style="min-height: 46px; padding: 6px 14px; font-size: 14px; width: auto; white-space: nowrap;" onclick="definirOperadorPadraoModal()">
+                    Salvar Padrão
+                </button>
+            </div>
+            <div id="msgFeedbackPadraoModal" style="display: none; font-size: 13px; font-weight: 800; margin-top: 8px; color: #059669;"></div>
+        </div>
+
         <!-- Seção 2: Acesso à Gestão -->
         <div class="urna-card" style="margin-bottom: 16px; padding: 16px; border-radius: 14px;">
             <div style="font-size: 13px; font-weight: 700; color: var(--on-surface-muted); text-transform: uppercase; margin-bottom: 8px;">Acesso à Gestão (Coordenadora)</div>
@@ -123,6 +165,9 @@ if ($operadorAtivoId) {
             <button type="button" class="btn-urna btn-urna-warning" style="min-height: 48px; font-size: 16px; width: 100%;" onclick="fecharModalConfiguracoes()">
                 Voltar à Bancada
             </button>
+        </div>
+        <div style="text-align: center; margin-top: 14px; font-size: 12px; font-weight: 600; color: #94A3B8;">
+            Projeto Repack • <?= APP_VERSION ?>
         </div>
     </div>
 </div>

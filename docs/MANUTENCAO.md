@@ -93,6 +93,7 @@ projeto_repack/
 │   ├── models/
 │   │   ├── Usuario.php
 │   │   ├── Produto.php
+│   │   ├── Configuracao.php
 │   │   ├── ApontamentoBO.php
 │   │   ├── ApontamentoProdutividade.php
 │   │   ├── LoteVenda.php

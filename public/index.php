@@ -66,6 +66,11 @@ switch ($route) {
         (new OperadorController())->selecionarOperador();
         break;
 
+    case '/operador/definir-padrao':
+    case '/api/operador/definir-padrao':
+        (new OperadorController())->definirPadrao();
+        break;
+
     case '/operador/avaria/passo1':
         (new AvariaController())->passo1();
         break;

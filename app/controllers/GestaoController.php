@@ -15,6 +15,7 @@ require_once __DIR__ . '/../models/LoteVenda.php';
 require_once __DIR__ . '/../models/EstoqueLojinha.php';
 require_once __DIR__ . '/../models/ApontamentoBO.php';
 require_once __DIR__ . '/../models/LogSistema.php';
+require_once __DIR__ . '/../models/Configuracao.php';
 
 class GestaoController
 {
@@ -95,6 +96,10 @@ class GestaoController
             LIMIT 5
         ");
         $topEstoque = $stmtTopEstoque->fetchAll();
+
+        // 7. Operadores ativos e Operador Padrão global
+        $operadoresAtivos = Usuario::listarOperadoresAtivos();
+        $operadorPadrao = Configuracao::obterOperadorPadrao();
 
         $pageTitle = "Painel da Gestão - " . APP_NAME;
         require __DIR__ . '/../views/gestao/dashboard.php';

@@ -52,6 +52,33 @@ function atualizarNomeOperadorLocal(nome, id) {
     if (el2) el2.innerText = nome;
 }
 
+function definirOperadorPadraoModal() {
+    const select = document.getElementById('selectOperadorPadraoModal');
+    const msg = document.getElementById('msgFeedbackPadraoModal');
+    if (!select) return;
+    const opId = parseInt(select.value, 10);
+    const opNome = select.options[select.selectedIndex].text.trim();
+
+    fetch(BASE_APP_URL + '/api/operador/definir-padrao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operador_id: opId })
+    }).then(res => res.json()).then(data => {
+        if (data.status === 'success') {
+            atualizarNomeOperadorLocal(opNome, opId);
+            if (msg) {
+                msg.innerText = '✅ Padrão salvo: ' + opNome + '!';
+                msg.style.display = 'block';
+                setTimeout(() => { msg.style.display = 'none'; }, 3500);
+            }
+        } else {
+            alert(data.message || 'Falha ao definir operador padrão.');
+        }
+    }).catch(err => {
+        alert('Erro ao conectar ao servidor para salvar padrão.');
+    });
+}
+
 // Modal de Configurações e Gestão (Aberto após 5 segundos)
 function abrirModalConfiguracoes() {
     const erroDiv = document.getElementById('gestaoLoginErro');

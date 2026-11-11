@@ -202,6 +202,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
         <a class="navbar-brand d-flex align-items-center gap-2" href="<?= APP_URL ?>/gestao/dashboard">
             <span style="display: inline-block; width: 14px; height: 14px; background: var(--gestao-primary); border-radius: 3px;"></span>
             <strong>Repack Gestão</strong>
+            <span class="badge bg-secondary ms-1" style="font-size: 11px; font-weight: 500; opacity: 0.85;"><?= APP_VERSION ?></span>
         </a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navGestao">

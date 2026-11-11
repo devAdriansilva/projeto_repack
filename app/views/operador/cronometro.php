@@ -67,7 +67,7 @@ require_once __DIR__ . '/../layouts/header.php';
     <!-- Entrada por Código SKU (Idêntica ao Registro de B.O.) -->
     <div class="sku-entry-container">
         <label for="inputCodigoSku" style="display: block; font-size: 36px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
-            CÓDIGO (SKU):
+            CÓDIGO DO PRODUTO:
         </label>
         
         <div class="sku-input-wrapper">
@@ -76,7 +76,7 @@ require_once __DIR__ . '/../layouts/header.php';
                    class="input-sku-gigante" 
                    inputmode="numeric" 
                    pattern="[0-9]*"
-                   placeholder="Ex: 25174" 
+                   placeholder="9068" 
                    value=""
                    autocomplete="off"
                    autofocus
@@ -100,7 +100,6 @@ require_once __DIR__ . '/../layouts/header.php';
             <div class="nome-produto-destaque" id="displayNomeProduto"></div>
             <div class="detalhes-produto">
                 <span class="badge-sku" id="displaySkuBadge"></span>
-                <span class="badge-embalagem" id="displayEmbalagem"></span>
             </div>
         </div>
 
@@ -117,17 +116,27 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <!-- Alerta Flutuante se tentar iniciar sem produto -->
     <div id="alertaSemProduto" style="display: none; width: 100%; margin: 24px 0 0 0; background: #FEF2F2; color: #991B1B; border: 4.5px solid #EF4444; border-radius: 22px; padding: 22px; font-weight: 900; text-align: center; font-size: 24px;">
-        ⚠️ DIGITE O CÓDIGO (SKU) DO PRODUTO!
+        ⚠️ DIGITE O CÓDIGO DO PRODUTO!
     </div>
 
-    <!-- Rodapé Momento 1: CANCELAR ou INICIAR PRODUÇÃO -->
-    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
-        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
-            CANCELAR
-        </a>
-        <button type="button" class="btn-urna btn-urna-primary" id="btnIniciarProducao" onclick="iniciarProducao()" style="min-height: 135px; font-size: 40px; font-weight: 900; border-radius: 36px;">
-            INICIAR PRODUÇÃO ➔
+    <!-- Rodapé Momento 1: Ações Empilhadas Verticalmente -->
+    <div style="width: 100%; margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 18px;">
+        <button type="button" 
+                class="btn-urna btn-urna-primary" 
+                id="btnIniciarProducao" 
+                onclick="iniciarProducao()" 
+                style="width: 100%; max-width: 600px; min-height: 135px; font-size: 44px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 auto; box-shadow: 0 12px 28px rgba(16, 185, 129, 0.35);">
+            <span>INICIAR</span>
+            <span style="font-size: 46px;">➔</span>
         </button>
+
+        <a href="<?= APP_URL ?>/operador" 
+           class="btn-urna btn-urna-warning" 
+           style="width: 100%; max-width: 600px; min-height: 115px; font-size: 36px; font-weight: 900; border-radius: 32px; display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 auto; text-decoration: none;">
+            <span style="font-size: 38px;">←</span>
+            <span>✕</span>
+            <span>CANCELAR</span>
+        </a>
     </div>
 </div>
 
@@ -135,14 +144,8 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- MOMENTO 2: PRODUÇÃO EM ANDAMENTO & FINALIZAÇÃO                -->
 <!-- ============================================================= -->
 <div id="secaoMomento2" style="<?= $producaoAtiva ? 'display: block;' : 'display: none;' ?>">
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h1 class="headline-lg" id="tituloMomento2" style="margin: 0; font-size: 48px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
-            <?= (!empty($producaoAtiva['pausado'])) ? 'PRODUÇÃO EM PAUSA' : 'PRODUÇÃO EM ANDAMENTO' ?>
-        </h1>
-    </div>
-
-    <!-- Cartão Central com Produto, Início e Status de Pausa -->
-    <div class="urna-card" style="width: 100%; text-align: center; padding: 38px 28px; border-radius: 36px; border: 8px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18); background: #FFFFFF;">
+    <!-- Cartão Central com Produto, Início e Status de Pausa (Sem legenda redundante) -->
+    <div class="urna-card" style="width: 100%; text-align: center; padding: 38px 28px; border-radius: 36px; border: 8px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18); background: #FFFFFF; margin-top: 10px;">
         
         <!-- Badge de Pausa (quando pausado) -->
         <div id="badgeStatusPausa" style="<?= (!empty($producaoAtiva['pausado'])) ? 'display: inline-flex;' : 'display: none;' ?> align-items: center; justify-content: center; gap: 10px; background: #FEF3C7; color: #92400E; border: 4px solid #F59E0B; padding: 10px 24px; border-radius: 9999px; font-size: 26px; font-weight: 900; margin-bottom: 16px;">
@@ -156,10 +159,14 @@ require_once __DIR__ . '/../layouts/header.php';
             <span class="badge-sku" id="ativoSkuBadge" style="font-size: 24px; padding: 8px 22px;">
                 SKU <?= sanitize_html($producaoAtiva['produto_codigo'] ?? '') ?>
             </span>
-            <span class="badge-embalagem" id="ativoEmbalagemBadge" style="font-size: 24px; padding: 8px 22px;">
-                <?= sanitize_html($producaoAtiva['produto_embalagem'] ?? '') ?>
-            </span>
         </div>
+
+        <div style="border-top: 5px solid #CBD5E1; margin-top: 26px; padding-top: 22px;">
+            <div style="font-size: 28px; font-weight: 900; color: #059669; text-transform: uppercase;">
+                🟢 INÍCIO: <span id="ativoHoraInicioDisplay" style="font-size: 64px; font-weight: 900; margin-left: 8px;"><?= !empty($producaoAtiva['data_hora_inicio']) ? date('H:i', strtotime($producaoAtiva['data_hora_inicio'])) : '--:--' ?></span>
+            </div>
+        </div>
+    </div>
 
         <div style="border-top: 5px solid #CBD5E1; margin-top: 26px; padding-top: 22px;">
             <div style="font-size: 28px; font-weight: 900; color: #059669; text-transform: uppercase;">
@@ -330,7 +337,8 @@ function selecionarProdutoConfirmado(p) {
     produtoSelecionadoMomento1 = p;
     document.getElementById('displayNomeProduto').innerText = p.nome;
     document.getElementById('displaySkuBadge').innerText = 'SKU ' + p.codigo;
-    document.getElementById('displayEmbalagem').innerText = p.embalagem || 'Unidade';
+    const embDisplay = document.getElementById('displayEmbalagem');
+    if (embDisplay) embDisplay.innerText = p.embalagem || 'Unidade';
 
     const input = document.getElementById('inputCodigoSku');
     input.value = p.codigo;
@@ -418,7 +426,8 @@ function restaurarMomento2(prod) {
 
     document.getElementById('ativoNomeProduto').innerText = prod.produto_nome;
     document.getElementById('ativoSkuBadge').innerText = 'SKU ' + (prod.produto_codigo || '');
-    document.getElementById('ativoEmbalagemBadge').innerText = prod.produto_embalagem || 'Unidade';
+    const embBadge = document.getElementById('ativoEmbalagemBadge');
+    if (embBadge) embBadge.innerText = prod.produto_embalagem || 'Unidade';
 
     const dataObj = new Date(prod.data_hora_inicio);
     const horas = String(dataObj.getHours()).padStart(2, '0');

@@ -138,6 +138,28 @@ require __DIR__ . '/../layouts/gestao_header.php';
 
     <!-- Coluna Direita: Top Estoque & Lotes -->
     <div class="col-12 col-lg-4">
+        <!-- Card Operador Padrão da Bancada (Sincronização entre Dispositivos) -->
+        <div class="card-gestao mb-4" style="border-left: 4px solid var(--gestao-primary);">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="headline-lg mb-0" style="font-size: 18px;">⭐ Operador Padrão do Repack</h2>
+                <span class="badge bg-light text-primary border">Bancada</span>
+            </div>
+            <p class="text-muted small mb-3">Define o operador conectado automaticamente na bancada em qualquer dispositivo.</p>
+            <div class="d-flex gap-2">
+                <select id="selectOperadorPadraoGestao" class="form-select form-select-sm">
+                    <?php foreach ($operadoresAtivos as $op): ?>
+                        <option value="<?= (int)$op['id'] ?>" <?= ((int)$op['id'] === (int)($operadorPadrao['id'] ?? 0)) ? 'selected' : '' ?>>
+                            <?= sanitize_html($op['nome']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="button" class="btn btn-sm btn-primary text-nowrap" onclick="salvarPadraoGestao()">
+                    Definir Padrão
+                </button>
+            </div>
+            <div id="msgPadraoGestao" class="small fw-bold text-success mt-2" style="display: none;"></div>
+        </div>
+
         <!-- Card Lotes Ativos -->
         <div class="card-gestao mb-4">
             <h2 class="headline-lg mb-3" style="font-size: 18px;">Lotes de Venda Ativos</h2>
@@ -183,5 +205,31 @@ require __DIR__ . '/../layouts/gestao_header.php';
         </div>
     </div>
 </div>
+
+<script>
+function salvarPadraoGestao() {
+    const select = document.getElementById('selectOperadorPadraoGestao');
+    const msg = document.getElementById('msgPadraoGestao');
+    if (!select) return;
+    const opId = parseInt(select.value, 10);
+    const opNome = select.options[select.selectedIndex].text.trim();
+
+    fetch('<?= APP_URL ?>/api/operador/definir-padrao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operador_id: opId })
+    }).then(res => res.json()).then(data => {
+        if (data.status === 'success') {
+            msg.innerText = '✅ Operador padrão atualizado para ' + opNome + ' com sucesso!';
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 4000);
+        } else {
+            alert(data.message || 'Erro ao salvar operador padrão.');
+        }
+    }).catch(() => {
+        alert('Erro ao conectar ao servidor.');
+    });
+}
+</script>
 
 <?php require __DIR__ . '/../layouts/gestao_footer.php'; ?>
