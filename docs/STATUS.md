@@ -138,6 +138,12 @@
     - Recorte fotográfico de `btn_bo.jpg` para formato quadrado perfeito (558x558), eliminando barras laterais cinzas de letterbox da arte original.
     - Fixação de proporção dimensional 4:3 (~380px x 270px) em cada card operacional, com fotos em 160px e botões em 85px de altura mínima (fontes 25px negrito).
     - Insígnia estilizada de cabeçalho unificada e deploy imediato via SSH na Alwaysdata.
+  - [x] **MANUT-010 (11/11/2026):** Fim do loop de oscilação: unificação em blocos sólidos (.btn-operador-solido).
+    - Quebra da estrutura de múltiplos retângulos encaixados (card branco externo + moldura cinza + faixa colorida) que causava estiramento vertical desproporcional ou encolhimento em ilha.
+    - Cada ação é agora um bloco sólido tátil único em degradê de alta vibração (Azul `#2563EB` para B.O. e Verde `#059669` para Produção) com cantos arredondados de 24px e sombra ergonômica.
+    - Mini-card branco centralizado (115x115px) abrigando a ilustração em alta resolução, seguido pelo título em branco 24px negrito e ícone SVG proporcional de 28px.
+    - Enquadramento vertical harmônico com `min-height: 200px` e `max-height: 245px`, garantindo proporção LxA entre 1.4:1 e 1.6:1 em qualquer altura de tela mobile, sem vazios residuais.
+    - Deploy automatizado executado diretamente via SSH no servidor Alwaysdata.
 
 ---
 

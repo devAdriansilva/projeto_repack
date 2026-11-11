@@ -272,103 +272,149 @@ body {
     letter-spacing: 1px;
 }
 
-/* Cards Harmoniosos da Bancada do Operador (Proporção LxA Equilibrada) */
-.card-acao-operador {
+/* ==========================================================================
+   Home do Operador - Layout Harmônico e Botões Sólidos de Alta Usabilidade
+   ========================================================================== */
+.home-operador-container {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 16px 16px 24px 16px;
+    min-height: calc(100dvh - 56px);
     display: flex;
     flex-direction: column;
-    text-decoration: none;
-    border-radius: 20px;
-    overflow: hidden;
-    background-color: var(--surface);
-    border: 2px solid #E2E8F0;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
-    transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
-    touch-action: manipulation;
-    cursor: pointer;
+    justify-content: space-between;
     box-sizing: border-box;
+}
+
+.home-operador-header {
+    text-align: center;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    flex-shrink: 0;
+}
+
+.brand-repack-badge {
+    display: inline-block;
+    background: #0F172A;
+    color: #FFFFFF;
+    padding: 10px 42px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.25);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+.brand-repack-badge h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: #FFFFFF;
+    line-height: 1.1;
+}
+
+.home-operador-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex: 1;
+    justify-content: center;
+    margin: 12px 0;
+}
+
+.btn-operador-solido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 24px;
     width: 100%;
-}
-
-.card-acao-operador:hover {
-    text-decoration: none;
-    border-color: #94A3B8;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.card-acao-operador:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.card-acao-moldura {
-    height: 155px;
-    background: #FFFFFF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 12px;
+    flex: 1;
+    min-height: 200px;
+    max-height: 245px;
+    padding: 14px 16px;
     box-sizing: border-box;
+    border: none;
+    transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
+    touch-action: manipulation;
 }
 
-.card-acao-moldura img {
-    height: 135px;
-    width: auto;
-    max-width: 90%;
-    object-fit: contain;
-    border-radius: 12px;
+.btn-operador-solido:hover {
+    text-decoration: none;
+    filter: brightness(1.05);
 }
 
-.card-acao-btn {
-    min-height: 75px;
-    height: 75px;
+.btn-operador-solido:active {
+    transform: scale(0.98);
+    filter: brightness(0.95);
+}
+
+.btn-operador-bo {
+    background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%);
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+}
+
+.btn-operador-producao {
+    background: linear-gradient(145deg, #059669 0%, #047857 100%);
+    box-shadow: 0 10px 24px rgba(5, 150, 105, 0.35);
+}
+
+.btn-operador-icone-wrapper {
+    width: 115px;
+    height: 115px;
+    background: #FFFFFF;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    font-size: 23px;
-    font-weight: 800;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    margin-bottom: 12px;
+    padding: 6px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.btn-operador-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 14px;
+    display: block;
+}
+
+.btn-operador-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 24px;
+    font-weight: 900;
     color: #FFFFFF;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    box-sizing: border-box;
-    padding: 12px 18px;
+    text-align: center;
+    line-height: 1.2;
 }
 
-@media (max-height: 720px) {
-    .card-acao-moldura {
-        height: 170px;
+@media (max-width: 380px) {
+    .btn-operador-label {
+        font-size: 20px;
+        gap: 8px;
     }
-    .card-acao-moldura img {
-        height: 155px;
+    .btn-operador-icone-wrapper {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 8px;
     }
-    .card-acao-btn {
-        min-height: 80px;
-        font-size: 23px;
+    .btn-operador-img {
+        width: 85px;
+        height: 85px;
     }
-}
-
-@media (max-width: 400px) {
-    .card-acao-btn {
-        font-size: 22px;
-        gap: 10px;
+    .brand-repack-badge h1 {
+        font-size: 24px;
+        letter-spacing: 2px;
     }
-}
-
-.card-acao-btn-bo {
-    background-color: #2563EB;
-}
-
-.card-acao-btn-bo:active {
-    background-color: #1D4ED8;
-}
-
-.card-acao-btn-producao {
-    background-color: #059669;
-}
-
-.card-acao-btn-producao:active {
-    background-color: #047857;
 }
 
 /* Botões com Imagem Ilustrativa (Operador / Bancada) */
