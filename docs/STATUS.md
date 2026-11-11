@@ -301,6 +301,12 @@
     - Ampliação máxima dos ícones ilustrativos nos botões (`clamp(140px, 23vh, 220px)`) com imagens preenchendo 95% do espaço interno.
     - Ampliação adicional das fontes dos botões de ação para `clamp(30px, 6.8vw, 48px)` com ícones vetoriais de `48px`.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-029 (11/11/2026):** Super Ampliação dos Ícones Ilustrativos da Home.
+    - Ampliação adicional dos 2 ícones ilustrativos (`.btn-operador-icone-wrapper`):
+      - Escala aumentada para `clamp(170px, 28vh, 260px)`.
+      - Preenchimento interno das imagens aumentado para 100% da moldura branca com bordas arredondadas de 30px e redução de padding interno para 6px.
+      - Compactação de espaçamentos verticais para maximizar a área ocupada pelas ilustrações sem provocar rolagem na tela.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
