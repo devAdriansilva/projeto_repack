@@ -14,7 +14,7 @@ declare(strict_types=1);
     </div>
 </footer>
 
-<script src="/assets/js/bootstrap.bundle.min.js"></script>
+<script src="<?= APP_URL ?>/assets/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

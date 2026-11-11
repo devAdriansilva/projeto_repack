@@ -13,7 +13,7 @@ $nomeGestor = $_SESSION['nome'] ?? 'Coordenadora';
 $matriculaGestor = $_SESSION['matricula'] ?? 'GESTÃO';
 $csrfToken = AuthController::gerarCsrfToken();
 $rotaAtual = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '';
-if (strpos($rotaAtual, APP_URL) === 0) {
+if (APP_URL !== '' && strpos($rotaAtual, APP_URL) === 0) {
     $rotaAtual = substr($rotaAtual, strlen(APP_URL));
 }
 $rotaAtual = '/' . trim($rotaAtual, '/');
@@ -25,8 +25,8 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= sanitize_html($pageTitle ?? 'Gestão - ' . APP_NAME) ?></title>
     
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/urna.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/urna.css">
     
     <style>
         :root {
@@ -199,7 +199,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 <!-- Barra de Navegação Superior da Gestão -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-gestao">
     <div class="container-fluid px-0">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="/gestao/dashboard">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="<?= APP_URL ?>/gestao/dashboard">
             <span style="display: inline-block; width: 14px; height: 14px; background: var(--gestao-primary); border-radius: 3px;"></span>
             <strong>Repack Gestão</strong>
         </a>
@@ -211,37 +211,37 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
         <div class="collapse navbar-collapse" id="navGestao">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
                 <li class="nav-item">
-                    <a class="nav-link <?= ($rotaAtual === '/gestao/dashboard' || $rotaAtual === '/gestao') ? 'active' : '' ?>" href="/gestao/dashboard">
+                    <a class="nav-link <?= ($rotaAtual === '/gestao/dashboard' || $rotaAtual === '/gestao') ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/dashboard">
                         📊 Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/produtos') === 0 ? 'active' : '' ?>" href="/gestao/produtos">
+                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/produtos') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/produtos">
                         📦 Produtos
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/lotes') === 0 ? 'active' : '' ?>" href="/gestao/lotes">
+                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/lotes') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/lotes">
                         🏷️ Lotes de Venda
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/estoque') === 0 ? 'active' : '' ?>" href="/gestao/estoque">
+                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/estoque') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/estoque">
                         🏪 Estoque & Reservas
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/bo') === 0 ? 'active' : '' ?>" href="/gestao/bo">
+                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/bo') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/bo">
                         📋 Correção de B.O.
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/separacao') === 0 ? 'active' : '' ?>" href="/gestao/separacao">
+                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/separacao') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/separacao">
                         📝 Separação
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/relatorios') === 0 ? 'active' : '' ?>" href="/gestao/relatorios">
+                    <a class="nav-link <?= strpos($rotaAtual, '/gestao/relatorios') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/relatorios">
                         📈 Relatórios
                     </a>
                 </li>
@@ -252,11 +252,11 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                     👤 <strong><?= sanitize_html($nomeGestor) ?></strong> (<?= sanitize_html($matriculaGestor) ?>)
                 </span>
                 
-                <a href="/" class="btn btn-sm btn-outline-light" title="Retornar à interface da Urna Eletrônica">
+                <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm btn-outline-light" title="Retornar à interface da Urna Eletrônica">
                     ← Quiosque
                 </a>
 
-                <a href="/gestao/logout" class="btn btn-sm btn-danger" title="Encerrar sessão administrativa">
+                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger" title="Encerrar sessão administrativa">
                     Sair
                 </a>
             </div>

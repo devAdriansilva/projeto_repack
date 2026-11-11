@@ -15,10 +15,12 @@ declare(strict_types=1);
     </div>
 </footer>
 
-<script src="/assets/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/js/touch-handler.js"></script>
+<script src="<?= APP_URL ?>/assets/js/bootstrap.bundle.min.js"></script>
+<script src="<?= APP_URL ?>/assets/js/touch-handler.js"></script>
 
 <script>
+const BASE_APP_URL = '<?= APP_URL ?>';
+
 // Utilitário para adicionar produto via AJAX na Vitrine
 function adicionarAoCarrinho(produtoId, btnElement) {
     if (!produtoId) return;
@@ -30,7 +32,7 @@ function adicionarAoCarrinho(produtoId, btnElement) {
         <span style="font-size: 16px;">Reservando...</span>
     `;
 
-    fetch('/api/carrinho/adicionar', {
+    fetch(BASE_APP_URL + '/api/carrinho/adicionar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ produto_id: produtoId, quantidade: 1 })

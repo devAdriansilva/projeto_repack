@@ -1,8 +1,8 @@
 # STATUS DO PROJETO
 
 ## Estado Atual
-- **Fase Atual:** Fase 5 - Lista de Separação, Relatórios e Testes Integrados (Concluída e Validada)
-- **Status Geral:** Sistema Repack 100% construído, integrado e validado. Todas as 5 fases foram finalizadas e atendem integralmente aos requisitos de arquitetura, segurança e design da "Urna Eletrônica". Todos os 9 critérios de aceitação técnica e funcional do `docs/FSD.md` foram checados e aprovados via testes automatizados (35/35 testes com sucesso). A lista de separação física no galpão (`/gestao/separacao`) com agrupamento por colaborador, caixas de checagem física, atualização em tempo real de status do pedido e comprovante com linhas de assinatura manual para prancheta impressa está plenamente funcional; o `RelatorioController` (`/gestao/relatorios`) gera o Relatório Sintético de Movimentação de Repack (avarias recuperadas para a lojinha vs perdas em descarte) e o Extrato Analítico de Produtividade da Equipe (pacotes montados por hora por operador e tempo médio de ciclo por produto), ambos com suporte a exportação CSV (BOM UTF-8) e impressão em alta definição.
+- **Fase Atual:** Sistema em Produção (Modo Manutenção e Evolução Contínua)
+- **Status Geral:** Sistema Repack 100% construído, testado, auditado em segurança, documentado e implantado com sucesso no ambiente de produção (Alwaysdata - PHP 8.2, Apache e MySQL). O banco de dados foi migrado via CLI, as 13 tabelas relacionais foram criadas e a aplicação está online e operacional em `https://repack.financas-facil-atelie.alwaysdata.net`. O repositório permanece sob governança estrita de Modo Manutenção em `AGENTS.md`.
 
 ---
 
@@ -52,7 +52,7 @@
   - [x] Layouts da Lojinha: `app/views/layouts/lojinha_header.php` e `app/views/layouts/lojinha_footer.php` (badge de identificação de setor, contador dinâmico de sacola e atalho de saída)
   - [x] View Identificação: `app/views/lojinha/login.php` (entrada rápida por matrícula corporativa e verificação de lotes abertos para o setor)
   - [x] View Vitrine: `app/views/lojinha/vitrine.php` (banner de vigência e cota do lote, cards de produtos com fotos e botões de 80px)
-  - [x] View Sacola: `app/views/lojinha/carrinho.php` (cronômetro regressivo da reserva de 10 minutos, listagem com remoção e botão 80px "Finalizar Pedido")
+  - [x] View Sacola: `app/views/lojinha/carrinho.php` (cronômometro regressivo da reserva de 10 minutos, listagem com remoção e botão 80px "Finalizar Pedido")
   - [x] View Comprovante: `app/views/lojinha/sucesso.php` (código de retirada em destaque `headline-xl` 32px, tabela de itens e instruções de galpão)
   - [x] Roteador Central Atualizado: `public/index.php` (rotas `/lojinha/*` e endpoints `/api/carrinho/*` e `/api/estoque/saldo` integrados)
 - [x] **Fase 5: Lista de Separação, Relatórios e Testes Integrados (Testada e Validada)**
@@ -66,8 +66,38 @@
   - [x] Layout Gestão Atualizado: `app/views/layouts/gestao_header.php` (links diretos para Separação e Relatórios)
   - [x] Roteador Central Atualizado: `public/index.php` (rotas `/gestao/separacao*` e `/gestao/relatorios*` integradas)
   - [x] Testes Integrados Automatizados: `tests/test_fase5.php` e `tests/test_router.php` (35 asserções validadas cobrindo integralmente os 9 critérios de aceitação do `docs/FSD.md` Seção 26)
+- [x] **Revisão de Segurança e Mitigação de Vulnerabilidades (Auditoria Concluída e Aprovada)**
+  - [x] Proteção Web Server (.htaccess): Bloqueio rigoroso de acesso web direto às pastas `app/`, `database/`, `logs/`, `tests/` e arquivos ocultos; desativação de engine PHP em `public/uploads/` para prevenção de execução de scripts arbitrários.
+  - [x] Proteção CSRF na Lojinha: Adição e validação estrita de tokens CSRF em checkout, remoção e esvaziamento de carrinho (`app/controllers/LojinhaController.php` e `app/views/lojinha/carrinho.php`).
+  - [x] Prevenção de Information Disclosure: Ocultação de traces e mensagens brutas de exceções de banco de dados em endpoints de API (`/api/health`, `/api/bo/*`, `/api/produtividade/*`).
+  - [x] Proteção de Scripts CLI: Bloqueio contra execução HTTP em `tests/test_fase5.php` e `tests/test_router.php`.
+  - [x] Hardening de Sessão: Configuração dinâmica de `session.cookie_secure` em ambientes HTTPS além de `HttpOnly`, `SameSite=Strict` e `gc_maxlifetime`.
+  - [x] Integridade de Rotas e Subdiretórios: Parametrização consistente de `APP_URL` em layouts e formulários da Lojinha e Gestão.
+- [x] **Documentação de Manutenção e Governança Contínua (Concluída e Ativa)**
+  - [x] Criação de `docs/MANUTENCAO.md` (manual técnico detalhado com visão geral, stack, passos locais, mapa de pastas, banco de dados, fluxos de autenticação, extensão do sistema e diretrizes de segurança).
+  - [x] Criação de `docs/COMO-PEDIR-MUDANCAS.md` (modelos padronizados de prompts para novas features, novos campos, relatórios, correções de bugs e ajustes de interface).
+  - [x] Atualização de `AGENTS.md` para o Modo Manutenção com proibição estrita de reescritas totais e leitura obrigatória dos novos manuais.
+  - [x] Modo Manutenção formalmente ativo e registrado.
+- [x] **Preparação, Orquestração e Conclusão de Deploy (Alwaysdata / Produção)**
+  - [x] Criação de `deploy-exclude.txt` aplicando a Regra de Ouro (isolamento de `docs/`, `tests/`, `.git/`, `.env`, dumps e logs locais).
+  - [x] Parametrização dinâmica de banco e URLs em `app/config/config.php` via variáveis de ambiente com fallback retrocompatível.
+  - [x] Criação da automação de CI/CD em `.github/workflows/deploy.yml` (testes automatizados, rsync seguro via SSH, migrations CLI e permissões).
+  - [x] Criação do script de deploy alternativo via CLI em `scripts/deploy_alwaysdata.sh`.
+  - [x] Guia passo a passo de configuração na Alwaysdata documentado.
+  - [x] Execução e homologação do deploy em produção concluída com sucesso em 10/11/2026.
+  - [x] Banco de dados migrado via CLI (`001_create_tables.sql` e `002_seed_initial_data.sql`) com integridade referencial.
+  - [x] Aplicação online, segura e operacional em `https://repack.financas-facil-atelie.alwaysdata.net`.
+
+- [x] **Manutenção e Evolução Contínua (Registro de Intervenções)**
+  - [x] **MANUT-001 (10/11/2026):** Resolução do carregamento de assets estáticos (CSS/JS) e roteamento de páginas adicionais.
+    - Implementação de auto-detecção dinâmica de `APP_URL` em `app/config/config.php` (compatível com raiz `/`, subpastas, localhost e Alwaysdata).
+    - Normalização do Front Controller em `public/index.php` para suporte a múltiplos contextos de roteamento.
+    - Proteção inline anti-FOUC em `app/views/layouts/header.php` para impedir vazamento visual de modais.
+    - Sincronização de todos os scripts, chamadas fetch assíncronas e links de layouts com `APP_URL`.
+    - Adição de barra de navegação rápida na Urna (`app/views/operador/home.php`) facilitando acesso direto à Lojinha de Saldos e ao Painel de Gestão.
+    - Catalogação da falha e contramedida em `docs/ERROS.md` (ERR-004) e validação da suíte de 35 testes automatizados com 100% de sucesso.
 
 ---
 
 ## Próximo Passo
-Todas as 5 fases do plano de desenvolvimento incremental foram construídas, integradas e aprovadas com sucesso absoluto. O sistema Repack está pronto para homologação e uso em produção.
+Sistema publicado em produção com sucesso. Repositório em Modo de Manutenção e Evolução Contínua para suporte operacional, monitoramento de logs (`logs/app_errors.log`, `logs/security.log`) e atendimento a solicitações de melhorias via `docs/COMO-PEDIR-MUDANCAS.md`.

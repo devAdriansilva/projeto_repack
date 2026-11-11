@@ -79,7 +79,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <!-- Rodapé de Dupla Confirmação -->
 <div class="dupla-confirmacao-rodape" style="max-width: 650px; margin: 24px auto 0 auto;">
-    <a href="/operador/cronometro" class="btn-urna btn-urna-warning">
+    <a href="<?= APP_URL ?>/operador/cronometro" class="btn-urna btn-urna-warning">
         CORRIGIR
     </a>
     <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarProdutividade" onclick="confirmarApontamentoProdutividade()">
@@ -111,7 +111,7 @@ async function confirmarApontamentoProdutividade() {
             localStorage.removeItem('repack_timer_inicio');
             localStorage.removeItem('repack_timer_produto_id');
             localStorage.removeItem('repack_timer_produto_nome');
-            window.location.href = '/operador';
+            window.location.href = BASE_APP_URL + '/operador';
         });
     } catch (err) {
         console.error('Falha ao processar produtividade:', err);

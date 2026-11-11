@@ -58,7 +58,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
             </select>
         </div>
         <div class="col-12 col-md-9 text-end">
-            <a href="/gestao/bo" class="btn btn-outline-secondary me-2">Limpar Filtros</a>
+            <a href="<?= APP_URL ?>/gestao/bo" class="btn btn-outline-secondary me-2">Limpar Filtros</a>
             <button type="submit" class="btn btn-gestao btn-gestao-secondary">
                 🔍 Filtrar Registros
             </button>

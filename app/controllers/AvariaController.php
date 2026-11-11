@@ -67,7 +67,7 @@ class AvariaController
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Erro interno ao processar apontamento de B.O.',
-                'error' => $e->getMessage()
+                'error' => (defined('APP_ENV') && APP_ENV === 'development') ? $e->getMessage() : 'Erro interno.'
             ], JSON_UNESCAPED_UNICODE);
         }
     }
@@ -102,7 +102,7 @@ class AvariaController
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Falha na sincronização em lote de B.O.s.',
-                'error' => $e->getMessage()
+                'error' => (defined('APP_ENV') && APP_ENV === 'development') ? $e->getMessage() : 'Erro interno.'
             ], JSON_UNESCAPED_UNICODE);
         }
     }

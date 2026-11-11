@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/AuthController.php';
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../models/LoteVenda.php';
 require_once __DIR__ . '/../models/EstoqueLojinha.php';
@@ -28,7 +29,7 @@ class LojinhaController
 
         $colaboradorId = $_SESSION['colaborador_id'] ?? null;
         if (!$colaboradorId) {
-            header('Location: /lojinha/login');
+            header('Location: ' . APP_URL . '/lojinha/login');
             exit;
         }
 
@@ -41,7 +42,7 @@ class LojinhaController
         $lote = LoteVenda::buscarLoteAtivoParaSetor($usuario['setor']);
         if (!$lote) {
             $_SESSION['flash_aviso'] = "O lote de compras para o seu setor ({$usuario['setor']}) foi encerrado ou expirou.";
-            header('Location: /lojinha/login');
+            header('Location: ' . APP_URL . '/lojinha/login');
             exit;
         }
 
@@ -71,7 +72,7 @@ class LojinhaController
         if (!empty($_SESSION['colaborador_id']) && !empty($_SESSION['colaborador_setor'])) {
             $lote = LoteVenda::buscarLoteAtivoParaSetor((string)$_SESSION['colaborador_setor']);
             if ($lote) {
-                header('Location: /lojinha');
+                header('Location: ' . APP_URL . '/lojinha');
                 exit;
             }
         }
@@ -107,7 +108,7 @@ class LojinhaController
                         $_SESSION['colaborador_setor'] = $usuario['setor'];
                         $_SESSION['lojinha_lote_id'] = (int)$lote['id'];
 
-                        header('Location: /lojinha');
+                        header('Location: ' . APP_URL . '/lojinha');
                         exit;
                     }
                 }
@@ -134,7 +135,7 @@ class LojinhaController
             $_SESSION['lojinha_lote_id']
         );
 
-        header('Location: /lojinha/login');
+        header('Location: ' . APP_URL . '/lojinha/login');
         exit;
     }
 
@@ -189,6 +190,7 @@ class LojinhaController
      */
     public function removerItem(): void
     {
+        $this->validarCsrfOuAbortar();
         $auth = $this->exigirColaborador();
         $usuario = $auth['usuario'];
 
@@ -200,7 +202,7 @@ class LojinhaController
             }
         }
 
-        header('Location: /lojinha/carrinho');
+        header('Location: ' . APP_URL . '/lojinha/carrinho');
         exit;
     }
 
@@ -209,6 +211,7 @@ class LojinhaController
      */
     public function esvaziar(): void
     {
+        $this->validarCsrfOuAbortar();
         $auth = $this->exigirColaborador();
         $usuario = $auth['usuario'];
         $lote = $auth['lote'];
@@ -218,7 +221,7 @@ class LojinhaController
             $_SESSION['flash_sucesso'] = "Todos os itens foram liberados da sua sacola.";
         }
 
-        header('Location: /lojinha/carrinho');
+        header('Location: ' . APP_URL . '/lojinha/carrinho');
         exit;
     }
 
@@ -228,12 +231,13 @@ class LojinhaController
      */
     public function checkout(): void
     {
+        $this->validarCsrfOuAbortar();
         $auth = $this->exigirColaborador();
         $usuario = $auth['usuario'];
         $lote = $auth['lote'];
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /lojinha/carrinho');
+            header('Location: ' . APP_URL . '/lojinha/carrinho');
             exit;
         }
 
@@ -244,11 +248,28 @@ class LojinhaController
                 session_id()
             );
 
-            header('Location: /lojinha/sucesso?codigo=' . urlencode($resultado['codigo_pedido']));
+            header('Location: ' . APP_URL . '/lojinha/sucesso?codigo=' . urlencode($resultado['codigo_pedido']));
             exit;
         } catch (\Throwable $e) {
             $_SESSION['flash_erro'] = $e->getMessage();
-            header('Location: /lojinha/carrinho');
+            header('Location: ' . APP_URL . '/lojinha/carrinho');
+            exit;
+        }
+    }
+
+    /**
+     * Valida o token CSRF obrigatório para as operações de carrinho da Lojinha
+     */
+    private function validarCsrfOuAbortar(): void
+    {
+        $token = $_POST['csrf_token'] ?? null;
+        if (!AuthController::validarCsrfToken($token)) {
+            LogSistema::registrar('SECURITY', "Falha de validação CSRF na Lojinha Virtual", [
+                'post' => $_POST,
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
+            ]);
+            $_SESSION['flash_erro'] = "Sessão inválida ou formulário expirado. Tente novamente.";
+            header('Location: ' . APP_URL . '/lojinha/carrinho');
             exit;
         }
     }
@@ -265,13 +286,13 @@ class LojinhaController
 
         $codigo = trim((string)($_GET['codigo'] ?? ''));
         if ($codigo === '') {
-            header('Location: /lojinha');
+            header('Location: ' . APP_URL . '/lojinha');
             exit;
         }
 
         $pedido = Pedido::buscarPorCodigo($codigo);
         if (!$pedido) {
-            header('Location: /lojinha');
+            header('Location: ' . APP_URL . '/lojinha');
             exit;
         }
 

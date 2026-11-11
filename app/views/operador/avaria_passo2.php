@@ -37,7 +37,7 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <!-- 5 Grandes Botões Verticais de Avaria (80px cada) -->
-<form action="/operador/avaria/resumo" method="POST" id="formAvariaPasso2">
+<form action="<?= APP_URL ?>/operador/avaria/resumo" method="POST" id="formAvariaPasso2">
     <input type="hidden" name="tipo_avaria" id="inputTipoAvaria" value="">
 
     <div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
@@ -67,7 +67,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <!-- Botão Voltar -->
     <div style="max-width: 600px; margin: 24px auto 0 auto;">
-        <a href="/operador/avaria/passo1" class="btn-urna btn-urna-outline">
+        <a href="<?= APP_URL ?>/operador/avaria/passo1" class="btn-urna btn-urna-outline">
             ⬅ CORRIGIR PRODUTO / QUANTIDADE
         </a>
     </div>

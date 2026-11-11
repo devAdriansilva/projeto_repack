@@ -57,7 +57,7 @@ class ProdutividadeController
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Erro interno ao processar apontamento de produtividade.',
-                'error' => $e->getMessage()
+                'error' => (defined('APP_ENV') && APP_ENV === 'development') ? $e->getMessage() : 'Erro interno.'
             ], JSON_UNESCAPED_UNICODE);
         }
     }
@@ -92,7 +92,7 @@ class ProdutividadeController
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Falha na sincronização em lote de produtividade.',
-                'error' => $e->getMessage()
+                'error' => (defined('APP_ENV') && APP_ENV === 'development') ? $e->getMessage() : 'Erro interno.'
             ], JSON_UNESCAPED_UNICODE);
         }
     }

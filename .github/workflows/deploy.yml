@@ -1,0 +1,57 @@
+name: Deploy Projeto Repack (Alwaysdata)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test_and_deploy:
+    name: Testar e Publicar na Alwaysdata
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_mysql, mbstring, fileinfo, json, session
+
+      - name: Executar Testes Automatizados de Aceitação
+        run: |
+          php tests/test_fase5.php
+
+      - name: Configurar Chave SSH para Alwaysdata
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.ALWAYSDATA_SSH_KEY }}
+
+      - name: Adicionar Host Alwaysdata ao Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.ALWAYSDATA_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sincronizar Arquivos via rsync (Regra de Ouro)
+        run: |
+          rsync -avz --delete \
+            --exclude-from='deploy-exclude.txt' \
+            ./ ${{ secrets.ALWAYSDATA_USER }}@${{ secrets.ALWAYSDATA_HOST }}:${{ secrets.ALWAYSDATA_PATH }}/
+
+      - name: Executar Migrations e Ajustar Permissões Remotas
+        run: |
+          ssh ${{ secrets.ALWAYSDATA_USER }}@${{ secrets.ALWAYSDATA_HOST }} << 'EOF'
+            cd ${{ secrets.ALWAYSDATA_PATH }}
+            
+            # Garantir existência e permissão das pastas de escrita
+            mkdir -p logs public/uploads/produtos
+            chmod 755 .
+            chmod -R 755 app public database
+            chmod -R 775 logs public/uploads
+            
+            # Executar Migrations do Banco de Dados via CLI
+            php database/migrator.php
+          EOF

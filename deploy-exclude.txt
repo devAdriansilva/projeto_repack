@@ -1,0 +1,45 @@
+# ==============================================================================
+# PROJETO REPACK - REGRA DE OURO DE EXCLUSÕES PARA DEPLOY EM PRODUÇÃO
+# ==============================================================================
+# Este arquivo lista todos os diretórios e arquivos que NUNCA devem ser enviados
+# para o ambiente de produção público (usado com rsync --exclude-from ou scripts de deploy).
+
+# 1. Documentações de Engenharia e Contexto de IA
+docs/
+prompts/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+README.md
+TODO.md
+PRD.md
+DECISOES_TECNICAS.md
+DESIGN.md
+
+# 2. Controle de Versão e CI/CD Interno
+.git/
+.github/
+.gitignore
+.gitattributes
+
+# 3. Scripts de Teste e Validações Locais
+tests/
+scripts/
+
+# 4. Arquivos Sensíveis, Dumps e Migrations SQL Brutas
+.env*
+database/migrations/*.sql
+dumps/
+backups/
+
+# 5. Logs Locais (o servidor em produção criará e gerenciará seus próprios logs)
+logs/*.log
+
+# 6. Arquivos de Sistema Operacional e Editores
+.idea/
+.vscode/
+*.swp
+*~
+Thumbs.db
+.DS_Store
+deploy-exclude.txt

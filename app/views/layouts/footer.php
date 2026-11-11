@@ -8,11 +8,13 @@ declare(strict_types=1);
 ?>
 </main>
 
-<script src="/assets/js/bootstrap.bundle.min.js"></script>
-<script src="/assets/js/touch-handler.js"></script>
-<script src="/assets/js/app-offline.js"></script>
+<script src="<?= APP_URL ?>/assets/js/bootstrap.bundle.min.js"></script>
+<script src="<?= APP_URL ?>/assets/js/touch-handler.js"></script>
+<script src="<?= APP_URL ?>/assets/js/app-offline.js"></script>
 
 <script>
+const BASE_APP_URL = '<?= APP_URL ?>';
+
 // Gerenciamento de Modais do Quiosque
 function abrirModalOperadores() {
     document.getElementById('modalOperadoresBackdrop').classList.add('ativo');
@@ -23,7 +25,7 @@ function fecharModalOperadores() {
 }
 
 function selecionarOperador(id, nome) {
-    fetch('/operador/selecionar-operador', {
+    fetch(BASE_APP_URL + '/operador/selecionar-operador', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ operador_id: id, operador_nome: nome })
@@ -59,13 +61,13 @@ function realizarLoginGestao(event) {
     const senha = document.getElementById('gestao_senha').value;
     const erroDiv = document.getElementById('gestaoLoginErro');
 
-    fetch('/api/gestao/login', {
+    fetch(BASE_APP_URL + '/api/gestao/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ matricula, senha })
     }).then(res => res.json()).then(data => {
         if (data.status === 'success') {
-            window.location.href = '/gestao/dashboard';
+            window.location.href = BASE_APP_URL + '/gestao/dashboard';
         } else {
             erroDiv.innerText = data.message || 'Credenciais inválidas.';
             erroDiv.style.display = 'block';

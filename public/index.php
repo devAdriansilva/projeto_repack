@@ -25,8 +25,13 @@ $requestUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 
 // Remove o prefixo base da URL (ex: /projeto_repack ou /public) se existir
 $basePath = APP_URL;
-if (strpos($requestUri, $basePath) === 0) {
+if ($basePath !== '' && strpos($requestUri, $basePath) === 0) {
     $requestUri = substr($requestUri, strlen($basePath));
+}
+
+// Remove o prefixo /public caso a requisição venha diretamente por ele
+if (strpos($requestUri, '/public') === 0) {
+    $requestUri = substr($requestUri, 7);
 }
 
 // Normaliza a rota
@@ -307,7 +312,7 @@ switch ($route) {
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Falha de conexão com o banco de dados.',
-                'error' => $e->getMessage()
+                'error' => (defined('APP_ENV') && APP_ENV === 'development') ? $e->getMessage() : 'Erro interno do servidor.'
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         }
         break;

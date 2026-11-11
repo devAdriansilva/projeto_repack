@@ -150,7 +150,7 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
         </button>
 
         <?php if (!empty($loteId)): ?>
-            <a href="/gestao/separacao/exportar?lote_id=<?= (int)$loteId ?>" class="btn btn-gestao btn-outline-secondary" title="Exportar para Excel / CSV">
+            <a href="<?= APP_URL ?>/gestao/separacao/exportar?lote_id=<?= (int)$loteId ?>" class="btn btn-gestao btn-outline-secondary" title="Exportar para Excel / CSV">
                 📥 Exportar CSV
             </a>
         <?php endif; ?>
@@ -159,7 +159,7 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
 
 <!-- Barra de Seleção de Lote e Filtros -->
 <div class="separacao-header-card no-print">
-    <form method="GET" action="/gestao/separacao" class="row g-3 align-items-end">
+    <form method="GET" action="<?= APP_URL ?>/gestao/separacao" class="row g-3 align-items-end">
         <div class="col-md-5">
             <label for="lote_id" class="form-label fw-bold">Selecione o Lote de Venda:</label>
             <select name="lote_id" id="lote_id" class="form-select form-select-lg" onchange="this.form.submit()">
@@ -189,7 +189,7 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
             <button type="submit" class="btn btn-gestao btn-gestao-primary w-100 justify-content-center">
                 🔍 Filtrar
             </button>
-            <a href="/gestao/separacao" class="btn btn-outline-secondary">Limpar</a>
+            <a href="<?= APP_URL ?>/gestao/separacao" class="btn btn-outline-secondary">Limpar</a>
         </div>
     </form>
 </div>

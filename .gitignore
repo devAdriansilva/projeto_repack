@@ -44,6 +44,7 @@ public/uploads/**
 !public/uploads/
 !public/uploads/**/
 !public/uploads/**/.gitkeep
+!public/uploads/**/.htaccess
 
 # Dumps e Backups de Banco de Dados
 *.sql.gz

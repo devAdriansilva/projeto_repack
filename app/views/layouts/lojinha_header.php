@@ -19,8 +19,8 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
     <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle ?? 'Lojinha dos Colaboradores - Repack') ?></title>
     
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/urna.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/urna.css">
     <style>
         .lojinha-navbar {
             background-color: #FFFFFF;
@@ -212,7 +212,7 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
 <?php if (!empty($nomeColab)): ?>
 <!-- Barra de Navegação Superior da Lojinha -->
 <nav class="lojinha-navbar">
-    <a href="/lojinha" class="lojinha-brand">
+    <a href="<?= APP_URL ?>/lojinha" class="lojinha-brand">
         <span class="lojinha-brand-badge">Repack</span>
         <h1 class="lojinha-brand-title">Lojinha dos Colaboradores</h1>
     </a>
@@ -223,7 +223,7 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             <span>Setor: <?= sanitize_html($setorColab) ?> (<?= sanitize_html($matriculaColab) ?>)</span>
         </div>
 
-        <a href="/lojinha/carrinho" class="btn-sacola-header" aria-label="Minha Sacola">
+        <a href="<?= APP_URL ?>/lojinha/carrinho" class="btn-sacola-header" aria-label="Minha Sacola">
             <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12zm-7-8c-1.66 0-3-1.34-3-3H7c0 2.76 2.24 5 5 5s5-2.24 5-5h-2c0 1.66-1.34 3-3 3z"/>
             </svg>
@@ -231,7 +231,7 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             <span class="sacola-counter" id="headerCarrinhoContador"><?= (int)$itensCarrinhoCount ?></span>
         </a>
 
-        <a href="/lojinha/logout" class="btn-sair-header" title="Sair da Lojinha">
+        <a href="<?= APP_URL ?>/lojinha/logout" class="btn-sair-header" title="Sair da Lojinha">
             Sair
         </a>
     </div>

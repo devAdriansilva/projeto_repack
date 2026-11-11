@@ -73,7 +73,7 @@ require_once __DIR__ . '/../layouts/header.php';
 <div style="max-width: 650px; margin: 24px auto 0 auto;">
     <!-- Estado Inicial: Botão INICIAR -->
     <div id="controlesInicio" style="display: flex; gap: 16px;">
-        <a href="/operador" class="btn-urna btn-urna-warning" style="flex: 1;">
+        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="flex: 1;">
             CANCELAR
         </a>
         <button type="button" class="btn-urna btn-urna-secondary" style="flex: 2;" onclick="iniciarCronometro()">
@@ -191,7 +191,7 @@ function avancarParaResumo() {
     // Salva na sessão via form POST dinâmico
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = '/operador/cronometro/resumo';
+    form.action = BASE_APP_URL + '/operador/cronometro/resumo';
 
     const campos = {
         produto_id: produtoIdSelecionado,

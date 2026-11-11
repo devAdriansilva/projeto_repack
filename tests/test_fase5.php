@@ -1,6 +1,13 @@
 <?php
 declare(strict_types=1);
 
+// Bloqueio rigoroso contra requisições web (apenas CLI permitido)
+if (php_sapi_name() !== 'cli') {
+    http_response_code(403);
+    echo "Acesso negado. Este script deve ser executado exclusivamente via CLI.\n";
+    exit(1);
+}
+
 /**
  * Projeto Repack - Script de Testes Integrados da Fase 5
  * Validação rigorosa dos 9 Critérios de Aceitação Técnica e Funcional (docs/FSD.md Seção 26)

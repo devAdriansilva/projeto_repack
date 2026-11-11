@@ -1,0 +1,18 @@
+# ==============================================================
+# Projeto Repack - Configuração de Segurança e Roteamento Raiz
+# ==============================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloqueio de arquivos ocultos e arquivos sensíveis de configuração
+    RewriteRule (^|/)\.(?!well-known) - [F]
+    RewriteRule ^(app|database|logs|docs|tests)/ - [F,L]
+
+    # Redireciona requisições para a pasta public se apontado para a raiz
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Desativa listagem de diretórios
+Options -Indexes

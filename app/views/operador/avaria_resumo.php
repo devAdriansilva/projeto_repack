@@ -79,7 +79,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <!-- Rodapé de Dupla Confirmação da Urna Eletrônica -->
 <div class="dupla-confirmacao-rodape" style="max-width: 650px; margin: 24px auto 0 auto;">
-    <a href="/operador/avaria/passo2" class="btn-urna btn-urna-warning">
+    <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning">
         CORRIGIR
     </a>
     <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarBO" onclick="confirmarApontamentoBO()">
@@ -107,7 +107,7 @@ async function confirmarApontamentoBO() {
     try {
         const resultado = await RepackOffline.salvarBO(payload);
         exibirSucessoFeedback("B.O. GRAVADO COM SUCESSO!", "Retornando à tela inicial...", () => {
-            window.location.href = '/operador';
+            window.location.href = BASE_APP_URL + '/operador';
         });
     } catch (err) {
         console.error('Falha ao processar B.O.:', err);

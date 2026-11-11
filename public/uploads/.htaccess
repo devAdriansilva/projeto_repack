@@ -1,0 +1,27 @@
+# ==============================================================
+# Projeto Repack - Proteção da Pasta de Uploads
+# Impede a execução de qualquer script no diretório de arquivos
+# ==============================================================
+
+Options -Indexes -ExecCGI
+
+# Desativa engine PHP no diretório de uploads
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Bloqueia qualquer arquivo executável por extensão
+<FilesMatch "(?i)\.(php|phtml|php3|php4|php5|php7|php8|phps|pht|pl|py|cgi|asp|aspx|sh|bash|exe|dll)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>

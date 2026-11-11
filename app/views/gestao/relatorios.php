@@ -117,12 +117,12 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                 <li>
-                    <a class="dropdown-item" href="/gestao/relatorios/exportar?tipo=bo&data_inicio=<?= urlencode($dataInicio) ?>&data_fim=<?= urlencode($dataFim) ?>">
+                    <a class="dropdown-item" href="<?= APP_URL ?>/gestao/relatorios/exportar?tipo=bo&data_inicio=<?= urlencode($dataInicio) ?>&data_fim=<?= urlencode($dataFim) ?>">
                         📦 Movimentação de Repack (B.O.)
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="/gestao/relatorios/exportar?tipo=produtividade&data_inicio=<?= urlencode($dataInicio) ?>&data_fim=<?= urlencode($dataFim) ?>">
+                    <a class="dropdown-item" href="<?= APP_URL ?>/gestao/relatorios/exportar?tipo=produtividade&data_inicio=<?= urlencode($dataInicio) ?>&data_fim=<?= urlencode($dataFim) ?>">
                         ⏱️ Produtividade da Equipe
                     </a>
                 </li>
@@ -133,7 +133,7 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
 
 <!-- Filtro de Período -->
 <div class="relatorio-header-card no-print">
-    <form method="GET" action="/gestao/relatorios" class="row g-3 align-items-end">
+    <form method="GET" action="<?= APP_URL ?>/gestao/relatorios" class="row g-3 align-items-end">
         <input type="hidden" name="filtrar" value="1">
         <div class="col-md-3">
             <label for="data_inicio" class="form-label fw-bold">Data Início:</label>
@@ -153,10 +153,10 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
 
         <div class="col-md-3 text-md-end">
             <div class="btn-group btn-group-sm" role="group">
-                <a href="/gestao/relatorios?data_inicio=<?= date('Y-m-d') ?>&data_fim=<?= date('Y-m-d') ?>&filtrar=1" class="btn btn-outline-secondary">Hoje</a>
-                <a href="/gestao/relatorios?data_inicio=<?= date('Y-m-d', strtotime('-7 days')) ?>&data_fim=<?= date('Y-m-d') ?>&filtrar=1" class="btn btn-outline-secondary">7 Dias</a>
-                <a href="/gestao/relatorios?data_inicio=<?= date('Y-m-01') ?>&data_fim=<?= date('Y-m-t') ?>&filtrar=1" class="btn btn-outline-secondary">Este Mês</a>
-                <a href="/gestao/relatorios?data_inicio=&data_fim=&filtrar=1" class="btn btn-outline-secondary">Tudo</a>
+                <a href="<?= APP_URL ?>/gestao/relatorios?data_inicio=<?= date('Y-m-d') ?>&data_fim=<?= date('Y-m-d') ?>&filtrar=1" class="btn btn-outline-secondary">Hoje</a>
+                <a href="<?= APP_URL ?>/gestao/relatorios?data_inicio=<?= date('Y-m-d', strtotime('-7 days')) ?>&data_fim=<?= date('Y-m-d') ?>&filtrar=1" class="btn btn-outline-secondary">7 Dias</a>
+                <a href="<?= APP_URL ?>/gestao/relatorios?data_inicio=<?= date('Y-m-01') ?>&data_fim=<?= date('Y-m-t') ?>&filtrar=1" class="btn btn-outline-secondary">Este Mês</a>
+                <a href="<?= APP_URL ?>/gestao/relatorios?data_inicio=&data_fim=&filtrar=1" class="btn btn-outline-secondary">Tudo</a>
             </div>
         </div>
     </form>

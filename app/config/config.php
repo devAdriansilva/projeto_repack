@@ -16,18 +16,33 @@ define('PUBLIC_PATH', ROOT_PATH . '/public');
 define('LOGS_PATH', ROOT_PATH . '/logs');
 define('PATH_UPLOADS', PUBLIC_PATH . '/uploads/produtos');
 
-// Configurações de Conexão com o Banco de Dados MySQL
-define('DB_HOST', '127.0.0.1');
-define('DB_PORT', '3306');
-define('DB_NAME', 'repack_db');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+// Configurações de Conexão com o Banco de Dados MySQL (suporte a variáveis de ambiente ou fallback local)
+define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
+define('DB_PORT', getenv('DB_PORT') ?: '3306');
+define('DB_NAME', getenv('DB_NAME') ?: 'repack_db');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
 define('DB_CHARSET', 'utf8mb4');
 
 // Configurações da Aplicação e Regras de Negócio
 define('APP_NAME', 'Projeto Repack');
-define('APP_ENV', 'development'); // 'development' ou 'production'
-define('APP_URL', '/projeto_repack');
+define('APP_ENV', getenv('APP_ENV') ?: 'development'); // 'development' ou 'production'
+
+// Auto-detecção inteligente de APP_URL (suporta raiz '/', Alwaysdata, localhost e subpastas)
+if (!defined('APP_URL')) {
+    $envUrl = getenv('APP_URL');
+    if ($envUrl !== false && $envUrl !== '') {
+        define('APP_URL', rtrim($envUrl, '/'));
+    } elseif (php_sapi_name() === 'cli') {
+        define('APP_URL', '');
+    } else {
+        $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+        $scriptDir = dirname($scriptName);
+        $baseDir = preg_replace('#/public$#', '', $scriptDir);
+        $baseDir = ($baseDir === '/' || $baseDir === '\\' || $baseDir === '.') ? '' : rtrim($baseDir, '/');
+        define('APP_URL', $baseDir);
+    }
+}
 define('CARRINHO_TIMEOUT_MINUTOS', 10);
 define('GESTAO_SESSION_TIMEOUT_MINUTOS', 30);
 
@@ -45,6 +60,11 @@ if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.use_only_cookies', '1');
     ini_set('session.cookie_samesite', 'Strict');
     
+    // Configura flag secure caso a conexão seja HTTPS
+    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+        ini_set('session.cookie_secure', '1');
+    }
+
     // Configura tempo limite de vida da sessão
     ini_set('session.gc_maxlifetime', (string)(GESTAO_SESSION_TIMEOUT_MINUTOS * 60));
 }

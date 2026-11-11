@@ -16,8 +16,8 @@ $pageTitle = 'Acesso à Lojinha dos Colaboradores - Repack';
     <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle) ?></title>
     
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/urna.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/urna.css">
 </head>
 <body style="background-color: #F3F4F6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
 
@@ -92,14 +92,14 @@ $pageTitle = 'Acesso à Lojinha dos Colaboradores - Repack';
         </form>
 
         <div class="text-center mt-4 pt-3" style="border-top: 1px solid #E5E7EB;">
-            <a href="/operador" class="text-decoration-none text-muted" style="font-weight: 600; font-size: 15px;">
+            <a href="<?= APP_URL ?: '/' ?>" class="text-decoration-none text-muted" style="font-weight: 600; font-size: 15px;">
                 ← Voltar à Urna Eletrônica do Repack
             </a>
         </div>
     </div>
 </div>
 
-<script src="/assets/js/touch-handler.js"></script>
+<script src="<?= APP_URL ?>/assets/js/touch-handler.js"></script>
 <script>
 document.getElementById('formLoginLojinha').addEventListener('submit', function() {
     const btn = document.getElementById('btnAcessarLojinha');

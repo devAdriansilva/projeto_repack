@@ -59,7 +59,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                 Você possui <strong><?= (int)$resumo['itens_carrinho'] ?> item(ns)</strong> na sacola com reserva garantida temporariamente.
             </span>
         </div>
-        <a href="/lojinha/carrinho" class="btn btn-warning" style="font-weight: 700; border-radius: 10px; padding: 10px 20px;">
+        <a href="<?= APP_URL ?>/lojinha/carrinho" class="btn btn-warning" style="font-weight: 700; border-radius: 10px; padding: 10px 20px;">
             Ver Sacola e Finalizar →
         </a>
     </div>

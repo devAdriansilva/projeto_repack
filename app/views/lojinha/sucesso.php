@@ -132,7 +132,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                     Imprimir Comprovante
                 </button>
 
-                <a href="/lojinha" class="btn-urna btn-urna-primary d-inline-flex align-items-center justify-content-center" style="height: 64px; padding: 0 32px; font-size: 20px; text-decoration: none; border-radius: 12px;">
+                <a href="<?= APP_URL ?>/lojinha" class="btn-urna btn-urna-primary d-inline-flex align-items-center justify-content-center" style="height: 64px; padding: 0 32px; font-size: 20px; text-decoration: none; border-radius: 12px;">
                     <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="me-2">
                         <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
                     </svg>

@@ -24,7 +24,7 @@ require_once __DIR__ . '/../layouts/header.php';
     <p class="body-md" style="color: var(--on-surface-muted);">Toque no produto avariado e ajuste as unidades</p>
 </div>
 
-<form action="/operador/avaria/passo2" method="POST" id="formAvariaPasso1">
+<form action="<?= APP_URL ?>/operador/avaria/passo2" method="POST" id="formAvariaPasso1">
     <input type="hidden" name="produto_id" id="inputProdutoId" value="<?= $produtoSelecionadoId ?>">
     <input type="hidden" name="quantidade" id="inputQuantidade" value="<?= $quantidadeInicial ?>">
 
@@ -60,7 +60,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <!-- Botões de Ação do Rodapé -->
     <div class="dupla-confirmacao-rodape">
-        <a href="/operador" class="btn-urna btn-urna-warning">
+        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning">
             CANCELAR
         </a>
         <button type="submit" class="btn-urna btn-urna-primary">

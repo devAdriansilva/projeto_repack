@@ -15,10 +15,10 @@ require __DIR__ . '/../layouts/gestao_header.php';
         <p class="body-md text-muted mb-0">Visão panorâmica de avarias, estoques da lojinha e produtividade do repack.</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="/gestao/bo" class="btn btn-gestao btn-gestao-secondary">
+        <a href="<?= APP_URL ?>/gestao/bo" class="btn btn-gestao btn-gestao-secondary">
             📋 Retificar B.O.
         </a>
-        <a href="/gestao/lotes" class="btn btn-gestao btn-gestao-primary">
+        <a href="<?= APP_URL ?>/gestao/lotes" class="btn btn-gestao btn-gestao-primary">
             🏷️ Gerenciar Lotes
         </a>
     </div>
@@ -89,7 +89,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
         <div class="card-gestao">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="headline-lg mb-0" style="font-size: 20px;">Últimos Apontamentos de B.O.</h2>
-                <a href="/gestao/bo" class="small fw-bold text-decoration-none">Ver todos com filtros →</a>
+                <a href="<?= APP_URL ?>/gestao/bo" class="small fw-bold text-decoration-none">Ver todos com filtros →</a>
             </div>
 
             <?php if (empty($ultimosBOs)): ?>
@@ -153,7 +153,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                 </span>
             </div>
             <div class="mt-3 text-end">
-                <a href="/gestao/lotes" class="btn btn-sm btn-outline-secondary">Configurar Lotes →</a>
+                <a href="<?= APP_URL ?>/gestao/lotes" class="btn btn-sm btn-outline-secondary">Configurar Lotes →</a>
             </div>
         </div>
 
@@ -178,7 +178,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                 </ul>
             <?php endif; ?>
             <div class="mt-3 text-end">
-                <a href="/gestao/estoque" class="btn btn-sm btn-outline-secondary">Gerenciar Reservas →</a>
+                <a href="<?= APP_URL ?>/gestao/estoque" class="btn btn-sm btn-outline-secondary">Gerenciar Reservas →</a>
             </div>
         </div>
     </div>

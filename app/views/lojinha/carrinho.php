@@ -7,6 +7,7 @@ declare(strict_types=1);
  */
 
 $pageTitle = 'Minha Sacola - Lojinha dos Colaboradores';
+$csrfToken = AuthController::gerarCsrfToken();
 require __DIR__ . '/../layouts/lojinha_header.php';
 
 $totalItensCarrinho = 0;
@@ -22,7 +23,7 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
         <p class="body-md text-muted mb-0">Confira seus itens reservados antes de finalizar o pedido</p>
     </div>
 
-    <a href="/lojinha" class="btn btn-outline-secondary" style="font-weight: 700; border-radius: 12px; padding: 12px 20px;">
+    <a href="<?= APP_URL ?>/lojinha" class="btn btn-outline-secondary" style="font-weight: 700; border-radius: 12px; padding: 12px 20px;">
         ← Continuar Escolhendo
     </a>
 </div>
@@ -51,7 +52,7 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
         </div>
         <h3 class="headline-lg text-muted mb-2">Sua sacola está vazia</h3>
         <p class="body-md text-secondary mb-4">Você ainda não reservou nenhum produto deste lote ou o tempo de reserva expirou.</p>
-        <a href="/lojinha" class="btn-urna btn-urna-secondary d-inline-flex" style="height: 80px; padding: 0 40px; font-size: 22px; text-decoration: none;">
+        <a href="<?= APP_URL ?>/lojinha" class="btn-urna btn-urna-secondary d-inline-flex" style="height: 80px; padding: 0 40px; font-size: 22px; text-decoration: none;">
             <span>Explorar Vitrine de Produtos</span>
         </a>
     </div>
@@ -110,7 +111,8 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                                     <?= (int)$item['quantidade'] ?> un
                                 </div>
 
-                                <form method="POST" action="/lojinha/carrinho/remover" onsubmit="return confirm('Deseja liberar este item da sua sacola?');">
+                                <form method="POST" action="<?= APP_URL ?>/lojinha/carrinho/remover" onsubmit="return confirm('Deseja liberar este item da sua sacola?');">
+                                    <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                     <input type="hidden" name="carrinho_id" value="<?= (int)$item['carrinho_id'] ?>">
                                     <button type="submit" class="btn btn-outline-danger" title="Remover item da sacola" style="border-radius: 8px; padding: 8px 12px;">
                                         <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
@@ -124,15 +126,12 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                 </div>
 
                 <div class="p-3 bg-light d-flex justify-content-between align-items-center border-top">
-                    <form method="POST" action="/lojinha/carrinho/esvaziar" onsubmit="return confirm('Tem certeza que deseja liberar todos os itens da sua reserva?');">
+                    <form method="POST" action="<?= APP_URL ?>/lojinha/carrinho/esvaziar" onsubmit="return confirm('Tem certeza que deseja liberar todos os itens da sua reserva?');">
+                        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                         <button type="submit" class="btn btn-link text-danger text-decoration-none" style="font-weight: 600; font-size: 14px;">
                             Esvaziar toda a sacola
                         </button>
                     </form>
-
-                    <div style="font-size: 18px; font-weight: 700; color: #111827;">
-                        Total na sacola: <span class="badge bg-primary" style="font-size: 18px;"><?= $totalItensCarrinho ?> itens</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -162,7 +161,8 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                 </div>
 
                 <!-- Formulário de Finalização Transacional (Checkout) -->
-                <form method="POST" action="/lojinha/checkout" id="formCheckout">
+                <form method="POST" action="<?= APP_URL ?>/lojinha/checkout" id="formCheckout">
+                    <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                     <!-- Botão Confirmar Gigante (80px - Verde Primary) -->
                     <button type="submit" 
                             class="btn-urna btn-urna-primary w-100" 
@@ -176,7 +176,7 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                 </form>
 
                 <div class="text-center mt-3">
-                    <a href="/lojinha" class="text-muted text-decoration-none" style="font-weight: 600; font-size: 14px;">
+                    <a href="<?= APP_URL ?>/lojinha" class="text-muted text-decoration-none" style="font-weight: 600; font-size: 14px;">
                         Continuar adicionando itens
                     </a>
                 </div>

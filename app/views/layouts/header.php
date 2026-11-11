@@ -36,9 +36,16 @@ if ($operadorAtivoId) {
     <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle ?? APP_NAME) ?></title>
     
-    <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/urna.css">
+    <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/urna.css">
+    <style>
+        /* Previne flash de conteúdo não estilizado (FOUC) antes do carregamento do CSS */
+        .urna-modal-backdrop:not(.ativo),
+        .feedback-overlay:not(.ativo) {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
 

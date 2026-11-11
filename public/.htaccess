@@ -1,0 +1,26 @@
+# ==============================================================
+# Projeto Repack - Configuração Pública Apache (Front Controller)
+# ==============================================================
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloqueia arquivos ocultos
+    RewriteRule (^|/)\.(?!well-known) - [F]
+
+    # Não reescreve arquivos ou diretórios físicos estáticos existentes
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Redireciona tudo para o Front Controller
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
