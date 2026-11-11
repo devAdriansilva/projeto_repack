@@ -264,8 +264,10 @@ class GestaoController
     public function estoque(): void
     {
         $estoqueGeral = EstoqueLojinha::listarVisaoGeral();
+        $todosProdutos = Produto::listarAtivos();
         $historicoReservas = EstoqueLojinha::listarHistoricoReservas(null, 30);
         $historicoBaixas = EstoqueLojinha::listarHistoricoBaixas(null, 30);
+        $historicoInventarios = EstoqueLojinha::listarHistoricoInventarios(null, 30);
         $pageTitle = "Gestão de Estoque da Lojinha - " . APP_NAME;
         require __DIR__ . '/../views/gestao/estoque.php';
     }
@@ -326,6 +328,52 @@ class GestaoController
             $_SESSION['flash_sucesso'] = "Baixa administrativa registrada e estoque abatido!";
         } catch (\Throwable $e) {
             $_SESSION['flash_erro'] = "Falha ao registrar baixa: " . $e->getMessage();
+        }
+
+        header('Location: ' . APP_URL . '/gestao/estoque');
+        exit;
+    }
+
+    /**
+     * Registra Inventário / Balanço de Estoque (com substituição ou incremento parcial)
+     */
+    public function salvarInventario(): void
+    {
+        $this->validarCsrfOuAbortar();
+
+        $produtoId = (int)($_POST['produto_id'] ?? 0);
+        $quantidadeContada = (int)($_POST['quantidade_contada'] ?? 0);
+        $tipoOperacao = trim((string)($_POST['tipo_operacao'] ?? 'substituicao'));
+        $detalhesContagem = trim((string)($_POST['detalhes_contagem'] ?? ''));
+        $motivo = trim((string)($_POST['motivo'] ?? ''));
+        $gestorId = (int)$_SESSION['usuario_id'];
+
+        if ($motivo === '') {
+            $motivo = $tipoOperacao === 'incremento' ? 'Entrada avulsa / Incremento de estoque' : 'Inventário físico geral';
+        }
+
+        try {
+            EstoqueLojinha::realizarInventario(
+                $produtoId,
+                $quantidadeContada,
+                $tipoOperacao,
+                $gestorId,
+                $motivo,
+                $detalhesContagem !== '' ? $detalhesContagem : null
+            );
+
+            LogSistema::registrar('INFO', "Inventário realizado para o produto #{$produtoId}: {$quantidadeContada} un. ({$tipoOperacao})", [
+                'produto_id' => $produtoId,
+                'quantidade' => $quantidadeContada,
+                'tipo_operacao' => $tipoOperacao,
+                'detalhes' => $detalhesContagem,
+                'motivo' => $motivo,
+                'gestor_id' => $gestorId
+            ]);
+
+            $_SESSION['flash_sucesso'] = "Inventário / Balanço de estoque registrado com sucesso!";
+        } catch (\Throwable $e) {
+            $_SESSION['flash_erro'] = "Falha ao registrar inventário: " . $e->getMessage();
         }
 
         header('Location: ' . APP_URL . '/gestao/estoque');

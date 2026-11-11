@@ -163,6 +163,10 @@ switch ($route) {
         (new GestaoController())->salvarBaixa();
         break;
 
+    case '/gestao/estoque/inventario':
+        (new GestaoController())->salvarInventario();
+        break;
+
     // Correção de B.O.
     case '/gestao/bo':
     case '/gestao/correcao_bo':

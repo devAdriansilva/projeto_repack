@@ -398,6 +398,19 @@
       - Botão de compra (`app/views/layouts/lojinha_footer.php`): feedback tátil *"Reservado (5 min)!"*.
       - Tela de Sacola/Carrinho (`app/views/lojinha/carrinho.php`): cronômetro regressivo e mensagens de expiração atualizados para o limite de 5 minutos.
     - **Incremento de Versão:** Versão elevada para `v1.41` com atualização do Service Worker `repack-pwa-v1.41`.
+  - [x] **MANUT-042 (11/11/2026):** Módulo de Inventário & Balanço de Estoque com Incrementos Parciais de Contagem.
+    - **Banco de Dados (Migration 006):**
+      - Criação da tabela `inventarios_estoque_historico` via `006_create_inventarios_table.sql` para auditoria formal (produto, gestor, saldo anterior, novo saldo, diferença, tipo de operação, histórico da fita de contagem, motivo e timestamp).
+    - **Model Atômico Transacional (`app/models/EstoqueLojinha.php`):**
+      - Adicionado o método `realizarInventario()` com suporte a substituição total ou incremento parcial, além de recalibragem automática da reserva oculta caso o novo saldo físico seja menor que a reserva anterior.
+      - Adicionado o método `listarHistoricoInventarios()` para visualização do extrato de balanços.
+    - **Interface de Gestão (`app/views/gestao/estoque.php` e `app/controllers/GestaoController.php`):**
+      - Botão de destaque **"📋 Realizar Inventário / Balanço"** no topo da tela e botão rápido **"📝 Inventário"** em cada linha da tabela.
+      - Modal com calculadora de contagem parcial (botões rápidos `+1`, `+6 Fardo`, `+12 Fardo`, `+24 Caixa`, fita de soma em tempo real e botão zerar).
+      - Alternador de aplicação: *Substituir pelo Total Contado* (Balanço Geral) ou *Somar ao Estoque Atual* (Entrada Avulsa / Lote Encontrado).
+      - Exibição em tempo real do novo saldo resultante e da diferença (`+` verde / `-` vermelho).
+      - Nova seção no histórico da tela exibindo as últimas contagens e balanços realizados.
+    - **Incremento de Versão:** Versão elevada para `v1.42` com atualização do Service Worker `repack-pwa-v1.42`.
 
 ---
 

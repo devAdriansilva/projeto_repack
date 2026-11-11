@@ -267,6 +267,129 @@ class EstoqueLojinha
     }
 
     /**
+     * Realiza o Inventário / Balanço de Estoque com suporte a substituição total ou incremento parcial
+     * @param int $produtoId
+     * @param int $quantidadeContada
+     * @param string $tipoOperacao 'substituicao' ou 'incremento'
+     * @param int $usuarioId
+     * @param string $motivo
+     * @param string|null $detalhesContagem
+     * @return bool
+     * @throws InvalidArgumentException
+     */
+    public static function realizarInventario(
+        int $produtoId,
+        int $quantidadeContada,
+        string $tipoOperacao,
+        int $usuarioId,
+        string $motivo,
+        ?string $detalhesContagem = null
+    ): bool {
+        if ($quantidadeContada < 0) {
+            throw new InvalidArgumentException("A quantidade contada não pode ser negativa.");
+        }
+        $motivo = trim($motivo);
+        if ($motivo === '') {
+            $motivo = 'Inventário periódico de estoque';
+        }
+
+        $pdo = Database::getConnection();
+        $pdo->beginTransaction();
+
+        try {
+            $estoqueAtual = self::obterPorProdutoId($produtoId);
+            $saldoAnterior = (int)($estoqueAtual['quantidade_total'] ?? 0);
+            $reservaAtual = (int)($estoqueAtual['quantidade_reservada_gestao'] ?? 0);
+
+            if ($tipoOperacao === 'incremento') {
+                $novoSaldo = $saldoAnterior + $quantidadeContada;
+                $diferenca = $quantidadeContada;
+            } else {
+                $novoSaldo = $quantidadeContada;
+                $diferenca = $novoSaldo - $saldoAnterior;
+            }
+
+            if ($novoSaldo < 0) {
+                throw new InvalidArgumentException("O saldo resultante não pode ser negativo.");
+            }
+
+            // Ajusta a reserva se o novo saldo total físico for menor que a reserva oculta
+            $novaReserva = min($reservaAtual, $novoSaldo);
+
+            // 1. Atualiza ou insere o estoque_lojinha
+            $stmtEstoque = $pdo->prepare("
+                INSERT INTO estoque_lojinha (produto_id, quantidade_total, quantidade_reservada_gestao, updated_at)
+                VALUES (:produto_id, :novo_saldo, :nova_reserva, NOW())
+                ON DUPLICATE KEY UPDATE
+                    quantidade_total = :novo_saldo_up,
+                    quantidade_reservada_gestao = :nova_reserva_up,
+                    updated_at = NOW()
+            ");
+            $stmtEstoque->execute([
+                'produto_id' => $produtoId,
+                'novo_saldo' => $novoSaldo,
+                'nova_reserva' => $novaReserva,
+                'novo_saldo_up' => $novoSaldo,
+                'nova_reserva_up' => $novaReserva
+            ]);
+
+            // 2. Grava histórico auditado de inventário
+            $stmtHist = $pdo->prepare("
+                INSERT INTO inventarios_estoque_historico (
+                    produto_id, usuario_id, saldo_anterior, novo_saldo, diferenca,
+                    tipo_operacao, detalhes_contagem, motivo, created_at
+                ) VALUES (
+                    :produto_id, :usuario_id, :saldo_anterior, :novo_saldo, :diferenca,
+                    :tipo_operacao, :detalhes_contagem, :motivo, NOW()
+                )
+            ");
+            $stmtHist->execute([
+                'produto_id' => $produtoId,
+                'usuario_id' => $usuarioId,
+                'saldo_anterior' => $saldoAnterior,
+                'novo_saldo' => $novoSaldo,
+                'diferenca' => $diferenca,
+                'tipo_operacao' => $tipoOperacao === 'incremento' ? 'incremento' : 'substituicao',
+                'detalhes_contagem' => $detalhesContagem,
+                'motivo' => $motivo
+            ]);
+
+            $pdo->commit();
+            return true;
+        } catch (\Throwable $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Retorna o histórico de inventários e balanços
+     * @param int|null $produtoId
+     * @param int $limite
+     * @return array
+     */
+    public static function listarHistoricoInventarios(?int $produtoId = null, int $limite = 50): array
+    {
+        $pdo = Database::getConnection();
+        $sql = "
+            SELECT i.*, p.nome AS produto_nome, p.codigo AS produto_codigo, u.nome AS usuario_nome
+            FROM inventarios_estoque_historico i
+            INNER JOIN produtos p ON p.id = i.produto_id
+            INNER JOIN usuarios u ON u.id = i.usuario_id
+        ";
+        $params = [];
+        if ($produtoId !== null) {
+            $sql .= " WHERE i.produto_id = :produto_id";
+            $params['produto_id'] = $produtoId;
+        }
+        $sql .= " ORDER BY i.created_at DESC LIMIT " . (int)$limite;
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    /**
      * Retorna a lista de produtos formatada para a Vitrine da Lojinha
      * Fórmula obrigatória: Disponível = Total - Reserva Oculta - Bloqueios em Carrinho Ativo
      * Conforme docs/FSD.md Seções 6.3, 9, 12.2, 13.3 e 26
