@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Baseado estritamente em docs/DESIGN.md e docs/FSD.md (Seção 12.1)
  */
 
-$pageTitle = "Urna Eletrônica - Início";
+$pageTitle = "Bancada de Repack - Início";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 

@@ -252,8 +252,8 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                     👤 <strong><?= sanitize_html($nomeGestor) ?></strong> (<?= sanitize_html($matriculaGestor) ?>)
                 </span>
                 
-                <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm btn-outline-light" title="Retornar à interface da Urna Eletrônica">
-                    ← Quiosque
+                <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm btn-outline-light" title="Retornar à Área de Reembalagem">
+                    ← Área de Reembalagem
                 </a>
 
                 <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger" title="Encerrar sessão administrativa">
