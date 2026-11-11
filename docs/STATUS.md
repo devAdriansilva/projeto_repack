@@ -130,6 +130,10 @@
     - Eliminação de caixas aninhadas cinzas: cards unificados com fundo branco contínuo, proporções LxA equilibradas (~390px x 230px), imagens de 135px e faixas de toque de 75px.
     - Calibração tipográfica com texto a 23px negrito marcante e ícones SVG proporcionais de 30px.
     - Centralização vertical harmônica do conjunto no viewport do dispositivo e deploy direto via SSH na Alwaysdata.
+  - [x] **MANUT-008 (11/11/2026):** Eliminação de vazios verticais com distribuição space-between e preenchimento total.
+    - Fim do agrupamento centralizado que deixava grandes vazios em cima e embaixo: container configurado com `justify-content: space-between` e `min-height: calc(100dvh - 76px)`.
+    - Insígnia REPACK posicionada confortavelmente no topo e cards ocupando toda a extensão vertical disponível (`min-height: 250px`, imagens com até 230px e botões de 85px de altura).
+    - Deploy automatizado executado diretamente via SSH no servidor Alwaysdata.
 
 ---
 
