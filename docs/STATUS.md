@@ -244,6 +244,11 @@
       - `MICRO FURO (DESCARTE)` alterado para `MICRO FURO`.
     - Manutenção da lógica de negócio e destinação automática para perda irreversível conforme docs/FSD.md.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-020 (11/11/2026):** Remoção da Exibição de Destinação Automática no Passo 3.
+    - Eliminação do bloco "DESTINAÇÃO AUTOMÁTICA" e seu selo da tela de conferência (Passo 3):
+      - Informação irrelevante para o operador de bancada (regra de sistema transparente).
+      - Cartão de conferência agora focado exclusivamente nos dados essenciais: Produto, Quantidade e Tipo de Avaria.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 

@@ -48,7 +48,7 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; border-top: 5px solid #CBD5E1; border-bottom: 5px solid #CBD5E1; padding: 28px 0;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 5px solid #CBD5E1; padding-top: 28px;">
         <div>
             <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">QUANTIDADE:</span>
             <div class="headline-xl" style="color: #0F172A; font-size: 104px; font-weight: 900; margin-top: 6px; line-height: 1.05;">
@@ -60,21 +60,6 @@ require_once __DIR__ . '/../layouts/header.php';
             <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? '#DC2626' : '#D97706' ?>; font-size: 46px; font-weight: 900; margin-top: 8px;">
                 <?= sanitize_html($tipoRotulo) ?>
             </div>
-        </div>
-    </div>
-
-    <div>
-        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">DESTINAÇÃO AUTOMÁTICA:</span>
-        <div style="margin-top: 20px;">
-            <?php if ($destino === 'lojinha'): ?>
-                <span class="badge" style="background-color: #DCFCE7; color: #064E3B; border: 6px solid #059669; font-size: 38px; padding: 24px 40px; border-radius: 24px; font-weight: 900; display: inline-block;">
-                    ✔ LOJINHA INTERNA (RECUPERAÇÃO)
-                </span>
-            <?php else: ?>
-                <span class="badge" style="background-color: #FEE2E2; color: #991B1B; border: 6px solid #DC2626; font-size: 38px; padding: 24px 40px; border-radius: 24px; font-weight: 900; display: inline-block;">
-                    ✖ DESCARTE IRREVERSÍVEL (PERDA)
-                </span>
-            <?php endif; ?>
         </div>
     </div>
 </div>
