@@ -256,16 +256,31 @@ body {
     background-color: #E5E7EB;
 }
 
-/* Cards Harmoniosos da Bancada do Operador (Grandes & Ergonômicos) */
+/* Insígnia com Fundo Estilizado do Repack */
+.brand-header-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    color: #FFFFFF;
+    padding: 10px 32px;
+    border-radius: var(--radius-full);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22);
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    letter-spacing: 1px;
+}
+
+/* Cards Harmoniosos da Bancada do Operador (Proporção LxA Equilibrada) */
 .card-acao-operador {
     display: flex;
     flex-direction: column;
     text-decoration: none;
-    border-radius: 22px;
+    border-radius: 20px;
     overflow: hidden;
     background-color: var(--surface);
-    border: 2px solid var(--border);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
+    border: 2px solid #E2E8F0;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
     transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
     touch-action: manipulation;
     cursor: pointer;
@@ -276,7 +291,7 @@ body {
 .card-acao-operador:hover {
     text-decoration: none;
     border-color: #94A3B8;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .card-acao-operador:active {
@@ -285,38 +300,38 @@ body {
 }
 
 .card-acao-moldura {
-    height: 210px;
-    background: #F8FAFC;
+    height: 155px;
+    background: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border-bottom: 2px solid #E2E8F0;
     padding: 12px;
     box-sizing: border-box;
 }
 
 .card-acao-moldura img {
-    height: 190px;
+    height: 135px;
     width: auto;
-    max-width: 95%;
+    max-width: 90%;
     object-fit: contain;
     border-radius: 12px;
 }
 
 .card-acao-btn {
-    min-height: 88px;
+    min-height: 75px;
+    height: 75px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    font-size: 26px;
+    gap: 12px;
+    font-size: 23px;
     font-weight: 800;
     color: #FFFFFF;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     box-sizing: border-box;
-    padding: 16px 20px;
+    padding: 12px 18px;
 }
 
 @media (max-height: 720px) {

@@ -125,6 +125,11 @@
     - Expansão responsiva das molduras e imagens para até 240px de altura proporcional.
     - Botões gigantes de 88px de altura, ícones ampliados de 34px e bordas de 24px de alto acabamento.
     - Deploy automatizado executado diretamente via SSH no servidor Alwaysdata e validação de 35/35 testes integrados.
+  - [x] **MANUT-007 (11/11/2026):** Refinamento de proporção LxA (4:3), insígnia estilizada e calibração tipográfica.
+    - Criação da insígnia de cabeçalho (`.brand-header-badge`) em gradiente grafite profundo (`#0F172A`), borda luminosa e tipografia branca destacada, dando autoridade visual à marca no topo da aplicação.
+    - Eliminação de caixas aninhadas cinzas: cards unificados com fundo branco contínuo, proporções LxA equilibradas (~390px x 230px), imagens de 135px e faixas de toque de 75px.
+    - Calibração tipográfica com texto a 23px negrito marcante e ícones SVG proporcionais de 30px.
+    - Centralização vertical harmônica do conjunto no viewport do dispositivo e deploy direto via SSH na Alwaysdata.
 
 ---
 
