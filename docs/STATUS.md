@@ -329,6 +329,11 @@
       - Botão `⏸ PAUSAR` / `▶ RETOMAR` com altura de `85px` e botão `⏹ FINALIZAR` monumental de `115px` com fonte de até `50px`.
       - Botão superior `← Voltar` aumentado com fonte `26px`, borda `3.5px` e padding generoso.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-033 (11/11/2026):** Restauração do Design Anterior da Aba Registrar Produção.
+    - Reversão de `app/views/operador/cronometro.php` e `public/assets/css/urna.css` para a arquitetura visual anterior:
+      - Restauração do layout em 2 momentos da Urna Eletrônica alinhado ao Registro de B.O. (título monumental `REGISTRAR PRODUÇÃO`, seletor monumental de pacotes refeitos de 160px com botões circulares e display, botões de ação duplos `CANCELAR` em amarelo e `INICIAR PRODUÇÃO ➔` / `FINALIZAR ➔` em verde).
+      - Manutenção integral do suporte aos marcadores de início/fim, função de pausa e integração com o backend.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
