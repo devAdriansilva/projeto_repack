@@ -185,10 +185,13 @@ switch ($route) {
     // Rotas da Vitrine e Carrinho da Lojinha (Colaborador)
     // -------------------------------------------------------------
     case '/lojinha':
+    case '/lojinha/vitrine':
+    case '/vitrine':
         (new LojinhaController())->vitrine();
         break;
 
     case '/lojinha/login':
+    case '/login':
         (new LojinhaController())->login();
         break;
 
@@ -198,6 +201,8 @@ switch ($route) {
 
     case '/lojinha/carrinho':
     case '/lojinha/sacola':
+    case '/carrinho':
+    case '/sacola':
         (new LojinhaController())->carrinho();
         break;
 

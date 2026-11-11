@@ -54,7 +54,7 @@ $pageTitle = 'Acesso à Lojinha dos Colaboradores - Repack';
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="/lojinha/login" id="formLoginLojinha">
+        <form method="POST" action="<?= APP_URL ?>/lojinha/login" id="formLoginLojinha">
             <div class="mb-4">
                 <label for="inputMatricula" class="form-label" style="font-weight: 700; font-size: 18px; color: #111827;">
                     Sua Matrícula Corporativa
