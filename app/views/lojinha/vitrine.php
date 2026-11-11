@@ -6,6 +6,47 @@ declare(strict_types=1);
  * Baseado estritamente em docs/FSD.md (Seções 6.3, 9, 12.2 e 13.3) e docs/DESIGN.md
  */
 
+// Helper para categorização inteligente de bebidas
+function categorizarBebida(string $nome): string {
+    $n = mb_strtolower($nome, 'UTF-8');
+    if (preg_match('/cerveja|pilsen|malzbier|brahma|skol|antarctica|bohemia|corona|budweiser|spaten|stella|becks|chopp|ipa|lager|puro malte/i', $n)) {
+        return 'cervejas';
+    }
+    if (preg_match('/refrigerante|guaraná|guarana|cola|pepsi|sukita|soda|tônica|tonica|fanta|sprite/i', $n)) {
+        return 'refrigerantes';
+    }
+    if (preg_match('/água|agua|mineral/i', $n)) {
+        return 'aguas';
+    }
+    if (preg_match('/energético|energetico|monster|red bull|fusion|isotônico|isotonico|gatorade/i', $n)) {
+        return 'energeticos';
+    }
+    if (preg_match('/suco|néctar|nectar|chá|cha|del valle|matte/i', $n)) {
+        return 'sucos';
+    }
+    return 'outros';
+}
+
+// Associa a categoria a cada produto e conta totais
+$contagemCategorias = [
+    'todos' => count($produtos),
+    'cervejas' => 0,
+    'refrigerantes' => 0,
+    'aguas' => 0,
+    'energeticos' => 0,
+    'sucos' => 0,
+    'outros' => 0
+];
+
+foreach ($produtos as &$prod) {
+    $cat = categorizarBebida($prod['nome']);
+    $prod['categoria'] = $cat;
+    if (isset($contagemCategorias[$cat])) {
+        $contagemCategorias[$cat]++;
+    }
+}
+unset($prod);
+
 $pageTitle = 'Vitrine da Lojinha - ' . ($lote['titulo'] ?? 'Ofertas Internas');
 require __DIR__ . '/../layouts/lojinha_header.php';
 ?>
@@ -65,8 +106,96 @@ require __DIR__ . '/../layouts/lojinha_header.php';
     </div>
 <?php endif; ?>
 
+<!-- ============================================================= -->
+<!-- BARRA DE PESQUISA E FILTROS DE CATEGORIA                      -->
+<!-- ============================================================= -->
+<div class="card p-3 mb-4 shadow-sm border-0" style="border-radius: 16px; background: #FFFFFF;">
+    <!-- Campo de Busca em Tempo Real -->
+    <div class="position-relative mb-3">
+        <span class="position-absolute top-50 translate-middle-y ps-3 text-muted" style="pointer-events: none;">
+            🔍
+        </span>
+        <input type="text" 
+               id="inputBuscaVitrine" 
+               class="form-control" 
+               placeholder="Buscar bebida por nome ou formato (ex: Brahma, Lata, 600ml...)" 
+               style="height: 52px; font-size: 17px; font-weight: 600; padding-left: 44px; border-radius: 12px; border: 2px solid #E2E8F0;"
+               oninput="filtrarVitrine()">
+        <button type="button" 
+                id="btnLimparBusca" 
+                class="btn position-absolute top-50 end-0 translate-middle-y me-2 text-muted" 
+                style="display: none; background: transparent; border: none; font-size: 18px;"
+                onclick="limparBusca()">
+            ✕
+        </button>
+    </div>
+
+    <!-- Pílulas de Categoria (Tags de 1 Clique) -->
+    <div class="d-flex align-items-center gap-2 flex-wrap" id="containerCategorias">
+        <button type="button" class="btn-categoria-filtro active" data-categoria="todos" onclick="selecionarCategoria('todos', this)">
+            🏷️ Todos (<?= $contagemCategorias['todos'] ?>)
+        </button>
+        <?php if ($contagemCategorias['cervejas'] > 0): ?>
+            <button type="button" class="btn-categoria-filtro" data-categoria="cervejas" onclick="selecionarCategoria('cervejas', this)">
+                🍺 Cervejas (<?= $contagemCategorias['cervejas'] ?>)
+            </button>
+        <?php endif; ?>
+        <?php if ($contagemCategorias['refrigerantes'] > 0): ?>
+            <button type="button" class="btn-categoria-filtro" data-categoria="refrigerantes" onclick="selecionarCategoria('refrigerantes', this)">
+                🥤 Refrigerantes (<?= $contagemCategorias['refrigerantes'] ?>)
+            </button>
+        <?php endif; ?>
+        <?php if ($contagemCategorias['aguas'] > 0): ?>
+            <button type="button" class="btn-categoria-filtro" data-categoria="aguas" onclick="selecionarCategoria('aguas', this)">
+                💧 Águas (<?= $contagemCategorias['aguas'] ?>)
+            </button>
+        <?php endif; ?>
+        <?php if ($contagemCategorias['energeticos'] > 0): ?>
+            <button type="button" class="btn-categoria-filtro" data-categoria="energeticos" onclick="selecionarCategoria('energeticos', this)">
+                ⚡ Energéticos & Isotônicos (<?= $contagemCategorias['energeticos'] ?>)
+            </button>
+        <?php endif; ?>
+        <?php if ($contagemCategorias['sucos'] > 0): ?>
+            <button type="button" class="btn-categoria-filtro" data-categoria="sucos" onclick="selecionarCategoria('sucos', this)">
+                🧃 Sucos & Chás (<?= $contagemCategorias['sucos'] ?>)
+            </button>
+        <?php endif; ?>
+        <?php if ($contagemCategorias['outros'] > 0): ?>
+            <button type="button" class="btn-categoria-filtro" data-categoria="outros" onclick="selecionarCategoria('outros', this)">
+                📦 Outros (<?= $contagemCategorias['outros'] ?>)
+            </button>
+        <?php endif; ?>
+    </div>
+</div>
+
+<style>
+.btn-categoria-filtro {
+    border-radius: 9999px;
+    padding: 8px 18px;
+    font-size: 15px;
+    font-weight: 700;
+    border: 2px solid #E2E8F0;
+    background: #F8FAFC;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    white-space: nowrap;
+}
+.btn-categoria-filtro:hover {
+    border-color: #3B82F6;
+    color: #1D4ED8;
+    background: #EFF6FF;
+}
+.btn-categoria-filtro.active {
+    background: #2563EB;
+    border-color: #1D4ED8;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+</style>
+
 <!-- Grade de Produtos em Oferta -->
-<div class="row g-4">
+<div class="row g-4" id="gradeProdutosVitrine">
     <?php if (empty($produtos)): ?>
         <div class="col-12 text-center py-5">
             <div style="background: #FFFFFF; border-radius: 16px; padding: 48px; border: 2px dashed #D1D5DB;">
@@ -83,8 +212,13 @@ require __DIR__ . '/../layouts/lojinha_header.php';
             $noCarrinho = (int)$p['no_meu_carrinho'];
             $esgotado = ($saldoDisp <= 0);
             $limiteAtingido = ((int)$resumo['limite_restante'] <= 0 && $saldoDisp > 0);
+            $cat = $p['categoria'];
         ?>
-            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3 card-produto-wrapper" 
+                 data-categoria="<?= $cat ?>" 
+                 data-nome="<?= mb_strtolower($p['nome'], 'UTF-8') ?>"
+                 data-codigo="<?= mb_strtolower($p['codigo'], 'UTF-8') ?>"
+                 data-pacote="<?= mb_strtolower($p['pacote_padrao'] ?? '', 'UTF-8') ?>">
                 <div class="card-produto-lojinha <?= $esgotado ? 'esgotado' : '' ?>">
                     <div>
                         <!-- Badge de Saldo Real em Vitrine -->
@@ -151,5 +285,76 @@ require __DIR__ . '/../layouts/lojinha_header.php';
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+
+<!-- Mensagem quando nenhum produto corresponde aos filtros aplicados -->
+<div id="msgNenhumFiltro" class="col-12 text-center py-5" style="display: none;">
+    <div style="background: #FFFFFF; border-radius: 16px; padding: 40px; border: 2px dashed #CBD5E1;">
+        <div style="font-size: 48px; margin-bottom: 12px;">🔍</div>
+        <h3 class="headline-lg" style="color: #334155;">Nenhum produto encontrado</h3>
+        <p class="body-md text-muted">Tente buscar por outro termo ou selecione a categoria "Todos".</p>
+        <button type="button" class="btn btn-outline-primary mt-2" onclick="limparFiltros()">Limpar Filtros</button>
+    </div>
+</div>
+
+<script>
+let categoriaAtiva = 'todos';
+
+function selecionarCategoria(cat, btn) {
+    categoriaAtiva = cat;
+    document.querySelectorAll('.btn-categoria-filtro').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    filtrarVitrine();
+}
+
+function filtrarVitrine() {
+    const input = document.getElementById('inputBuscaVitrine');
+    const btnLimpar = document.getElementById('btnLimparBusca');
+    const termo = (input.value || '').trim().toLowerCase();
+    
+    if (btnLimpar) {
+        btnLimpar.style.display = termo !== '' ? 'block' : 'none';
+    }
+
+    const cards = document.querySelectorAll('.card-produto-wrapper');
+    let visiveis = 0;
+
+    cards.forEach(card => {
+        const catCard = card.getAttribute('data-categoria') || 'outros';
+        const nome = card.getAttribute('data-nome') || '';
+        const codigo = card.getAttribute('data-codigo') || '';
+        const pacote = card.getAttribute('data-pacote') || '';
+
+        const bateuCategoria = (categoriaAtiva === 'todos' || catCard === categoriaAtiva);
+        const bateuBusca = (termo === '' || nome.includes(termo) || codigo.includes(termo) || pacote.includes(termo));
+
+        if (bateuCategoria && bateuBusca) {
+            card.style.display = 'block';
+            visiveis++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    const msgNenhum = document.getElementById('msgNenhumFiltro');
+    if (msgNenhum) {
+        msgNenhum.style.display = (visiveis === 0 && cards.length > 0) ? 'block' : 'none';
+    }
+}
+
+function limparBusca() {
+    const input = document.getElementById('inputBuscaVitrine');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+    filtrarVitrine();
+}
+
+function limparFiltros() {
+    limparBusca();
+    const btnTodos = document.querySelector('.btn-categoria-filtro[data-categoria="todos"]');
+    selecionarCategoria('todos', btnTodos);
+}
+</script>
 
 <?php require __DIR__ . '/../layouts/lojinha_footer.php'; ?>

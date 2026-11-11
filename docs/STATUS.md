@@ -382,6 +382,14 @@
     - **Isolamento de Domínio/Perfil (`app/views/lojinha/login.php`):**
       - Removido o link e o divisor inferior `← Voltar à Área de Reembalagem`, garantindo que colaboradores externos/gerais não tenham rota exposta para acessar a área operacional ou o quiosque da bancada de repack.
     - **Incremento de Versão:** Versão elevada para `v1.39` com atualização do Service Worker `repack-pwa-v1.39`.
+  - [x] **MANUT-040 (11/11/2026):** Otimização da Vitrine da Lojinha: Filtros de Categoria, Busca Rápida e Restrição Estrita de Itens Disponíveis.
+    - **Restrição de Vitrine Limpa (`app/models/EstoqueLojinha.php`):**
+      - Na consulta `listarProdutosVitrine()`, adicionado filtro para exibir unicamente produtos que possuam `saldo_disponivel > 0` ou que já estejam no carrinho temporário do próprio colaborador, eliminando produtos esgotados ou sem saldo da visualização.
+    - **Categorização Automática de Bebidas e Tags Interativas (`app/views/lojinha/vitrine.php`):**
+      - Implementado classificador em grandes categorias da distribuidora: `🍺 Cervejas`, `🥤 Refrigerantes`, `💧 Águas`, `⚡ Energéticos & Isotônicos`, `🧃 Sucos & Chás` e `📦 Outros`.
+      - Adicionadas pílulas interativas de 1 clique com contagem dinâmica de produtos disponíveis em cada categoria.
+      - Campo de busca instantânea em tempo real por nome, formato (ex: 600ml, lata) ou código SKU, com botão de limpar busca e mensagem amigável caso nenhum item corresponda ao filtro.
+    - **Incremento de Versão:** Versão elevada para `v1.40` com atualização do Service Worker `repack-pwa-v1.40`.
 
 ---
 
