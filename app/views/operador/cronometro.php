@@ -139,10 +139,10 @@ require_once __DIR__ . '/../layouts/header.php';
     <!-- 1. Produto Selecionado -->
     <div class="flow-label">Produto selecionado:</div>
     <div class="flow-display-box" id="boxProdutoSelecionado">
-        <div id="ativoSkuDisplay" style="font-size: clamp(28px, 6vw, 36px); font-weight: 900; color: #0F172A;">
+        <div id="ativoSkuDisplay" style="font-size: clamp(38px, 8.5vw, 54px); font-weight: 900; color: #0F172A;">
             <?= sanitize_html($producaoAtiva['produto_codigo'] ?? '') ?>
         </div>
-        <div id="ativoNomeProduto" style="font-size: clamp(18px, 4vw, 22px); font-weight: 800; color: #475569; margin-top: 4px;">
+        <div id="ativoNomeProduto" style="font-size: clamp(22px, 4.8vw, 30px); font-weight: 800; color: #475569; margin-top: 8px; line-height: 1.2;">
             <?= sanitize_html($producaoAtiva['produto_nome'] ?? '') ?>
         </div>
     </div>
@@ -185,8 +185,8 @@ require_once __DIR__ . '/../layouts/header.php';
     </button>
 
     <!-- 6. Opção Discreta de Cancelamento -->
-    <div style="text-align: center; margin-top: 18px;">
-        <button type="button" onclick="descartarProducaoAtiva()" style="background: none; border: none; color: #94A3B8; font-size: 19px; font-weight: 700; text-decoration: underline; cursor: pointer; padding: 10px;">
+    <div style="text-align: center; margin-top: 20px;">
+        <button type="button" onclick="descartarProducaoAtiva()" style="background: none; border: none; color: #94A3B8; font-size: 22px; font-weight: 800; text-decoration: underline; cursor: pointer; padding: 12px;">
             Descartar / Cancelar este ciclo
         </button>
     </div>

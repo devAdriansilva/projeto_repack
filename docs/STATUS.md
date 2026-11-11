@@ -319,6 +319,16 @@
       - **Momento 2 (Trabalho em Andamento):** Título `Trabalho em Andamento`, caixa `Produto selecionado:` com código e nome do item, card com contorno azul `Início: HH:MM`, bloco `Quantidade Feita` com input numérico centralizado e botões táteis `-` e `+` para luvas, botão de pausa/retomada integrado e botão monumental vermelho/coral `⏹ FINALIZAR`.
     - Estilização dedicada dos componentes `.flow-*` em `public/assets/css/urna.css` mantendo alto contraste, filosofia da Urna Eletrônica e alvos táteis mínimos superiores a 76px.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-032 (11/11/2026):** Super Ampliação de Fontes e Elementos na Aba Registrar Produção.
+    - Ampliação em escala monumental dos elementos de `app/views/operador/cronometro.php` e `.flow-*` em `public/assets/css/urna.css`:
+      - Campo `Código do Produto` ampliado para `96px` de altura, fonte `clamp(38px, 8vw, 54px)` e bordas de `4px`.
+      - Botão `▶ INICIAR` ampliado para `110px` de altura com fonte de até `48px` e borda sólida de `6px`.
+      - Bloco `Produto selecionado:` ampliado com código em `clamp(38px, 8.5vw, 54px)` e nome em `clamp(22px, 4.8vw, 30px)`.
+      - Card `Início: HH:MM` com contorno azul reforçado de `4px` e tipografia `clamp(34px, 7.5vw, 48px)`.
+      - Seletor de `Quantidade Feita` com botões táteis `−` e `+` de `96px × 96px` (fonte 56px) e display centralizado de `96px` de altura (fonte 60px).
+      - Botão `⏸ PAUSAR` / `▶ RETOMAR` com altura de `85px` e botão `⏹ FINALIZAR` monumental de `115px` com fonte de até `50px`.
+      - Botão superior `← Voltar` aumentado com fonte `26px`, borda `3.5px` e padding generoso.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
