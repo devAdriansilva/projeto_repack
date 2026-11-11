@@ -206,6 +206,28 @@
     - Home do Operador:
       - Botões sólidos elevados para até 310px de altura, ilustrações em caixas de 140x140px e tipografia em 28px negrito.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-017 (11/11/2026):** Limpeza Radical da Interface e Crescimento Máximo de Elementos.
+    - Eliminação de todo o ruído cognitivo e legendas explicativas dispensáveis na bancada:
+      - Remoção total dos badges indicativos de passos ("PASSO 1 DE 3", "PASSO 2 DE 3", "PASSO 3 DE 3").
+      - Remoção das legendas e subtítulos secundários ("Digite o código do produto...", "Digite o número impresso...", "Verifique com atenção...").
+    - Expansão do contêiner principal para `max-width: 920px` ocupando com soberania a tela do operador.
+    - Passo 1:
+      - Título direto "REGISTRAR B.O." em 48px garrafal.
+      - Rótulo limpo "CÓDIGO (SKU)" em 36px.
+      - Campo de SKU ampliado para 145px de altura, dígitos maciços em 84px negrito, borda de 7px sólida e botão '✕' de 74x74px (fonte 42px).
+      - Card de confirmação com borda de 7px, nome da bebida em 48px negrito e badges de 28px.
+      - Seletor numérico direto "QUANTIDADE:" em 34px, com botões `[-]` e `[+]` monumentais de 145x145px (fonte 94px), visor em 96px garrafal e borda de 7px.
+      - Botões Cancelar e Próximo elevados para 125px de altura mínima e fonte de 38px negrito (raio de 32px).
+    - Passo 2:
+      - Título direto "TIPO DE AVARIA" em 48px.
+      - Crachá do produto selecionado com 34px negrito e moldura de 6px.
+      - 5 botões de opções de avaria ampliados para 125px de altura mínima, tipografia de 38px negrito, ícones semânticos em 52px e bordas de 6px.
+      - Botão "VOLTAR / CORRIGIR" com 115px de altura e fonte de 32px.
+    - Passo 3:
+      - Título direto "CONFIRMAR B.O." em 48px.
+      - Cartão central com moldura sólida de 7px, nome do produto em 48px negrito, quantidade exibida em 96px colossal, tipo de avaria em 42px e selo de destinação em 34px com borda de 5px.
+      - Botões "CORRIGIR" e "CONFIRMAR" elevados para 125px de altura e fonte de 38px negrito.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
