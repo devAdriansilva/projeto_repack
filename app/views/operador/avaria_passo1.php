@@ -116,7 +116,17 @@ require_once __DIR__ . '/../layouts/header.php';
         </label>
         <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 26px; margin: 0;">
             <button type="button" class="btn-counter" onclick="alterarQuantidade(-1)" aria-label="Diminuir quantidade">−</button>
-            <div class="counter-display" id="displayQtd"><?= $quantidadeInicial ?></div>
+            <input type="number" 
+                   id="displayQtd" 
+                   class="counter-display" 
+                   inputmode="numeric" 
+                   pattern="[0-9]*" 
+                   min="1" 
+                   value="<?= $quantidadeInicial ?>" 
+                   onfocus="this.select()" 
+                   oninput="atualizarQuantidadeDigitada(this.value)" 
+                   onblur="validarQuantidadeBlur()" 
+                   aria-label="Quantidade avariada">
             <button type="button" class="btn-counter" onclick="alterarQuantidade(1)" aria-label="Aumentar quantidade">+</button>
         </div>
     </div>
@@ -126,12 +136,12 @@ require_once __DIR__ . '/../layouts/header.php';
         ⚠️ DIGITE UM CÓDIGO VÁLIDO ANTES DE AVANÇAR!
     </div>
 
-    <!-- Botões de Ação do Rodapé (Grandes Alvos 125px de Alto Contraste) -->
-    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 24px 0 0 0; gap: 20px;">
-        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 125px; font-size: 38px; font-weight: 900; border-radius: 32px;">
+    <!-- Botões de Ação do Rodapé (Grandes Alvos 135px de Alto Contraste) -->
+    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
+        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
             CANCELAR
         </a>
-        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 125px; font-size: 38px; font-weight: 900; border-radius: 32px;">
+        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
             PRÓXIMO ➔
         </button>
     </div>
@@ -295,8 +305,28 @@ function limparSku() {
 }
 
 function alterarQuantidade(delta) {
-    quantidadeAtual = Math.max(1, quantidadeAtual + delta);
-    document.getElementById('displayQtd').innerText = quantidadeAtual;
+    let atual = parseInt(document.getElementById('displayQtd').value, 10) || 1;
+    quantidadeAtual = Math.max(1, atual + delta);
+    document.getElementById('displayQtd').value = quantidadeAtual;
+    document.getElementById('inputQuantidade').value = quantidadeAtual;
+}
+
+function atualizarQuantidadeDigitada(valor) {
+    let num = parseInt(valor, 10);
+    if (!isNaN(num) && num > 0) {
+        quantidadeAtual = num;
+        document.getElementById('inputQuantidade').value = quantidadeAtual;
+    }
+}
+
+function validarQuantidadeBlur() {
+    const input = document.getElementById('displayQtd');
+    let num = parseInt(input.value, 10);
+    if (isNaN(num) || num < 1) {
+        num = 1;
+    }
+    quantidadeAtual = num;
+    input.value = quantidadeAtual;
     document.getElementById('inputQuantidade').value = quantidadeAtual;
 }
 

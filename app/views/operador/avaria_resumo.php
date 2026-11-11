@@ -33,45 +33,45 @@ $pageTitle = "Avaria - Conferência";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 20px;">
-    <h1 class="headline-xl" style="margin: 0; font-size: 48px; font-weight: 900; color: #0F172A;">
+<div style="text-align: center; margin-bottom: 22px;">
+    <h1 class="headline-xl" style="margin: 0; font-size: 54px; font-weight: 900; color: #0F172A;">
         CONFIRMAR B.O.
     </h1>
 </div>
 
 <!-- Cartão Central de Resumo (Ultra Alto Contraste Massivo) -->
-<div class="urna-card" style="width: 100%; text-align: center; padding: 40px 30px; border-radius: 34px; border: 7px solid #0F172A; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2); background: #FFFFFF;">
-    <div style="margin-bottom: 26px;">
-        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 24px; letter-spacing: 1px; text-transform: uppercase;">PRODUTO:</span>
-        <div class="headline-lg" style="color: #0F172A; margin-top: 10px; font-size: 48px; font-weight: 900; line-height: 1.2; word-break: break-word;">
+<div class="urna-card" style="width: 100%; text-align: center; padding: 44px 32px; border-radius: 36px; border: 8px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22); background: #FFFFFF;">
+    <div style="margin-bottom: 28px;">
+        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; letter-spacing: 1px; text-transform: uppercase;">PRODUTO:</span>
+        <div class="headline-lg" style="color: #0F172A; margin-top: 12px; font-size: 54px; font-weight: 900; line-height: 1.2; word-break: break-word;">
             <?= sanitize_html($produtoNome) ?>
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; border-top: 5px solid #CBD5E1; border-bottom: 5px solid #CBD5E1; padding: 26px 0;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; border-top: 5px solid #CBD5E1; border-bottom: 5px solid #CBD5E1; padding: 28px 0;">
         <div>
-            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 24px; text-transform: uppercase;">QUANTIDADE:</span>
-            <div class="headline-xl" style="color: #0F172A; font-size: 96px; font-weight: 900; margin-top: 6px; line-height: 1.05;">
-                <?= $quantidade ?> <span style="font-size: 34px; font-weight: 800; color: #64748B;">un.</span>
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">QUANTIDADE:</span>
+            <div class="headline-xl" style="color: #0F172A; font-size: 104px; font-weight: 900; margin-top: 6px; line-height: 1.05;">
+                <?= $quantidade ?> <span style="font-size: 36px; font-weight: 800; color: #64748B;">un.</span>
             </div>
         </div>
         <div>
-            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 24px; text-transform: uppercase;">TIPO DE AVARIA:</span>
-            <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? '#DC2626' : '#D97706' ?>; font-size: 42px; font-weight: 900; margin-top: 8px;">
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">TIPO DE AVARIA:</span>
+            <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? '#DC2626' : '#D97706' ?>; font-size: 46px; font-weight: 900; margin-top: 8px;">
                 <?= sanitize_html($tipoRotulo) ?>
             </div>
         </div>
     </div>
 
     <div>
-        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 24px; text-transform: uppercase;">DESTINAÇÃO AUTOMÁTICA:</span>
-        <div style="margin-top: 18px;">
+        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">DESTINAÇÃO AUTOMÁTICA:</span>
+        <div style="margin-top: 20px;">
             <?php if ($destino === 'lojinha'): ?>
-                <span class="badge" style="background-color: #DCFCE7; color: #064E3B; border: 5px solid #059669; font-size: 34px; padding: 22px 38px; border-radius: 22px; font-weight: 900; display: inline-block;">
+                <span class="badge" style="background-color: #DCFCE7; color: #064E3B; border: 6px solid #059669; font-size: 38px; padding: 24px 40px; border-radius: 24px; font-weight: 900; display: inline-block;">
                     ✔ LOJINHA INTERNA (RECUPERAÇÃO)
                 </span>
             <?php else: ?>
-                <span class="badge" style="background-color: #FEE2E2; color: #991B1B; border: 5px solid #DC2626; font-size: 34px; padding: 22px 38px; border-radius: 22px; font-weight: 900; display: inline-block;">
+                <span class="badge" style="background-color: #FEE2E2; color: #991B1B; border: 6px solid #DC2626; font-size: 38px; padding: 24px 40px; border-radius: 24px; font-weight: 900; display: inline-block;">
                     ✖ DESCARTE IRREVERSÍVEL (PERDA)
                 </span>
             <?php endif; ?>
@@ -79,12 +79,12 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 </div>
 
-<!-- Rodapé de Dupla Confirmação da Urna Eletrônica (Grandes Alvos 125px) -->
-<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
-    <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning" style="min-height: 125px; font-size: 38px; font-weight: 900; border-radius: 32px;">
+<!-- Rodapé de Dupla Confirmação da Urna Eletrônica (Grandes Alvos 135px) -->
+<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 28px 0 0 0; gap: 20px;">
+    <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
         CORRIGIR
     </a>
-    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarBO" onclick="confirmarApontamentoBO()" style="min-height: 125px; font-size: 38px; font-weight: 900; border-radius: 32px;">
+    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarBO" onclick="confirmarApontamentoBO()" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
         CONFIRMAR
     </button>
 </div>

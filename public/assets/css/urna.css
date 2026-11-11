@@ -189,11 +189,11 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 24px;
-    max-width: 920px;
+    gap: 26px;
+    max-width: 980px;
     width: 100%;
     margin: 0 auto;
-    padding: 20px 20px 48px 20px;
+    padding: 20px 20px 52px 20px;
     box-sizing: border-box;
     min-height: calc(100dvh - 56px);
 }
@@ -260,28 +260,28 @@ body {
 
 /* Botões Robustos do Passo 2 (Tipo de Avaria) - Ultra Acessibilidade Massiva */
 .btn-avaria-opcao {
-    min-height: 125px;
-    height: 125px;
-    font-size: 38px;
+    min-height: 140px;
+    height: 140px;
+    font-size: 42px;
     font-weight: 900;
-    border-radius: 32px;
+    border-radius: 36px;
     letter-spacing: 1px;
-    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 22px;
     text-transform: uppercase;
     width: 100%;
-    border: 6px solid rgba(0, 0, 0, 0.25);
+    border: 7px solid rgba(0, 0, 0, 0.25);
 }
 
 @media (max-width: 420px) {
     .btn-avaria-opcao {
-        min-height: 112px;
-        height: 112px;
-        font-size: 32px;
-        gap: 16px;
+        min-height: 122px;
+        height: 122px;
+        font-size: 34px;
+        gap: 18px;
     }
 }
 
@@ -539,17 +539,17 @@ body {
 }
 
 .btn-counter {
-    width: 145px;
-    height: 145px;
-    min-height: 145px;
-    min-width: 145px;
-    border-radius: 32px;
-    font-size: 94px;
+    width: 160px;
+    height: 160px;
+    min-height: 160px;
+    min-width: 160px;
+    border-radius: 36px;
+    font-size: 104px;
     font-weight: 900;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 7px solid #0F172A;
+    border: 8px solid #0F172A;
     background-color: #FFFFFF;
     color: #0F172A;
     cursor: pointer;
@@ -562,18 +562,36 @@ body {
 }
 
 .counter-display {
-    min-width: 230px;
-    height: 145px;
+    width: 250px;
+    min-width: 200px;
+    max-width: 280px;
+    height: 160px;
     background-color: #FFFFFF;
-    border: 7px solid #0F172A;
-    border-radius: 32px;
-    display: flex;
+    border: 8px solid #0F172A;
+    border-radius: 36px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 96px;
+    font-size: 104px;
     font-weight: 900;
     color: #0F172A;
     text-align: center;
+    box-sizing: border-box;
+    padding: 0 10px;
+    outline: none;
+    -moz-appearance: textfield;
+    touch-action: manipulation;
+}
+
+.counter-display::-webkit-outer-spin-button,
+.counter-display::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.counter-display:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.35);
 }
 
 /* Visor do Cronômetro */
@@ -661,31 +679,31 @@ body {
 
 .input-sku-gigante {
     width: 100%;
-    height: 145px;
-    font-size: 84px;
+    height: 160px;
+    font-size: 96px;
     font-weight: 900;
     text-align: center;
-    border-radius: 32px;
-    border: 7px solid #0F172A;
-    letter-spacing: 6px;
+    border-radius: 36px;
+    border: 8px solid #0F172A;
+    letter-spacing: 8px;
     box-sizing: border-box;
     background: #FFFFFF;
     color: #0F172A;
     outline: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
     touch-action: manipulation;
-    padding: 10px 96px 10px 20px;
+    padding: 10px 105px 10px 20px;
 }
 
 .input-sku-gigante:focus {
     border-color: #2563EB;
-    box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0.4);
 }
 
 .input-sku-gigante.sucesso-encontrado {
     border-color: #059669 !important;
     background-color: #ECFDF5 !important;
-    box-shadow: 0 0 0 8px rgba(5, 150, 105, 0.35) !important;
+    box-shadow: 0 0 0 10px rgba(5, 150, 105, 0.4) !important;
 }
 
 .btn-limpar-sku {
@@ -695,10 +713,10 @@ body {
     transform: translateY(-50%);
     background: #0F172A;
     border: none;
-    width: 74px;
-    height: 74px;
+    width: 82px;
+    height: 82px;
     border-radius: 50%;
-    font-size: 42px;
+    font-size: 46px;
     font-weight: 900;
     color: #FFFFFF;
     cursor: pointer;
@@ -715,12 +733,12 @@ body {
 
 .card-confirmacao-sku {
     background: #ECFDF5;
-    border: 7px solid #059669;
-    border-radius: 32px;
-    padding: 34px 30px;
-    margin: 24px 0;
+    border: 8px solid #059669;
+    border-radius: 36px;
+    padding: 38px 32px;
+    margin: 26px 0;
     text-align: left;
-    box-shadow: 0 12px 30px rgba(5, 150, 105, 0.25);
+    box-shadow: 0 14px 34px rgba(5, 150, 105, 0.28);
     animation: fadeInSku 0.2s ease;
 }
 
@@ -735,19 +753,19 @@ body {
     gap: 12px;
     background: #059669;
     color: #FFFFFF;
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 900;
-    padding: 12px 30px;
-    border-radius: 18px;
+    padding: 14px 32px;
+    border-radius: 20px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
 .card-confirmacao-sku .nome-produto-destaque {
-    font-size: 48px;
+    font-size: 54px;
     font-weight: 900;
     color: #022C22;
-    margin: 18px 0 14px 0;
+    margin: 20px 0 16px 0;
     line-height: 1.2;
     word-break: break-word;
 }
@@ -757,16 +775,16 @@ body {
     flex-wrap: wrap;
     gap: 16px;
     align-items: center;
-    margin-top: 16px;
+    margin-top: 18px;
 }
 
 .card-confirmacao-sku .badge-sku {
     background-color: #0F172A;
     color: #FFFFFF;
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 900;
-    padding: 12px 24px;
-    border-radius: 16px;
+    padding: 14px 26px;
+    border-radius: 18px;
     letter-spacing: 1px;
 }
 

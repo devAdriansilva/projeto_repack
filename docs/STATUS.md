@@ -228,6 +228,16 @@
       - Cartão central com moldura sólida de 7px, nome do produto em 48px negrito, quantidade exibida em 96px colossal, tipo de avaria em 42px e selo de destinação em 34px com borda de 5px.
       - Botões "CORRIGIR" e "CONFIRMAR" elevados para 125px de altura e fonte de 38px negrito.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-018 (11/11/2026):** Edição Numérica Direta de Quantidade e Escala Monumental (Max-Width 980px).
+    - Atendimento às solicitações operacionais da bancada:
+      - **Edição direta de quantidade:** O visor de quantidade foi convertido de elemento estático para `<input type="number" inputmode="numeric">` de 160px de altura e dígitos em 104px negrito, permitindo digitar qualquer número diretamente via teclado numérico ou usar os botões `[-]` e `[+]` de 160x160px (fonte 104px).
+      - Seleção automática de texto ao focar (`onfocus="this.select()"`) para substituição rápida em 1 toque, com validação inteligente de limite mínimo (1 unidade) no evento blur.
+      - Campo de SKU expandido para 160px de altura, fonte de 96px negrito, moldura de 8px e botão '✕' de 82x82px (fonte 46px).
+      - Card de produto confirmado com borda de 8px, nome em 54px negrito e badges em 32px.
+      - Passo 2: Título em 54px, crachá do produto em 38px, 5 botões de avaria de 140px de altura (fonte 42px, ícones 58px) e botão de retorno em 125px (fonte 36px).
+      - Passo 3: Título em 54px, cartão em moldura de 8px com produto em 54px, quantidade em 104px colossal, tipo de avaria em 46px e selo em 38px.
+      - Botões de dupla confirmação ampliados para 135px de altura e fonte de 42px negrito.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
