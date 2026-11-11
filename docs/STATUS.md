@@ -378,6 +378,10 @@
       - Adicionadas classes `.btn-operador-baixa` e flexibilização de altura de container em `public/assets/css/urna.css`.
       - Cache estático atualizado no Service Worker `repack-pwa-v1.38`.
     - **Incremento de Versão:** Versão elevada para `v1.38`.
+  - [x] **MANUT-039 (11/11/2026):** Isolamento de Segurança e Remoção do Atalho para o Repack na Tela de Login da Lojinha.
+    - **Isolamento de Domínio/Perfil (`app/views/lojinha/login.php`):**
+      - Removido o link e o divisor inferior `← Voltar à Área de Reembalagem`, garantindo que colaboradores externos/gerais não tenham rota exposta para acessar a área operacional ou o quiosque da bancada de repack.
+    - **Incremento de Versão:** Versão elevada para `v1.39` com atualização do Service Worker `repack-pwa-v1.39`.
 
 ---
 

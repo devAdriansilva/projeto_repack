@@ -90,12 +90,6 @@ $pageTitle = 'Acesso à Lojinha dos Colaboradores - Repack';
                 <span>Acessar Vitrine</span>
             </button>
         </form>
-
-        <div class="text-center mt-4 pt-3" style="border-top: 1px solid #E5E7EB;">
-            <a href="<?= APP_URL ?: '/' ?>" class="text-decoration-none text-muted" style="font-weight: 600; font-size: 15px;">
-                ← Voltar à Área de Reembalagem
-            </a>
-        </div>
     </div>
 </div>
 
