@@ -14,14 +14,10 @@
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^(.*)$ public/$1 [L]
 
-    # Se a requisição já começa com /public/, não reescreve caso o arquivo exista
-    RewriteCond %{REQUEST_URI} ^/public/
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # Para todas as rotas virtuais (ex: /lojinha, /gestao, /operador), encaminha para public/index.php
-    RewriteRule ^(.*)$ public/index.php [L,QSA]
+    # Para todas as rotas que não forem arquivos físicos existentes, envia para index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [L,QSA]
 </IfModule>
 
 # Desativa listagem de diretórios
