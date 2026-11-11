@@ -294,6 +294,13 @@
       - Dimensionamento responsivo de ícones (`clamp(120px, 20vh, 180px)`), tipografia de títulos (`clamp(26px, 5.5vw, 40px)`) e rótulos dos botões (`clamp(26px, 5.5vw, 44px)`).
       - Remoção de chaves duplicadas/órfãs no CSS para integridade estrita de renderização.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-028 (11/11/2026):** Título REPACK com Fundo Contrastante e Ampliação Adicional de Ícones e Tipografia.
+    - Alteração da expressão do título de `BANCADA DE REPACK` para `REPACK` em `app/views/operador/home.php`.
+    - Criação de badge monumental contrastante `.home-title-badge` com fundo azul-escuro industrial `#0F172A`, texto branco, borda sólida `#334155` e sombra profunda, destacando imediatamente a identidade da estação.
+    - Ampliação do título REPACK para `clamp(34px, 7.5vw, 52px)` com espaçamento entre letras de `5px`.
+    - Ampliação máxima dos ícones ilustrativos nos botões (`clamp(140px, 23vh, 220px)`) com imagens preenchendo 95% do espaço interno.
+    - Ampliação adicional das fontes dos botões de ação para `clamp(30px, 6.8vw, 48px)` com ícones vetoriais de `48px`.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
