@@ -50,26 +50,26 @@ if ($operadorAtivoId) {
 <body>
 
 <!-- Barra Superior Minimalista do Quiosque -->
-<header class="quiosque-header" style="justify-content: flex-end; padding: 10px 18px; min-height: 52px; background-color: var(--surface); border-bottom: 1px solid var(--border);">
-    <!-- Botão de Engrenagem com Proteção de Toque Acidental (5 segundos) -->
+<header class="quiosque-header" style="justify-content: flex-end; padding: 12px 20px; min-height: 60px; background-color: var(--surface); border-bottom: 2px solid var(--border);">
+    <!-- Botão de Configurações / Gestão com Ícone Azul de Alta Visibilidade (Proteção 5s) -->
     <div style="position: relative; display: inline-flex; align-items: center;">
         <button type="button" 
                 id="btnEngrenagemQuiosque" 
                 class="gear-camuflada" 
                 title="Pressione e segure por 5s para abrir configurações" 
                 aria-label="Configurações do Repack"
-                style="position: relative; width: 46px; height: 46px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: transparent; border: none; cursor: pointer; color: #9CA3AF; padding: 0;">
+                style="position: relative; width: 54px; height: 54px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #EFF6FF; border: 3px solid #BFDBFE; cursor: pointer; color: #2563EB; padding: 0; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);">
             <!-- Anel SVG de Progresso circular ao segurar -->
-            <svg class="gear-progress-ring" width="46" height="46" viewBox="0 0 46 46" style="position: absolute; top: 0; left: 0; transform: rotate(-90deg); pointer-events: none;">
-                <circle cx="23" cy="23" r="20" stroke="#E5E7EB" stroke-width="3" fill="none"/>
-                <circle id="gearProgressCircle" cx="23" cy="23" r="20" stroke="#3B82F6" stroke-width="3" fill="none" stroke-dasharray="125.66" stroke-dashoffset="125.66" style="transition: stroke-dashoffset 0.05s linear;"/>
+            <svg class="gear-progress-ring" width="54" height="54" viewBox="0 0 54 54" style="position: absolute; top: -3px; left: -3px; transform: rotate(-90deg); pointer-events: none;">
+                <circle cx="27" cy="27" r="20" stroke="#DBEAFE" stroke-width="4" fill="none"/>
+                <circle id="gearProgressCircle" cx="27" cy="27" r="20" stroke="#2563EB" stroke-width="4" fill="none" stroke-dasharray="125.66" stroke-dashoffset="125.66" style="transition: stroke-dashoffset 0.05s linear;"/>
             </svg>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="#2563EB">
                 <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
             </svg>
         </button>
         <!-- Dica discreta ao segurar -->
-        <span id="gearHintText" style="display: none; position: absolute; right: 54px; white-space: nowrap; font-size: 13px; font-weight: 700; background: #111827; color: #FFFFFF; padding: 4px 10px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 10;">Segure por 5s...</span>
+        <span id="gearHintText" style="display: none; position: absolute; right: 64px; white-space: nowrap; font-size: 14px; font-weight: 800; background: #0F172A; color: #FFFFFF; padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); z-index: 10;">Segure por 5s...</span>
     </div>
 </header>
 

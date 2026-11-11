@@ -17,7 +17,7 @@
     --on-surface: #111827;
     --on-surface-muted: #6B7280;
     --border: #D1D5DB;
-    --gear-icon: #D1D5DB;
+    --gear-icon: #2563EB;
 
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     
@@ -161,26 +161,31 @@ body {
     color: #991B1B;
 }
 
-/* Ícone de Engrenagem Camuflada */
+/* Ícone de Configuração / Gestão (Azul Visível de Alto Contraste) */
 .gear-camuflada {
     color: var(--gear-icon) !important;
     text-decoration: none;
-    padding: 10px;
+    padding: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-md);
+    border-radius: 50%;
     cursor: pointer;
     touch-action: manipulation;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-    background: transparent;
-    border: none;
+    opacity: 1 !important;
+    transition: transform 0.15s ease, filter 0.15s ease;
+    background: #EFF6FF;
+    border: 2.5px solid #BFDBFE;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
 }
 
-.gear-camuflada:hover,
+.gear-camuflada:hover {
+    filter: brightness(1.08);
+}
+
 .gear-camuflada:active {
-    opacity: 1;
+    transform: scale(0.94);
+    filter: brightness(0.92);
 }
 
 /* Container Principal */
@@ -301,25 +306,27 @@ body {
 }
 
 /* ==========================================================================
-   Home do Operador - Layout Harmônico e Botões Sólidos de Alta Usabilidade
+   Home do Operador - Layout Monumental e Botões Sólidos de Altíssima Visibilidade
    ========================================================================== */
 .home-operador-container {
     width: 100%;
-    max-width: 600px;
+    max-width: 980px;
     margin: 0 auto;
-    padding: 0;
-    min-height: calc(100dvh - 90px);
+    padding: 20px 14px;
+    min-height: calc(100dvh - 80px);
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
+    gap: 28px;
     box-sizing: border-box;
 }
 
 .home-operador-header {
     text-align: center;
-    padding: 4px 0;
+    padding: 0;
     flex-shrink: 0;
+    width: 100%;
 }
 
 .brand-repack-badge {
@@ -329,28 +336,19 @@ body {
     justify-content: center;
     background: #0F172A;
     color: #FFFFFF;
-    padding: 10px 42px;
-    border-radius: 18px;
-    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.28);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    padding: 14px 48px;
+    border-radius: 24px;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.15);
 }
 
 .brand-repack-badge h1 {
     margin: 0;
-    font-size: 28px;
+    font-size: 42px;
     font-weight: 900;
     letter-spacing: 3px;
     color: #FFFFFF;
     line-height: 1.1;
-}
-
-.brand-repack-badge .brand-sub {
-    font-size: 12px;
-    font-weight: 700;
-    color: #94A3B8;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-top: 3px;
 }
 
 .btn-operador-solido {
@@ -359,14 +357,11 @@ body {
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    border-radius: 28px;
+    border-radius: 36px;
     width: 100%;
-    height: 270px;
-    min-height: 240px;
-    max-height: 310px;
-    padding: 18px 20px;
+    min-height: 250px;
+    padding: 26px 20px;
     box-sizing: border-box;
-    border: none;
     transition: transform 0.1s ease, filter 0.1s ease, box-shadow 0.1s ease;
     touch-action: manipulation;
 }
@@ -383,34 +378,36 @@ body {
 
 .btn-operador-bo {
     background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%);
-    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+    border: 8px solid #1E40AF;
+    box-shadow: 0 14px 34px rgba(37, 99, 235, 0.38);
 }
 
 .btn-operador-producao {
     background: linear-gradient(145deg, #059669 0%, #047857 100%);
-    box-shadow: 0 10px 24px rgba(5, 150, 105, 0.35);
+    border: 8px solid #065F46;
+    box-shadow: 0 14px 34px rgba(5, 150, 105, 0.38);
 }
 
 .btn-operador-icone-wrapper {
-    width: 140px;
-    height: 140px;
+    width: 145px;
+    height: 145px;
     background: #FFFFFF;
-    border-radius: 24px;
+    border-radius: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
-    margin-bottom: 14px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+    margin-bottom: 16px;
     padding: 8px;
     box-sizing: border-box;
     flex-shrink: 0;
 }
 
 .btn-operador-img {
-    width: 120px;
-    height: 120px;
+    width: 125px;
+    height: 125px;
     object-fit: contain;
-    border-radius: 16px;
+    border-radius: 20px;
     display: block;
 }
 
@@ -418,8 +415,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 14px;
-    font-size: 28px;
+    gap: 16px;
+    font-size: 42px;
     font-weight: 900;
     color: #FFFFFF;
     letter-spacing: 0.5px;
@@ -428,25 +425,25 @@ body {
     line-height: 1.2;
 }
 
-@media (max-width: 380px) {
-    .btn-operador-solido {
-        height: 220px;
-        min-height: 200px;
-        padding: 12px 10px;
-    }
+@media (max-width: 480px) {
     .btn-operador-label {
-        font-size: 21px;
-        gap: 8px;
+        font-size: 34px;
+        gap: 10px;
+    }
+    .btn-operador-solido {
+        min-height: 220px;
+        padding: 20px 14px;
     }
     .btn-operador-icone-wrapper {
-        width: 110px;
-        height: 110px;
-        margin-bottom: 8px;
+        width: 125px;
+        height: 125px;
+        margin-bottom: 12px;
     }
     .btn-operador-img {
-        width: 95px;
-        height: 95px;
+        width: 105px;
+        height: 105px;
     }
+}
     .brand-repack-badge h1 {
         font-size: 24px;
         letter-spacing: 2px;

@@ -278,6 +278,15 @@
     - Remoção de textos e legendas explicativas em todo o fluxo de produção, mantendo foco puramente operacional.
     - Remoção da exibição do tempo total decorrido na tela de conferência (`cronometro_resumo.php`), exibindo estritamente Produto, Pacotes Concluídos e os Horários marcados (`Início ➔ Fim`).
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-026 (11/11/2026):** Aplicação de Escala Monumental na Home e Ícone de Configuração Azul Visível.
+    - Unificação visual da tela inicial (`app/views/operador/home.php`):
+      - Container expandido para `max-width: 980px` com respiro vertical amplo.
+      - Título monumental e limpo `BANCADA DE REPACK` (52px, peso 900) sem poluição visual ou legendas pequenas.
+      - Botões de ação sólidos em escala colossal (`250px` de altura, bordas de `8px`, cantos arredondados de `36px` e textos monumentais de `42px` em peso 900): `REGISTRAR B.O.` (azul `#2563EB`) e `REGISTRAR PRODUÇÃO` (verde `#059669`).
+      - Selo indicador dinâmico de produção ativa (`⏸ EM ANDAMENTO`) quando há um lote iniciado.
+    - Destaque no Ícone de Configuração (`app/views/layouts/header.php` e `urna.css`):
+      - Substituição do cinza camuflado pelo azul vibrante `#2563EB`, com fundo suave `#EFF6FF`, borda azul reforçada e anel circular de progresso nítido, mantendo a proteção tátil de 5 segundos.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
