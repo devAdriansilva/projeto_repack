@@ -616,6 +616,253 @@ body {
     box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
 }
 
+/* ==========================================================================
+   Fluxo Harmonizado de Registrar Produção (Urna Eletrônica / Touch)
+   ========================================================================== */
+.flow-container {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 6px 12px 24px 12px;
+    box-sizing: border-box;
+}
+
+.btn-flow-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #F8FAFC;
+    color: #1E293B;
+    border: 2px solid #CBD5E1;
+    border-radius: 16px;
+    padding: 10px 24px;
+    font-size: 22px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.1s ease, color 0.1s ease;
+    margin-bottom: 8px;
+}
+
+.btn-flow-voltar:hover, .btn-flow-voltar:active {
+    background: #E2E8F0;
+    color: #0F172A;
+    text-decoration: none;
+}
+
+.flow-title {
+    text-align: center;
+    font-size: clamp(32px, 6.5vw, 44px);
+    font-weight: 900;
+    color: #0F172A;
+    letter-spacing: 0.5px;
+    margin: 4px 0 24px 0;
+}
+
+.flow-label {
+    display: block;
+    font-size: clamp(24px, 5vw, 30px);
+    font-weight: 800;
+    color: #1E293B;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.flow-input-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.flow-input-field {
+    width: 100%;
+    height: 80px;
+    background: #FFFFFF;
+    border: 2.5px solid #CBD5E1;
+    border-radius: 20px;
+    font-size: clamp(30px, 6.5vw, 40px);
+    font-weight: 800;
+    text-align: center;
+    color: #0F172A;
+    outline: none;
+    padding: 10px 50px 10px 20px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.flow-input-field:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2);
+}
+
+.flow-input-field::placeholder {
+    color: #94A3B8;
+    font-weight: 600;
+}
+
+.btn-flow-iniciar {
+    width: 100%;
+    min-height: 85px;
+    background: #059669;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 22px;
+    font-size: clamp(32px, 6.5vw, 40px);
+    font-weight: 900;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(5, 150, 105, 0.35);
+    transition: transform 0.08s ease, filter 0.08s ease;
+    touch-action: manipulation;
+    margin-top: 24px;
+}
+
+.btn-flow-iniciar:active {
+    transform: scale(0.98);
+    filter: brightness(0.92);
+}
+
+.flow-display-box {
+    width: 100%;
+    background: #F8FAFC;
+    border: 2px solid #CBD5E1;
+    border-radius: 20px;
+    padding: 16px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.flow-time-card {
+    width: 100%;
+    background: #FFFFFF;
+    border: 3px solid #3B82F6;
+    border-radius: 20px;
+    padding: 14px 20px;
+    text-align: center;
+    color: #2563EB;
+    font-size: clamp(30px, 6.5vw, 40px);
+    font-weight: 900;
+    margin-bottom: 22px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.12);
+    box-sizing: border-box;
+}
+
+.flow-time-card.pausado {
+    border-color: #F59E0B;
+    color: #D97706;
+    background: #FFFBEB;
+}
+
+.flow-counter-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 22px;
+    width: 100%;
+}
+
+.btn-flow-counter {
+    width: 76px;
+    height: 76px;
+    border-radius: 20px;
+    background: #F1F5F9;
+    border: 2px solid #CBD5E1;
+    color: #0F172A;
+    font-size: 44px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    touch-action: manipulation;
+    user-select: none;
+    transition: background-color 0.1s ease;
+}
+
+.btn-flow-counter:active {
+    background: #E2E8F0;
+    transform: scale(0.96);
+}
+
+.flow-input-quantidade {
+    flex: 1;
+    height: 76px;
+    background: #FFFFFF;
+    border: 2px solid #CBD5E1;
+    border-radius: 20px;
+    font-size: 44px;
+    font-weight: 900;
+    text-align: center;
+    color: #0F172A;
+    outline: none;
+    box-sizing: border-box;
+    -moz-appearance: textfield;
+}
+
+.flow-input-quantidade::-webkit-outer-spin-button,
+.flow-input-quantidade::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.btn-flow-pausa {
+    width: 100%;
+    min-height: 68px;
+    background: #F59E0B;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 20px;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.28);
+    touch-action: manipulation;
+}
+
+.btn-flow-pausa.retomar {
+    background: #059669;
+    box-shadow: 0 6px 16px rgba(5, 150, 105, 0.28);
+}
+
+.btn-flow-finalizar {
+    width: 100%;
+    min-height: 85px;
+    background: #EF4444;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 22px;
+    font-size: clamp(32px, 6.5vw, 40px);
+    font-weight: 900;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(239, 68, 68, 0.35);
+    transition: transform 0.08s ease, filter 0.08s ease;
+    touch-action: manipulation;
+}
+
+.btn-flow-finalizar:active {
+    transform: scale(0.98);
+    filter: brightness(0.92);
+}
+
 /* Busca Rápida de Produtos (Bancada) */
 .busca-produtos-wrapper {
     position: relative;

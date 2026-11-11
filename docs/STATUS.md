@@ -313,6 +313,12 @@
     - Ampliação do título REPACK no badge contrastante para `clamp(34px, 8vw, 54px)`.
     - Otimização do cabeçalho superior quiosque (`min-height: 52px; padding: 6px 16px;`) para transferir mais área vertical útil para os botões.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-031 (11/11/2026):** Harmonização Visual e Ergonômica da Aba Registrar Produção.
+    - Reestruturação completa do fluxo de visualização de `app/views/operador/cronometro.php` harmonizado com os mockups operacionais:
+      - **Momento 1 (Registrar Produção):** Botão `← Voltar` no topo à esquerda, título `Registrar Produção`, campo `Código do Produto` com placeholder `Ex: 7891011`, auto-validação em tempo real e botão monumental verde `▶ INICIAR`.
+      - **Momento 2 (Trabalho em Andamento):** Título `Trabalho em Andamento`, caixa `Produto selecionado:` com código e nome do item, card com contorno azul `Início: HH:MM`, bloco `Quantidade Feita` com input numérico centralizado e botões táteis `-` e `+` para luvas, botão de pausa/retomada integrado e botão monumental vermelho/coral `⏹ FINALIZAR`.
+    - Estilização dedicada dos componentes `.flow-*` em `public/assets/css/urna.css` mantendo alto contraste, filosofia da Urna Eletrônica e alvos táteis mínimos superiores a 76px.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
