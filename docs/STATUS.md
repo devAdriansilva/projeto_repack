@@ -185,6 +185,27 @@
       - Cartão central em moldura preta de 5px, nome do produto em 36px negrito, quantidade exibida em 68px garrafal, tipo de avaria em 32px e badge de destinação ampliado para 26px negrito com borda de 3.5px.
       - Botões de dupla confirmação ("CORRIGIR" e "CONFIRMAR") com altura de 104px e fonte de 30px negrito.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-016 (11/11/2026):** Escala Colossal (Eliminação Total da Timidez Visual na Bancada).
+    - Elevação definitiva dos elementos para padrão Urna Eletrônica / Totem Industrial de Grande Porte:
+    - Contêiner principal (`.urna-container`) ampliado para `max-width: 880px` com preenchimento lateral imersivo de 20px.
+    - Passo 1:
+      - Título elevado para 42px e subtítulo para 22px negrito.
+      - Label de código para 32px negrito.
+      - Campo de SKU gigante expandido para 130px de altura, fonte de 72px negrito, borda preta espessa de 6px e botão '✕' com 66x66px (fonte 36px).
+      - Card de confirmação verde com borda de 6px, título do produto em 42px garrafal e badges de 26px negrito.
+      - Seletor numérico com botões `[-]` e `[+]` de 130x130px (fonte 80px), visor de quantidade com 130px de altura e dígitos colossais em 84px/88px com bordas de 6px.
+      - Botões Cancelar e Próximo elevados para 115px de altura mínima e fonte de 34px negrito.
+    - Passo 2:
+      - Título com 42px; crachá de identificação de produto e quantidade com 30px negrito e borda de 5px.
+      - 5 botões de opções de avaria ampliados para 115px de altura mínima, tipografia maciça de 34px negrito, ícones semânticos de 46px (`🥫`, `🏷️`, `📦`, `🚫`, `⚠️`) e bordas sólidas de 5px.
+      - Botão de correção elevado para 105px de altura e fonte de 28px.
+    - Passo 3:
+      - Título de conferência em 42px.
+      - Cartão central em moldura preta de 6px, nome do produto em 42px negrito, quantidade exibida em 84px garrafal, tipo de avaria em 38px e selo de destinação em 30px negrito com borda de 4.5px.
+      - Botões "CORRIGIR" e "CONFIRMAR" elevados para 115px de altura mínima e fonte de 34px negrito.
+    - Home do Operador:
+      - Botões sólidos elevados para até 310px de altura, ilustrações em caixas de 140x140px e tipografia em 28px negrito.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 

@@ -26,16 +26,16 @@ $pageTitle = "Avaria - Tipo de Avaria";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 16px;">
-    <span class="badge" style="background-color: var(--secondary); color: #FFF; font-size: 18px; font-weight: 900; padding: 8px 26px; border-radius: 9999px;">
+<div style="text-align: center; margin-bottom: 18px;">
+    <span class="badge" style="background-color: var(--secondary); color: #FFF; font-size: 20px; font-weight: 900; padding: 10px 30px; border-radius: 9999px;">
         PASSO 2 DE 3
     </span>
-    <h1 class="headline-lg" style="margin-top: 12px; margin-bottom: 8px; font-size: 36px; font-weight: 900; color: #0F172A;">
+    <h1 class="headline-lg" style="margin-top: 14px; margin-bottom: 10px; font-size: 42px; font-weight: 900; color: #0F172A;">
         QUAL É O TIPO DA AVARIA?
     </h1>
-    <div style="background: #FFFFFF; border: 4px solid #0F172A; border-radius: 20px; padding: 16px 26px; margin: 8px auto 0 auto; display: inline-block; max-width: 100%; box-shadow: 0 6px 16px rgba(0,0,0,0.1);">
-        <span style="font-size: 26px; font-weight: 900; color: #0F172A;"><?= sanitize_html($produtoNome) ?></span>
-        <span style="font-size: 26px; font-weight: 900; color: #2563EB; margin-left: 14px;">➔ <?= $quantidade ?> un.</span>
+    <div style="background: #FFFFFF; border: 5px solid #0F172A; border-radius: 24px; padding: 18px 32px; margin: 10px auto 0 auto; display: inline-block; max-width: 100%; box-shadow: 0 8px 20px rgba(0,0,0,0.12);">
+        <span style="font-size: 30px; font-weight: 900; color: #0F172A;"><?= sanitize_html($produtoNome) ?></span>
+        <span style="font-size: 30px; font-weight: 900; color: #2563EB; margin-left: 16px;">➔ <?= $quantidade ?> un.</span>
     </div>
 </div>
 
@@ -43,34 +43,34 @@ require_once __DIR__ . '/../layouts/header.php';
 <form action="<?= APP_URL ?>/operador/avaria/resumo" method="POST" id="formAvariaPasso2" style="width: 100%;">
     <input type="hidden" name="tipo_avaria" id="inputTipoAvaria" value="">
 
-    <div style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
+    <div style="display: flex; flex-direction: column; gap: 18px; width: 100%;">
         
         <!-- Destinados à Lojinha Interna (Amarelo / Laranja) -->
         <button type="button" class="btn-urna btn-urna-warning btn-avaria-opcao" onclick="submeterTipo('amassada')">
-            <span style="font-size: 38px;">🥫</span> <span>AMASSADA</span>
+            <span style="font-size: 46px;">🥫</span> <span>AMASSADA</span>
         </button>
 
         <button type="button" class="btn-urna btn-urna-warning btn-avaria-opcao" onclick="submeterTipo('def_rotulo')">
-            <span style="font-size: 38px;">🏷️</span> <span>DEFEITO NO RÓTULO</span>
+            <span style="font-size: 46px;">🏷️</span> <span>DEFEITO NO RÓTULO</span>
         </button>
 
         <button type="button" class="btn-urna btn-urna-warning btn-avaria-opcao" onclick="submeterTipo('emba_danificada')">
-            <span style="font-size: 38px;">📦</span> <span>EMBALAGEM DANIFICADA</span>
+            <span style="font-size: 46px;">📦</span> <span>EMBALAGEM DANIFICADA</span>
         </button>
 
         <!-- Destinados ao Descarte Crítico (Vermelho Perigo) -->
         <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('furo')">
-            <span style="font-size: 38px;">🚫</span> <span>FURO (DESCARTE)</span>
+            <span style="font-size: 46px;">🚫</span> <span>FURO (DESCARTE)</span>
         </button>
 
         <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('micro_furo')">
-            <span style="font-size: 38px;">⚠️</span> <span>MICRO FURO (DESCARTE)</span>
+            <span style="font-size: 46px;">⚠️</span> <span>MICRO FURO (DESCARTE)</span>
         </button>
     </div>
 
     <!-- Botão Voltar -->
-    <div style="margin-top: 20px; width: 100%;">
-        <a href="<?= APP_URL ?>/operador/avaria/passo1" class="btn-urna btn-urna-outline" style="min-height: 94px; font-size: 26px; font-weight: 900; border-radius: 24px; border: 4px solid #0F172A;">
+    <div style="margin-top: 22px; width: 100%;">
+        <a href="<?= APP_URL ?>/operador/avaria/passo1" class="btn-urna btn-urna-outline" style="min-height: 105px; font-size: 28px; font-weight: 900; border-radius: 26px; border: 5px solid #0F172A;">
             ⬅ CORRIGIR PRODUTO / QUANTIDADE
         </a>
     </div>

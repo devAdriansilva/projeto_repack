@@ -33,49 +33,49 @@ $pageTitle = "Avaria - Conferência";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 16px;">
-    <span class="badge" style="background-color: var(--primary); color: #FFF; font-size: 18px; font-weight: 900; padding: 8px 26px; border-radius: 9999px;">
+<div style="text-align: center; margin-bottom: 18px;">
+    <span class="badge" style="background-color: var(--primary); color: #FFF; font-size: 20px; font-weight: 900; padding: 10px 30px; border-radius: 9999px;">
         PASSO 3 DE 3 - CONFERÊNCIA
     </span>
-    <h1 class="headline-xl" style="margin-top: 12px; margin-bottom: 6px; font-size: 36px; font-weight: 900; color: #0F172A;">
+    <h1 class="headline-xl" style="margin-top: 14px; margin-bottom: 8px; font-size: 42px; font-weight: 900; color: #0F172A;">
         CONFIRA OS DADOS DO B.O.
     </h1>
-    <p class="body-lg" style="color: #1E293B; font-size: 19px; font-weight: 800; margin-bottom: 0;">Verifique com atenção antes de confirmar a gravação</p>
+    <p class="body-lg" style="color: #1E293B; font-size: 22px; font-weight: 800; margin-bottom: 0;">Verifique com atenção antes de confirmar a gravação</p>
 </div>
 
 <!-- Cartão Central de Resumo (Ultra Alto Contraste Massivo) -->
-<div class="urna-card" style="width: 100%; text-align: center; padding: 30px 24px; border-radius: 28px; border: 5px solid #0F172A; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); background: #FFFFFF;">
-    <div style="margin-bottom: 22px;">
-        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 18px; letter-spacing: 1px; text-transform: uppercase;">PRODUTO:</span>
-        <div class="headline-lg" style="color: #0F172A; margin-top: 8px; font-size: 36px; font-weight: 900; line-height: 1.25; word-break: break-word;">
+<div class="urna-card" style="width: 100%; text-align: center; padding: 36px 28px; border-radius: 30px; border: 6px solid #0F172A; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18); background: #FFFFFF;">
+    <div style="margin-bottom: 24px;">
+        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 22px; letter-spacing: 1px; text-transform: uppercase;">PRODUTO:</span>
+        <div class="headline-lg" style="color: #0F172A; margin-top: 10px; font-size: 42px; font-weight: 900; line-height: 1.22; word-break: break-word;">
             <?= sanitize_html($produtoNome) ?>
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; border-top: 4px solid #CBD5E1; border-bottom: 4px solid #CBD5E1; padding: 22px 0;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 26px; border-top: 4.5px solid #CBD5E1; border-bottom: 4.5px solid #CBD5E1; padding: 24px 0;">
         <div>
-            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 18px; text-transform: uppercase;">QUANTIDADE:</span>
-            <div class="headline-xl" style="color: #0F172A; font-size: 68px; font-weight: 900; margin-top: 4px; line-height: 1.1;">
-                <?= $quantidade ?> <span style="font-size: 26px; font-weight: 800; color: #64748B;">un.</span>
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 22px; text-transform: uppercase;">QUANTIDADE:</span>
+            <div class="headline-xl" style="color: #0F172A; font-size: 84px; font-weight: 900; margin-top: 6px; line-height: 1.05;">
+                <?= $quantidade ?> <span style="font-size: 30px; font-weight: 800; color: #64748B;">un.</span>
             </div>
         </div>
         <div>
-            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 18px; text-transform: uppercase;">TIPO DE AVARIA:</span>
-            <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? '#DC2626' : '#D97706' ?>; font-size: 32px; font-weight: 900; margin-top: 6px;">
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 22px; text-transform: uppercase;">TIPO DE AVARIA:</span>
+            <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? '#DC2626' : '#D97706' ?>; font-size: 38px; font-weight: 900; margin-top: 8px;">
                 <?= sanitize_html($tipoRotulo) ?>
             </div>
         </div>
     </div>
 
     <div>
-        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 18px; text-transform: uppercase;">DESTINAÇÃO AUTOMÁTICA:</span>
-        <div style="margin-top: 14px;">
+        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 22px; text-transform: uppercase;">DESTINAÇÃO AUTOMÁTICA:</span>
+        <div style="margin-top: 16px;">
             <?php if ($destino === 'lojinha'): ?>
-                <span class="badge" style="background-color: #DCFCE7; color: #064E3B; border: 3.5px solid #059669; font-size: 26px; padding: 16px 28px; border-radius: 18px; font-weight: 900; display: inline-block;">
+                <span class="badge" style="background-color: #DCFCE7; color: #064E3B; border: 4.5px solid #059669; font-size: 30px; padding: 18px 34px; border-radius: 20px; font-weight: 900; display: inline-block;">
                     ✔ LOJINHA INTERNA (RECUPERAÇÃO)
                 </span>
             <?php else: ?>
-                <span class="badge" style="background-color: #FEE2E2; color: #991B1B; border: 3.5px solid #DC2626; font-size: 26px; padding: 16px 28px; border-radius: 18px; font-weight: 900; display: inline-block;">
+                <span class="badge" style="background-color: #FEE2E2; color: #991B1B; border: 4.5px solid #DC2626; font-size: 30px; padding: 18px 34px; border-radius: 20px; font-weight: 900; display: inline-block;">
                     ✖ DESCARTE IRREVERSÍVEL (PERDA)
                 </span>
             <?php endif; ?>
@@ -83,12 +83,12 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 </div>
 
-<!-- Rodapé de Dupla Confirmação da Urna Eletrônica (Grandes Alvos 104px) -->
-<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 20px 0 0 0; gap: 16px;">
-    <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning" style="min-height: 104px; font-size: 30px; font-weight: 900; border-radius: 26px;">
+<!-- Rodapé de Dupla Confirmação da Urna Eletrônica (Grandes Alvos 115px) -->
+<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 24px 0 0 0; gap: 18px;">
+    <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning" style="min-height: 115px; font-size: 34px; font-weight: 900; border-radius: 28px;">
         CORRIGIR
     </a>
-    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarBO" onclick="confirmarApontamentoBO()" style="min-height: 104px; font-size: 30px; font-weight: 900; border-radius: 26px;">
+    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarBO" onclick="confirmarApontamentoBO()" style="min-height: 115px; font-size: 34px; font-weight: 900; border-radius: 28px;">
         CONFIRMAR
     </button>
 </div>
