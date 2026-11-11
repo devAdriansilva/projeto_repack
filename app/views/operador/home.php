@@ -24,7 +24,7 @@ require_once __DIR__ . '/../layouts/header.php';
        class="card-acao-operador" 
        style="display: flex; flex-direction: column; text-decoration: none; border-radius: 22px; overflow: hidden; background: #FFFFFF; border: 2.5px solid #CBD5E1; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); width: 100%; height: 270px; box-sizing: border-box;">
         <div style="height: 185px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; padding: 12px; box-sizing: border-box;">
-            <img src="<?= APP_URL ?>/assets/img/btn_bo.jpg" 
+            <img src="<?= APP_URL ?>/assets/img/btn_bo.jpg?v=2" 
                  alt="Lata amassada - B.O." 
                  style="height: 160px; width: 160px; max-width: 90%; object-fit: contain; border-radius: 14px; display: block;">
         </div>
@@ -41,7 +41,7 @@ require_once __DIR__ . '/../layouts/header.php';
        class="card-acao-operador" 
        style="display: flex; flex-direction: column; text-decoration: none; border-radius: 22px; overflow: hidden; background: #FFFFFF; border: 2.5px solid #CBD5E1; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); width: 100%; height: 270px; box-sizing: border-box;">
         <div style="height: 185px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; padding: 12px; box-sizing: border-box;">
-            <img src="<?= APP_URL ?>/assets/img/btn_producao.jpg" 
+            <img src="<?= APP_URL ?>/assets/img/btn_producao.jpg?v=2" 
                  alt="Encolhimento térmico - Produção" 
                  style="height: 160px; width: 160px; max-width: 90%; object-fit: contain; border-radius: 14px; display: block;">
         </div>
