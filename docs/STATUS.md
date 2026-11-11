@@ -119,6 +119,12 @@
     - Aumento da moldura das ilustrações para 210px de altura (com imagens em 185px de alta visibilidade).
     - Elevação da faixa de toque do botão para 88px de altura mínima (superando o requisito de 80px para luvas anti-corte), tipografia em 26px negrito e ícones em 32px.
     - Validação com 35/35 testes automatizados aprovados (`php tests/test_fase5.php`).
+  - [x] **MANUT-006 (11/11/2026):** Ocupação total da tela vertical (100dvh) em formato totem imersivo.
+    - Container operacional configurado com `min-height: calc(100dvh - 80px)` e `max-width: 600px`, eliminando espaços em branco residuais no topo e rodapé do mobile.
+    - Distribuição vertical dinâmica dos dois blocos com `flex: 1` (`min-height: 230px`), preenchendo 100% da altura da tela sem criar barras de rolagem desnecessárias.
+    - Expansão responsiva das molduras e imagens para até 240px de altura proporcional.
+    - Botões gigantes de 88px de altura, ícones ampliados de 34px e bordas de 24px de alto acabamento.
+    - Deploy automatizado executado diretamente via SSH no servidor Alwaysdata e validação de 35/35 testes integrados.
 
 ---
 

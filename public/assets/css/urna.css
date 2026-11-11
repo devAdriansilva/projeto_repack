@@ -192,7 +192,8 @@ body {
     max-width: 900px;
     width: 100%;
     margin: 0 auto;
-    padding: 24px 20px;
+    padding: 12px 14px;
+    box-sizing: border-box;
 }
 
 /* Botões da Urna (Mínimo 80px) */
