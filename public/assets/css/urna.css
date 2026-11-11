@@ -189,11 +189,11 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 16px;
-    max-width: 600px;
+    gap: 18px;
+    max-width: 760px;
     width: 100%;
     margin: 0 auto;
-    padding: 16px 16px 28px 16px;
+    padding: 16px 16px 32px 16px;
     box-sizing: border-box;
     min-height: calc(100dvh - 56px);
 }
@@ -256,6 +256,30 @@ body {
 .btn-urna-outline:hover,
 .btn-urna-outline:active {
     background-color: #E5E7EB;
+}
+
+/* Botões Robustos do Passo 2 (Tipo de Avaria) */
+.btn-avaria-opcao {
+    min-height: 82px;
+    height: 82px;
+    font-size: 23px;
+    font-weight: 900;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+@media (max-width: 420px) {
+    .btn-avaria-opcao {
+        min-height: 74px;
+        height: 74px;
+        font-size: 20px;
+    }
 }
 
 /* Insígnia com Fundo Estilizado do Repack */
@@ -512,17 +536,17 @@ body {
 }
 
 .btn-counter {
-    width: var(--touch-target);
-    height: var(--touch-target);
-    min-height: var(--touch-target);
-    min-width: var(--touch-target);
+    width: 90px;
+    height: 90px;
+    min-height: 90px;
+    min-width: 90px;
     border-radius: var(--radius-lg);
-    font-size: 36px;
-    font-weight: 800;
+    font-size: 44px;
+    font-weight: 900;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid var(--border);
+    border: 3px solid var(--border);
     background-color: var(--surface);
     color: var(--on-surface);
     cursor: pointer;
@@ -535,16 +559,16 @@ body {
 }
 
 .counter-display {
-    min-width: 140px;
-    height: var(--touch-target);
+    min-width: 160px;
+    height: 90px;
     background-color: #F9FAFB;
-    border: 2px solid var(--border);
+    border: 3px solid var(--border);
     border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
-    font-weight: 800;
+    font-size: 44px;
+    font-weight: 900;
     color: var(--on-surface);
     text-align: center;
 }
@@ -622,8 +646,8 @@ body {
    Entrada de Código SKU Direto (Passo 1 do B.O.)
    ========================================================================== */
 .sku-entry-container {
-    max-width: 580px;
-    margin: 0 auto 20px auto;
+    max-width: 100%;
+    margin: 0 auto 16px auto;
     width: 100%;
 }
 
@@ -634,20 +658,20 @@ body {
 
 .input-sku-gigante {
     width: 100%;
-    height: 76px;
-    font-size: 32px;
-    font-weight: 800;
+    height: 86px;
+    font-size: 38px;
+    font-weight: 900;
     text-align: center;
-    border-radius: 20px;
-    border: 3px solid #CBD5E1;
-    letter-spacing: 2px;
+    border-radius: 22px;
+    border: 3.5px solid #CBD5E1;
+    letter-spacing: 3px;
     box-sizing: border-box;
     background: #FFFFFF;
     color: #0F172A;
     outline: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
     touch-action: manipulation;
-    padding: 10px 54px 10px 20px;
+    padding: 10px 58px 10px 20px;
 }
 
 .input-sku-gigante:focus {
@@ -668,10 +692,10 @@ body {
     transform: translateY(-50%);
     background: #E2E8F0;
     border: none;
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 800;
     color: #475569;
     cursor: pointer;
@@ -688,12 +712,12 @@ body {
 
 .card-confirmacao-sku {
     background: #F0FDF4;
-    border: 2.5px solid #10B981;
-    border-radius: 20px;
-    padding: 18px 20px;
+    border: 3px solid #10B981;
+    border-radius: 22px;
+    padding: 22px 24px;
     margin: 16px 0;
     text-align: left;
-    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.14);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.16);
     animation: fadeInSku 0.2s ease;
 }
 
@@ -705,22 +729,22 @@ body {
 .card-confirmacao-sku .badge-status-ok {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     background: #10B981;
     color: #FFFFFF;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 900;
-    padding: 4px 12px;
-    border-radius: 8px;
+    padding: 6px 14px;
+    border-radius: 10px;
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
 .card-confirmacao-sku .nome-produto-destaque {
-    font-size: 21px;
+    font-size: 25px;
     font-weight: 900;
     color: #064E3B;
-    margin: 10px 0 6px 0;
+    margin: 12px 0 8px 0;
     line-height: 1.25;
     word-break: break-word;
 }
@@ -728,29 +752,29 @@ body {
 .card-confirmacao-sku .detalhes-produto {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
-    margin-top: 6px;
+    margin-top: 8px;
 }
 
 .card-confirmacao-sku .badge-embalagem {
     background: #DCFCE7;
     color: #166534;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 8px;
 }
 
 .card-nao-encontrado {
     background: #FEF2F2;
-    border: 2px dashed #F87171;
-    border-radius: 16px;
-    padding: 16px 18px;
+    border: 2.5px dashed #F87171;
+    border-radius: 18px;
+    padding: 18px 20px;
     margin: 16px 0;
     color: #991B1B;
-    font-weight: 700;
-    font-size: 16px;
+    font-weight: 800;
+    font-size: 18px;
     text-align: center;
     line-height: 1.35;
 }

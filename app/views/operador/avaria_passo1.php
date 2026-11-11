@@ -115,11 +115,11 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <!-- Seletor Numérico Gigante -->
-    <div class="urna-card" style="text-align: center; max-width: 580px; margin: 0 auto 20px auto; padding: 18px;">
-        <label class="body-lg" style="font-weight: 800; display: block; margin-bottom: 12px; font-size: 18px;">
+    <div class="urna-card" style="text-align: center; width: 100%; margin: 0 0 18px 0; padding: 20px 16px; border-radius: 22px;">
+        <label class="body-lg" style="font-weight: 900; display: block; margin-bottom: 14px; font-size: 20px; color: var(--on-surface); text-transform: uppercase;">
             QUANTIDADE AVARIADA:
         </label>
-        <div class="seletor-numerico-wrapper" style="justify-content: center;">
+        <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 18px; margin: 0;">
             <button type="button" class="btn-counter" onclick="alterarQuantidade(-1)" aria-label="Diminuir quantidade">−</button>
             <div class="counter-display" id="displayQtd"><?= $quantidadeInicial ?></div>
             <button type="button" class="btn-counter" onclick="alterarQuantidade(1)" aria-label="Aumentar quantidade">+</button>
@@ -127,16 +127,16 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <!-- Alerta Flutuante se tentar avançar sem produto -->
-    <div id="alertaSemProduto" style="display: none; max-width: 580px; margin: 0 auto 14px auto; background: #FEF2F2; color: #991B1B; border: 2px solid #EF4444; border-radius: 12px; padding: 12px; font-weight: 800; text-align: center; font-size: 15px;">
+    <div id="alertaSemProduto" style="display: none; width: 100%; margin: 0 0 16px 0; background: #FEF2F2; color: #991B1B; border: 2.5px solid #EF4444; border-radius: 14px; padding: 14px; font-weight: 800; text-align: center; font-size: 16px;">
         ⚠️ Digite um código válido antes de avançar!
     </div>
 
-    <!-- Botões de Ação do Rodapé (Urna Eletrônica 80px) -->
-    <div class="dupla-confirmacao-rodape" style="max-width: 580px; margin: 0 auto;">
-        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 72px;">
+    <!-- Botões de Ação do Rodapé (Grandes Alvos 85px) -->
+    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 18px 0 0 0; gap: 14px;">
+        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 85px; font-size: 24px; font-weight: 900; border-radius: 20px;">
             CANCELAR
         </a>
-        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 72px;">
+        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 85px; font-size: 24px; font-weight: 900; border-radius: 20px;">
             PRÓXIMO ➔
         </button>
     </div>

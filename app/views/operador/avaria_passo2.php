@@ -26,48 +26,49 @@ $pageTitle = "Avaria - Tipo de Avaria";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 14px;">
+<div style="text-align: center; margin-bottom: 12px;">
     <span class="badge" style="background-color: var(--secondary); color: #FFF; font-size: 15px; font-weight: 800; padding: 6px 18px; border-radius: 9999px;">
         PASSO 2 DE 3
     </span>
-    <h1 class="headline-lg" style="margin-top: 8px; margin-bottom: 2px; font-size: 24px;">QUAL É O TIPO DA AVARIA?</h1>
-    <p class="body-md" style="color: var(--on-surface-muted); margin-bottom: 0;">
-        Item: <strong><?= sanitize_html($produtoNome) ?></strong> | Quantidade: <strong><?= $quantidade ?> un.</strong>
-    </p>
+    <h1 class="headline-lg" style="margin-top: 8px; margin-bottom: 4px; font-size: 26px;">QUAL É O TIPO DA AVARIA?</h1>
+    <div style="background: #F8FAFC; border: 2px solid #E2E8F0; border-radius: 14px; padding: 10px 16px; margin: 8px auto 0 auto; display: inline-block; max-width: 100%;">
+        <span style="font-size: 16px; font-weight: 800; color: #0F172A;"><?= sanitize_html($produtoNome) ?></span>
+        <span style="font-size: 16px; font-weight: 900; color: #2563EB; margin-left: 8px;">(<?= $quantidade ?> un.)</span>
+    </div>
 </div>
 
-<!-- 5 Grandes Botões Verticais de Avaria (80px cada) -->
-<form action="<?= APP_URL ?>/operador/avaria/resumo" method="POST" id="formAvariaPasso2">
+<!-- 5 Grandes Botões Verticais de Avaria (Urna Eletrônica) -->
+<form action="<?= APP_URL ?>/operador/avaria/resumo" method="POST" id="formAvariaPasso2" style="width: 100%;">
     <input type="hidden" name="tipo_avaria" id="inputTipoAvaria" value="">
 
-    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px; margin: 0 auto;">
+    <div style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
         
         <!-- Destinados à Lojinha Interna (Amarelo / Laranja) -->
-        <button type="button" class="btn-urna btn-urna-warning" onclick="submeterTipo('amassada')">
+        <button type="button" class="btn-urna btn-urna-warning btn-avaria-opcao" onclick="submeterTipo('amassada')">
             AMASSADA
         </button>
 
-        <button type="button" class="btn-urna btn-urna-warning" onclick="submeterTipo('def_rotulo')">
+        <button type="button" class="btn-urna btn-urna-warning btn-avaria-opcao" onclick="submeterTipo('def_rotulo')">
             DEFEITO NO RÓTULO
         </button>
 
-        <button type="button" class="btn-urna btn-urna-warning" onclick="submeterTipo('emba_danificada')">
+        <button type="button" class="btn-urna btn-urna-warning btn-avaria-opcao" onclick="submeterTipo('emba_danificada')">
             EMBALAGEM DANIFICADA
         </button>
 
         <!-- Destinados ao Descarte Crítico (Vermelho Perigo) -->
-        <button type="button" class="btn-urna btn-urna-danger" onclick="submeterTipo('furo')">
+        <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('furo')">
             FURO (DESCARTE)
         </button>
 
-        <button type="button" class="btn-urna btn-urna-danger" onclick="submeterTipo('micro_furo')">
+        <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('micro_furo')">
             MICRO FURO (DESCARTE)
         </button>
     </div>
 
     <!-- Botão Voltar -->
-    <div style="max-width: 600px; margin: 24px auto 0 auto;">
-        <a href="<?= APP_URL ?>/operador/avaria/passo1" class="btn-urna btn-urna-outline">
+    <div style="margin-top: 18px; width: 100%;">
+        <a href="<?= APP_URL ?>/operador/avaria/passo1" class="btn-urna btn-urna-outline" style="min-height: 70px; font-size: 19px; font-weight: 800; border-radius: 18px;">
             ⬅ CORRIGIR PRODUTO / QUANTIDADE
         </a>
     </div>

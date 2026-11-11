@@ -155,6 +155,12 @@
     - Substituição do `justify-content: space-between` em `.urna-container` por `justify-content: flex-start` com `gap: 16px`, eliminando a separação forçada que empurrava o cabeçalho para o teto e os formulários para o rodapé em todas as etapas (Passo 1, Passo 2 e Passo 3 de Conferência).
     - Agrupamento visual compacto e natural do fluxo: Título, Formulário de SKU/Avaria e Dupla Confirmação agora fluem como um bloco contínuo, sem vazios de 600px no meio da tela.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-013 (11/11/2026):** Ampliação da escala física da interface operacional (Urna Eletrônica Real).
+    - Expansão do contêiner principal para `max-width: 760px` com preenchimento lateral completo (ocupando 96% da largura útil do dispositivo).
+    - Input de SKU ampliado para 86px de altura, borda de 3.5px e dígitos em 38px negrito.
+    - Botões de quantidade (`[-]` e `[+]`) ampliados para 90x90px com display de 44px negrito.
+    - Botões de opções de avaria do Passo 2 e botões de dupla confirmação elevados para 85px de altura mínima com tipografia de 24px/26px negrito, preenchendo a tela com alvos de toque massivos.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 

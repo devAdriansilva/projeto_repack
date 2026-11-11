@@ -33,7 +33,7 @@ $pageTitle = "Avaria - Conferência";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 14px;">
+<div style="text-align: center; margin-bottom: 12px;">
     <span class="badge" style="background-color: var(--primary); color: #FFF; font-size: 15px; font-weight: 800; padding: 6px 18px; border-radius: 9999px;">
         PASSO 3 DE 3 - CONFERÊNCIA
     </span>
@@ -41,35 +41,39 @@ require_once __DIR__ . '/../layouts/header.php';
     <p class="body-lg" style="color: var(--on-surface-muted); margin-bottom: 0;">Verifique com atenção antes de confirmar a gravação</p>
 </div>
 
-<!-- Cartão Central de Resumo -->
-<div class="urna-card" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 18px;">
-    <div style="margin-bottom: 16px;">
-        <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700; text-transform: uppercase;">PRODUTO:</span>
-        <div class="headline-lg" style="color: var(--on-surface); margin-top: 4px; font-size: 20px; line-height: 1.25;"><?= sanitize_html($produtoNome) ?></div>
+<!-- Cartão Central de Resumo (Amplo e de Alto Contraste) -->
+<div class="urna-card" style="width: 100%; text-align: center; padding: 24px 20px; border-radius: 22px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);">
+    <div style="margin-bottom: 18px;">
+        <span class="body-md" style="color: var(--on-surface-muted); font-weight: 800; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;">PRODUTO:</span>
+        <div class="headline-lg" style="color: var(--on-surface); margin-top: 6px; font-size: 24px; font-weight: 900; line-height: 1.25; word-break: break-word;">
+            <?= sanitize_html($produtoNome) ?>
+        </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 14px 0;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; border-top: 2px solid var(--border); border-bottom: 2px solid var(--border); padding: 18px 0;">
         <div>
-            <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700;">QUANTIDADE:</span>
-            <div class="headline-xl" style="color: var(--on-surface); font-size: 28px;"><?= $quantidade ?> <span style="font-size: 18px;">un.</span></div>
+            <span class="body-md" style="color: var(--on-surface-muted); font-weight: 800; font-size: 14px; text-transform: uppercase;">QUANTIDADE:</span>
+            <div class="headline-xl" style="color: #0F172A; font-size: 40px; font-weight: 900; margin-top: 4px;">
+                <?= $quantidade ?> <span style="font-size: 20px; font-weight: 700; color: #64748B;">un.</span>
+            </div>
         </div>
         <div>
-            <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700;">TIPO DE AVARIA:</span>
-            <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? 'var(--danger)' : 'var(--warning)' ?>; font-size: 20px;">
+            <span class="body-md" style="color: var(--on-surface-muted); font-weight: 800; font-size: 14px; text-transform: uppercase;">TIPO DE AVARIA:</span>
+            <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? 'var(--danger)' : '#D97706' ?>; font-size: 24px; font-weight: 900; margin-top: 4px;">
                 <?= sanitize_html($tipoRotulo) ?>
             </div>
         </div>
     </div>
 
     <div>
-        <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700;">DESTINAÇÃO AUTOMÁTICA:</span>
-        <div style="margin-top: 6px;">
+        <span class="body-md" style="color: var(--on-surface-muted); font-weight: 800; font-size: 14px; text-transform: uppercase;">DESTINAÇÃO AUTOMÁTICA:</span>
+        <div style="margin-top: 10px;">
             <?php if ($destino === 'lojinha'): ?>
-                <span class="badge" style="background-color: #D1FAE5; color: #065F46; font-size: 17px; padding: 8px 16px; border-radius: 9999px; font-weight: 800;">
+                <span class="badge" style="background-color: #D1FAE5; color: #065F46; font-size: 20px; padding: 12px 24px; border-radius: 14px; font-weight: 900; display: inline-block;">
                     ✔ LOJINHA INTERNA (RECUPERAÇÃO)
                 </span>
             <?php else: ?>
-                <span class="badge" style="background-color: #FEE2E2; color: #991B1B; font-size: 17px; padding: 8px 16px; border-radius: 9999px; font-weight: 800;">
+                <span class="badge" style="background-color: #FEE2E2; color: #991B1B; font-size: 20px; padding: 12px 24px; border-radius: 14px; font-weight: 900; display: inline-block;">
                     ✖ DESCARTE IRREVERSÍVEL (PERDA)
                 </span>
             <?php endif; ?>
@@ -77,12 +81,12 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 </div>
 
-<!-- Rodapé de Dupla Confirmação da Urna Eletrônica -->
-<div class="dupla-confirmacao-rodape" style="max-width: 600px; margin: 18px auto 0 auto;">
-    <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning">
+<!-- Rodapé de Dupla Confirmação da Urna Eletrônica (Grandes Alvos 85px) -->
+<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 18px 0 0 0; gap: 14px;">
+    <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning" style="min-height: 85px; font-size: 24px; font-weight: 900; border-radius: 20px;">
         CORRIGIR
     </a>
-    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarBO" onclick="confirmarApontamentoBO()">
+    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarBO" onclick="confirmarApontamentoBO()" style="min-height: 85px; font-size: 24px; font-weight: 900; border-radius: 20px;">
         CONFIRMAR
     </button>
 </div>
@@ -98,22 +102,40 @@ async function confirmarApontamentoBO() {
 
     const payload = {
         produto_id: <?= $produtoId ?>,
-        usuario_id: operadorId,
         tipo_avaria: '<?= sanitize_html($tipoAvaria) ?>',
         quantidade: <?= $quantidade ?>,
-        created_at: new Date().toISOString()
+        operador_id: operadorId,
+        criado_em: new Date().toISOString()
     };
 
     try {
-        const resultado = await RepackOffline.salvarBO(payload);
-        exibirSucessoFeedback("B.O. GRAVADO COM SUCESSO!", "Retornando à tela inicial...", () => {
-            window.location.href = BASE_APP_URL + '/operador';
+        const response = await fetch('<?= APP_URL ?>/api/bo/salvar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
+
+        const data = await response.json();
+
+        if (response.ok && data.status === 'success') {
+            exibirSucessoFeedback('GRAVADO COM SUCESSO!', 'Redirecionando...', () => {
+                window.location.href = '<?= APP_URL ?>/operador';
+            });
+        } else {
+            throw new Error(data.message || 'Falha ao salvar no servidor.');
+        }
     } catch (err) {
-        console.error('Falha ao processar B.O.:', err);
-        alert('Erro ao registrar apontamento. Tente novamente.');
-        btn.disabled = false;
-        btn.innerText = 'CONFIRMAR';
+        console.warn('Falha online, gravando no IndexedDB para sincronização posterior...', err);
+        if (window.RepackOffline) {
+            await window.RepackOffline.salvarBOOffline(payload);
+            exibirSucessoFeedback('SALVO OFFLINE!', 'Será sincronizado automaticamente.', () => {
+                window.location.href = '<?= APP_URL ?>/operador';
+            });
+        } else {
+            alert('Erro ao gravar: ' + err.message);
+            btn.disabled = false;
+            btn.innerText = 'CONFIRMAR';
+        }
     }
 }
 </script>
