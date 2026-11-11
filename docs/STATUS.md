@@ -259,6 +259,16 @@
       - `AvariaController::passo1()` e `ProdutividadeController::cronometro()` agora limpam a sessão a menos que a URL possua explicitamente o parâmetro `?origem=voltar`.
       - Adicionado `autocomplete="off"` nos formulários e campos numéricos e listener de `pageshow` para impedir restauração indevida de dados do cache de navegação do dispositivo.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-023 (11/11/2026):** Ajuste de Registrar Produção: Substituição do Cronômetro por Marcadores de Horário e Unificação com Layout do B.O.
+    - Eliminação completa do cronômetro contínuo digital (sem contagem regressiva/progressiva na tela):
+      - Implementados marcadores explícitos de Horário de Início (`HH:MM`) e Horário de Término (`HH:MM`) com inputs gigantes (`56px`) e botões de ação rápida `[ ⏰ MARCAR AGORA ]` com fundo azul.
+      - Cálculo em tempo real da duração total do lote (ex: `45 minutos` ou `1h 15min`) com suporte inteligente a turnos que cruzam a meia-noite.
+    - Unificação visual e ergonômica integral com a interface do Registro de B.O.:
+      - Entrada monumental de Produto por Código SKU (`160px`, fonte `96px`, teclado numérico nativo, botão limpar `✕` e card verde de confirmação imediata).
+      - Seletor de Pacotes Refeitos monumental com digitação numérica direta e botões `[-]` e `[+]` de `160x160px` com fonte `104px`.
+      - Remoção de passos ("PASSO X DE Y"), subtítulos e poluição visual.
+      - Tela de Conferência Dupla com cartão central massivo (borda `8px`, fontes `54px`/`104px`) e botões `⬅ VOLTAR / CORRIGIR` (azul vibrante) e `CONFIRMAR` (verde puro).
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 

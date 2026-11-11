@@ -960,3 +960,73 @@ body {
     overflow-y: auto;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
+
+/* Marcadores de Horário de Início e Fim (Produção - Sem Cronômetro) */
+.marcador-horarios-card {
+    background: #FFFFFF;
+    border: 8px solid #0F172A;
+    border-radius: 36px;
+    padding: 32px 24px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.input-hora-gigante {
+    width: 100%;
+    min-height: 125px;
+    height: 125px;
+    font-size: 56px;
+    font-weight: 900;
+    text-align: center;
+    border-radius: 28px;
+    border: 7px solid #0F172A;
+    background: #FFFFFF;
+    color: #0F172A;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    touch-action: manipulation;
+    padding: 10px 16px;
+    letter-spacing: 2px;
+}
+
+.input-hora-gigante:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.35);
+}
+
+.btn-marcar-agora {
+    width: 100%;
+    min-height: 85px;
+    font-size: 26px;
+    font-weight: 900;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%);
+    color: #FFFFFF;
+    border: 5px solid #1E40AF;
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+    cursor: pointer;
+    touch-action: manipulation;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 14px;
+    transition: transform 0.08s ease, filter 0.08s ease;
+}
+
+.btn-marcar-agora:active {
+    transform: scale(0.98);
+    filter: brightness(0.92);
+}
+
+.visor-duracao-total {
+    background: #EFF6FF;
+    border: 6px solid #3B82F6;
+    border-radius: 26px;
+    padding: 20px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 900;
+    color: #1E40AF;
+    letter-spacing: 0.5px;
+}

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Projeto Repack - Urna Eletrônica (Cronômetro - Conferência Dupla)
+ * Projeto Repack - Urna Eletrônica (Produção - Conferência Dupla)
  * Baseado estritamente em docs/DESIGN.md e docs/FSD.md (Seção 12.1 e 13.2)
  */
 
@@ -15,7 +15,7 @@ $fim = (string)($_POST['data_hora_fim'] ?? ($_SESSION['cronometro_temp']['data_h
 $duracao = (int)($_POST['duracao_segundos'] ?? ($_SESSION['cronometro_temp']['duracao_segundos'] ?? 0));
 $pacotes = (int)($_POST['pacotes_refeitos'] ?? ($_SESSION['cronometro_temp']['pacotes_refeitos'] ?? 1));
 
-if (empty($produtoNome)) {
+if (empty($produtoNome) && $produtoId > 0) {
     $prod = Produto::buscarPorId($produtoId);
     $produtoNome = $prod['nome'] ?? 'Produto';
 }
@@ -29,60 +29,66 @@ $_SESSION['cronometro_temp'] = [
     'pacotes_refeitos' => $pacotes
 ];
 
-// Formatação amigável do tempo
-$horas = floor($duracao / 3600);
-$minutos = floor(($duracao % 3600) / 60);
-$segundos = $duracao % 60;
-$tempoFormatado = sprintf("%02d:%02d:%02d", $horas, $minutos, $segundos);
+// Formatação amigável dos horários e duração
+$horaInicioFormatada = !empty($inicio) ? date('H:i', strtotime($inicio)) : '--:--';
+$horaFimFormatada = !empty($fim) ? date('H:i', strtotime($fim)) : '--:--';
 
-$pageTitle = "Produtividade - Conferência";
+$minutosTotais = (int)round($duracao / 60);
+$horas = floor($minutosTotais / 60);
+$minutosRestantes = $minutosTotais % 60;
+
+if ($horas > 0 && $minutosRestantes > 0) {
+    $tempoFormatado = "{$horas}h {$minutosRestantes}min";
+} elseif ($horas > 0) {
+    $tempoFormatado = "{$horas} hora" . ($horas > 1 ? 's' : '');
+} else {
+    $tempoFormatado = "{$minutosRestantes} minuto" . ($minutosRestantes != 1 ? 's' : '');
+}
+
+$pageTitle = "Produção - Conferência";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 24px;">
-    <span class="badge" style="background-color: var(--primary); color: #FFF; font-size: 16px; padding: 6px 16px; border-radius: 9999px;">
-        CONFERÊNCIA DE PRODUTIVIDADE
-    </span>
-    <h1 class="headline-xl" style="margin-top: 10px; margin-bottom: 8px;">CONFIRA O CICLO DE PRODUÇÃO</h1>
-    <p class="body-lg" style="color: var(--on-surface-muted);">Valide as informações antes de confirmar o apontamento</p>
+<div style="text-align: center; margin-bottom: 22px;">
+    <h1 class="headline-xl" style="margin: 0; font-size: 54px; font-weight: 900; color: #0F172A;">
+        CONFIRMAR PRODUÇÃO
+    </h1>
 </div>
 
-<!-- Cartão Central de Resumo -->
-<div class="urna-card" style="max-width: 650px; margin: 0 auto; text-align: center;">
-    <div style="margin-bottom: 20px;">
-        <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700; text-transform: uppercase;">PRODUTO REEMBALADO:</span>
-        <div class="headline-lg" style="color: var(--on-surface); margin-top: 4px;"><?= sanitize_html($produtoNome) ?></div>
+<!-- Cartão Central de Resumo (Ultra Alto Contraste Massivo) -->
+<div class="urna-card" style="width: 100%; text-align: center; padding: 44px 32px; border-radius: 36px; border: 8px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22); background: #FFFFFF;">
+    <div style="margin-bottom: 28px;">
+        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; letter-spacing: 1px; text-transform: uppercase;">PRODUTO:</span>
+        <div class="headline-lg" style="color: #0F172A; margin-top: 12px; font-size: 54px; font-weight: 900; line-height: 1.2; word-break: break-word;">
+            <?= sanitize_html($produtoNome) ?>
+        </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 16px 0;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 5px solid #CBD5E1; padding-top: 28px;">
         <div>
-            <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700;">TEMPO DECORRIDO:</span>
-            <div class="headline-xl" style="color: var(--secondary); font-family: monospace;"><?= $tempoFormatado ?></div>
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">PACOTES CONCLUÍDOS:</span>
+            <div class="headline-xl" style="color: #0F172A; font-size: 104px; font-weight: 900; margin-top: 6px; line-height: 1.05;">
+                <?= $pacotes ?> <span style="font-size: 36px; font-weight: 800; color: #64748B;">pcts</span>
+            </div>
         </div>
         <div>
-            <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700;">PACOTES CONCLUÍDOS:</span>
-            <div class="headline-xl" style="color: var(--primary);">
-                <?= $pacotes ?> <span style="font-size: 20px;">pcts</span>
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">HORÁRIOS & TEMPO:</span>
+            <div style="color: #1E40AF; font-size: 46px; font-weight: 900; margin-top: 8px;">
+                <?= $horaInicioFormatada ?> ➔ <?= $horaFimFormatada ?>
+            </div>
+            <div style="color: #059669; font-size: 34px; font-weight: 900; margin-top: 8px;">
+                ⏱ <?= $tempoFormatado ?>
             </div>
         </div>
     </div>
-
-    <div>
-        <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700;">STATUS DO CICLO:</span>
-        <div style="margin-top: 6px;">
-            <span class="badge" style="background-color: #D1FAE5; color: #065F46; font-size: 18px; padding: 8px 18px; border-radius: 9999px; font-weight: 700;">
-                ✔ PRONTO PARA REGISTRO
-            </span>
-        </div>
-    </div>
 </div>
 
-<!-- Rodapé de Dupla Confirmação -->
-<div class="dupla-confirmacao-rodape" style="max-width: 650px; margin: 24px auto 0 auto;">
-    <a href="<?= APP_URL ?>/operador/cronometro?origem=voltar" class="btn-urna btn-urna-warning">
-        CORRIGIR
+<!-- Rodapé de Dupla Confirmação da Urna Eletrônica (Grandes Alvos 135px) -->
+<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 28px 0 0 0; gap: 20px;">
+    <a href="<?= APP_URL ?>/operador/cronometro?origem=voltar" class="btn-urna btn-urna-secondary" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px; background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%); color: #FFFFFF; border: 6px solid #1E40AF; box-shadow: 0 10px 26px rgba(37, 99, 235, 0.35);">
+        ⬅ VOLTAR / CORRIGIR
     </a>
-    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarProdutividade" onclick="confirmarApontamentoProdutividade()">
+    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarProdutividade" onclick="confirmarApontamentoProdutividade()" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
         CONFIRMAR
     </button>
 </div>
@@ -106,18 +112,33 @@ async function confirmarApontamentoProdutividade() {
     };
 
     try {
-        const resultado = await RepackOffline.salvarProdutividade(payload);
-        exibirSucessoFeedback("PRODUTIVIDADE GRAVADA!", "Retornando à tela inicial...", () => {
-            localStorage.removeItem('repack_timer_inicio');
-            localStorage.removeItem('repack_timer_produto_id');
-            localStorage.removeItem('repack_timer_produto_nome');
-            window.location.href = BASE_APP_URL + '/operador';
+        const response = await fetch('<?= APP_URL ?>/api/produtividade/salvar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
+
+        const data = await response.json();
+
+        if (response.ok && data.status === 'success') {
+            exibirSucessoFeedback('PRODUÇÃO GRAVADA!', 'Redirecionando...', () => {
+                window.location.href = '<?= APP_URL ?>/operador';
+            });
+        } else {
+            throw new Error(data.message || 'Falha ao salvar no servidor.');
+        }
     } catch (err) {
-        console.error('Falha ao processar produtividade:', err);
-        alert('Erro ao registrar produtividade. Tente novamente.');
-        btn.disabled = false;
-        btn.innerText = 'CONFIRMAR';
+        console.warn('Falha online, gravando no IndexedDB para sincronização posterior...', err);
+        if (window.RepackOffline) {
+            await window.RepackOffline.salvarProdutividade(payload);
+            exibirSucessoFeedback('SALVO OFFLINE!', 'Será sincronizado automaticamente.', () => {
+                window.location.href = '<?= APP_URL ?>/operador';
+            });
+        } else {
+            alert('Erro ao gravar: ' + err.message);
+            btn.disabled = false;
+            btn.innerText = 'CONFIRMAR';
+        }
     }
 }
 </script>
