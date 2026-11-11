@@ -134,6 +134,10 @@
     - Fim do agrupamento centralizado que deixava grandes vazios em cima e embaixo: container configurado com `justify-content: space-between` e `min-height: calc(100dvh - 76px)`.
     - Insígnia REPACK posicionada confortavelmente no topo e cards ocupando toda a extensão vertical disponível (`min-height: 250px`, imagens com até 230px e botões de 85px de altura).
     - Deploy automatizado executado diretamente via SSH no servidor Alwaysdata.
+  - [x] **MANUT-009 (11/11/2026):** Resolução definitiva do layout de bancada e recorte quadrado das imagens.
+    - Recorte fotográfico de `btn_bo.jpg` para formato quadrado perfeito (558x558), eliminando barras laterais cinzas de letterbox da arte original.
+    - Fixação de proporção dimensional 4:3 (~380px x 270px) em cada card operacional, com fotos em 160px e botões em 85px de altura mínima (fontes 25px negrito).
+    - Insígnia estilizada de cabeçalho unificada e deploy imediato via SSH na Alwaysdata.
 
 ---
 
