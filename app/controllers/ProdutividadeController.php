@@ -12,14 +12,45 @@ require_once __DIR__ . '/../models/Produto.php';
 class ProdutividadeController
 {
     /**
-     * Tela do Cronômetro
+     * Tela do Registro de Produção
      */
     public function cronometro(): void
     {
-        if (empty($_GET['origem']) || $_GET['origem'] !== 'voltar') {
-            unset($_SESSION['cronometro_temp']);
+        // Se vier de conferência com origem=voltar, preserva dados temporários
+        if (!empty($_GET['origem']) && $_GET['origem'] === 'voltar') {
+            // Mantém producao_ativa e cronometro_temp
         }
         require_once __DIR__ . '/../views/operador/cronometro.php';
+    }
+
+    /**
+     * Endpoint API para registrar início da produção na sessão
+     */
+    public function iniciarSessao(): void
+    {
+        header('Content-Type: application/json; charset=UTF-8');
+        $raw = file_get_contents('php://input');
+        $dados = json_decode($raw, true) ?? [];
+
+        $_SESSION['producao_ativa'] = [
+            'produto_id' => (int)($dados['produto_id'] ?? 0),
+            'produto_nome' => (string)($dados['produto_nome'] ?? ''),
+            'produto_codigo' => (string)($dados['produto_codigo'] ?? ''),
+            'produto_embalagem' => (string)($dados['produto_embalagem'] ?? ''),
+            'data_hora_inicio' => (string)($dados['data_hora_inicio'] ?? date('Y-m-d H:i:s'))
+        ];
+
+        echo json_encode(['status' => 'success', 'producao' => $_SESSION['producao_ativa']]);
+    }
+
+    /**
+     * Endpoint API para descartar produção em andamento
+     */
+    public function descartarSessao(): void
+    {
+        header('Content-Type: application/json; charset=UTF-8');
+        unset($_SESSION['producao_ativa'], $_SESSION['cronometro_temp']);
+        echo json_encode(['status' => 'success']);
     }
 
     /**
@@ -45,7 +76,7 @@ class ProdutividadeController
             }
 
             $resultado = ApontamentoProdutividade::salvar($dados);
-            unset($_SESSION['cronometro_temp']);
+            unset($_SESSION['cronometro_temp'], $_SESSION['producao_ativa']);
             echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
         } catch (\InvalidArgumentException $e) {
             http_response_code(400);

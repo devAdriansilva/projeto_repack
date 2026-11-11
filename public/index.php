@@ -258,6 +258,14 @@ switch ($route) {
         (new ProdutividadeController())->salvar();
         break;
 
+    case '/api/produtividade/iniciar':
+        (new ProdutividadeController())->iniciarSessao();
+        break;
+
+    case '/api/produtividade/descartar':
+        (new ProdutividadeController())->descartarSessao();
+        break;
+
     case '/api/produtividade/sincronizar':
     case '/api/produtividade/sincronizar.php':
         (new ProdutividadeController())->sincronizar();

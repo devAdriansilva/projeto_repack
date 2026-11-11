@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Projeto Repack - Urna Eletrônica (Registro de Produção por Marcadores de Horário)
+ * Projeto Repack - Urna Eletrônica (Registro de Produção - Dois Momentos: Iniciar / Finalizar)
  * Baseado estritamente em docs/DESIGN.md e docs/FSD.md (Seção 12.1 e 13.2)
  */
 
@@ -10,33 +10,29 @@ require_once __DIR__ . '/../../models/Produto.php';
 
 $produtos = Produto::listarAtivos();
 
-// Produto e dados previamente selecionados (caso esteja voltando explicitamente da conferência)
+// Verifica se há produção em andamento na sessão ou se está retornando da conferência
+$producaoAtiva = $_SESSION['producao_ativa'] ?? null;
 $isOrigemVoltar = (isset($_GET['origem']) && $_GET['origem'] === 'voltar');
-if (!$isOrigemVoltar) {
-    unset($_SESSION['cronometro_temp']);
-}
 
-$produtoPreSelecionadoId = $isOrigemVoltar ? (int)($_SESSION['cronometro_temp']['produto_id'] ?? 0) : 0;
-$pacotesIniciais = $isOrigemVoltar ? (int)($_SESSION['cronometro_temp']['pacotes_refeitos'] ?? 1) : 1;
-if ($pacotesIniciais < 1) {
+if ($isOrigemVoltar && isset($_SESSION['cronometro_temp'])) {
+    $producaoAtiva = [
+        'produto_id' => (int)$_SESSION['cronometro_temp']['produto_id'],
+        'produto_nome' => (string)$_SESSION['cronometro_temp']['produto_nome'],
+        'produto_codigo' => (string)($_SESSION['cronometro_temp']['produto_codigo'] ?? ''),
+        'produto_embalagem' => (string)($_SESSION['cronometro_temp']['produto_embalagem'] ?? ''),
+        'data_hora_inicio' => (string)$_SESSION['cronometro_temp']['data_hora_inicio']
+    ];
+    $pacotesIniciais = (int)($_SESSION['cronometro_temp']['pacotes_refeitos'] ?? 1);
+} else {
     $pacotesIniciais = 1;
 }
 
-$horaInicioPrevia = '';
-if ($isOrigemVoltar && !empty($_SESSION['cronometro_temp']['data_hora_inicio'])) {
-    $horaInicioPrevia = date('H:i', strtotime($_SESSION['cronometro_temp']['data_hora_inicio']));
-}
-
-$horaFimPrevia = '';
-if ($isOrigemVoltar && !empty($_SESSION['cronometro_temp']['data_hora_fim'])) {
-    $horaFimPrevia = date('H:i', strtotime($_SESSION['cronometro_temp']['data_hora_fim']));
-}
-
-$produtoPreSelecionado = null;
-if ($produtoPreSelecionadoId > 0) {
+// Se tiver produto ativo, preenche código e embalagem se necessário
+if ($producaoAtiva && empty($producaoAtiva['produto_codigo'])) {
     foreach ($produtos as $p) {
-        if ((int)$p['id'] === $produtoPreSelecionadoId) {
-            $produtoPreSelecionado = $p;
+        if ((int)$p['id'] === (int)$producaoAtiva['produto_id']) {
+            $producaoAtiva['produto_codigo'] = (string)$p['codigo'];
+            $producaoAtiva['produto_embalagem'] = (string)($p['pacote_padrao'] ?? '');
             break;
         }
     }
@@ -56,21 +52,17 @@ $pageTitle = "Registrar Produção";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 20px;">
-    <h1 class="headline-lg" style="margin: 0; font-size: 48px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
-        REGISTRAR PRODUÇÃO
-    </h1>
-</div>
+<!-- ============================================================= -->
+<!-- MOMENTO 1: SELEÇÃO DE PRODUTO E INÍCIO (Antes de Iniciar)       -->
+<!-- ============================================================= -->
+<div id="secaoMomento1" style="<?= $producaoAtiva ? 'display: none;' : 'display: block;' ?>">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h1 class="headline-lg" style="margin: 0; font-size: 48px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
+            REGISTRAR PRODUÇÃO
+        </h1>
+    </div>
 
-<form action="<?= APP_URL ?>/operador/cronometro/resumo" method="POST" id="formProducao" autocomplete="off" onsubmit="return validarEnvioProducao(event)">
-    <input type="hidden" name="produto_id" id="inputProdutoId" value="<?= $produtoPreSelecionado['id'] ?? '' ?>">
-    <input type="hidden" name="produto_nome" id="inputProdutoNome" value="<?= sanitize_html($produtoPreSelecionado['nome'] ?? '') ?>">
-    <input type="hidden" name="pacotes_refeitos" id="inputPacotesRefeitos" value="<?= $pacotesIniciais ?>">
-    <input type="hidden" name="data_hora_inicio" id="inputDataHoraInicio" value="">
-    <input type="hidden" name="data_hora_fim" id="inputDataHoraFim" value="">
-    <input type="hidden" name="duracao_segundos" id="inputDuracaoSegundos" value="0">
-
-    <!-- SEÇÃO 1: CÓDIGO (SKU) DO PRODUTO (Idêntico ao B.O.) -->
+    <!-- Entrada por Código SKU (Idêntica ao Registro de B.O.) -->
     <div class="sku-entry-container">
         <label for="inputCodigoSku" style="display: block; font-size: 36px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
             CÓDIGO (SKU):
@@ -79,38 +71,34 @@ require_once __DIR__ . '/../layouts/header.php';
         <div class="sku-input-wrapper">
             <input type="text" 
                    id="inputCodigoSku" 
-                   class="input-sku-gigante <?= $produtoPreSelecionado ? 'sucesso-encontrado' : '' ?>" 
+                   class="input-sku-gigante" 
                    inputmode="numeric" 
                    pattern="[0-9]*"
                    placeholder="Ex: 25174" 
-                   value="<?= sanitize_html($produtoPreSelecionado['codigo'] ?? '') ?>"
+                   value=""
                    autocomplete="off"
                    autofocus
                    oninput="processarEntradaSku(this.value)">
             <button type="button" 
                     id="btnLimparSku" 
                     class="btn-limpar-sku" 
-                    style="<?= $produtoPreSelecionado ? 'display: flex;' : 'display: none;' ?>" 
+                    style="display: none;" 
                     onclick="limparSku()" 
                     aria-label="Limpar código">✕</button>
         </div>
 
-        <!-- Card de Confirmação Imediata (Verde de Alto Contraste) -->
-        <div class="card-confirmacao-sku" id="cardConfirmacaoSku" style="<?= $produtoPreSelecionado ? 'display: block;' : 'display: none;' ?>">
+        <!-- Card de Confirmação Imediata (Verde) -->
+        <div class="card-confirmacao-sku" id="cardConfirmacaoSku" style="display: none;">
             <div class="badge-status-ok">
                 <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
                 <span>PRODUTO IDENTIFICADO</span>
             </div>
-            <div class="nome-produto-destaque" id="displayNomeProduto">
-                <?= sanitize_html($produtoPreSelecionado['nome'] ?? '') ?>
-            </div>
+            <div class="nome-produto-destaque" id="displayNomeProduto"></div>
             <div class="detalhes-produto">
-                <span class="badge-sku" id="displaySkuBadge">SKU <?= sanitize_html($produtoPreSelecionado['codigo'] ?? '') ?></span>
-                <span class="badge-embalagem" id="displayEmbalagem">
-                    <?= sanitize_html($produtoPreSelecionado['pacote_padrao'] ?? '') ?>
-                </span>
+                <span class="badge-sku" id="displaySkuBadge"></span>
+                <span class="badge-embalagem" id="displayEmbalagem"></span>
             </div>
         </div>
 
@@ -120,7 +108,7 @@ require_once __DIR__ . '/../layouts/header.php';
             <span style="font-size: 18px; font-weight: 600;">Confira os dígitos na etiqueta da embalagem.</span>
         </div>
 
-        <!-- Menu Flutuante de Busca por Texto -->
+        <!-- Menu Flutuante de Sugestões por Nome -->
         <div id="wrapperSugestoes" class="wrapper-sugestoes-busca" style="display: none;">
             <div style="padding: 12px 18px; font-size: 18px; font-weight: 800; background: #F8FAFC; color: #475569; border-bottom: 2px solid #E2E8F0;">
                 Toque no produto desejado:
@@ -129,7 +117,60 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-    <!-- SEÇÃO 2: QUANTIDADE DE PACOTES REFEITOS (Escala Monumental com Digitação Direta) -->
+    <!-- Alerta Flutuante se tentar iniciar sem produto -->
+    <div id="alertaSemProduto" style="display: none; width: 100%; margin: 24px 0 0 0; background: #FEF2F2; color: #991B1B; border: 4.5px solid #EF4444; border-radius: 22px; padding: 22px; font-weight: 900; text-align: center; font-size: 24px;">
+        ⚠️ DIGITE O CÓDIGO (SKU) DO PRODUTO ANTES DE INICIAR!
+    </div>
+
+    <!-- Rodapé Momento 1: CANCELAR ou INICIAR PRODUÇÃO -->
+    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
+        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
+            CANCELAR
+        </a>
+        <button type="button" class="btn-urna btn-urna-primary" id="btnIniciarProducao" onclick="iniciarProducao()" style="min-height: 135px; font-size: 40px; font-weight: 900; border-radius: 36px;">
+            INICIAR PRODUÇÃO ➔
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- MOMENTO 2: PRODUÇÃO EM ANDAMENTO & FINALIZAÇÃO                -->
+<!-- ============================================================= -->
+<div id="secaoMomento2" style="<?= $producaoAtiva ? 'display: block;' : 'display: none;' ?>">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h1 class="headline-lg" style="margin: 0; font-size: 48px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
+            PRODUÇÃO EM ANDAMENTO
+        </h1>
+    </div>
+
+    <!-- Cartão Central com Produto e Horário de Início Fixado -->
+    <div class="urna-card" style="width: 100%; text-align: center; padding: 38px 28px; border-radius: 36px; border: 8px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18); background: #FFFFFF;">
+        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; letter-spacing: 1px; text-transform: uppercase;">
+            PRODUTO EM REEMBALAGEM:
+        </span>
+        <div class="headline-lg" id="ativoNomeProduto" style="color: #0F172A; margin-top: 10px; font-size: 48px; font-weight: 900; line-height: 1.2; word-break: break-word;">
+            <?= sanitize_html($producaoAtiva['produto_nome'] ?? '') ?>
+        </div>
+        <div style="margin-top: 14px; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+            <span class="badge-sku" id="ativoSkuBadge" style="font-size: 24px; padding: 8px 22px;">
+                SKU <?= sanitize_html($producaoAtiva['produto_codigo'] ?? '') ?>
+            </span>
+            <span class="badge-embalagem" id="ativoEmbalagemBadge" style="font-size: 24px; padding: 8px 22px;">
+                <?= sanitize_html($producaoAtiva['produto_embalagem'] ?? '') ?>
+            </span>
+        </div>
+
+        <div style="border-top: 5px solid #CBD5E1; margin-top: 26px; padding-top: 22px;">
+            <span class="body-md" style="color: #059669; font-weight: 900; font-size: 26px; text-transform: uppercase; letter-spacing: 1px;">
+                🟢 HORÁRIO DE INÍCIO REGISTRADO:
+            </span>
+            <div id="ativoHoraInicioDisplay" style="font-size: 72px; font-weight: 900; color: #059669; margin-top: 6px; line-height: 1.1;">
+                <?= !empty($producaoAtiva['data_hora_inicio']) ? date('H:i', strtotime($producaoAtiva['data_hora_inicio'])) : '--:--' ?>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seletor Monumental de Pacotes Refeitos (com digitação direta e botões -/+) -->
     <div class="sku-entry-container" style="margin-top: 26px;">
         <label for="displayPacotes" style="display: block; font-size: 36px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
             PACOTES REFEITOS:
@@ -152,80 +193,46 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-    <!-- SEÇÃO 3: MARCADORES DE HORÁRIO DE INÍCIO E TÉRMINO (Sem Cronômetro) -->
-    <div class="marcador-horarios-card" style="margin-top: 26px;">
-        <div style="font-size: 34px; font-weight: 900; color: #0F172A; text-align: center; margin-bottom: 22px; text-transform: uppercase; letter-spacing: 0.5px;">
-            MARCADORES DE HORÁRIO:
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
-            <!-- Bloco Horário de Início -->
-            <div style="background: #F8FAFC; border: 4px solid #CBD5E1; border-radius: 28px; padding: 22px; text-align: center;">
-                <label for="inputHoraInicio" style="display: block; font-size: 28px; font-weight: 900; color: #059669; margin-bottom: 12px; text-transform: uppercase;">
-                    🟢 HORÁRIO DE INÍCIO:
-                </label>
-                <input type="time" 
-                       id="inputHoraInicio" 
-                       class="input-hora-gigante" 
-                       value="<?= $horaInicioPrevia ?>" 
-                       autocomplete="off"
-                       oninput="calcularDuracao()" 
-                       onchange="calcularDuracao()">
-                <button type="button" class="btn-marcar-agora" onclick="marcarHoraAgora('inicio')">
-                    <span style="font-size: 30px;">⏰</span> <span>MARCAR AGORA</span>
-                </button>
-            </div>
-
-            <!-- Bloco Horário de Término -->
-            <div style="background: #F8FAFC; border: 4px solid #CBD5E1; border-radius: 28px; padding: 22px; text-align: center;">
-                <label for="inputHoraFim" style="display: block; font-size: 28px; font-weight: 900; color: #DC2626; margin-bottom: 12px; text-transform: uppercase;">
-                    🔴 HORÁRIO DE TÉRMINO:
-                </label>
-                <input type="time" 
-                       id="inputHoraFim" 
-                       class="input-hora-gigante" 
-                       value="<?= $horaFimPrevia ?>" 
-                       autocomplete="off"
-                       oninput="calcularDuracao()" 
-                       onchange="calcularDuracao()">
-                <button type="button" class="btn-marcar-agora" onclick="marcarHoraAgora('fim')">
-                    <span style="font-size: 30px;">⏰</span> <span>MARCAR AGORA</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Visor de Duração Total Calculada -->
-        <div id="cardDuracao" class="visor-duracao-total" style="margin-top: 24px;">
-            ⏱ DURAÇÃO CALCULADA: <strong id="textoDuracao">Preencha início e término</strong>
-        </div>
-    </div>
-
-    <!-- Alerta Flutuante de Validação -->
-    <div id="alertaValidacao" style="display: none; width: 100%; margin: 24px 0 0 0; background: #FEF2F2; color: #991B1B; border: 4.5px solid #EF4444; border-radius: 22px; padding: 22px; font-weight: 900; text-align: center; font-size: 24px;">
-    </div>
-
-    <!-- Botões de Ação do Rodapé (Grandes Alvos 135px de Alto Contraste) -->
+    <!-- Rodapé Momento 2: DESCARTAR ou FINALIZAR PRODUÇÃO -->
     <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
-        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
-            CANCELAR
-        </a>
-        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
-            PRÓXIMO ➔
+        <button type="button" class="btn-urna btn-urna-warning" onclick="descartarProducaoAtiva()" style="min-height: 135px; font-size: 34px; font-weight: 900; border-radius: 36px;">
+            DESCARTAR CICLO
+        </button>
+        <button type="button" class="btn-urna btn-urna-primary" id="btnFinalizarProducao" onclick="finalizarProducao()" style="min-height: 135px; font-size: 40px; font-weight: 900; border-radius: 36px;">
+            FINALIZAR PRODUÇÃO ➔
         </button>
     </div>
-</form>
+</div>
 
 <script>
 const PRODUTOS = <?= json_encode($produtosJson, JSON_UNESCAPED_UNICODE) ?>;
-let produtoAtivo = <?= $produtoPreSelecionado ? json_encode([
-    'id' => (int)$produtoPreSelecionado['id'],
-    'codigo' => (string)$produtoPreSelecionado['codigo'],
-    'nome' => (string)$produtoPreSelecionado['nome'],
-    'embalagem' => (string)($produtoPreSelecionado['pacote_padrao'] ?? '')
-], JSON_UNESCAPED_UNICODE) : 'null' ?>;
+let produtoSelecionadoMomento1 = null;
 
-let pacotesAtuais = <?= $pacotesIniciais ?>;
+// Objeto de produção ativa em memória (recuperado de PHP ou localStorage)
+let producaoAtiva = <?= $producaoAtiva ? json_encode($producaoAtiva, JSON_UNESCAPED_UNICODE) : 'null' ?>;
+let pacotesContador = <?= $pacotesIniciais ?>;
 
+// Checagem no cliente ao carregar a página
+window.addEventListener('DOMContentLoaded', () => {
+    // Se PHP não tinha na sessão, tenta recuperar do localStorage
+    if (!producaoAtiva) {
+        const local = localStorage.getItem('repack_producao_ativa');
+        if (local) {
+            try {
+                producaoAtiva = JSON.parse(local);
+                if (producaoAtiva && producaoAtiva.produto_id && producaoAtiva.data_hora_inicio) {
+                    restaurarMomento2(producaoAtiva);
+                }
+            } catch (e) {
+                console.error('Falha ao restaurar producao do localStorage', e);
+            }
+        }
+    }
+});
+
+/* ==========================================================================
+   FUNÇÕES DO MOMENTO 1 (BUSCA SKU E INÍCIO)
+   ========================================================================== */
 function processarEntradaSku(valor) {
     const termo = valor.trim().toLowerCase();
     const btnLimpar = document.getElementById('btnLimparSku');
@@ -233,13 +240,13 @@ function processarEntradaSku(valor) {
     const cardOk = document.getElementById('cardConfirmacaoSku');
     const cardErro = document.getElementById('cardNaoEncontrado');
     const wrapperSugestoes = document.getElementById('wrapperSugestoes');
-    const alerta = document.getElementById('alertaValidacao');
+    const alerta = document.getElementById('alertaSemProduto');
 
     if (alerta) alerta.style.display = 'none';
     btnLimpar.style.display = termo ? 'flex' : 'none';
 
     if (!termo) {
-        desmarcarProduto();
+        produtoSelecionadoMomento1 = null;
         cardOk.style.display = 'none';
         cardErro.style.display = 'none';
         wrapperSugestoes.style.display = 'none';
@@ -266,13 +273,13 @@ function processarEntradaSku(valor) {
             wrapperSugestoes.style.display = 'none';
             return;
         } else if (matchesSku.length > 1 && matchesSku.length <= 5) {
-            desmarcarProduto();
+            produtoSelecionadoMomento1 = null;
             cardOk.style.display = 'none';
             cardErro.style.display = 'none';
             exibirSugestoes(matchesSku);
             return;
         } else if (termo.length >= 4) {
-            desmarcarProduto();
+            produtoSelecionadoMomento1 = null;
             cardOk.style.display = 'none';
             wrapperSugestoes.style.display = 'none';
             document.getElementById('codigoNaoEncontrado').innerText = valor;
@@ -286,13 +293,13 @@ function processarEntradaSku(valor) {
     if (!apenasNumeros && termo.length >= 2) {
         const matchesNome = PRODUTOS.filter(p => p.nome.toLowerCase().includes(termo)).slice(0, 6);
         if (matchesNome.length > 0) {
-            desmarcarProduto();
+            produtoSelecionadoMomento1 = null;
             cardOk.style.display = 'none';
             cardErro.style.display = 'none';
             exibirSugestoes(matchesNome);
             return;
         } else {
-            desmarcarProduto();
+            produtoSelecionadoMomento1 = null;
             cardOk.style.display = 'none';
             wrapperSugestoes.style.display = 'none';
             document.getElementById('codigoNaoEncontrado').innerText = valor;
@@ -302,7 +309,7 @@ function processarEntradaSku(valor) {
         }
     }
 
-    desmarcarProduto();
+    produtoSelecionadoMomento1 = null;
     cardOk.style.display = 'none';
     cardErro.style.display = 'none';
     wrapperSugestoes.style.display = 'none';
@@ -310,9 +317,7 @@ function processarEntradaSku(valor) {
 }
 
 function selecionarProdutoConfirmado(p) {
-    produtoAtivo = p;
-    document.getElementById('inputProdutoId').value = p.id;
-    document.getElementById('inputProdutoNome').value = p.nome;
+    produtoSelecionadoMomento1 = p;
     document.getElementById('displayNomeProduto').innerText = p.nome;
     document.getElementById('displaySkuBadge').innerText = 'SKU ' + p.codigo;
     document.getElementById('displayEmbalagem').innerText = p.embalagem || 'Unidade';
@@ -329,17 +334,11 @@ function selecionarProdutoConfirmado(p) {
     if (navigator.vibrate) navigator.vibrate(50);
 }
 
-function desmarcarProduto() {
-    produtoAtivo = null;
-    document.getElementById('inputProdutoId').value = '';
-    document.getElementById('inputProdutoNome').value = '';
-}
-
 function limparSku() {
     const input = document.getElementById('inputCodigoSku');
     input.value = '';
     input.classList.remove('sucesso-encontrado');
-    desmarcarProduto();
+    produtoSelecionadoMomento1 = null;
     document.getElementById('cardConfirmacaoSku').style.display = 'none';
     document.getElementById('cardNaoEncontrado').style.display = 'none';
     document.getElementById('wrapperSugestoes').style.display = 'none';
@@ -368,18 +367,72 @@ function exibirSugestoes(itens) {
     wrapper.style.display = 'block';
 }
 
+function iniciarProducao() {
+    const alerta = document.getElementById('alertaSemProduto');
+    if (!produtoSelecionadoMomento1) {
+        alerta.style.display = 'block';
+        document.getElementById('inputCodigoSku').focus();
+        if (navigator.vibrate) navigator.vibrate(150);
+        return;
+    }
+
+    alerta.style.display = 'none';
+    const agora = new Date();
+    const timestampInicio = agora.toISOString();
+
+    producaoAtiva = {
+        produto_id: produtoSelecionadoMomento1.id,
+        produto_nome: produtoSelecionadoMomento1.nome,
+        produto_codigo: produtoSelecionadoMomento1.codigo,
+        produto_embalagem: produtoSelecionadoMomento1.embalagem,
+        data_hora_inicio: timestampInicio
+    };
+
+    // Salva no localStorage para contingência e sobrevivência a recarregamento
+    localStorage.setItem('repack_producao_ativa', JSON.stringify(producaoAtiva));
+
+    // Salva na sessão PHP via endpoint rápido
+    fetch('<?= APP_URL ?>/api/produtividade/iniciar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(producaoAtiva)
+    }).catch(e => console.warn('Aviso: sessão offline temporária', e));
+
+    if (navigator.vibrate) navigator.vibrate([80, 50, 80]);
+
+    // Transiciona instantaneamente para o Momento 2
+    restaurarMomento2(producaoAtiva);
+}
+
+function restaurarMomento2(prod) {
+    document.getElementById('secaoMomento1').style.display = 'none';
+    document.getElementById('secaoMomento2').style.display = 'block';
+
+    document.getElementById('ativoNomeProduto').innerText = prod.produto_nome;
+    document.getElementById('ativoSkuBadge').innerText = 'SKU ' + (prod.produto_codigo || '');
+    document.getElementById('ativoEmbalagemBadge').innerText = prod.produto_embalagem || 'Unidade';
+
+    const dataObj = new Date(prod.data_hora_inicio);
+    const horas = String(dataObj.getHours()).padStart(2, '0');
+    const mins = String(dataObj.getMinutes()).padStart(2, '0');
+    document.getElementById('ativoHoraInicioDisplay').innerText = `${horas}:${mins}`;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ==========================================================================
+   FUNÇÕES DO MOMENTO 2 (PACOTES REFEITOS E FINALIZAÇÃO)
+   ========================================================================== */
 function alterarPacotes(delta) {
-    pacotesAtuais = Math.max(1, pacotesAtuais + delta);
-    document.getElementById('displayPacotes').value = pacotesAtuais;
-    document.getElementById('inputPacotesRefeitos').value = pacotesAtuais;
+    pacotesContador = Math.max(1, pacotesContador + delta);
+    document.getElementById('displayPacotes').value = pacotesContador;
     if (navigator.vibrate) navigator.vibrate(25);
 }
 
 function atualizarPacotesDigitados(val) {
     const parsed = parseInt(val, 10);
     if (!isNaN(parsed) && parsed >= 1) {
-        pacotesAtuais = parsed;
-        document.getElementById('inputPacotesRefeitos').value = pacotesAtuais;
+        pacotesContador = parsed;
     }
 }
 
@@ -387,118 +440,60 @@ function validarPacotesBlur() {
     const display = document.getElementById('displayPacotes');
     const parsed = parseInt(display.value, 10);
     if (isNaN(parsed) || parsed < 1) {
-        pacotesAtuais = 1;
+        pacotesContador = 1;
         display.value = 1;
-        document.getElementById('inputPacotesRefeitos').value = 1;
     } else {
-        pacotesAtuais = parsed;
+        pacotesContador = parsed;
         display.value = parsed;
-        document.getElementById('inputPacotesRefeitos').value = parsed;
     }
 }
 
-function marcarHoraAgora(campo) {
+function descartarProducaoAtiva() {
+    if (confirm('Deseja realmente descartar este ciclo de produção em andamento? O horário de início será perdido.')) {
+        localStorage.removeItem('repack_producao_ativa');
+        fetch('<?= APP_URL ?>/api/produtividade/descartar', { method: 'POST' }).catch(() => {});
+        window.location.href = '<?= APP_URL ?>/operador';
+    }
+}
+
+function finalizarProducao() {
+    if (!producaoAtiva) return;
+
     const agora = new Date();
-    const horas = String(agora.getHours()).padStart(2, '0');
-    const mins = String(agora.getMinutes()).padStart(2, '0');
-    const valor = `${horas}:${mins}`;
+    const timestampFim = agora.toISOString();
 
-    if (campo === 'inicio') {
-        document.getElementById('inputHoraInicio').value = valor;
-    } else {
-        document.getElementById('inputHoraFim').value = valor;
+    const inicioMs = new Date(producaoAtiva.data_hora_inicio).getTime();
+    const fimMs = agora.getTime();
+    const duracaoSegundos = Math.max(0, Math.round((fimMs - inicioMs) / 1000));
+
+    if (navigator.vibrate) navigator.vibrate(100);
+
+    // Submete formulário dinâmico para a tela de conferência
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '<?= APP_URL ?>/operador/cronometro/resumo';
+
+    const campos = {
+        produto_id: producaoAtiva.produto_id,
+        produto_nome: producaoAtiva.produto_nome,
+        produto_codigo: producaoAtiva.produto_codigo || '',
+        produto_embalagem: producaoAtiva.produto_embalagem || '',
+        data_hora_inicio: producaoAtiva.data_hora_inicio,
+        data_hora_fim: timestampFim,
+        pacotes_refeitos: pacotesContador,
+        duracao_segundos: duracaoSegundos
+    };
+
+    for (const [chave, valor] of Object.entries(campos)) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = chave;
+        input.value = valor;
+        form.appendChild(input);
     }
 
-    if (navigator.vibrate) navigator.vibrate(40);
-    calcularDuracao();
-}
-
-function calcularDuracao() {
-    const horaInicio = document.getElementById('inputHoraInicio').value;
-    const horaFim = document.getElementById('inputHoraFim').value;
-    const textoDuracao = document.getElementById('textoDuracao');
-    const hiddenDuracao = document.getElementById('inputDuracaoSegundos');
-
-    if (!horaInicio || !horaFim) {
-        textoDuracao.innerText = 'Preencha início e término';
-        hiddenDuracao.value = '0';
-        return;
-    }
-
-    const [h1, m1] = horaInicio.split(':').map(Number);
-    const [h2, m2] = horaFim.split(':').map(Number);
-
-    let minutosInicio = h1 * 60 + m1;
-    let minutosFim = h2 * 60 + m2;
-
-    if (minutosFim < minutosInicio) {
-        minutosFim += 24 * 60; // Suporte a virada de meia-noite
-    }
-
-    const diffMinutos = minutosFim - minutosInicio;
-    const segundos = diffMinutos * 60;
-    hiddenDuracao.value = String(segundos);
-
-    const horasTotais = Math.floor(diffMinutos / 60);
-    const minRestantes = diffMinutos % 60;
-
-    let rotulo = '';
-    if (horasTotais > 0 && minRestantes > 0) {
-        rotulo = `${horasTotais}h ${minRestantes}min (${diffMinutos} min)`;
-    } else if (horasTotais > 0) {
-        rotulo = `${horasTotais} hora${horasTotais > 1 ? 's' : ''}`;
-    } else {
-        rotulo = `${minRestantes} minuto${minRestantes !== 1 ? 's' : ''}`;
-    }
-
-    textoDuracao.innerText = rotulo;
-}
-
-function validarEnvioProducao(e) {
-    const alerta = document.getElementById('alertaValidacao');
-    alerta.style.display = 'none';
-
-    const prodId = document.getElementById('inputProdutoId').value;
-    if (!prodId || !produtoAtivo) {
-        e.preventDefault();
-        alerta.innerText = '⚠️ DIGITE O CÓDIGO (SKU) DO PRODUTO!';
-        alerta.style.display = 'block';
-        document.getElementById('inputCodigoSku').focus();
-        if (navigator.vibrate) navigator.vibrate(150);
-        return false;
-    }
-
-    const horaInicio = document.getElementById('inputHoraInicio').value;
-    const horaFim = document.getElementById('inputHoraFim').value;
-
-    if (!horaInicio || !horaFim) {
-        e.preventDefault();
-        alerta.innerText = '⚠️ DEFINA O HORÁRIO DE INÍCIO E O DE TÉRMINO!';
-        alerta.style.display = 'block';
-        if (!horaInicio) document.getElementById('inputHoraInicio').focus();
-        else document.getElementById('inputHoraFim').focus();
-        if (navigator.vibrate) navigator.vibrate(150);
-        return false;
-    }
-
-    // Monta timestamps ISO compatíveis com banco
-    const hoje = new Date().toISOString().split('T')[0];
-    document.getElementById('inputDataHoraInicio').value = `${hoje} ${horaInicio}:00`;
-
-    const [h1, m1] = horaInicio.split(':').map(Number);
-    const [h2, m2] = horaFim.split(':').map(Number);
-
-    if ((h2 * 60 + m2) < (h1 * 60 + m1)) {
-        const amanha = new Date();
-        amanha.setDate(amanha.getDate() + 1);
-        const dataAmanha = amanha.toISOString().split('T')[0];
-        document.getElementById('inputDataHoraFim').value = `${dataAmanha} ${horaFim}:00`;
-    } else {
-        document.getElementById('inputDataHoraFim').value = `${hoje} ${horaFim}:00`;
-    }
-
-    calcularDuracao();
-    return true;
+    document.body.appendChild(form);
+    form.submit();
 }
 
 function escapeHtml(text) {
@@ -506,27 +501,6 @@ function escapeHtml(text) {
     div.innerText = text;
     return div.innerHTML;
 }
-
-// Inicializa cálculo se já vier com horários prévios
-window.addEventListener('DOMContentLoaded', () => {
-    calcularDuracao();
-});
-
-// Protege contra restauração indevida de histórico do navegador
-window.addEventListener('pageshow', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('origem') !== 'voltar') {
-        const prodId = document.getElementById('inputProdutoId');
-        if (!prodId || !prodId.value) {
-            const inputSku = document.getElementById('inputCodigoSku');
-            if (inputSku) inputSku.value = '';
-            const cardOk = document.getElementById('cardConfirmacaoSku');
-            if (cardOk) cardOk.style.display = 'none';
-            const btnLimpar = document.getElementById('btnLimparSku');
-            if (btnLimpar) btnLimpar.style.display = 'none';
-        }
-    }
-});
 </script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

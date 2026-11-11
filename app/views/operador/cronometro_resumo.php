@@ -121,6 +121,7 @@ async function confirmarApontamentoProdutividade() {
         const data = await response.json();
 
         if (response.ok && data.status === 'success') {
+            localStorage.removeItem('repack_producao_ativa');
             exibirSucessoFeedback('PRODUÇÃO GRAVADA!', 'Redirecionando...', () => {
                 window.location.href = '<?= APP_URL ?>/operador';
             });
@@ -131,6 +132,7 @@ async function confirmarApontamentoProdutividade() {
         console.warn('Falha online, gravando no IndexedDB para sincronização posterior...', err);
         if (window.RepackOffline) {
             await window.RepackOffline.salvarProdutividade(payload);
+            localStorage.removeItem('repack_producao_ativa');
             exibirSucessoFeedback('SALVO OFFLINE!', 'Será sincronizado automaticamente.', () => {
                 window.location.href = '<?= APP_URL ?>/operador';
             });

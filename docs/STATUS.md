@@ -260,14 +260,16 @@
       - Adicionado `autocomplete="off"` nos formulários e campos numéricos e listener de `pageshow` para impedir restauração indevida de dados do cache de navegação do dispositivo.
     - Deploy automatizado executado via SSH no Alwaysdata.
   - [x] **MANUT-023 (11/11/2026):** Ajuste de Registrar Produção: Substituição do Cronômetro por Marcadores de Horário e Unificação com Layout do B.O.
-    - Eliminação completa do cronômetro contínuo digital (sem contagem regressiva/progressiva na tela):
-      - Implementados marcadores explícitos de Horário de Início (`HH:MM`) e Horário de Término (`HH:MM`) com inputs gigantes (`56px`) e botões de ação rápida `[ ⏰ MARCAR AGORA ]` com fundo azul.
-      - Cálculo em tempo real da duração total do lote (ex: `45 minutos` ou `1h 15min`) com suporte inteligente a turnos que cruzam a meia-noite.
-    - Unificação visual e ergonômica integral com a interface do Registro de B.O.:
-      - Entrada monumental de Produto por Código SKU (`160px`, fonte `96px`, teclado numérico nativo, botão limpar `✕` e card verde de confirmação imediata).
-      - Seletor de Pacotes Refeitos monumental com digitação numérica direta e botões `[-]` e `[+]` de `160x160px` com fonte `104px`.
-      - Remoção de passos ("PASSO X DE Y"), subtítulos e poluição visual.
-      - Tela de Conferência Dupla com cartão central massivo (borda `8px`, fontes `54px`/`104px`) e botões `⬅ VOLTAR / CORRIGIR` (azul vibrante) e `CONFIRMAR` (verde puro).
+    - Eliminação completa do cronômetro contínuo digital (sem contagem regressiva/progressiva na tela).
+    - Unificação visual e ergonômica integral com a interface do Registro de B.O.
+    - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-024 (11/11/2026):** Reestruturação do Fluxo de Produção em Dois Momentos Conforme Regra de Negócio (Iniciar / Finalizar).
+    - Adequação estrita da RN da bancada de repack: a definição do horário de início se dá pelo toque no botão `INICIAR PRODUÇÃO ➔` (Momento 1) e o horário de fim pelo toque no botão `FINALIZAR PRODUÇÃO ➔` (Momento 2) em momentos distintos no tempo:
+      - **Momento 1 (Início do Lote):** Operador digita código SKU (com validação imediata e card verde de confirmação) e toca no botão monumental `INICIAR PRODUÇÃO ➔`. O sistema grava o timestamp de início na sessão e no `localStorage`.
+      - **Momento 2 (Conclusão Física do Lote):** A tela exibe o produto em andamento, o horário de início registrado (ex: `10:15`) e o seletor monumental de `PACOTES REFEITOS` com botões de 160px e digitação direta. Ao tocar em `FINALIZAR PRODUÇÃO ➔`, o horário de término é capturado e o fluxo avança para a conferência dupla.
+      - Opção de descarte de ciclo em andamento (`DESCARTAR CICLO`).
+      - Tela de Conferência Dupla com botões `⬅ VOLTAR / CORRIGIR` (fundo azul) e `CONFIRMAR` (verde).
+      - Sobrevivência a recarregamento de página ou fechamento de aba via persistência sincronizada no `localStorage`.
     - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
