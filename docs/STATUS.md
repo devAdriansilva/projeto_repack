@@ -144,6 +144,13 @@
     - Mini-card branco centralizado (115x115px) abrigando a ilustração em alta resolução, seguido pelo título em branco 24px negrito e ícone SVG proporcional de 28px.
     - Enquadramento vertical harmônico com `min-height: 200px` e `max-height: 245px`, garantindo proporção LxA entre 1.4:1 e 1.6:1 em qualquer altura de tela mobile, sem vazios residuais.
     - Deploy automatizado executado diretamente via SSH no servidor Alwaysdata.
+  - [x] **MANUT-011 (11/11/2026):** Redesenho da seleção de produto do B.O. via campo SKU com teclado numérico.
+    - Eliminação da grade de 442 produtos descarregada simultaneamente na tela, tornando a página leve, limpa e amigável para operadores com limitações em tecnologia.
+    - Campo de código gigante centralizado (`.input-sku-gigante`) de 76px de altura, fonte de 32px e `inputmode="numeric"`, acionando o teclado numérico gigante no celular.
+    - Card de confirmação verde imediato (`.card-confirmacao-sku`) exibindo nome da bebida, SKU e embalagem em 0ms.
+    - Fallback de busca inteligente por nome com lista rápida de até 6 sugestões para toques com luva.
+    - Validação de envio e sincronização completa com o fluxo subsequente de registro de B.O.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 

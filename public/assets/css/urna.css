@@ -617,6 +617,174 @@ body {
     letter-spacing: 0.5px;
 }
 
+/* ==========================================================================
+   Entrada de Código SKU Direto (Passo 1 do B.O.)
+   ========================================================================== */
+.sku-entry-container {
+    max-width: 580px;
+    margin: 0 auto 20px auto;
+    width: 100%;
+}
+
+.sku-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-sku-gigante {
+    width: 100%;
+    height: 76px;
+    font-size: 32px;
+    font-weight: 800;
+    text-align: center;
+    border-radius: 20px;
+    border: 3px solid #CBD5E1;
+    letter-spacing: 2px;
+    box-sizing: border-box;
+    background: #FFFFFF;
+    color: #0F172A;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    touch-action: manipulation;
+    padding: 10px 54px 10px 20px;
+}
+
+.input-sku-gigante:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.18);
+}
+
+.input-sku-gigante.sucesso-encontrado {
+    border-color: #10B981 !important;
+    background-color: #F0FDF4 !important;
+    box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.22) !important;
+}
+
+.btn-limpar-sku {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #E2E8F0;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: 800;
+    color: #475569;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.1s ease;
+}
+
+.btn-limpar-sku:active {
+    background: #CBD5E1;
+}
+
+.card-confirmacao-sku {
+    background: #F0FDF4;
+    border: 2.5px solid #10B981;
+    border-radius: 20px;
+    padding: 18px 20px;
+    margin: 16px 0;
+    text-align: left;
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.14);
+    animation: fadeInSku 0.2s ease;
+}
+
+@keyframes fadeInSku {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-confirmacao-sku .badge-status-ok {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #10B981;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 900;
+    padding: 4px 12px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.card-confirmacao-sku .nome-produto-destaque {
+    font-size: 21px;
+    font-weight: 900;
+    color: #064E3B;
+    margin: 10px 0 6px 0;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+.card-confirmacao-sku .detalhes-produto {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.card-confirmacao-sku .badge-embalagem {
+    background: #DCFCE7;
+    color: #166534;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+}
+
+.card-nao-encontrado {
+    background: #FEF2F2;
+    border: 2px dashed #F87171;
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin: 16px 0;
+    color: #991B1B;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+    line-height: 1.35;
+}
+
+.lista-sugestoes-sku {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 14px 0;
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 2px;
+}
+
+.item-sugestao-sku {
+    min-height: 64px;
+    background: #FFFFFF;
+    border: 2px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 12px 16px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: border-color 0.1s ease, background 0.1s ease;
+    touch-action: manipulation;
+}
+
+.item-sugestao-sku:hover, .item-sugestao-sku:active {
+    border-color: #2563EB;
+    background: #EFF6FF;
+}
+
 /* Grade de Produtos Selecionáveis */
 .produto-grid {
     display: grid;
