@@ -1,5 +1,5 @@
 {
-  "name": "Projeto Repack - Urna Eletrônica",
+  "name": "Projeto Repack",
   "short_name": "Repack",
   "description": "Sistema PWA Offline-First para o setor de reembalagem e lojinha interna de bebidas",
   "start_url": "/operador",

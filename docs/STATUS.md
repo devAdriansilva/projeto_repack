@@ -94,8 +94,15 @@
     - Normalização do Front Controller em `public/index.php` para suporte a múltiplos contextos de roteamento.
     - Proteção inline anti-FOUC em `app/views/layouts/header.php` para impedir vazamento visual de modais.
     - Sincronização de todos os scripts, chamadas fetch assíncronas e links de layouts com `APP_URL`.
-    - Adição de barra de navegação rápida na Urna (`app/views/operador/home.php`) facilitando acesso direto à Lojinha de Saldos e ao Painel de Gestão.
     - Catalogação da falha e contramedida em `docs/ERROS.md` (ERR-004) e validação da suíte de 35 testes automatizados com 100% de sucesso.
+  - [x] **MANUT-002 (11/11/2026):** Refinamento da interface do Operador e eliminação de rolagem horizontal.
+    - Simplificação do título da tela inicial do operador para apenas "Repack", removendo textos redundantes ("ÁREA DE REEMBALAGEM" e subtítulo de instrução).
+    - Trava estrita contra rolagem horizontal em `html, body` no `public/assets/css/urna.css` (`overflow-x: hidden; max-width: 100vw; width: 100%`).
+    - Foco total e exclusivo na bancada de lançamentos: remoção dos links da Lojinha e Gestão na parte inferior da tela do operador (o acesso gerencial continua discretamente na engrenagem cinza clara superior).
+    - Renomeação do Botão 1 de "REGISTRAR AVARIA" para "REGISTRAR B.O." com adição de imagem ilustrativa (`public/assets/img/btn_bo.jpg`).
+    - Adição de imagem ilustrativa ao Botão 2 "REGISTRAR PRODUÇÃO" (`public/assets/img/btn_producao.jpg`).
+    - Remoção do termo conceitual "Urna Eletrônica" das interfaces e do manifesto PWA `public/manifest.json`.
+    - Execução e aprovação integral de todos os 35 testes automatizados (`php tests/test_fase5.php`).
 
 ---
 
