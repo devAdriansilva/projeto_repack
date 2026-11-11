@@ -252,6 +252,13 @@
   - [x] **MANUT-021 (11/11/2026):** Destaque Azul no Botão Voltar / Corrigir.
     - Estilização do botão `⬅ VOLTAR / CORRIGIR` do Passo 2 com fundo azul vibrante (`linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%)`), texto branco, borda sólida de 6px (`#1E40AF`) e sombra destacada, conferindo máxima visibilidade e facilidade de localização tátil.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-022 (11/11/2026):** Limpeza Obrigatória de Rascunhos de B.O. e Produtividade em Novos Lançamentos.
+    - Correção do preenchimento involuntário com dados do último lançamento gravado ao iniciar um novo registro:
+      - `AvariaController::salvar()` e `ProdutividadeController::salvar()` agora limpam as sessões temporárias (`avaria_temp` e `cronometro_temp`) imediatamente após a gravação com sucesso.
+      - `OperadorController::index()` (tela inicial de lançamentos) limpa quaisquer rascunhos pendentes ao carregar.
+      - `AvariaController::passo1()` e `ProdutividadeController::cronometro()` agora limpam a sessão a menos que a URL possua explicitamente o parâmetro `?origem=voltar`.
+      - Adicionado `autocomplete="off"` nos formulários e campos numéricos e listener de `pageshow` para impedir restauração indevida de dados do cache de navegação do dispositivo.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 

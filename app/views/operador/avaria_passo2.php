@@ -67,7 +67,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <!-- Botão Voltar (Fundo Azul de Alto Destaque) -->
     <div style="margin-top: 26px; width: 100%;">
-        <a href="<?= APP_URL ?>/operador/avaria/passo1" class="btn-urna btn-urna-secondary" style="min-height: 125px; font-size: 36px; font-weight: 900; border-radius: 32px; background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%); color: #FFFFFF; border: 6px solid #1E40AF; box-shadow: 0 10px 26px rgba(37, 99, 235, 0.35);">
+        <a href="<?= APP_URL ?>/operador/avaria/passo1?origem=voltar" class="btn-urna btn-urna-secondary" style="min-height: 125px; font-size: 36px; font-weight: 900; border-radius: 32px; background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%); color: #FFFFFF; border: 6px solid #1E40AF; box-shadow: 0 10px 26px rgba(37, 99, 235, 0.35);">
             ⬅ VOLTAR / CORRIGIR
         </a>
     </div>

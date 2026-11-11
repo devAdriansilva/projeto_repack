@@ -16,6 +16,10 @@ class AvariaController
      */
     public function passo1(): void
     {
+        // Se não for retorno explícito via botão "Voltar/Corrigir", limpa rascunho anterior
+        if (empty($_GET['origem']) || $_GET['origem'] !== 'voltar') {
+            unset($_SESSION['avaria_temp']);
+        }
         require_once __DIR__ . '/../views/operador/avaria_passo1.php';
     }
 
@@ -51,6 +55,7 @@ class AvariaController
             }
 
             $resultado = ApontamentoBO::salvar($dados);
+            unset($_SESSION['avaria_temp']);
             echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
         } catch (\InvalidArgumentException $e) {
             http_response_code(400);

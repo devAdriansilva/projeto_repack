@@ -15,6 +15,8 @@ class OperadorController
      */
     public function index(): void
     {
+        // Limpa rascunhos temporários para que novo lançamento inicie 100% limpo
+        unset($_SESSION['avaria_temp'], $_SESSION['cronometro_temp']);
         require_once __DIR__ . '/../views/operador/home.php';
     }
 

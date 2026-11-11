@@ -10,9 +10,17 @@ require_once __DIR__ . '/../../models/Produto.php';
 
 $produtos = Produto::listarAtivos();
 
-// Produto previamente selecionado (caso esteja voltando do Passo 2)
-$produtoPreSelecionadoId = (int)($_SESSION['avaria_temp']['produto_id'] ?? 0);
-$quantidadeInicial = (int)($_SESSION['avaria_temp']['quantidade'] ?? 1);
+// Produto previamente selecionado (caso esteja voltando explicitamente do Passo 2)
+$isOrigemVoltar = (isset($_GET['origem']) && $_GET['origem'] === 'voltar');
+if (!$isOrigemVoltar) {
+    unset($_SESSION['avaria_temp']);
+}
+
+$produtoPreSelecionadoId = $isOrigemVoltar ? (int)($_SESSION['avaria_temp']['produto_id'] ?? 0) : 0;
+$quantidadeInicial = $isOrigemVoltar ? (int)($_SESSION['avaria_temp']['quantidade'] ?? 1) : 1;
+if ($quantidadeInicial < 1) {
+    $quantidadeInicial = 1;
+}
 
 $produtoPreSelecionado = null;
 if ($produtoPreSelecionadoId > 0) {
@@ -44,7 +52,7 @@ require_once __DIR__ . '/../layouts/header.php';
     </h1>
 </div>
 
-<form action="<?= APP_URL ?>/operador/avaria/passo2" method="POST" id="formAvariaPasso1" onsubmit="return validarEnvio(event)">
+<form action="<?= APP_URL ?>/operador/avaria/passo2" method="POST" id="formAvariaPasso1" autocomplete="off" onsubmit="return validarEnvio(event)">
     <input type="hidden" name="produto_id" id="inputProdutoId" value="<?= $produtoPreSelecionado['id'] ?? '' ?>">
     <input type="hidden" name="quantidade" id="inputQuantidade" value="<?= $quantidadeInicial ?>">
 
@@ -122,6 +130,7 @@ require_once __DIR__ . '/../layouts/header.php';
                    inputmode="numeric" 
                    pattern="[0-9]*" 
                    min="1" 
+                   autocomplete="off" 
                    value="<?= $quantidadeInicial ?>" 
                    onfocus="this.select()" 
                    oninput="atualizarQuantidadeDigitada(this.value)" 
@@ -349,6 +358,22 @@ function escapeHtml(text) {
     div.innerText = text;
     return div.innerHTML;
 }
+
+// Protege contra restauração de cache do navegador em novo lançamento
+window.addEventListener('pageshow', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('origem') !== 'voltar') {
+        const prodId = document.getElementById('inputProdutoId');
+        if (!prodId || !prodId.value) {
+            const inputSku = document.getElementById('inputCodigoSku');
+            if (inputSku) inputSku.value = '';
+            const cardOk = document.getElementById('cardConfirmacaoSku');
+            if (cardOk) cardOk.style.display = 'none';
+            const btnLimpar = document.getElementById('btnLimparSku');
+            if (btnLimpar) btnLimpar.style.display = 'none';
+        }
+    }
+});
 </script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

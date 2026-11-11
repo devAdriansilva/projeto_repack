@@ -16,6 +16,9 @@ class ProdutividadeController
      */
     public function cronometro(): void
     {
+        if (empty($_GET['origem']) || $_GET['origem'] !== 'voltar') {
+            unset($_SESSION['cronometro_temp']);
+        }
         require_once __DIR__ . '/../views/operador/cronometro.php';
     }
 
@@ -42,6 +45,7 @@ class ProdutividadeController
             }
 
             $resultado = ApontamentoProdutividade::salvar($dados);
+            unset($_SESSION['cronometro_temp']);
             echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
         } catch (\InvalidArgumentException $e) {
             http_response_code(400);

@@ -79,7 +79,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <!-- Rodapé de Dupla Confirmação -->
 <div class="dupla-confirmacao-rodape" style="max-width: 650px; margin: 24px auto 0 auto;">
-    <a href="<?= APP_URL ?>/operador/cronometro" class="btn-urna btn-urna-warning">
+    <a href="<?= APP_URL ?>/operador/cronometro?origem=voltar" class="btn-urna btn-urna-warning">
         CORRIGIR
     </a>
     <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarProdutividade" onclick="confirmarApontamentoProdutividade()">
