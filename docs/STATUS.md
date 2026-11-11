@@ -249,6 +249,9 @@
       - Informação irrelevante para o operador de bancada (regra de sistema transparente).
       - Cartão de conferência agora focado exclusivamente nos dados essenciais: Produto, Quantidade e Tipo de Avaria.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-021 (11/11/2026):** Destaque Azul no Botão Voltar / Corrigir.
+    - Estilização do botão `⬅ VOLTAR / CORRIGIR` do Passo 2 com fundo azul vibrante (`linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%)`), texto branco, borda sólida de 6px (`#1E40AF`) e sombra destacada, conferindo máxima visibilidade e facilidade de localização tátil.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
