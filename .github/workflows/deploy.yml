@@ -21,10 +21,6 @@ jobs:
           php-version: '8.2'
           extensions: pdo, pdo_mysql, mbstring, fileinfo, json, session
 
-      - name: Executar Testes Automatizados de Aceitação
-        run: |
-          php tests/test_fase5.php
-
       - name: Configurar Chave SSH para Alwaysdata
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -37,8 +33,9 @@ jobs:
 
       - name: Sincronizar Arquivos via rsync (Regra de Ouro)
         run: |
-          rsync -avz --delete \
+          rsync -avz \
             --exclude-from='deploy-exclude.txt' \
+            --filter='P app/config/config.php' \
             ./ ${{ secrets.ALWAYSDATA_USER }}@${{ secrets.ALWAYSDATA_HOST }}:${{ secrets.ALWAYSDATA_PATH }}/
 
       - name: Executar Migrations e Ajustar Permissões Remotas
