@@ -29,20 +29,42 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <!-- ETAPA 1: SELEÇÃO DE PRODUTO (Visível antes do início) -->
 <div id="secaoSelecaoProduto">
-    <div class="produto-grid">
+    <!-- Barra de Busca Rápida de Produtos (SKU ou Nome) -->
+    <div class="busca-produtos-wrapper" style="max-width: 600px; margin: 0 auto 16px auto;">
+        <input type="text" 
+               id="inputBuscaCronometro" 
+               class="input-busca-urna" 
+               placeholder="🔍 Buscar por código SKU ou nome da bebida..." 
+               autocomplete="off"
+               oninput="filtrarProdutosCronometro(this.value)">
+        <button type="button" 
+                id="btnLimparBuscaCronometro" 
+                class="btn-limpar-busca" 
+                onclick="limparBuscaCronometro()" 
+                aria-label="Limpar busca">✕</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; padding: 0 8px;">
+            <span id="contadorProdutosCronometro" style="font-size: 13px; font-weight: 600; color: var(--on-surface-muted);">
+                Exibindo <?= count($produtos) ?> produtos cadastrados
+            </span>
+        </div>
+    </div>
+
+    <div class="produto-grid" id="gridProdutosCronometro">
         <?php foreach ($produtos as $p): ?>
             <button type="button" 
                     class="produto-card-btn <?= ((int)$p['id'] === $produtoSelecionadoId) ? 'selecionado' : '' ?>" 
                     id="prodCard_<?= (int)$p['id'] ?>"
+                    data-busca="<?= strtolower(htmlspecialchars($p['codigo'] . ' ' . $p['nome'] . ' ' . $p['pacote_padrao'], ENT_QUOTES, 'UTF-8')) ?>"
                     onclick="selecionarProduto(<?= (int)$p['id'] ?>, '<?= sanitize_html($p['nome']) ?>')">
                 <div class="produto-foto-thumb">
                     <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
                     </svg>
                 </div>
-                <div>
-                    <div class="body-lg" style="font-weight: 700;"><?= sanitize_html($p['nome']) ?></div>
-                    <div class="body-md" style="color: var(--on-surface-muted);"><?= sanitize_html($p['pacote_padrao']) ?></div>
+                <div style="flex: 1; min-width: 0;">
+                    <div><span class="sku-badge">SKU <?= sanitize_html($p['codigo']) ?></span></div>
+                    <div class="body-lg" style="font-weight: 700; word-break: break-word;"><?= sanitize_html($p['nome']) ?></div>
+                    <div class="body-md" style="color: var(--on-surface-muted); font-size: 14px;"><?= sanitize_html($p['pacote_padrao']) ?></div>
                 </div>
             </button>
         <?php endforeach; ?>
@@ -123,6 +145,39 @@ function selecionarProduto(id, nome) {
     produtoIdSelecionado = id;
     produtoNomeSelecionado = nome;
     document.getElementById('produtoEmExecucaoDisplay').innerText = 'Produto: ' + nome;
+}
+
+function filtrarProdutosCronometro(termo) {
+    const busca = termo.toLowerCase().trim();
+    const cards = document.querySelectorAll('#gridProdutosCronometro .produto-card-btn');
+    const btnLimpar = document.getElementById('btnLimparBuscaCronometro');
+    const contador = document.getElementById('contadorProdutosCronometro');
+    let encontrados = 0;
+
+    btnLimpar.style.display = busca ? 'block' : 'none';
+
+    cards.forEach(card => {
+        const texto = card.getAttribute('data-busca') || '';
+        if (!busca || texto.includes(busca)) {
+            card.style.display = 'flex';
+            encontrados++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    if (contador) {
+        contador.innerText = busca 
+            ? `${encontrados} produto(s) encontrado(s)` 
+            : `Exibindo ${cards.length} produtos cadastrados`;
+    }
+}
+
+function limparBuscaCronometro() {
+    const input = document.getElementById('inputBuscaCronometro');
+    input.value = '';
+    filtrarProdutosCronometro('');
+    input.focus();
 }
 
 function formatarTempo(totalSegundos) {

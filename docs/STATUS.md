@@ -103,6 +103,11 @@
     - Adição de imagem ilustrativa ao Botão 2 "REGISTRAR PRODUÇÃO" (`public/assets/img/btn_producao.jpg`).
     - Remoção do termo conceitual "Urna Eletrônica" das interfaces e do manifesto PWA `public/manifest.json`.
     - Execução e aprovação integral de todos os 35 testes automatizados (`php tests/test_fase5.php`).
+  - [x] **MANUT-003 (11/11/2026):** Importação dos 442 SKUs reais da distribuidora e busca rápida de produtos.
+    - Criação da migration `database/migrations/004_importar_produtos_distribuidora.sql` com 442 produtos reais extraídos do Google Sheets oficial da distribuidora, contendo SKUs oficiais, descrições, fatores de embalagem e inicialização automática de estoque na lojinha.
+    - Implementação de componente de busca instantânea (sem recarregamento e offline) em `app/views/operador/avaria_passo1.php` e `app/views/operador/cronometro.php`.
+    - Destaque visual do código SKU em cada cartão de produto (`sku-badge`) e contenção de scroll suave em `public/assets/css/urna.css`.
+    - Execução e aprovação da migração CLI e validação de 100% da suíte de 35 testes automatizados (`php tests/test_fase5.php`).
 
 ---
 
