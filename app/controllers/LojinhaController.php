@@ -369,7 +369,7 @@ class LojinhaController
 
             echo json_encode([
                 'status' => 'success',
-                'message' => 'Produto adicionado à sacola com reserva garantida por 10 minutos!',
+                'message' => 'Produto adicionado à sacola com reserva garantida por 5 minutos!',
                 'dados' => $retorno,
                 'resumo' => $resumo
             ], JSON_UNESCAPED_UNICODE);

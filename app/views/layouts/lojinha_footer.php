@@ -64,7 +64,7 @@ function adicionarAoCarrinho(produtoId, btnElement) {
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
             </svg>
-            <span style="font-size: 18px;">Reservado (10 min)!</span>
+            <span style="font-size: 18px;">Reservado (5 min)!</span>
         `;
 
         setTimeout(() => {

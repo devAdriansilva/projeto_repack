@@ -34,7 +34,7 @@ define('DB_CHARSET', 'utf8mb4');
 
 // Configurações da Aplicação e Regras de Negócio
 define('APP_NAME', 'Projeto Repack');
-define('APP_VERSION', 'v1.40');
+define('APP_VERSION', 'v1.41');
 define('APP_ENV', getenv('APP_ENV') ?: 'development'); // 'development' ou 'production'
 
 // Auto-detecção inteligente de APP_URL (suporta raiz '/', Alwaysdata, localhost e subpastas)
@@ -52,7 +52,7 @@ if (!defined('APP_URL')) {
         define('APP_URL', $baseDir);
     }
 }
-define('CARRINHO_TIMEOUT_MINUTOS', 10);
+define('CARRINHO_TIMEOUT_MINUTOS', 5);
 define('GESTAO_SESSION_TIMEOUT_MINUTOS', 30);
 
 // Limites e Parâmetros de Upload (docs/FSD.md Seção 21)

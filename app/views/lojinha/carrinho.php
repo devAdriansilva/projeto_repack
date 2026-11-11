@@ -58,7 +58,7 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
     </div>
 <?php else: ?>
 
-    <!-- Caixa de Contagem Regressiva da Trava de 10 Minutos -->
+    <!-- Caixa de Contagem Regressiva da Trava de 5 Minutos -->
     <div class="timer-trava-box" id="caixaTimer">
         <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0;">
             <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
@@ -187,7 +187,7 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
 <?php endif; ?>
 
 <script>
-// Cronômetro regressivo da Trava Temporária de 10 minutos
+// Cronômetro regressivo da Trava Temporária de 5 minutos
 let segundosRestantes = <?= $segundosRestantes ?>;
 
 function atualizarCronometro() {
@@ -202,7 +202,7 @@ function atualizarCronometro() {
             btnFinalizar.disabled = true;
         }
 
-        alert('O tempo de reserva temporária de 10 minutos expirou. Os produtos retornaram à vitrine.');
+        alert('O tempo de reserva temporária de 5 minutos expirou. Os produtos retornaram à vitrine.');
         window.location.reload();
         return;
     }

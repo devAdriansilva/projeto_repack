@@ -390,6 +390,14 @@
       - Adicionadas pílulas interativas de 1 clique com contagem dinâmica de produtos disponíveis em cada categoria.
       - Campo de busca instantânea em tempo real por nome, formato (ex: 600ml, lata) ou código SKU, com botão de limpar busca e mensagem amigável caso nenhum item corresponda ao filtro.
     - **Incremento de Versão:** Versão elevada para `v1.40` com atualização do Service Worker `repack-pwa-v1.40`.
+  - [x] **MANUT-041 (11/11/2026):** Redução do Tempo de Reserva Temporária do Carrinho de 10 para 5 Minutos.
+    - **Parametrização Central (`app/config/config.php`):**
+      - Constante global `CARRINHO_TIMEOUT_MINUTOS` ajustada de `10` para `5`.
+    - **Ajustes de Mensagens e Feedbacks de Interface:**
+      - Retorno da API de reserva (`app/controllers/LojinhaController.php`): atualizado para *"Produto adicionado à sacola com reserva garantida por 5 minutos!"*.
+      - Botão de compra (`app/views/layouts/lojinha_footer.php`): feedback tátil *"Reservado (5 min)!"*.
+      - Tela de Sacola/Carrinho (`app/views/lojinha/carrinho.php`): cronômetro regressivo e mensagens de expiração atualizados para o limite de 5 minutos.
+    - **Incremento de Versão:** Versão elevada para `v1.41` com atualização do Service Worker `repack-pwa-v1.41`.
 
 ---
 
