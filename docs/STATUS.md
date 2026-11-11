@@ -169,6 +169,22 @@
     - Passo 2 enriquecido com ícones semânticos ampliados (`🥫`, `🏷️`, `📦`, `🚫`, `⚠️`) e botões de 86px com tipografia de 25px negrito.
     - Passo 3 com cartão de resumo em alto contraste (borda de 3.5px preta), quantidade em 52px, rótulos de avaria em 26px e faixa de destinação em 21px negrito.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-015 (11/11/2026):** Ampliação Extrema de Elementos e Fontes Garrafais para Acessibilidade Total.
+    - Atendimento direto à solicitação de operadores com limitações visuais severas ou telas de alta densidade de pixels.
+    - Passo 1:
+      - Título "REGISTRAR B.O." elevado para 36px negrito; subtítulo para 19px em alto contraste.
+      - Campo de SKU gigante expandido para 115px de altura, fonte de 60px negrito, espaçamento entre dígitos de 5px, borda preta sólida de 5px e botão '✕' de 56x56px (30px).
+      - Card de confirmação verde com borda sólida de 5px, badge de status em 21px, nome do produto em 36px garrafal e badges de SKU/embalagem em 22px negrito.
+      - Seletor numérico de unidades com botões `[-]` e `[+]` maciços de 115x115px (fonte de 66px), visor central com 70px negrito e bordas pretas de 5px.
+      - Botões de Cancelar e Próximo ampliados para 104px de altura e fonte de 30px negrito.
+    - Passo 2:
+      - Título com 36px e badge identificador do produto em 26px com borda de 4px.
+      - 5 botões de tipo de avaria elevados para 100px de altura mínima, tipografia de 30px negrito, ícones semânticos ampliados para 38px e borda de 4px.
+      - Botão de correção elevado para 94px de altura e fonte de 26px.
+    - Passo 3:
+      - Cartão central em moldura preta de 5px, nome do produto em 36px negrito, quantidade exibida em 68px garrafal, tipo de avaria em 32px e badge de destinação ampliado para 26px negrito com borda de 3.5px.
+      - Botões de dupla confirmação ("CORRIGIR" e "CONFIRMAR") com altura de 104px e fonte de 30px negrito.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 

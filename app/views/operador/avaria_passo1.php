@@ -38,12 +38,16 @@ $pageTitle = "Registrar B.O. - Digitar Código";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 18px;">
-    <span class="badge" style="background-color: var(--secondary); color: #FFF; font-size: 15px; font-weight: 800; padding: 6px 18px; border-radius: 9999px;">
+<div style="text-align: center; margin-bottom: 16px;">
+    <span class="badge" style="background-color: var(--secondary); color: #FFF; font-size: 18px; font-weight: 900; padding: 8px 24px; border-radius: 9999px;">
         PASSO 1 DE 3
     </span>
-    <h1 class="headline-lg" style="margin-top: 10px; margin-bottom: 4px; font-size: 24px;">REGISTRAR B.O.</h1>
-    <p class="body-md" style="color: var(--on-surface-muted); margin-bottom: 0;">Digite o código do produto avariado e ajuste as unidades</p>
+    <h1 class="headline-lg" style="margin-top: 12px; margin-bottom: 6px; font-size: 36px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
+        REGISTRAR B.O.
+    </h1>
+    <p class="body-md" style="color: #1E293B; font-size: 19px; font-weight: 800; margin-bottom: 0;">
+        Digite o código do produto avariado e ajuste as unidades
+    </p>
 </div>
 
 <form action="<?= APP_URL ?>/operador/avaria/passo2" method="POST" id="formAvariaPasso1" onsubmit="return validarEnvio(event)">
@@ -53,7 +57,7 @@ require_once __DIR__ . '/../layouts/header.php';
     <div class="sku-entry-container">
         
         <!-- Campo de Código Gigante com Teclado Numérico Nativo -->
-        <label for="inputCodigoSku" style="display: block; font-size: 22px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 10px; text-align: center; letter-spacing: 0.5px;">
+        <label for="inputCodigoSku" style="display: block; font-size: 28px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 14px; text-align: center; letter-spacing: 0.5px;">
             1. DIGITE O CÓDIGO (SKU):
         </label>
         
@@ -75,14 +79,14 @@ require_once __DIR__ . '/../layouts/header.php';
                     onclick="limparSku()" 
                     aria-label="Limpar código">✕</button>
         </div>
-        <div style="font-size: 15px; font-weight: 800; color: #334155; text-align: center; margin-top: 8px;">
+        <div style="font-size: 18px; font-weight: 800; color: #1E293B; text-align: center; margin-top: 10px;">
             Digite o número impresso na caixa/lata ou pesquise pelo nome
         </div>
 
         <!-- Card de Confirmação Imediata (Verde de Alto Contraste) -->
         <div class="card-confirmacao-sku" id="cardConfirmacaoSku" style="<?= $produtoPreSelecionado ? 'display: block;' : 'display: none;' ?>">
             <div class="badge-status-ok">
-                <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
                 <span>PRODUTO IDENTIFICADO</span>
@@ -101,12 +105,12 @@ require_once __DIR__ . '/../layouts/header.php';
         <!-- Alerta de Código Não Encontrado -->
         <div class="card-nao-encontrado" id="cardNaoEncontrado" style="display: none;">
             ⚠️ Nenhum produto cadastrado com o código <strong id="codigoNaoEncontrado"></strong>.<br>
-            <span style="font-size: 14px; font-weight: 500;">Confira os dígitos na etiqueta da embalagem.</span>
+            <span style="font-size: 16px; font-weight: 600;">Confira os dígitos na etiqueta da embalagem.</span>
         </div>
 
         <!-- Lista Rápida de Sugestões (Quando o operador digita texto como "Skol" ou "Brahma") -->
         <div id="wrapperSugestoes" style="display: none;">
-            <div style="font-size: 14px; font-weight: 800; color: var(--on-surface-muted); text-transform: uppercase; margin: 12px 0 6px 0;">
+            <div style="font-size: 16px; font-weight: 800; color: #0F172A; text-transform: uppercase; margin: 12px 0 6px 0;">
                 Selecione o produto correspondente:
             </div>
             <div class="lista-sugestoes-sku" id="listaSugestoes"></div>
@@ -115,8 +119,8 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <!-- Seletor Numérico Gigante -->
-    <div class="urna-card" style="text-align: center; width: 100%; margin: 0 0 18px 0; padding: 22px 18px; border-radius: 24px; border: 3px solid #CBD5E1;">
-        <label class="body-lg" style="font-weight: 900; display: block; margin-bottom: 16px; font-size: 22px; color: #0F172A; text-transform: uppercase; letter-spacing: 0.5px;">
+    <div class="urna-card" style="text-align: center; width: 100%; margin: 0 0 20px 0; padding: 24px 20px; border-radius: 26px; border: 4.5px solid #0F172A; background: #FFFFFF; box-shadow: 0 6px 16px rgba(0,0,0,0.08);">
+        <label class="body-lg" style="font-weight: 900; display: block; margin-bottom: 18px; font-size: 26px; color: #0F172A; text-transform: uppercase; letter-spacing: 0.5px;">
             2. QUANTIDADE AVARIADA:
         </label>
         <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 20px; margin: 0;">
@@ -127,16 +131,16 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <!-- Alerta Flutuante se tentar avançar sem produto -->
-    <div id="alertaSemProduto" style="display: none; width: 100%; margin: 0 0 16px 0; background: #FEF2F2; color: #991B1B; border: 3px solid #EF4444; border-radius: 16px; padding: 16px; font-weight: 900; text-align: center; font-size: 18px;">
+    <div id="alertaSemProduto" style="display: none; width: 100%; margin: 0 0 16px 0; background: #FEF2F2; color: #991B1B; border: 3.5px solid #EF4444; border-radius: 18px; padding: 18px; font-weight: 900; text-align: center; font-size: 20px;">
         ⚠️ DIGITE UM CÓDIGO VÁLIDO ANTES DE AVANÇAR!
     </div>
 
-    <!-- Botões de Ação do Rodapé (Grandes Alvos 90px de Alto Contraste) -->
-    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 18px 0 0 0; gap: 14px;">
-        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 88px; font-size: 26px; font-weight: 900; border-radius: 22px;">
+    <!-- Botões de Ação do Rodapé (Grandes Alvos 104px de Alto Contraste) -->
+    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 20px 0 0 0; gap: 16px;">
+        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 104px; font-size: 30px; font-weight: 900; border-radius: 26px;">
             CANCELAR
         </a>
-        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 88px; font-size: 26px; font-weight: 900; border-radius: 22px;">
+        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 104px; font-size: 30px; font-weight: 900; border-radius: 26px;">
             PRÓXIMO ➔
         </button>
     </div>
