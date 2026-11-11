@@ -6,6 +6,7 @@ Options -Indexes
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
     # Bloqueia arquivos ocultos
     RewriteRule (^|/)\.(?!well-known) - [F]
@@ -15,7 +16,7 @@ Options -Indexes
     RewriteCond %{REQUEST_FILENAME} !-d
 
     # Redireciona tudo para o Front Controller
-    RewriteRule ^ index.php [L,QSA]
+    RewriteRule ^(.*)$ index.php [L,QSA]
 </IfModule>
 
 <IfModule mod_headers.c>

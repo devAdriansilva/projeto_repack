@@ -9,9 +9,19 @@
     RewriteRule (^|/)\.(?!well-known) - [F]
     RewriteRule ^(app|database|logs|docs|tests)/ - [F,L]
 
-    # Redireciona requisições para a pasta public se apontado para a raiz
-    RewriteCond %{REQUEST_URI} !^/public/
+    # Se a requisição for para um arquivo existente dentro de public/, serve diretamente
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^(.*)$ public/$1 [L]
+
+    # Se a requisição já começa com /public/, não reescreve caso o arquivo exista
+    RewriteCond %{REQUEST_URI} ^/public/
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Para todas as rotas virtuais (ex: /lojinha, /gestao, /operador), encaminha para public/index.php
+    RewriteRule ^(.*)$ public/index.php [L,QSA]
 </IfModule>
 
 # Desativa listagem de diretórios
