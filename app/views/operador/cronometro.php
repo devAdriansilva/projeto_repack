@@ -11,8 +11,15 @@ require_once __DIR__ . '/../../models/Produto.php';
 $produtos = Produto::listarAtivos();
 
 // Verifica se há produção em andamento na sessão ou se está retornando da conferência
-$producaoAtiva = $_SESSION['producao_ativa'] ?? null;
 $isOrigemVoltar = (isset($_GET['origem']) && $_GET['origem'] === 'voltar');
+$isNovo = (isset($_GET['novo']) && $_GET['novo'] === '1');
+
+if ($isNovo) {
+    unset($_SESSION['producao_ativa'], $_SESSION['cronometro_temp']);
+    $producaoAtiva = null;
+} else {
+    $producaoAtiva = $_SESSION['producao_ativa'] ?? null;
+}
 
 if ($isOrigemVoltar && isset($_SESSION['cronometro_temp'])) {
     $producaoAtiva = [
@@ -168,13 +175,6 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-        <div style="border-top: 5px solid #CBD5E1; margin-top: 26px; padding-top: 22px;">
-            <div style="font-size: 28px; font-weight: 900; color: #059669; text-transform: uppercase;">
-                🟢 INÍCIO: <span id="ativoHoraInicioDisplay" style="font-size: 64px; font-weight: 900; margin-left: 8px;"><?= !empty($producaoAtiva['data_hora_inicio']) ? date('H:i', strtotime($producaoAtiva['data_hora_inicio'])) : '--:--' ?></span>
-            </div>
-        </div>
-    </div>
-
     <!-- Seletor Monumental de Pacotes Refeitos (com digitação direta e botões -/+) -->
     <div class="sku-entry-container" style="margin-top: 26px;">
         <label for="displayPacotes" style="display: block; font-size: 36px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
@@ -230,6 +230,17 @@ let pacotesContador = <?= $pacotesIniciais ?>;
 
 // Checagem no cliente ao carregar a página
 window.addEventListener('DOMContentLoaded', () => {
+    // Se a URL contiver novo=1, limpa qualquer produção residual do localStorage
+    if (window.location.search.includes('novo=1')) {
+        localStorage.removeItem('repack_producao_ativa');
+        producaoAtiva = null;
+        const m1 = document.getElementById('secaoMomento1');
+        const m2 = document.getElementById('secaoMomento2');
+        if (m1) m1.style.display = 'block';
+        if (m2) m2.style.display = 'none';
+        return;
+    }
+
     if (!producaoAtiva) {
         const local = localStorage.getItem('repack_producao_ativa');
         if (local) {

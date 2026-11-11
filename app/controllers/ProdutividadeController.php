@@ -16,9 +16,8 @@ class ProdutividadeController
      */
     public function cronometro(): void
     {
-        // Se vier de conferência com origem=voltar, preserva dados temporários
-        if (!empty($_GET['origem']) && $_GET['origem'] === 'voltar') {
-            // Mantém producao_ativa e cronometro_temp
+        if (!empty($_GET['novo'])) {
+            unset($_SESSION['producao_ativa'], $_SESSION['cronometro_temp']);
         }
         require_once __DIR__ . '/../views/operador/cronometro.php';
     }

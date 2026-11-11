@@ -70,12 +70,13 @@ if ($operadorAtivoId) {
         REPACK <span style="font-weight: 600; font-size: 11px; color: #64748B; background: #F1F5F9; padding: 2px 6px; border-radius: 6px; margin-left: 4px; border: 1px solid #E2E8F0;"><?= APP_VERSION ?></span>
     </div>
 
-    <!-- Botão de Configurações / Gestão com Ícone Azul de Alta Visibilidade (Proteção 5s) -->
+    <!-- Botão de Configurações / Gestão com Ícone Azul de Alta Visibilidade -->
     <div style="position: relative; display: inline-flex; align-items: center;">
         <button type="button" 
                 id="btnEngrenagemQuiosque" 
                 class="gear-camuflada" 
-                title="Pressione e segure por 5s para abrir configurações" 
+                onclick="abrirModalConfiguracoes()"
+                title="Configurações do Repack" 
                 aria-label="Configurações do Repack"
                 style="position: relative; width: 54px; height: 54px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #EFF6FF; border: 3px solid #BFDBFE; cursor: pointer; color: #2563EB; padding: 0; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22);">
             <!-- Anel SVG de Progresso circular ao segurar -->

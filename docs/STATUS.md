@@ -346,6 +346,11 @@
       - Adição do endpoint `/api/operador/definir-padrao` em `app/controllers/OperadorController.php` e `public/index.php`.
       - Seletor de "Operador Padrão do Repack" integrado tanto ao Modal da Engrenagem (`app/views/layouts/header.php`) quanto ao Dashboard da Gestão (`app/views/gestao/dashboard.php`), permitindo à coordenadora alterar o operador padrão a partir de qualquer dispositivo móvel/desktop com sincronização imediata na bancada.
       - Validação com 35/35 testes integrados da suíte oficial e teste dedicado em `tests/test_operador_padrao.php`.
+  - [x] **MANUT-035 (11/11/2026):** Atualização v1.35, eliminação de bloqueio de 5s no acesso às Configurações e garantia de inicialização limpa em Registrar Produção (`?novo=1`).
+    - **Acesso Imediato às Configurações:** Remoção do atraso de 5 segundos no botão de engrenagem (`app/views/layouts/header.php` e `app/views/layouts/footer.php`). O modal operacional abre instantaneamente ao toque, exibindo o seletor de Operador Padrão (Adriano Silva / Pedro Cruz).
+    - **Garantia de Inicialização Limpa na Produção:** Inclusão de reset forçado (`?novo=1`) ao clicar em "REGISTRAR PRODUÇÃO" a partir da Home (`app/views/operador/home.php`), limpando ciclos residuais anteriores do `localStorage` e da sessão para garantir a exibição imediata do Momento 1 (com `CÓDIGO DO PRODUTO:`, `placeholder="9068"`, `INICIAR ➔` centralizado e `← ✕ CANCELAR` abaixo).
+    - **Remoção de Bloco Duplicado no Momento 2:** Correção de tag de fechamento prematura em `app/views/operador/cronometro.php`.
+    - **Incremento de Versão:** Versão elevada para `v1.35` com cache-busting do Service Worker `repack-pwa-v1.35`.
 
 ---
 
