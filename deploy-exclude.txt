@@ -26,9 +26,8 @@ DESIGN.md
 tests/
 scripts/
 
-# 4. Arquivos Sensíveis, Dumps e Migrations SQL Brutas
+# 4. Arquivos Sensíveis, Dumps e Backups
 .env*
-database/migrations/*.sql
 dumps/
 backups/
 
