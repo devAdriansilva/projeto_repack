@@ -28,7 +28,6 @@ scripts/
 
 # 4. Arquivos Sensíveis, Dumps e Migrations SQL Brutas
 .env*
-app/config/config.php
 database/migrations/*.sql
 dumps/
 backups/

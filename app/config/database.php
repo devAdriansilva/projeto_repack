@@ -43,13 +43,14 @@ class Database
     public static function getConnection(): PDO
     {
         if (self::$instance === null) {
-            $dsn = sprintf(
-                'mysql:host=%s;port=%s;dbname=%s;charset=%s',
-                DB_HOST,
-                DB_PORT,
+            $candidateDbs = array_unique([
                 DB_NAME,
-                DB_CHARSET
-            );
+                'financas-facil-atelie_repack',
+                'financas-facil-atelie_repack_db',
+                'financas-facil-atelie_projeto_repack',
+                'financas-facil-atelie_db',
+                'repack_db'
+            ]);
 
             $options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -58,11 +59,31 @@ class Database
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
             ];
 
-            try {
-                self::$instance = new PDO($dsn, DB_USER, DB_PASS, $options);
-            } catch (PDOException $e) {
-                self::logFileFallback($e->getMessage(), 'DATABASE_CONNECTION_ERROR');
-                throw $e;
+            $lastException = null;
+            foreach ($candidateDbs as $db) {
+                try {
+                    $dsn = sprintf(
+                        'mysql:host=%s;port=%s;dbname=%s;charset=%s',
+                        DB_HOST,
+                        DB_PORT,
+                        $db,
+                        DB_CHARSET
+                    );
+                    self::$instance = new PDO($dsn, DB_USER, DB_PASS, $options);
+                    break;
+                } catch (PDOException $e) {
+                    $lastException = $e;
+                    // Se o erro for de base desconhecida (código 1049), tenta a próxima candidata
+                    if (strpos($e->getMessage(), 'Unknown database') !== false || $e->getCode() == 1049) {
+                        continue;
+                    }
+                    break;
+                }
+            }
+
+            if (self::$instance === null && $lastException !== null) {
+                self::logFileFallback($lastException->getMessage(), 'DATABASE_CONNECTION_ERROR');
+                throw $lastException;
             }
         }
 
