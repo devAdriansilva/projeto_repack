@@ -26,12 +26,12 @@ $pageTitle = "Avaria - Tipo de Avaria";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 24px;">
-    <span class="badge" style="background-color: var(--secondary); color: #FFF; font-size: 16px; padding: 6px 16px; border-radius: 9999px;">
+<div style="text-align: center; margin-bottom: 14px;">
+    <span class="badge" style="background-color: var(--secondary); color: #FFF; font-size: 15px; font-weight: 800; padding: 6px 18px; border-radius: 9999px;">
         PASSO 2 DE 3
     </span>
-    <h1 class="headline-lg" style="margin-top: 10px; margin-bottom: 4px;">QUAL É O TIPO DA AVARIA?</h1>
-    <p class="body-md" style="color: var(--on-surface-muted);">
+    <h1 class="headline-lg" style="margin-top: 8px; margin-bottom: 2px; font-size: 24px;">QUAL É O TIPO DA AVARIA?</h1>
+    <p class="body-md" style="color: var(--on-surface-muted); margin-bottom: 0;">
         Item: <strong><?= sanitize_html($produtoNome) ?></strong> | Quantidade: <strong><?= $quantidade ?> un.</strong>
     </p>
 </div>

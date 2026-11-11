@@ -33,29 +33,29 @@ $pageTitle = "Avaria - Conferência";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 24px;">
-    <span class="badge" style="background-color: var(--primary); color: #FFF; font-size: 16px; padding: 6px 16px; border-radius: 9999px;">
+<div style="text-align: center; margin-bottom: 14px;">
+    <span class="badge" style="background-color: var(--primary); color: #FFF; font-size: 15px; font-weight: 800; padding: 6px 18px; border-radius: 9999px;">
         PASSO 3 DE 3 - CONFERÊNCIA
     </span>
-    <h1 class="headline-xl" style="margin-top: 10px; margin-bottom: 8px;">CONFIRA OS DADOS DO B.O.</h1>
-    <p class="body-lg" style="color: var(--on-surface-muted);">Verifique com atenção antes de confirmar a gravação</p>
+    <h1 class="headline-xl" style="margin-top: 8px; margin-bottom: 4px; font-size: 26px;">CONFIRA OS DADOS DO B.O.</h1>
+    <p class="body-lg" style="color: var(--on-surface-muted); margin-bottom: 0;">Verifique com atenção antes de confirmar a gravação</p>
 </div>
 
 <!-- Cartão Central de Resumo -->
-<div class="urna-card" style="max-width: 650px; margin: 0 auto; text-align: center;">
-    <div style="margin-bottom: 20px;">
+<div class="urna-card" style="max-width: 600px; margin: 0 auto; text-align: center; padding: 18px;">
+    <div style="margin-bottom: 16px;">
         <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700; text-transform: uppercase;">PRODUTO:</span>
-        <div class="headline-lg" style="color: var(--on-surface); margin-top: 4px;"><?= sanitize_html($produtoNome) ?></div>
+        <div class="headline-lg" style="color: var(--on-surface); margin-top: 4px; font-size: 20px; line-height: 1.25;"><?= sanitize_html($produtoNome) ?></div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 16px 0;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 14px 0;">
         <div>
             <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700;">QUANTIDADE:</span>
-            <div class="headline-xl" style="color: var(--on-surface);"><?= $quantidade ?> <span style="font-size: 20px;">un.</span></div>
+            <div class="headline-xl" style="color: var(--on-surface); font-size: 28px;"><?= $quantidade ?> <span style="font-size: 18px;">un.</span></div>
         </div>
         <div>
             <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700;">TIPO DE AVARIA:</span>
-            <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? 'var(--danger)' : 'var(--warning)' ?>;">
+            <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? 'var(--danger)' : 'var(--warning)' ?>; font-size: 20px;">
                 <?= sanitize_html($tipoRotulo) ?>
             </div>
         </div>
@@ -65,11 +65,11 @@ require_once __DIR__ . '/../layouts/header.php';
         <span class="body-md" style="color: var(--on-surface-muted); font-weight: 700;">DESTINAÇÃO AUTOMÁTICA:</span>
         <div style="margin-top: 6px;">
             <?php if ($destino === 'lojinha'): ?>
-                <span class="badge" style="background-color: #D1FAE5; color: #065F46; font-size: 20px; padding: 10px 20px; border-radius: 9999px; font-weight: 800;">
+                <span class="badge" style="background-color: #D1FAE5; color: #065F46; font-size: 17px; padding: 8px 16px; border-radius: 9999px; font-weight: 800;">
                     ✔ LOJINHA INTERNA (RECUPERAÇÃO)
                 </span>
             <?php else: ?>
-                <span class="badge" style="background-color: #FEE2E2; color: #991B1B; font-size: 20px; padding: 10px 20px; border-radius: 9999px; font-weight: 800;">
+                <span class="badge" style="background-color: #FEE2E2; color: #991B1B; font-size: 17px; padding: 8px 16px; border-radius: 9999px; font-weight: 800;">
                     ✖ DESCARTE IRREVERSÍVEL (PERDA)
                 </span>
             <?php endif; ?>
@@ -78,7 +78,7 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <!-- Rodapé de Dupla Confirmação da Urna Eletrônica -->
-<div class="dupla-confirmacao-rodape" style="max-width: 650px; margin: 24px auto 0 auto;">
+<div class="dupla-confirmacao-rodape" style="max-width: 600px; margin: 18px auto 0 auto;">
     <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning">
         CORRIGIR
     </a>

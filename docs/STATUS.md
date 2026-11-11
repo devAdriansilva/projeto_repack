@@ -151,6 +151,10 @@
     - Fallback de busca inteligente por nome com lista rápida de até 6 sugestões para toques com luva.
     - Validação de envio e sincronização completa com o fluxo subsequente de registro de B.O.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-012 (11/11/2026):** Eliminação global do abismo vertical em todas as telas operacionais.
+    - Substituição do `justify-content: space-between` em `.urna-container` por `justify-content: flex-start` com `gap: 16px`, eliminando a separação forçada que empurrava o cabeçalho para o teto e os formulários para o rodapé em todas as etapas (Passo 1, Passo 2 e Passo 3 de Conferência).
+    - Agrupamento visual compacto e natural do fluxo: Título, Formulário de SKU/Avaria e Dupla Confirmação agora fluem como um bloco contínuo, sem vazios de 600px no meio da tela.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
