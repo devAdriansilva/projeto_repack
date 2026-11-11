@@ -16,11 +16,18 @@ define('PUBLIC_PATH', ROOT_PATH . '/public');
 define('LOGS_PATH', ROOT_PATH . '/logs');
 define('PATH_UPLOADS', PUBLIC_PATH . '/uploads/produtos');
 
-// Configurações de Conexão com o Banco de Dados MySQL (suporte a variáveis de ambiente ou fallback local)
-define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
-define('DB_PORT', getenv('DB_PORT') ?: '3306');
-define('DB_NAME', getenv('DB_NAME') ?: 'repack_db');
-define('DB_USER', getenv('DB_USER') ?: 'root');
+// Configurações de Conexão com o Banco de Dados MySQL (suporte a Alwaysdata e desenvolvimento local)
+if (strpos(__DIR__, 'financas-facil-atelie') !== false) {
+    define('DB_HOST', getenv('DB_HOST') ?: 'mysql-financas-facil-atelie.alwaysdata.net');
+    define('DB_PORT', getenv('DB_PORT') ?: '3306');
+    define('DB_NAME', getenv('DB_NAME') ?: 'financas-facil-atelie_repack');
+    define('DB_USER', getenv('DB_USER') ?: 'financas-facil-atelie');
+} else {
+    define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
+    define('DB_PORT', getenv('DB_PORT') ?: '3306');
+    define('DB_NAME', getenv('DB_NAME') ?: 'repack_db');
+    define('DB_USER', getenv('DB_USER') ?: 'root');
+}
 define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
 define('DB_CHARSET', 'utf8mb4');
 
