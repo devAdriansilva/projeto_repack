@@ -15,8 +15,8 @@ require_once __DIR__ . '/../layouts/header.php';
 <div class="home-operador-container">
     
     <!-- Título Principal Monumental (Sem legendas ou textos auxiliares) -->
-    <div style="text-align: center; margin-bottom: 4px; width: 100%;">
-        <h1 class="headline-xl" style="margin: 0; font-size: 52px; font-weight: 900; color: #0F172A; letter-spacing: 1px;">
+    <div style="text-align: center; margin-bottom: 2px; width: 100%; flex-shrink: 0;">
+        <h1 class="headline-xl" style="margin: 0; font-size: clamp(26px, 5.5vw, 40px); font-weight: 900; color: #0F172A; letter-spacing: 1px; line-height: 1.15;">
             BANCADA DE REPACK
         </h1>
     </div>

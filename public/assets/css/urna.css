@@ -306,19 +306,20 @@ body {
 }
 
 /* ==========================================================================
-   Home do Operador - Layout Monumental e Botões Sólidos de Altíssima Visibilidade
+   Home do Operador - Layout Monumental de Ocupação Total da Tela
    ========================================================================== */
 .home-operador-container {
     width: 100%;
     max-width: 980px;
     margin: 0 auto;
-    padding: 20px 14px;
-    min-height: calc(100dvh - 80px);
+    padding: 10px 14px 16px 14px;
+    min-height: calc(100dvh - 68px);
+    height: calc(100dvh - 68px);
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    gap: 28px;
+    justify-content: stretch;
+    align-items: stretch;
+    gap: 14px;
     box-sizing: border-box;
 }
 
@@ -329,29 +330,9 @@ body {
     width: 100%;
 }
 
-.brand-repack-badge {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #0F172A;
-    color: #FFFFFF;
-    padding: 14px 48px;
-    border-radius: 24px;
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.3);
-    border: 2px solid rgba(255, 255, 255, 0.15);
-}
-
-.brand-repack-badge h1 {
-    margin: 0;
-    font-size: 42px;
-    font-weight: 900;
-    letter-spacing: 3px;
-    color: #FFFFFF;
-    line-height: 1.1;
-}
-
 .btn-operador-solido {
+    flex: 1 1 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -359,8 +340,7 @@ body {
     text-decoration: none;
     border-radius: 36px;
     width: 100%;
-    min-height: 250px;
-    padding: 26px 20px;
+    padding: 18px 16px;
     box-sizing: border-box;
     transition: transform 0.1s ease, filter 0.1s ease, box-shadow 0.1s ease;
     touch-action: manipulation;
@@ -379,35 +359,35 @@ body {
 .btn-operador-bo {
     background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%);
     border: 8px solid #1E40AF;
-    box-shadow: 0 14px 34px rgba(37, 99, 235, 0.38);
+    box-shadow: 0 14px 34px rgba(37, 99, 235, 0.4);
 }
 
 .btn-operador-producao {
     background: linear-gradient(145deg, #059669 0%, #047857 100%);
     border: 8px solid #065F46;
-    box-shadow: 0 14px 34px rgba(5, 150, 105, 0.38);
+    box-shadow: 0 14px 34px rgba(5, 150, 105, 0.4);
 }
 
 .btn-operador-icone-wrapper {
-    width: 145px;
-    height: 145px;
+    width: clamp(120px, 20vh, 180px);
+    height: clamp(120px, 20vh, 180px);
     background: #FFFFFF;
-    border-radius: 28px;
+    border-radius: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-    margin-bottom: 16px;
-    padding: 8px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+    margin-bottom: clamp(8px, 1.8vh, 16px);
+    padding: 10px;
     box-sizing: border-box;
     flex-shrink: 0;
 }
 
 .btn-operador-img {
-    width: 125px;
-    height: 125px;
+    width: 90%;
+    height: 90%;
     object-fit: contain;
-    border-radius: 20px;
+    border-radius: 22px;
     display: block;
 }
 
@@ -415,38 +395,25 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 16px;
-    font-size: 42px;
+    gap: 14px;
+    font-size: clamp(26px, 5.5vw, 44px);
     font-weight: 900;
     color: #FFFFFF;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.15;
 }
 
 @media (max-width: 480px) {
-    .btn-operador-label {
-        font-size: 34px;
-        gap: 10px;
+    .home-operador-container {
+        padding: 8px 10px 14px 10px;
+        gap: 12px;
     }
     .btn-operador-solido {
-        min-height: 220px;
-        padding: 20px 14px;
-    }
-    .btn-operador-icone-wrapper {
-        width: 125px;
-        height: 125px;
-        margin-bottom: 12px;
-    }
-    .btn-operador-img {
-        width: 105px;
-        height: 105px;
-    }
-}
-    .brand-repack-badge h1 {
-        font-size: 24px;
-        letter-spacing: 2px;
+        border-radius: 28px;
+        padding: 14px 10px;
+        border-width: 6px;
     }
 }
 

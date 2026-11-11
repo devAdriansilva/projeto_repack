@@ -287,6 +287,13 @@
     - Destaque no Ícone de Configuração (`app/views/layouts/header.php` e `urna.css`):
       - Substituição do cinza camuflado pelo azul vibrante `#2563EB`, com fundo suave `#EFF6FF`, borda azul reforçada e anel circular de progresso nítido, mantendo a proteção tátil de 5 segundos.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-027 (11/11/2026):** Ocupação Total da Tela (100dvh) e Redução de Espaços Vazios na Home do Operador.
+    - Otimização do layout da tela inicial (`app/views/operador/home.php` e `public/assets/css/urna.css`):
+      - Fixação da altura total do container em `height: calc(100dvh - 68px)` com `justify-content: stretch` e `gap: 14px`, eliminando vácuos brancos excessivos e scroll desnecessário em telas móveis e tablets.
+      - Distribuição vertical dinâmica dos dois botões monumentais via `flex: 1 1 0; min-height: 0;`, garantindo que ambos ocupem proporcionalmente toda a área visível da tela.
+      - Dimensionamento responsivo de ícones (`clamp(120px, 20vh, 180px)`), tipografia de títulos (`clamp(26px, 5.5vw, 40px)`) e rótulos dos botões (`clamp(26px, 5.5vw, 44px)`).
+      - Remoção de chaves duplicadas/órfãs no CSS para integridade estrita de renderização.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
