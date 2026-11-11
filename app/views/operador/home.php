@@ -54,6 +54,14 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </a>
 
+    <!-- Botão 3: BAIXA NA LOJINHA (Sólido Vermelho/Coral Monumental - Perdas / Vencimento) -->
+    <a href="<?= APP_URL ?>/operador/baixa" class="btn-operador-solido btn-operador-baixa">
+        <div class="btn-operador-label">
+            <span style="font-size: 48px; line-height: 1;">🗑️</span>
+            <span>BAIXA NA LOJINHA</span>
+        </div>
+    </a>
+
 </div>
 
 <script>

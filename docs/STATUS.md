@@ -366,6 +366,18 @@
       - `app/views/gestao/separacao.php`: endpoint assíncrono de status de separação corrigido com `APP_URL`.
     - **Validação de Rota e Compatibilidade:** Todos os 35 testes automatizados (`php tests/test_fase5.php`) e testes de operador padrão executados com 100% de sucesso.
     - **Incremento de Versão:** Versão elevada para `v1.37` com atualização imediata de cache no Service Worker `repack-pwa-v1.37`.
+  - [x] **MANUT-038 (11/11/2026):** Botão Adicional na Home do Operador para Baixa de Itens da Lojinha (Avaria/Vencimento).
+    - **Aba Inicial do Operador (`app/views/operador/home.php`):**
+      - Adicionado 3º grande botão monumental: **"🗑️ BAIXA NA LOJINHA"**, estilizado com a classe `.btn-operador-baixa` em gradiente vermelho de aviso de alto contraste (`#DC2626` / `#B91C1C`), com alvos de toque generosos para luvas.
+    - **Interface Operacional Dedicada (`app/views/operador/baixa_lojinha.php`):**
+      - **Etapa 1 (Seleção e Quantidade):** Busca e validação por Código SKU ou Nome do produto (filtrando estritamente itens que possuem saldo físico positivo na lojinha), seletor numérico gigante `-` e `+` com limitação automática ao teto de estoque disponível, e botões táteis de 1 clique para seleção do motivo (`Passou da Validade` ou `Quebra / Vazamento`).
+      - **Etapa 2 (Dupla Conferência):** Tela de confirmação com resumo dos dados, quantidade em destaque vermelho (72px) e botões lineares de 130px: "CORRIGIR" (laranja) e "CONFIRMAR BAIXA" (vermelho escuro).
+    - **Backend e API (`app/controllers/OperadorController.php` e `public/index.php`):**
+      - Rotas `/operador/baixa` e endpoint `/api/estoque/baixa-operador` utilizando a transação atômica nativa de `EstoqueLojinha::registrarBaixaAdministrativa()`, registrando a perda na tabela `baixas_administrativas`, abatendo o saldo e gerando auditoria em `logs_sistema`.
+    - **Estilos e PWA Offline:**
+      - Adicionadas classes `.btn-operador-baixa` e flexibilização de altura de container em `public/assets/css/urna.css`.
+      - Cache estático atualizado no Service Worker `repack-pwa-v1.38`.
+    - **Incremento de Versão:** Versão elevada para `v1.38`.
 
 ---
 

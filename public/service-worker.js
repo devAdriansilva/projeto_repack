@@ -3,7 +3,7 @@
  * Baseado estritamente em docs/FSD.md e AGENTS.md
  */
 
-const CACHE_NAME = 'repack-pwa-v1.37';
+const CACHE_NAME = 'repack-pwa-v1.38';
 const STATIC_ASSETS = [
     '/',
     '/operador',
@@ -12,6 +12,7 @@ const STATIC_ASSETS = [
     '/operador/avaria/resumo',
     '/operador/cronometro',
     '/operador/cronometro/resumo',
+    '/operador/baixa',
     '/assets/css/bootstrap.min.css',
     '/assets/css/urna.css',
     '/assets/js/bootstrap.bundle.min.js',

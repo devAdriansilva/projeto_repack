@@ -314,12 +314,11 @@ body {
     margin: 0 auto;
     padding: 6px 12px 10px 12px;
     min-height: calc(100dvh - 58px);
-    height: calc(100dvh - 58px);
     display: flex;
     flex-direction: column;
     justify-content: stretch;
     align-items: stretch;
-    gap: 8px;
+    gap: 12px;
     box-sizing: border-box;
 }
 
@@ -390,6 +389,12 @@ body {
     background: linear-gradient(145deg, #059669 0%, #047857 100%);
     border: 8px solid #065F46;
     box-shadow: 0 14px 34px rgba(5, 150, 105, 0.4);
+}
+
+.btn-operador-baixa {
+    background: linear-gradient(145deg, #DC2626 0%, #B91C1C 100%);
+    border: 8px solid #991B1B;
+    box-shadow: 0 14px 34px rgba(220, 38, 38, 0.4);
 }
 
 .btn-operador-icone-wrapper {

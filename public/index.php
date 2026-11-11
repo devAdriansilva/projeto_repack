@@ -91,6 +91,15 @@ switch ($route) {
         (new ProdutividadeController())->resumo();
         break;
 
+    case '/operador/baixa':
+    case '/operador/baixa_lojinha':
+        (new OperadorController())->baixaLojinha();
+        break;
+
+    case '/api/estoque/baixa-operador':
+        (new OperadorController())->apiBaixaLojinha();
+        break;
+
     // -------------------------------------------------------------
     // Rotas de Autenticação da Gestão
     // -------------------------------------------------------------
