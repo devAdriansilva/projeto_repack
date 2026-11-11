@@ -26,24 +26,14 @@ $_SESSION['cronometro_temp'] = [
     'data_hora_inicio' => $inicio,
     'data_hora_fim' => $fim,
     'duracao_segundos' => $duracao,
-    'pacotes_refeitos' => $pacotes
+    'pacotes_refeitos' => $pacotes,
+    'pausado' => (int)($_POST['pausado'] ?? 0),
+    'segundos_pausa' => (int)($_POST['segundos_pausa'] ?? 0)
 ];
 
-// Formatação amigável dos horários e duração
+// Formatação amigável dos horários de início e término (sem tempo total decorrido)
 $horaInicioFormatada = !empty($inicio) ? date('H:i', strtotime($inicio)) : '--:--';
 $horaFimFormatada = !empty($fim) ? date('H:i', strtotime($fim)) : '--:--';
-
-$minutosTotais = (int)round($duracao / 60);
-$horas = floor($minutosTotais / 60);
-$minutosRestantes = $minutosTotais % 60;
-
-if ($horas > 0 && $minutosRestantes > 0) {
-    $tempoFormatado = "{$horas}h {$minutosRestantes}min";
-} elseif ($horas > 0) {
-    $tempoFormatado = "{$horas} hora" . ($horas > 1 ? 's' : '');
-} else {
-    $tempoFormatado = "{$minutosRestantes} minuto" . ($minutosRestantes != 1 ? 's' : '');
-}
 
 $pageTitle = "Produção - Conferência";
 require_once __DIR__ . '/../layouts/header.php';
@@ -55,7 +45,7 @@ require_once __DIR__ . '/../layouts/header.php';
     </h1>
 </div>
 
-<!-- Cartão Central de Resumo (Ultra Alto Contraste Massivo) -->
+<!-- Cartão Central de Resumo (Ultra Alto Contraste Massivo - Sem Poluição Visual) -->
 <div class="urna-card" style="width: 100%; text-align: center; padding: 44px 32px; border-radius: 36px; border: 8px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22); background: #FFFFFF;">
     <div style="margin-bottom: 28px;">
         <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; letter-spacing: 1px; text-transform: uppercase;">PRODUTO:</span>
@@ -66,18 +56,15 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 5px solid #CBD5E1; padding-top: 28px;">
         <div>
-            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">PACOTES CONCLUÍDOS:</span>
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">PACOTES:</span>
             <div class="headline-xl" style="color: #0F172A; font-size: 104px; font-weight: 900; margin-top: 6px; line-height: 1.05;">
                 <?= $pacotes ?> <span style="font-size: 36px; font-weight: 800; color: #64748B;">pcts</span>
             </div>
         </div>
         <div>
-            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">HORÁRIOS & TEMPO:</span>
-            <div style="color: #1E40AF; font-size: 46px; font-weight: 900; margin-top: 8px;">
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">HORÁRIOS:</span>
+            <div style="color: #1E40AF; font-size: 50px; font-weight: 900; margin-top: 12px; line-height: 1.2;">
                 <?= $horaInicioFormatada ?> ➔ <?= $horaFimFormatada ?>
-            </div>
-            <div style="color: #059669; font-size: 34px; font-weight: 900; margin-top: 8px;">
-                ⏱ <?= $tempoFormatado ?>
             </div>
         </div>
     </div>

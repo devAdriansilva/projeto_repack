@@ -262,6 +262,14 @@ switch ($route) {
         (new ProdutividadeController())->iniciarSessao();
         break;
 
+    case '/api/produtividade/pausar':
+        (new ProdutividadeController())->pausarSessao();
+        break;
+
+    case '/api/produtividade/retomar':
+        (new ProdutividadeController())->retomarSessao();
+        break;
+
     case '/api/produtividade/descartar':
         (new ProdutividadeController())->descartarSessao();
         break;

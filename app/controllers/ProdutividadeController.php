@@ -37,10 +37,43 @@ class ProdutividadeController
             'produto_nome' => (string)($dados['produto_nome'] ?? ''),
             'produto_codigo' => (string)($dados['produto_codigo'] ?? ''),
             'produto_embalagem' => (string)($dados['produto_embalagem'] ?? ''),
-            'data_hora_inicio' => (string)($dados['data_hora_inicio'] ?? date('Y-m-d H:i:s'))
+            'data_hora_inicio' => (string)($dados['data_hora_inicio'] ?? date('Y-m-d H:i:s')),
+            'pausado' => false,
+            'segundos_pausa' => 0
         ];
 
         echo json_encode(['status' => 'success', 'producao' => $_SESSION['producao_ativa']]);
+    }
+
+    /**
+     * Endpoint API para pausar produção em andamento
+     */
+    public function pausarSessao(): void
+    {
+        header('Content-Type: application/json; charset=UTF-8');
+        if (!empty($_SESSION['producao_ativa'])) {
+            $raw = file_get_contents('php://input');
+            $dados = json_decode($raw, true) ?? [];
+            $_SESSION['producao_ativa']['pausado'] = true;
+            $_SESSION['producao_ativa']['pausa_inicio'] = (string)($dados['pausa_inicio'] ?? date('Y-m-d H:i:s'));
+        }
+        echo json_encode(['status' => 'success', 'producao' => $_SESSION['producao_ativa'] ?? null]);
+    }
+
+    /**
+     * Endpoint API para retomar produção em andamento
+     */
+    public function retomarSessao(): void
+    {
+        header('Content-Type: application/json; charset=UTF-8');
+        if (!empty($_SESSION['producao_ativa'])) {
+            $raw = file_get_contents('php://input');
+            $dados = json_decode($raw, true) ?? [];
+            $_SESSION['producao_ativa']['pausado'] = false;
+            $_SESSION['producao_ativa']['segundos_pausa'] = (int)($dados['segundos_pausa'] ?? 0);
+            unset($_SESSION['producao_ativa']['pausa_inicio']);
+        }
+        echo json_encode(['status' => 'success', 'producao' => $_SESSION['producao_ativa'] ?? null]);
     }
 
     /**

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Projeto Repack - Urna Eletrônica (Registro de Produção - Dois Momentos: Iniciar / Finalizar)
+ * Projeto Repack - Urna Eletrônica (Registro de Produção - Dois Momentos: Iniciar / Pausar / Finalizar)
  * Baseado estritamente em docs/DESIGN.md e docs/FSD.md (Seção 12.1 e 13.2)
  */
 
@@ -20,7 +20,9 @@ if ($isOrigemVoltar && isset($_SESSION['cronometro_temp'])) {
         'produto_nome' => (string)$_SESSION['cronometro_temp']['produto_nome'],
         'produto_codigo' => (string)($_SESSION['cronometro_temp']['produto_codigo'] ?? ''),
         'produto_embalagem' => (string)($_SESSION['cronometro_temp']['produto_embalagem'] ?? ''),
-        'data_hora_inicio' => (string)$_SESSION['cronometro_temp']['data_hora_inicio']
+        'data_hora_inicio' => (string)$_SESSION['cronometro_temp']['data_hora_inicio'],
+        'pausado' => (bool)($_SESSION['cronometro_temp']['pausado'] ?? false),
+        'segundos_pausa' => (int)($_SESSION['cronometro_temp']['segundos_pausa'] ?? 0)
     ];
     $pacotesIniciais = (int)($_SESSION['cronometro_temp']['pacotes_refeitos'] ?? 1);
 } else {
@@ -102,24 +104,20 @@ require_once __DIR__ . '/../layouts/header.php';
             </div>
         </div>
 
-        <!-- Alerta de Código Não Encontrado -->
+        <!-- Alerta de Código Não Encontrado (Sem legendas ou textos explicativos) -->
         <div class="card-nao-encontrado" id="cardNaoEncontrado" style="display: none;">
-            ⚠️ Nenhum produto cadastrado com o código <strong id="codigoNaoEncontrado"></strong>.<br>
-            <span style="font-size: 18px; font-weight: 600;">Confira os dígitos na etiqueta da embalagem.</span>
+            ⚠️ PRODUTO NÃO ENCONTRADO (<strong id="codigoNaoEncontrado"></strong>)
         </div>
 
         <!-- Menu Flutuante de Sugestões por Nome -->
         <div id="wrapperSugestoes" class="wrapper-sugestoes-busca" style="display: none;">
-            <div style="padding: 12px 18px; font-size: 18px; font-weight: 800; background: #F8FAFC; color: #475569; border-bottom: 2px solid #E2E8F0;">
-                Toque no produto desejado:
-            </div>
             <div id="listaSugestoes" style="max-height: 280px; overflow-y: auto;"></div>
         </div>
     </div>
 
     <!-- Alerta Flutuante se tentar iniciar sem produto -->
     <div id="alertaSemProduto" style="display: none; width: 100%; margin: 24px 0 0 0; background: #FEF2F2; color: #991B1B; border: 4.5px solid #EF4444; border-radius: 22px; padding: 22px; font-weight: 900; text-align: center; font-size: 24px;">
-        ⚠️ DIGITE O CÓDIGO (SKU) DO PRODUTO ANTES DE INICIAR!
+        ⚠️ DIGITE O CÓDIGO (SKU) DO PRODUTO!
     </div>
 
     <!-- Rodapé Momento 1: CANCELAR ou INICIAR PRODUÇÃO -->
@@ -138,17 +136,20 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- ============================================================= -->
 <div id="secaoMomento2" style="<?= $producaoAtiva ? 'display: block;' : 'display: none;' ?>">
     <div style="text-align: center; margin-bottom: 20px;">
-        <h1 class="headline-lg" style="margin: 0; font-size: 48px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
-            PRODUÇÃO EM ANDAMENTO
+        <h1 class="headline-lg" id="tituloMomento2" style="margin: 0; font-size: 48px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
+            <?= (!empty($producaoAtiva['pausado'])) ? 'PRODUÇÃO EM PAUSA' : 'PRODUÇÃO EM ANDAMENTO' ?>
         </h1>
     </div>
 
-    <!-- Cartão Central com Produto e Horário de Início Fixado -->
+    <!-- Cartão Central com Produto, Início e Status de Pausa -->
     <div class="urna-card" style="width: 100%; text-align: center; padding: 38px 28px; border-radius: 36px; border: 8px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18); background: #FFFFFF;">
-        <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; letter-spacing: 1px; text-transform: uppercase;">
-            PRODUTO EM REEMBALAGEM:
-        </span>
-        <div class="headline-lg" id="ativoNomeProduto" style="color: #0F172A; margin-top: 10px; font-size: 48px; font-weight: 900; line-height: 1.2; word-break: break-word;">
+        
+        <!-- Badge de Pausa (quando pausado) -->
+        <div id="badgeStatusPausa" style="<?= (!empty($producaoAtiva['pausado'])) ? 'display: inline-flex;' : 'display: none;' ?> align-items: center; justify-content: center; gap: 10px; background: #FEF3C7; color: #92400E; border: 4px solid #F59E0B; padding: 10px 24px; border-radius: 9999px; font-size: 26px; font-weight: 900; margin-bottom: 16px;">
+            ⏸ EM PAUSA
+        </div>
+
+        <div class="headline-lg" id="ativoNomeProduto" style="color: #0F172A; font-size: 52px; font-weight: 900; line-height: 1.2; word-break: break-word;">
             <?= sanitize_html($producaoAtiva['produto_nome'] ?? '') ?>
         </div>
         <div style="margin-top: 14px; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
@@ -161,11 +162,8 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
 
         <div style="border-top: 5px solid #CBD5E1; margin-top: 26px; padding-top: 22px;">
-            <span class="body-md" style="color: #059669; font-weight: 900; font-size: 26px; text-transform: uppercase; letter-spacing: 1px;">
-                🟢 HORÁRIO DE INÍCIO REGISTRADO:
-            </span>
-            <div id="ativoHoraInicioDisplay" style="font-size: 72px; font-weight: 900; color: #059669; margin-top: 6px; line-height: 1.1;">
-                <?= !empty($producaoAtiva['data_hora_inicio']) ? date('H:i', strtotime($producaoAtiva['data_hora_inicio'])) : '--:--' ?>
+            <div style="font-size: 28px; font-weight: 900; color: #059669; text-transform: uppercase;">
+                🟢 INÍCIO: <span id="ativoHoraInicioDisplay" style="font-size: 64px; font-weight: 900; margin-left: 8px;"><?= !empty($producaoAtiva['data_hora_inicio']) ? date('H:i', strtotime($producaoAtiva['data_hora_inicio'])) : '--:--' ?></span>
             </div>
         </div>
     </div>
@@ -193,13 +191,24 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-    <!-- Rodapé Momento 2: DESCARTAR ou FINALIZAR PRODUÇÃO -->
+    <!-- Botão de Pausar / Retomar Produção -->
+    <div style="margin-top: 26px; width: 100%;">
+        <button type="button" 
+                class="btn-urna" 
+                id="btnPausarRetomar" 
+                onclick="togglePausaProducao()" 
+                style="min-height: 125px; font-size: 38px; font-weight: 900; border-radius: 32px; <?= (!empty($producaoAtiva['pausado'])) ? 'background: linear-gradient(145deg, #10B981 0%, #059669 100%); border: 6px solid #047857;' : 'background: linear-gradient(145deg, #F59E0B 0%, #D97706 100%); border: 6px solid #B45309;' ?> color: #FFFFFF; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);">
+            <?= (!empty($producaoAtiva['pausado'])) ? '▶ RETOMAR PRODUÇÃO' : '⏸ PAUSAR PRODUÇÃO' ?>
+        </button>
+    </div>
+
+    <!-- Rodapé Momento 2: CANCELAR ou FINALIZAR PRODUÇÃO -->
     <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
-        <button type="button" class="btn-urna btn-urna-warning" onclick="descartarProducaoAtiva()" style="min-height: 135px; font-size: 34px; font-weight: 900; border-radius: 36px;">
-            DESCARTAR CICLO
+        <button type="button" class="btn-urna btn-urna-warning" onclick="descartarProducaoAtiva()" style="min-height: 135px; font-size: 38px; font-weight: 900; border-radius: 36px;">
+            CANCELAR
         </button>
         <button type="button" class="btn-urna btn-urna-primary" id="btnFinalizarProducao" onclick="finalizarProducao()" style="min-height: 135px; font-size: 40px; font-weight: 900; border-radius: 36px;">
-            FINALIZAR PRODUÇÃO ➔
+            FINALIZAR ➔
         </button>
     </div>
 </div>
@@ -214,7 +223,6 @@ let pacotesContador = <?= $pacotesIniciais ?>;
 
 // Checagem no cliente ao carregar a página
 window.addEventListener('DOMContentLoaded', () => {
-    // Se PHP não tinha na sessão, tenta recuperar do localStorage
     if (!producaoAtiva) {
         const local = localStorage.getItem('repack_producao_ativa');
         if (local) {
@@ -227,11 +235,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 console.error('Falha ao restaurar producao do localStorage', e);
             }
         }
+    } else {
+        atualizarVisualPausa();
     }
 });
 
 /* ==========================================================================
-   FUNÇÕES DO MOMENTO 1 (BUSCA SKU E INÍCIO)
+   MOMENTO 1: ENTRADA DE SKU E INÍCIO
    ========================================================================== */
 function processarEntradaSku(valor) {
     const termo = valor.trim().toLowerCase();
@@ -263,7 +273,7 @@ function processarEntradaSku(valor) {
         return;
     }
 
-    // Se é numérico e tem 3+ dígitos, tenta prefixo
+    // 2. Busca numérica parcial
     const apenasNumeros = /^\d+$/.test(termo);
     if (apenasNumeros) {
         const matchesSku = PRODUTOS.filter(p => p.codigo.startsWith(termo));
@@ -289,7 +299,7 @@ function processarEntradaSku(valor) {
         }
     }
 
-    // 2. Busca por texto
+    // 3. Busca por texto
     if (!apenasNumeros && termo.length >= 2) {
         const matchesNome = PRODUTOS.filter(p => p.nome.toLowerCase().includes(termo)).slice(0, 6);
         if (matchesNome.length > 0) {
@@ -385,13 +395,13 @@ function iniciarProducao() {
         produto_nome: produtoSelecionadoMomento1.nome,
         produto_codigo: produtoSelecionadoMomento1.codigo,
         produto_embalagem: produtoSelecionadoMomento1.embalagem,
-        data_hora_inicio: timestampInicio
+        data_hora_inicio: timestampInicio,
+        pausado: false,
+        segundos_pausa: 0
     };
 
-    // Salva no localStorage para contingência e sobrevivência a recarregamento
     localStorage.setItem('repack_producao_ativa', JSON.stringify(producaoAtiva));
 
-    // Salva na sessão PHP via endpoint rápido
     fetch('<?= APP_URL ?>/api/produtividade/iniciar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -399,8 +409,6 @@ function iniciarProducao() {
     }).catch(e => console.warn('Aviso: sessão offline temporária', e));
 
     if (navigator.vibrate) navigator.vibrate([80, 50, 80]);
-
-    // Transiciona instantaneamente para o Momento 2
     restaurarMomento2(producaoAtiva);
 }
 
@@ -417,11 +425,12 @@ function restaurarMomento2(prod) {
     const mins = String(dataObj.getMinutes()).padStart(2, '0');
     document.getElementById('ativoHoraInicioDisplay').innerText = `${horas}:${mins}`;
 
+    atualizarVisualPausa();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ==========================================================================
-   FUNÇÕES DO MOMENTO 2 (PACOTES REFEITOS E FINALIZAÇÃO)
+   MOMENTO 2: PAUSA, RETOMADA E FINALIZAÇÃO
    ========================================================================== */
 function alterarPacotes(delta) {
     pacotesContador = Math.max(1, pacotesContador + delta);
@@ -448,8 +457,71 @@ function validarPacotesBlur() {
     }
 }
 
+function togglePausaProducao() {
+    if (!producaoAtiva) return;
+
+    const agora = new Date();
+
+    if (!producaoAtiva.pausado) {
+        // Pausar
+        producaoAtiva.pausado = true;
+        producaoAtiva.pausa_inicio = agora.toISOString();
+
+        localStorage.setItem('repack_producao_ativa', JSON.stringify(producaoAtiva));
+
+        fetch('<?= APP_URL ?>/api/produtividade/pausar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pausa_inicio: producaoAtiva.pausa_inicio })
+        }).catch(() => {});
+
+        if (navigator.vibrate) navigator.vibrate(60);
+    } else {
+        // Retomar
+        const inicioPausaMs = new Date(producaoAtiva.pausa_inicio || agora.toISOString()).getTime();
+        const diffPausaSeg = Math.max(0, Math.round((agora.getTime() - inicioPausaMs) / 1000));
+        producaoAtiva.segundos_pausa = (producaoAtiva.segundos_pausa || 0) + diffPausaSeg;
+        producaoAtiva.pausado = false;
+        delete producaoAtiva.pausa_inicio;
+
+        localStorage.setItem('repack_producao_ativa', JSON.stringify(producaoAtiva));
+
+        fetch('<?= APP_URL ?>/api/produtividade/retomar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ segundos_pausa: producaoAtiva.segundos_pausa })
+        }).catch(() => {});
+
+        if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
+    }
+
+    atualizarVisualPausa();
+}
+
+function atualizarVisualPausa() {
+    const btn = document.getElementById('btnPausarRetomar');
+    const badge = document.getElementById('badgeStatusPausa');
+    const titulo = document.getElementById('tituloMomento2');
+
+    if (!btn || !producaoAtiva) return;
+
+    if (producaoAtiva.pausado) {
+        btn.innerText = '▶ RETOMAR PRODUÇÃO';
+        btn.style.background = 'linear-gradient(145deg, #10B981 0%, #059669 100%)';
+        btn.style.border = '6px solid #047857';
+        if (badge) badge.style.display = 'inline-flex';
+        if (titulo) titulo.innerText = 'PRODUÇÃO EM PAUSA';
+    } else {
+        btn.innerText = '⏸ PAUSAR PRODUÇÃO';
+        btn.style.background = 'linear-gradient(145deg, #F59E0B 0%, #D97706 100%)';
+        btn.style.border = '6px solid #B45309';
+        if (badge) badge.style.display = 'none';
+        if (titulo) titulo.innerText = 'PRODUÇÃO EM ANDAMENTO';
+    }
+}
+
 function descartarProducaoAtiva() {
-    if (confirm('Deseja realmente descartar este ciclo de produção em andamento? O horário de início será perdido.')) {
+    if (confirm('Deseja descartar este ciclo de produção?')) {
         localStorage.removeItem('repack_producao_ativa');
         fetch('<?= APP_URL ?>/api/produtividade/descartar', { method: 'POST' }).catch(() => {});
         window.location.href = '<?= APP_URL ?>/operador';
@@ -462,13 +534,21 @@ function finalizarProducao() {
     const agora = new Date();
     const timestampFim = agora.toISOString();
 
+    // Se estava pausado ao finalizar, computa última fração de pausa
+    if (producaoAtiva.pausado && producaoAtiva.pausa_inicio) {
+        const inicioPausaMs = new Date(producaoAtiva.pausa_inicio).getTime();
+        const diffPausaSeg = Math.max(0, Math.round((agora.getTime() - inicioPausaMs) / 1000));
+        producaoAtiva.segundos_pausa = (producaoAtiva.segundos_pausa || 0) + diffPausaSeg;
+    }
+
     const inicioMs = new Date(producaoAtiva.data_hora_inicio).getTime();
     const fimMs = agora.getTime();
-    const duracaoSegundos = Math.max(0, Math.round((fimMs - inicioMs) / 1000));
+    const duracaoBruta = Math.max(0, Math.round((fimMs - inicioMs) / 1000));
+    const duracaoLiquida = Math.max(0, duracaoBruta - (producaoAtiva.segundos_pausa || 0));
 
     if (navigator.vibrate) navigator.vibrate(100);
 
-    // Submete formulário dinâmico para a tela de conferência
+    // Submete formulário dinâmico para a conferência dupla
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '<?= APP_URL ?>/operador/cronometro/resumo';
@@ -481,7 +561,9 @@ function finalizarProducao() {
         data_hora_inicio: producaoAtiva.data_hora_inicio,
         data_hora_fim: timestampFim,
         pacotes_refeitos: pacotesContador,
-        duracao_segundos: duracaoSegundos
+        duracao_segundos: duracaoLiquida,
+        pausado: producaoAtiva.pausado ? 1 : 0,
+        segundos_pausa: producaoAtiva.segundos_pausa || 0
     };
 
     for (const [chave, valor] of Object.entries(campos)) {

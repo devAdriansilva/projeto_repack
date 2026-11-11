@@ -271,6 +271,13 @@
       - Tela de Conferência Dupla com botões `⬅ VOLTAR / CORRIGIR` (fundo azul) e `CONFIRMAR` (verde).
       - Sobrevivência a recarregamento de página ou fechamento de aba via persistência sincronizada no `localStorage`.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-025 (11/11/2026):** Adição de Botão de Pausa e Limpeza Visual Total em Registrar Produção.
+    - Implementação de funcionalidade de Pausa/Retomada (`PAUSAR PRODUÇÃO` / `RETOMAR PRODUÇÃO`) no Momento 2 para interrupções operacionais:
+      - Desconto automático do tempo de pausa acumulado no cômputo da duração do ciclo.
+      - Sincronização e persistência de estado pausado no `localStorage` e na sessão PHP (`/api/produtividade/pausar` e `/api/produtividade/retomar`).
+    - Remoção de textos e legendas explicativas em todo o fluxo de produção, mantendo foco puramente operacional.
+    - Remoção da exibição do tempo total decorrido na tela de conferência (`cronometro_resumo.php`), exibindo estritamente Produto, Pacotes Concluídos e os Horários marcados (`Início ➔ Fim`).
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
