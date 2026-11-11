@@ -238,6 +238,12 @@
       - Passo 3: Título em 54px, cartão em moldura de 8px com produto em 54px, quantidade em 104px colossal, tipo de avaria em 46px e selo em 38px.
       - Botões de dupla confirmação ampliados para 135px de altura e fonte de 42px negrito.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-019 (11/11/2026):** Remoção da Expressão '(Descarte)' dos Botões de Avaria.
+    - Ajuste de redação nos botões vermelhos de avaria crítica no Passo 2:
+      - `FURO (DESCARTE)` alterado para `FURO`.
+      - `MICRO FURO (DESCARTE)` alterado para `MICRO FURO`.
+    - Manutenção da lógica de negócio e destinação automática para perda irreversível conforme docs/FSD.md.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 

@@ -57,11 +57,11 @@ require_once __DIR__ . '/../layouts/header.php';
 
         <!-- Destinados ao Descarte Crítico (Vermelho Perigo) -->
         <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('furo')">
-            <span style="font-size: 58px;">🚫</span> <span>FURO (DESCARTE)</span>
+            <span style="font-size: 58px;">🚫</span> <span>FURO</span>
         </button>
 
         <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('micro_furo')">
-            <span style="font-size: 58px;">⚠️</span> <span>MICRO FURO (DESCARTE)</span>
+            <span style="font-size: 58px;">⚠️</span> <span>MICRO FURO</span>
         </button>
     </div>
 
