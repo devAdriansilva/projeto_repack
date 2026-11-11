@@ -50,7 +50,7 @@ if ($operadorAtivoId) {
 <body>
 
 <!-- Barra Superior Minimalista do Quiosque -->
-<header class="quiosque-header" style="justify-content: flex-end; padding: 12px 20px; min-height: 60px; background-color: var(--surface); border-bottom: 2px solid var(--border);">
+<header class="quiosque-header" style="justify-content: flex-end; padding: 6px 16px; min-height: 52px; background-color: var(--surface); border-bottom: 2px solid var(--border);">
     <!-- Botão de Configurações / Gestão com Ícone Azul de Alta Visibilidade (Proteção 5s) -->
     <div style="position: relative; display: inline-flex; align-items: center;">
         <button type="button" 

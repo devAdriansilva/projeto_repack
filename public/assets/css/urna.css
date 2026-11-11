@@ -312,14 +312,14 @@ body {
     width: 100%;
     max-width: 980px;
     margin: 0 auto;
-    padding: 8px 14px 14px 14px;
-    min-height: calc(100dvh - 66px);
-    height: calc(100dvh - 66px);
+    padding: 6px 12px 10px 12px;
+    min-height: calc(100dvh - 58px);
+    height: calc(100dvh - 58px);
     display: flex;
     flex-direction: column;
     justify-content: stretch;
     align-items: stretch;
-    gap: 12px;
+    gap: 8px;
     box-sizing: border-box;
 }
 
@@ -346,7 +346,7 @@ body {
 
 .home-title-badge h1 {
     margin: 0;
-    font-size: clamp(34px, 7.5vw, 52px);
+    font-size: clamp(34px, 8vw, 54px);
     font-weight: 900;
     color: #FFFFFF;
     letter-spacing: 5px;
@@ -364,7 +364,7 @@ body {
     text-decoration: none;
     border-radius: 36px;
     width: 100%;
-    padding: 12px 10px;
+    padding: 8px 10px;
     box-sizing: border-box;
     transition: transform 0.1s ease, filter 0.1s ease, box-shadow 0.1s ease;
     touch-action: manipulation;
@@ -393,16 +393,16 @@ body {
 }
 
 .btn-operador-icone-wrapper {
-    width: clamp(170px, 28vh, 260px);
-    height: clamp(170px, 28vh, 260px);
+    width: clamp(185px, 31vh, 300px);
+    height: clamp(185px, 31vh, 300px);
     background: #FFFFFF;
     border-radius: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
-    margin-bottom: clamp(6px, 1.2vh, 12px);
-    padding: 6px;
+    margin-bottom: clamp(4px, 1vh, 10px);
+    padding: 4px;
     box-sizing: border-box;
     flex-shrink: 0;
 }
@@ -420,35 +420,43 @@ body {
     align-items: center;
     justify-content: center;
     gap: 16px;
-    font-size: clamp(30px, 6.8vw, 48px);
+    font-size: clamp(34px, 7.6vw, 54px);
     font-weight: 900;
     color: #FFFFFF;
     letter-spacing: 0.8px;
     text-transform: uppercase;
     text-align: center;
-    line-height: 1.15;
+    line-height: 1.1;
 }
 
 @media (max-width: 480px) {
     .home-operador-container {
-        padding: 4px 8px 8px 8px;
-        gap: 8px;
+        padding: 4px 6px 6px 6px;
+        gap: 6px;
     }
     .btn-operador-solido {
         border-radius: 28px;
-        padding: 10px 8px;
+        padding: 8px 6px;
         border-width: 6px;
     }
     .btn-operador-icone-wrapper {
-        border-radius: 30px;
+        border-radius: 28px;
+        padding: 4px;
+    }
+    .btn-operador-img {
+        border-radius: 24px;
     }
     .home-title-badge {
-        padding: 4px 26px;
+        padding: 4px 24px;
         border-radius: 16px;
     }
     .home-title-badge h1 {
-        font-size: clamp(28px, 8vw, 44px);
+        font-size: clamp(30px, 8.5vw, 48px);
         letter-spacing: 4px;
+    }
+    .btn-operador-label {
+        font-size: clamp(32px, 8vw, 50px);
+        gap: 12px;
     }
 }
 

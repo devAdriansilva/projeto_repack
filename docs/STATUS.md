@@ -307,6 +307,12 @@
       - Preenchimento interno das imagens aumentado para 100% da moldura branca com bordas arredondadas de 30px e redução de padding interno para 6px.
       - Compactação de espaçamentos verticais para maximizar a área ocupada pelas ilustrações sem provocar rolagem na tela.
     - Deploy automatizado executado via SSH no Alwaysdata.
+  - [x] **MANUT-030 (11/11/2026):** Hiper Ampliação dos Ícones e Tipografia da Home.
+    - Ampliação máxima dos 2 ícones ilustrativos para `clamp(185px, 31vh, 300px)` com redução do padding do wrapper para `4px` e imagem em 100%.
+    - Ampliação das fontes dos botões de ação para `clamp(34px, 7.6vw, 54px)` em peso 900 e ícones de apoio SVG para `54px × 54px`.
+    - Ampliação do título REPACK no badge contrastante para `clamp(34px, 8vw, 54px)`.
+    - Otimização do cabeçalho superior quiosque (`min-height: 52px; padding: 6px 16px;`) para transferir mais área vertical útil para os botões.
+    - Deploy automatizado executado via SSH no Alwaysdata.
 
 ---
 
