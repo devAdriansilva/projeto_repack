@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('status', status);
                 formData.append('lote_id', loteId);
 
-                const response = await fetch('/gestao/separacao/status', {
+                const response = await fetch('<?= APP_URL ?>/gestao/separacao/status', {
                     method: 'POST',
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'

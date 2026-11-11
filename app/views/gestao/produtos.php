@@ -67,7 +67,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                                         onclick='editarProduto(<?= json_encode($p, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)' title="Editar produto">
                                     ✏️
                                 </button>
-                                <form action="/gestao/produtos/toggle" method="POST" class="d-inline" onsubmit="return confirm('Deseja alternar a ativação deste produto?');">
+                                <form action="<?= APP_URL ?>/gestao/produtos/toggle" method="POST" class="d-inline" onsubmit="return confirm('Deseja alternar a ativação deste produto?');">
                                     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                     <input type="hidden" name="id" value="<?= (int)$p['id'] ?>">
                                     <button type="submit" class="btn btn-sm <?= $p['ativo'] ? 'btn-outline-warning' : 'btn-outline-success' ?>" title="<?= $p['ativo'] ? 'Desativar' : 'Ativar' ?>">
@@ -91,7 +91,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                 <h5 class="modal-title headline-lg" id="modalProdutoLabel" style="font-size: 20px;">Cadastrar Produto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <form action="/gestao/produtos/salvar" method="POST" enctype="multipart/form-data">
+            <form action="<?= APP_URL ?>/gestao/produtos/salvar" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <input type="hidden" name="id" id="prod_id" value="">
 

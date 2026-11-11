@@ -82,7 +82,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                             <td style="text-align: right;">
                                 <div class="btn-group btn-group-sm mb-1" role="group">
                                     <?php if ($lote['status'] !== 'aberto'): ?>
-                                        <form action="/gestao/lotes/status" method="POST" class="d-inline">
+                                        <form action="<?= APP_URL ?>/gestao/lotes/status" method="POST" class="d-inline">
                                             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                             <input type="hidden" name="id" value="<?= (int)$lote['id'] ?>">
                                             <input type="hidden" name="status" value="aberto">
@@ -93,7 +93,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                                     <?php endif; ?>
 
                                     <?php if ($lote['status'] === 'aberto'): ?>
-                                        <form action="/gestao/lotes/status" method="POST" class="d-inline">
+                                        <form action="<?= APP_URL ?>/gestao/lotes/status" method="POST" class="d-inline">
                                             <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                             <input type="hidden" name="id" value="<?= (int)$lote['id'] ?>">
                                             <input type="hidden" name="status" value="encerrado">
@@ -107,7 +107,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                                         ✏️
                                     </button>
 
-                                    <form action="/gestao/lotes/excluir" method="POST" class="d-inline" onsubmit="return confirm('Deseja realmente excluir este lote?');">
+                                    <form action="<?= APP_URL ?>/gestao/lotes/excluir" method="POST" class="d-inline" onsubmit="return confirm('Deseja realmente excluir este lote?');">
                                         <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                         <input type="hidden" name="id" value="<?= (int)$lote['id'] ?>">
                                         <button type="submit" class="btn btn-outline-danger" title="Excluir lote">
@@ -132,7 +132,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                 <h5 class="modal-title headline-lg" id="modalLoteLabel" style="font-size: 20px;">Planejar Lote de Venda</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <form action="/gestao/lotes/salvar" method="POST">
+            <form action="<?= APP_URL ?>/gestao/lotes/salvar" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <input type="hidden" name="id" id="lote_id" value="">
 

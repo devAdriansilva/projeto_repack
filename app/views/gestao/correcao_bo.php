@@ -18,7 +18,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
 
 <!-- Barra de Filtros de Pesquisa -->
 <div class="card-gestao mb-4">
-    <form action="/gestao/bo" method="GET" class="row g-3 align-items-end">
+    <form action="<?= APP_URL ?>/gestao/bo" method="GET" class="row g-3 align-items-end">
         <div class="col-12 col-md-3">
             <label for="filtro_inicio" class="form-label fw-bold small text-uppercase">Data Início</label>
             <input type="date" class="form-control" id="filtro_inicio" name="data_inicio" value="<?= sanitize_html($filtros['data_inicio'] ?? '') ?>">
@@ -147,7 +147,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                 <h5 class="modal-title headline-lg text-warning" style="font-size: 20px;">Retificar Apontamento de B.O.</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <form action="/gestao/bo/corrigir" method="POST">
+            <form action="<?= APP_URL ?>/gestao/bo/corrigir" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <input type="hidden" name="bo_id" id="corrigir_bo_id" value="">
 

@@ -356,6 +356,16 @@
     - **Ajuste de Rótulo de Reserva:** Em `app/views/gestao/estoque.php`, descrição do campo alterada para `Quantidade Reservada *`.
     - **Flexibilização do Motivo de Reserva:** O campo `Motivo do Ajuste` no modal de reserva foi tornado opcional (removido `required` do frontend) e no backend (`EstoqueLojinha::ajustarReservaOculta()`) foi adicionado fallback automático (`Ajuste manual de reserva`), permitindo salvar reservas rapidamente sem bloqueios.
     - **Incremento de Versão:** Versão elevada para `v1.36` com cache-busting do Service Worker `repack-pwa-v1.36`.
+  - [x] **MANUT-037 (11/11/2026):** Correção do Erro 404 em Ações e Confirmações dentro das Abas Administrativas.
+    - **Causa Raiz Identificada:** Nas views de Gestão (`app/views/gestao/estoque.php`, `lotes.php`, `produtos.php`, `correcao_bo.php` e `separacao.php`), os formulários e chamadas assíncronas estavam com o atributo `action="/gestao/..."` ou `fetch('/gestao/...')` fixados de forma absoluta no HTML, em vez de utilizar dinamicamente a constante `<?= APP_URL ?>`. Em ambientes sob subpastas, proxies reversos ou redirecionamento Apache, o roteamento chegava desencontrado ao Front Controller (`public/index.php`), caindo no default HTTP 404.
+    - **Padronização Global de Ações:**
+      - `app/views/gestao/estoque.php`: formulários de Reserva (`<?= APP_URL ?>/gestao/estoque/reserva`) e Baixa Administrativa (`<?= APP_URL ?>/gestao/estoque/baixa`) corrigidos com `APP_URL`.
+      - `app/views/gestao/lotes.php`: ações de abertura/encerramento de lotes (`<?= APP_URL ?>/gestao/lotes/status`), exclusão (`<?= APP_URL ?>/gestao/lotes/excluir`) e criação/edição (`<?= APP_URL ?>/gestao/lotes/salvar`) corrigidas com `APP_URL`.
+      - `app/views/gestao/produtos.php`: alternância de status ativo/inativo (`<?= APP_URL ?>/gestao/produtos/toggle`) e cadastro/edição (`<?= APP_URL ?>/gestao/produtos/salvar`) corrigidas com `APP_URL`.
+      - `app/views/gestao/correcao_bo.php`: formulários de filtro e retificação de B.O. corrigidos com `APP_URL`.
+      - `app/views/gestao/separacao.php`: endpoint assíncrono de status de separação corrigido com `APP_URL`.
+    - **Validação de Rota e Compatibilidade:** Todos os 35 testes automatizados (`php tests/test_fase5.php`) e testes de operador padrão executados com 100% de sucesso.
+    - **Incremento de Versão:** Versão elevada para `v1.37` com atualização imediata de cache no Service Worker `repack-pwa-v1.37`.
 
 ---
 

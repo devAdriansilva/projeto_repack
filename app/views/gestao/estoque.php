@@ -178,7 +178,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                 <h5 class="modal-title headline-lg" style="font-size: 20px;">Ajustar Reserva Oculta</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <form action="/gestao/estoque/reserva" method="POST">
+            <form action="<?= APP_URL ?>/gestao/estoque/reserva" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <input type="hidden" name="produto_id" id="reserva_produto_id" value="">
 
@@ -217,7 +217,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                 <h5 class="modal-title headline-lg text-danger" style="font-size: 20px;">Registrar Baixa Administrativa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <form action="/gestao/estoque/baixa" method="POST">
+            <form action="<?= APP_URL ?>/gestao/estoque/baixa" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                 <input type="hidden" name="produto_id" id="baixa_produto_id" value="">
 
