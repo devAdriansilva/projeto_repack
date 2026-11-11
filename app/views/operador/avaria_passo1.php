@@ -53,8 +53,8 @@ require_once __DIR__ . '/../layouts/header.php';
     <div class="sku-entry-container">
         
         <!-- Campo de Código Gigante com Teclado Numérico Nativo -->
-        <label for="inputCodigoSku" style="display: block; font-size: 16px; font-weight: 800; color: var(--on-surface); text-transform: uppercase; margin-bottom: 8px; text-align: center;">
-            Código do Produto (SKU):
+        <label for="inputCodigoSku" style="display: block; font-size: 22px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 10px; text-align: center; letter-spacing: 0.5px;">
+            1. DIGITE O CÓDIGO (SKU):
         </label>
         
         <div class="sku-input-wrapper">
@@ -75,23 +75,23 @@ require_once __DIR__ . '/../layouts/header.php';
                     onclick="limparSku()" 
                     aria-label="Limpar código">✕</button>
         </div>
-        <div style="font-size: 13px; font-weight: 600; color: var(--on-surface-muted); text-align: center; margin-top: 6px;">
-            Digite o código impresso na caixa/lata ou pesquise pelo nome
+        <div style="font-size: 15px; font-weight: 800; color: #334155; text-align: center; margin-top: 8px;">
+            Digite o número impresso na caixa/lata ou pesquise pelo nome
         </div>
 
-        <!-- Card de Confirmação Imediata (Verde) -->
+        <!-- Card de Confirmação Imediata (Verde de Alto Contraste) -->
         <div class="card-confirmacao-sku" id="cardConfirmacaoSku" style="<?= $produtoPreSelecionado ? 'display: block;' : 'display: none;' ?>">
             <div class="badge-status-ok">
-                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
-                <span>Produto Localizado</span>
+                <span>PRODUTO IDENTIFICADO</span>
             </div>
             <div class="nome-produto-destaque" id="displayNomeProduto">
                 <?= sanitize_html($produtoPreSelecionado['nome'] ?? '') ?>
             </div>
             <div class="detalhes-produto">
-                <span class="sku-badge" id="displaySkuBadge">SKU <?= sanitize_html($produtoPreSelecionado['codigo'] ?? '') ?></span>
+                <span class="badge-sku" id="displaySkuBadge">SKU <?= sanitize_html($produtoPreSelecionado['codigo'] ?? '') ?></span>
                 <span class="badge-embalagem" id="displayEmbalagem">
                     <?= sanitize_html($produtoPreSelecionado['pacote_padrao'] ?? '') ?>
                 </span>
@@ -115,11 +115,11 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <!-- Seletor Numérico Gigante -->
-    <div class="urna-card" style="text-align: center; width: 100%; margin: 0 0 18px 0; padding: 20px 16px; border-radius: 22px;">
-        <label class="body-lg" style="font-weight: 900; display: block; margin-bottom: 14px; font-size: 20px; color: var(--on-surface); text-transform: uppercase;">
-            QUANTIDADE AVARIADA:
+    <div class="urna-card" style="text-align: center; width: 100%; margin: 0 0 18px 0; padding: 22px 18px; border-radius: 24px; border: 3px solid #CBD5E1;">
+        <label class="body-lg" style="font-weight: 900; display: block; margin-bottom: 16px; font-size: 22px; color: #0F172A; text-transform: uppercase; letter-spacing: 0.5px;">
+            2. QUANTIDADE AVARIADA:
         </label>
-        <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 18px; margin: 0;">
+        <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 20px; margin: 0;">
             <button type="button" class="btn-counter" onclick="alterarQuantidade(-1)" aria-label="Diminuir quantidade">−</button>
             <div class="counter-display" id="displayQtd"><?= $quantidadeInicial ?></div>
             <button type="button" class="btn-counter" onclick="alterarQuantidade(1)" aria-label="Aumentar quantidade">+</button>
@@ -127,16 +127,16 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <!-- Alerta Flutuante se tentar avançar sem produto -->
-    <div id="alertaSemProduto" style="display: none; width: 100%; margin: 0 0 16px 0; background: #FEF2F2; color: #991B1B; border: 2.5px solid #EF4444; border-radius: 14px; padding: 14px; font-weight: 800; text-align: center; font-size: 16px;">
-        ⚠️ Digite um código válido antes de avançar!
+    <div id="alertaSemProduto" style="display: none; width: 100%; margin: 0 0 16px 0; background: #FEF2F2; color: #991B1B; border: 3px solid #EF4444; border-radius: 16px; padding: 16px; font-weight: 900; text-align: center; font-size: 18px;">
+        ⚠️ DIGITE UM CÓDIGO VÁLIDO ANTES DE AVANÇAR!
     </div>
 
-    <!-- Botões de Ação do Rodapé (Grandes Alvos 85px) -->
+    <!-- Botões de Ação do Rodapé (Grandes Alvos 90px de Alto Contraste) -->
     <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 18px 0 0 0; gap: 14px;">
-        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 85px; font-size: 24px; font-weight: 900; border-radius: 20px;">
+        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 88px; font-size: 26px; font-weight: 900; border-radius: 22px;">
             CANCELAR
         </a>
-        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 85px; font-size: 24px; font-weight: 900; border-radius: 20px;">
+        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 88px; font-size: 26px; font-weight: 900; border-radius: 22px;">
             PRÓXIMO ➔
         </button>
     </div>
