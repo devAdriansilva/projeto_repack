@@ -108,6 +108,12 @@
     - Implementação de componente de busca instantânea (sem recarregamento e offline) em `app/views/operador/avaria_passo1.php` e `app/views/operador/cronometro.php`.
     - Destaque visual do código SKU em cada cartão de produto (`sku-badge`) e contenção de scroll suave em `public/assets/css/urna.css`.
     - Execução e aprovação da migração CLI e validação de 100% da suíte de 35 testes automatizados (`php tests/test_fase5.php`).
+  - [x] **MANUT-004 (11/11/2026):** Harmonização visual da bancada, proteção de 5s na engrenagem e unificação de funções.
+    - Redesenho dos botões de ação em cards integrados com moldura contida de 140px, imagens dimensionadas (`btn_bo.jpg` e `btn_producao.jpg`), botões em alto contraste (Azul e Verde) com alvos de toque de 72px e sem qualquer subtítulo.
+    - Aplicação de regras CSS inline e cache busting dinâmico (`?v=...`) em `app/views/layouts/header.php`, eliminando falhas de cache em navegadores mobile.
+    - Simplificação radical da barra superior, mantendo exclusivamente o ícone de engrenagem protegido contra toques acidentais (requer pressionar e segurar por 5 segundos contínuos com anel de progresso visual SVG e resposta tátil).
+    - Unificação das funções de exibição do operador ativo, troca de operador, status de conexão e autenticação da gestão dentro do modal da engrenagem.
+    - Validação com 35/35 testes automatizados aprovados (`php tests/test_fase5.php`).
 
 ---
 

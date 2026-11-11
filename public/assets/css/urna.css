@@ -85,15 +85,15 @@ body {
     line-height: 24px;
 }
 
-/* Barra Superior Quiosque */
+/* Barra Superior Quiosque (Minimalista com Engrenagem de 5s) */
 .quiosque-header {
     background-color: var(--surface);
-    border-bottom: 2px solid var(--border);
-    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 16px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    min-height: 70px;
+    justify-content: flex-end;
+    min-height: 52px;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -253,6 +253,85 @@ body {
 .btn-urna-outline:hover,
 .btn-urna-outline:active {
     background-color: #E5E7EB;
+}
+
+/* Cards Harmoniosos da Bancada do Operador */
+.card-acao-operador {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    border-radius: 18px;
+    overflow: hidden;
+    background-color: var(--surface);
+    border: 2px solid var(--border);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease;
+    touch-action: manipulation;
+    cursor: pointer;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.card-acao-operador:hover {
+    text-decoration: none;
+    border-color: #94A3B8;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.card-acao-operador:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-acao-moldura {
+    height: 140px;
+    background: #F8FAFC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 2px solid #E2E8F0;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.card-acao-moldura img {
+    height: 124px;
+    width: auto;
+    max-width: 90%;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.card-acao-btn {
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-sizing: border-box;
+    padding: 12px 16px;
+}
+
+.card-acao-btn-bo {
+    background-color: #2563EB;
+}
+
+.card-acao-btn-bo:active {
+    background-color: #1D4ED8;
+}
+
+.card-acao-btn-producao {
+    background-color: #059669;
+}
+
+.card-acao-btn-producao:active {
+    background-color: #047857;
 }
 
 /* Botões com Imagem Ilustrativa (Operador / Bancada) */
