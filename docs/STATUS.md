@@ -493,6 +493,14 @@
     - **Resiliência de Sessão no Backend:**
       - Adicionado fallback dinâmico: se `$_SESSION['nome']` ou `matricula` estiverem vazios na sessão mas houver `$_SESSION['usuario_id']`, o sistema restaura os dados oficiais instantaneamente do banco de dados via `Usuario::buscarPorId()`.
     - **Incremento de Versão:** Versão elevada para `v1.46` com cache atualizado para `repack-pwa-v1.46`.
+  - [x] **MANUT-049 (12/11/2026):** Crachá de Identificação do Gestor com Alto Contraste Cromático (Azul Cobalto, Dourado e Vermelho).
+    - **Paleta de Alto Contraste na Identificação (`app/views/layouts/gestao_header.php`):**
+      - Substituição da faixa cinza escura por um gradiente em Azul Cobalto Profundo (`#1E3A8A` / `#1D4ED8`) com borda inferior em Azul Royal luminoso (`#3B82F6` de 3px).
+      - Avatar `👤` em cápsula circular branca com sombra suave e nome do gestor em branco puro (`#FFFFFF`) com peso 900 e leve relevo.
+      - Pílula de matrícula em dourado/âmbar vibrante (`#FEF3C7` / `#92400E` com borda `#F59E0B`), destacando visualmente a credencial da gestão.
+      - Botão "Sair" em vermelho rubi (`#DC2626` / `#B91C1C`) em formato de pílula ergonômica.
+      - Aplicação harmônica do mesmo design de alto contraste no crachá do desktop e no menu expandido do mobile.
+    - **Incremento de Versão:** Versão elevada para `v1.47` com cache atualizado no Service Worker `repack-pwa-v1.47`.
 
 ---
 

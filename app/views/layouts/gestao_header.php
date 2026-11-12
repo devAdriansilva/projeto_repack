@@ -286,50 +286,62 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             </ul>
 
             <div class="d-flex align-items-center gap-3 pt-2 pt-lg-0 border-top border-lg-0 border-secondary">
-                <!-- Crachá Desktop (telas >= 992px) -->
-                <div class="d-none d-lg-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style="background: #374151; border: 1.5px solid #4B5563;">
-                    <span style="font-size: 16px;">👤</span>
-                    <span style="color: #FFFFFF; font-weight: 700; font-size: 14px; letter-spacing: 0.3px;">
+                <!-- Crachá Desktop (Alto Contraste Cromático em Azul Cobalto e Dourado) -->
+                <div class="d-none d-lg-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border: 2px solid #3B82F6; box-shadow: 0 2px 8px rgba(30, 58, 138, 0.35);">
+                    <div style="width: 28px; height: 28px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 15px; line-height: 1;">👤</span>
+                    </div>
+                    <span style="color: #FFFFFF; font-weight: 800; font-size: 14px; letter-spacing: 0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                         <?= sanitize_html($nomeGestor) ?>
                     </span>
-                    <span style="color: #93C5FD; font-weight: 700; font-size: 12px; background: rgba(59, 130, 246, 0.25); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.5);">
+                    <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 12px; font-weight: 900; border: 1.5px solid #F59E0B; padding: 3px 8px; border-radius: 6px;">
                         <?= sanitize_html($matriculaGestor) ?>
                     </span>
                 </div>
 
                 <!-- Botão Sair Desktop -->
-                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold px-3 py-1 d-none d-lg-inline-block" style="border-radius: 8px;" title="Encerrar sessão administrativa">
+                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold px-3 py-1 d-none d-lg-inline-block" style="border-radius: 8px; background: #DC2626; border: 1.5px solid #B91C1C; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);" title="Encerrar sessão administrativa">
                     Sair
                 </a>
 
                 <!-- Cartão do Usuário Mobile (dentro do menu hambúrguer quando expandido) -->
-                <div class="d-lg-none w-100 p-2 my-2 rounded d-flex align-items-center justify-content-between" style="background: #1F2937; border: 1px solid #374151;">
+                <div class="d-lg-none w-100 p-3 my-2 rounded d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border: 2px solid #3B82F6; box-shadow: 0 4px 10px rgba(0,0,0,0.25);">
                     <div class="d-flex align-items-center gap-2">
-                        <span style="font-size: 20px;">👤</span>
+                        <div style="width: 36px; height: 36px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <span style="font-size: 20px; line-height: 1;">👤</span>
+                        </div>
                         <div>
-                            <div style="color: #FFFFFF; font-weight: 700; font-size: 14px;"><?= sanitize_html($nomeGestor) ?></div>
-                            <div style="color: #93C5FD; font-size: 12px; font-weight: 600;">Matrícula: <?= sanitize_html($matriculaGestor) ?> &bull; Gestão</div>
+                            <div style="color: #FFFFFF; font-weight: 900; font-size: 15px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);"><?= sanitize_html($nomeGestor) ?></div>
+                            <span class="badge mt-1" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1.5px solid #F59E0B;">
+                                MATRÍCULA: <?= sanitize_html($matriculaGestor) ?> &bull; GESTÃO
+                            </span>
                         </div>
                     </div>
-                    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold" style="border-radius: 6px;">Sair</a>
+                    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold" style="background: #DC2626; border: 2px solid #B91C1C; border-radius: 20px; padding: 6px 14px;">Sair</a>
                 </div>
             </div>
         </div>
     </div>
 </nav>
 
-<!-- Sub-barra Móvel de Identificação do Usuário (Sempre visível no celular, sem precisar abrir o menu) -->
-<div class="d-flex d-lg-none align-items-center justify-content-between px-3 py-2" style="background: #111827; border-bottom: 2px solid #1F2937; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+<!-- Sub-barra Móvel de Identificação do Usuário (Alto Contraste Cromático) -->
+<div class="d-flex d-lg-none align-items-center justify-content-between px-3 py-2" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border-bottom: 3px solid #3B82F6; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.35);">
     <div class="d-flex align-items-center gap-2">
-        <span style="font-size: 16px;">👤</span>
-        <span style="color: #F9FAFB; font-weight: 800; font-size: 14px; letter-spacing: 0.3px;">
-            <?= sanitize_html($nomeGestor) ?>
-        </span>
-        <span class="badge" style="background: #1E3A8A; color: #93C5FD; font-size: 11px; font-weight: 700; border: 1px solid #2563EB;">
-            <?= sanitize_html($matriculaGestor) ?>
-        </span>
+        <div style="width: 34px; height: 34px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); flex-shrink: 0;">
+            <span style="font-size: 18px; line-height: 1;">👤</span>
+        </div>
+        <div class="d-flex flex-column" style="line-height: 1.15;">
+            <span style="color: #FFFFFF; font-weight: 900; font-size: 15px; letter-spacing: 0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">
+                <?= sanitize_html($nomeGestor) ?>
+            </span>
+            <div class="d-flex align-items-center gap-1 mt-1">
+                <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 900; border: 1.5px solid #F59E0B; padding: 2px 7px; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);">
+                    MATRÍCULA: <?= sanitize_html($matriculaGestor) ?>
+                </span>
+            </div>
+        </div>
     </div>
-    <a href="<?= APP_URL ?>/gestao/logout" class="text-danger fw-bold text-decoration-none small d-flex align-items-center gap-1" title="Encerrar sessão administrativa">
+    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold d-flex align-items-center gap-1" style="background: #DC2626; border: 2px solid #B91C1C; border-radius: 20px; padding: 5px 14px; font-size: 13px; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4); text-decoration: none; color: #FFFFFF;" title="Encerrar sessão administrativa">
         <span>Sair</span> ➔
     </a>
 </div>
