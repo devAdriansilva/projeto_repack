@@ -174,6 +174,8 @@ require __DIR__ . '/../layouts/gestao_header.php';
                             <optgroup label="Destino Descarte (Perdas Irreversíveis)">
                                 <option value="furo">Furo</option>
                                 <option value="micro_furo">Micro Furo</option>
+                                <option value="quebrada">Quebrada</option>
+                                <option value="validade">Validade</option>
                             </optgroup>
                         </select>
                         <div class="form-text">Alterar entre avaria leve e furo ajustará o saldo de estoque automaticamente.</div>

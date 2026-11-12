@@ -512,6 +512,20 @@
       - Emojis `⏳` e `💥` ampliados para 46px com alinhamento flexível e sem quebras visuais.
       - Bordas reforçadas para 5px (inativo) e 6px com sombra luminosa (ativo em vermelho `#DC2626`), preenchendo a tela com equilíbrio e facilitando o toque rápido com luvas.
     - **Incremento de Versão:** Versão elevada para `v1.48` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.48` em `public/service-worker.js`.
+  - [x] **MANUT-051 (12/11/2026):** Adição dos Motivos de B.O. "Quebrada" (Garrafa de Vidro) e "Validade" sem Incremento na Lojinha.
+    - **Migration 008 (`database/migrations/008_adicionar_motivos_bo_quebrada_validade.sql`):**
+      - Expansão do tipo ENUM na coluna `tipo_avaria` da tabela `apontamentos_bo` contemplando `'quebrada'` e `'validade'`.
+    - **Regra de Negócio e Roteamento Estrito (`app/models/ApontamentoBO.php`):**
+      - Inclusão de `'quebrada'` e `'validade'` na constante `TIPOS_DESCARTE`.
+      - Roteamento automático garantido com destino `descarte`, assegurando que ambos os motivos não gerem saldo físico em estoque para a lojinha de colaboradores.
+    - **Interface do Operador (`app/views/operador/avaria_passo2.php` e `avaria_resumo.php`):**
+      - Criação de 2 novos botões monumentais de alto contraste no grupo vermelho de Descarte Crítico:
+        - `QUEBRADA`: acompanhado de ícone vetorial SVG exclusivo e nítido de garrafa de vidro quebrada com gargalo partido e cacos.
+        - `VALIDADE`: acompanhado do ícone de ampulheta de validade (`⏳`).
+      - Mapeamento e exibição amigável na tela de resumo/dupla conferência (`avaria_resumo.php`).
+    - **Gestão e Retificação (`app/views/gestao/correcao_bo.php`):**
+      - Inclusão dos dois novos tipos no modal administrativo de correção sob "Destino Descarte (Perdas Irreversíveis)".
+    - **Incremento de Versão:** Versão elevada para `v1.49` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.49` em `public/service-worker.js`.
 
 ---
 

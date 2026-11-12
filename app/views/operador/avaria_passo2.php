@@ -55,13 +55,33 @@ require_once __DIR__ . '/../layouts/header.php';
             <span style="font-size: 58px;">📦</span> <span>EMBALAGEM DANIFICADA</span>
         </button>
 
-        <!-- Destinados ao Descarte Crítico (Vermelho Perigo) -->
+        <!-- Destinados ao Descarte Crítico (Vermelho Perigo - Não Vão para a Lojinha) -->
         <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('furo')">
             <span style="font-size: 58px;">🚫</span> <span>FURO</span>
         </button>
 
         <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('micro_furo')">
             <span style="font-size: 58px;">⚠️</span> <span>MICRO FURO</span>
+        </button>
+
+        <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('quebrada')">
+            <span style="display: inline-flex; align-items: center; justify-content: center; width: 58px; height: 58px; flex-shrink: 0;">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <!-- Gargalo quebrado da garrafa -->
+                    <path d="M10 2h4v2.5l-1 1.5-3-1z" fill="currentColor" fill-opacity="0.3"/>
+                    <!-- Corpo da garrafa com quebra irregular e pontiaguda -->
+                    <path d="M6 12.5l3-2.5 2 2 2.5-3.5 2 2 2.5-2v8.5a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-6.5z" fill="currentColor" fill-opacity="0.25"/>
+                    <!-- Trincas no vidro -->
+                    <path d="M9 15l2.5-2 1 2 2.5-1.5"/>
+                    <!-- Cacos de vidro projetados -->
+                    <path d="M17 4l2-1.5 1 2.5z" fill="currentColor"/>
+                </svg>
+            </span>
+            <span>QUEBRADA</span>
+        </button>
+
+        <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('validade')">
+            <span style="font-size: 58px;">⏳</span> <span>VALIDADE</span>
         </button>
     </div>
 

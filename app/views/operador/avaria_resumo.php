@@ -22,7 +22,9 @@ $mapaTipos = [
     'def_rotulo' => 'Defeito no Rótulo',
     'emba_danificada' => 'Embalagem Danificada',
     'furo' => 'Furo',
-    'micro_furo' => 'Micro Furo'
+    'micro_furo' => 'Micro Furo',
+    'quebrada' => 'Quebrada',
+    'validade' => 'Validade'
 ];
 $tipoRotulo = $mapaTipos[$tipoAvaria] ?? $tipoAvaria;
 $destino = ApontamentoBO::determinarDestino($tipoAvaria);
