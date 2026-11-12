@@ -8,9 +8,28 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../controllers/AuthController.php';
+require_once __DIR__ . '/../../models/Usuario.php';
 
-$nomeGestor = $_SESSION['nome'] ?? 'Coordenadora';
-$matriculaGestor = $_SESSION['matricula'] ?? 'GESTÃO';
+$nomeGestor = trim((string)($_SESSION['nome'] ?? ''));
+$matriculaGestor = trim((string)($_SESSION['matricula'] ?? ''));
+
+// Fallback resiliente ao banco de dados se a sessão perdeu as strings
+if (($nomeGestor === '' || $matriculaGestor === '') && !empty($_SESSION['usuario_id'])) {
+    $u = Usuario::buscarPorId((int)$_SESSION['usuario_id']);
+    if ($u) {
+        $nomeGestor = $u['nome'];
+        $matriculaGestor = $u['matricula'];
+        $_SESSION['nome'] = $nomeGestor;
+        $_SESSION['matricula'] = $matriculaGestor;
+    }
+}
+
+if ($nomeGestor === '') {
+    $nomeGestor = 'Coordenadora';
+}
+if ($matriculaGestor === '') {
+    $matriculaGestor = 'GESTÃO';
+}
 $csrfToken = AuthController::gerarCsrfToken();
 $rotaAtual = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '';
 if (APP_URL !== '' && strpos($rotaAtual, APP_URL) === 0) {
@@ -267,6 +286,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             </ul>
 
             <div class="d-flex align-items-center gap-3 pt-2 pt-lg-0 border-top border-lg-0 border-secondary">
+                <!-- Crachá Desktop (telas >= 992px) -->
                 <div class="d-none d-lg-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style="background: #374151; border: 1.5px solid #4B5563;">
                     <span style="font-size: 16px;">👤</span>
                     <span style="color: #FFFFFF; font-weight: 700; font-size: 14px; letter-spacing: 0.3px;">
@@ -277,13 +297,42 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                     </span>
                 </div>
 
-                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold px-3 py-1" style="border-radius: 8px;" title="Encerrar sessão administrativa">
+                <!-- Botão Sair Desktop -->
+                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold px-3 py-1 d-none d-lg-inline-block" style="border-radius: 8px;" title="Encerrar sessão administrativa">
                     Sair
                 </a>
+
+                <!-- Cartão do Usuário Mobile (dentro do menu hambúrguer quando expandido) -->
+                <div class="d-lg-none w-100 p-2 my-2 rounded d-flex align-items-center justify-content-between" style="background: #1F2937; border: 1px solid #374151;">
+                    <div class="d-flex align-items-center gap-2">
+                        <span style="font-size: 20px;">👤</span>
+                        <div>
+                            <div style="color: #FFFFFF; font-weight: 700; font-size: 14px;"><?= sanitize_html($nomeGestor) ?></div>
+                            <div style="color: #93C5FD; font-size: 12px; font-weight: 600;">Matrícula: <?= sanitize_html($matriculaGestor) ?> &bull; Gestão</div>
+                        </div>
+                    </div>
+                    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold" style="border-radius: 6px;">Sair</a>
+                </div>
             </div>
         </div>
     </div>
 </nav>
+
+<!-- Sub-barra Móvel de Identificação do Usuário (Sempre visível no celular, sem precisar abrir o menu) -->
+<div class="d-flex d-lg-none align-items-center justify-content-between px-3 py-2" style="background: #111827; border-bottom: 2px solid #1F2937; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+    <div class="d-flex align-items-center gap-2">
+        <span style="font-size: 16px;">👤</span>
+        <span style="color: #F9FAFB; font-weight: 800; font-size: 14px; letter-spacing: 0.3px;">
+            <?= sanitize_html($nomeGestor) ?>
+        </span>
+        <span class="badge" style="background: #1E3A8A; color: #93C5FD; font-size: 11px; font-weight: 700; border: 1px solid #2563EB;">
+            <?= sanitize_html($matriculaGestor) ?>
+        </span>
+    </div>
+    <a href="<?= APP_URL ?>/gestao/logout" class="text-danger fw-bold text-decoration-none small d-flex align-items-center gap-1" title="Encerrar sessão administrativa">
+        <span>Sair</span> ➔
+    </a>
+</div>
 
 <!-- Conteúdo Principal -->
 <div class="gestao-container">

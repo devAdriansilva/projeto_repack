@@ -485,6 +485,14 @@
       - Inclusão do parâmetro `?v=<?= APP_VERSION ?>` nas tags `<link rel="manifest">`, `<link rel="icon">` e `<link rel="apple-touch-icon">` em todos os cabeçalhos (`header.php`, `gestao_header.php` e `lojinha_header.php`).
       - Inclusão de versionamento nos paths internos de `public/manifest.json` (`icon-192.png?v=1.45`, `icon-512.png?v=1.45`).
     - **Incremento de Versão:** Versão elevada para `v1.45` e cache do Service Worker para `repack-pwa-v1.45`.
+  - [x] **MANUT-048 (12/11/2026):** Identificação Permanente do Usuário Gestor em Dispositivos Móveis e Resiliência de Sessão.
+    - **Sub-barra Móvel de Identificação (`app/views/layouts/gestao_header.php`):**
+      - Criação de uma faixa responsiva em cinza escuro (`#111827`) e alto contraste visível exclusivamente no mobile (`d-flex d-lg-none`), exibindo `👤 [Nome do Gestor] [Matrícula]` e o atalho `Sair ➔` logo abaixo da navbar, sem depender da abertura do menu hambúrguer.
+      - Cartão de perfil e atalho de logout integrados ao menu colapsado no mobile.
+      - No desktop (`>= 992px`), preservado o crachá arredondado na navbar superior à direita.
+    - **Resiliência de Sessão no Backend:**
+      - Adicionado fallback dinâmico: se `$_SESSION['nome']` ou `matricula` estiverem vazios na sessão mas houver `$_SESSION['usuario_id']`, o sistema restaura os dados oficiais instantaneamente do banco de dados via `Usuario::buscarPorId()`.
+    - **Incremento de Versão:** Versão elevada para `v1.46` com cache atualizado para `repack-pwa-v1.46`.
 
 ---
 
