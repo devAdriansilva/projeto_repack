@@ -478,6 +478,13 @@
       - Registro do Service Worker agora calcula dinamicamente `BASE_APP_URL` e aplica `{ scope: BASE_APP_URL + '/' }`.
       - O `service-worker.js` calcula seu prefixo de rota via `self.registration.scope` e não intercepta nenhuma requisição fora do escopo do Repack.
     - **Incremento de Versão:** Versão elevada para `v1.44` com cache atualizado no Service Worker `repack-pwa-v1.44`.
+  - [x] **MANUT-047 (12/11/2026):** Restauração do Layout Vertical Monumental da Home do Operador e Cache-Busting no Manifesto PWA.
+    - **Restauração Imediata da Home (`app/views/operador/home.php` e `public/assets/css/urna.css`):**
+      - Revertidas todas as modificações de flex-row/layout horizontal na Home, restaurando integralmente os botões monumentais de ocupação vertical de tela cheia (`flex-direction: column`, imagem grande no topo/centro de cada botão e proporção harmônica de 33% para cada ação no viewport).
+    - **Cache-Busting no Manifesto e Ícones:**
+      - Inclusão do parâmetro `?v=<?= APP_VERSION ?>` nas tags `<link rel="manifest">`, `<link rel="icon">` e `<link rel="apple-touch-icon">` em todos os cabeçalhos (`header.php`, `gestao_header.php` e `lojinha_header.php`).
+      - Inclusão de versionamento nos paths internos de `public/manifest.json` (`icon-192.png?v=1.45`, `icon-512.png?v=1.45`).
+    - **Incremento de Versão:** Versão elevada para `v1.45` e cache do Service Worker para `repack-pwa-v1.45`.
 
 ---
 

@@ -327,162 +327,147 @@ body {
 }
 
 /* ==========================================================================
-   Home do Operador - Layout Monumental Equilibrado (Sem Sobreposição)
+   Home do Operador - Layout Monumental de Ocupação Total da Tela
    ========================================================================== */
 .home-operador-container {
     width: 100%;
     max-width: 980px;
     margin: 0 auto;
-    padding: 10px 16px 16px 16px;
+    padding: 6px 12px 10px 12px;
     min-height: calc(100dvh - 58px);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: stretch;
     align-items: stretch;
-    gap: 16px;
+    gap: 12px;
     box-sizing: border-box;
 }
 
-.home-operador-header {
-    text-align: center;
-    padding: 0;
-    flex-shrink: 0;
-    width: 100%;
-}
-
-/* Badge Contrastante Monumental do Título */
 .home-title-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-block;
     background: #0F172A;
-    color: #FFFFFF;
-    padding: 6px 36px;
+    border: 4px solid #1E293B;
     border-radius: 20px;
-    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.35);
-    border: 3px solid #334155;
-    letter-spacing: 4px;
+    padding: 4px 32px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
 .home-title-badge h1 {
     margin: 0;
-    font-size: clamp(32px, 6vw, 48px);
+    font-size: clamp(34px, 8vw, 54px);
     font-weight: 900;
     color: #FFFFFF;
     letter-spacing: 5px;
-    line-height: 1.1;
     text-transform: uppercase;
+    line-height: 1.1;
 }
 
 .btn-operador-solido {
     flex: 1 1 0;
-    min-height: 110px;
-    max-height: 220px;
+    min-height: 0;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 24px;
     text-decoration: none;
-    border-radius: 32px;
+    border-radius: 36px;
     width: 100%;
-    padding: 16px 28px;
+    padding: 8px 10px;
     box-sizing: border-box;
     transition: transform 0.1s ease, filter 0.1s ease, box-shadow 0.1s ease;
     touch-action: manipulation;
-}
-
-.btn-operador-solido:hover {
-    text-decoration: none;
-    filter: brightness(1.05);
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .btn-operador-solido:active {
-    transform: scale(0.98);
-    filter: brightness(0.93);
+    transform: scale(0.985);
+    filter: brightness(0.92);
 }
 
 .btn-operador-bo {
-    background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%);
+    background: linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%);
     border: 8px solid #1E40AF;
-    box-shadow: 0 14px 34px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 14px 28px rgba(37, 99, 235, 0.35);
 }
 
 .btn-operador-producao {
-    background: linear-gradient(145deg, #059669 0%, #047857 100%);
+    background: linear-gradient(180deg, #059669 0%, #047857 100%);
     border: 8px solid #065F46;
-    box-shadow: 0 14px 34px rgba(5, 150, 105, 0.4);
+    box-shadow: 0 14px 28px rgba(5, 150, 105, 0.35);
 }
 
 .btn-operador-baixa {
-    background: linear-gradient(145deg, #DC2626 0%, #B91C1C 100%);
+    background: linear-gradient(180deg, #DC2626 0%, #B91C1C 100%);
     border: 8px solid #991B1B;
-    box-shadow: 0 14px 34px rgba(220, 38, 38, 0.4);
+    box-shadow: 0 14px 28px rgba(220, 38, 38, 0.35);
 }
 
 .btn-operador-icone-wrapper {
-    width: 96px;
-    height: 96px;
+    width: clamp(185px, 31vh, 300px);
+    height: clamp(185px, 31vh, 300px);
     background: #FFFFFF;
-    border-radius: 22px;
+    border-radius: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    margin-bottom: clamp(4px, 1vh, 10px);
     padding: 4px;
     box-sizing: border-box;
     flex-shrink: 0;
 }
 
-.btn-operador-icone-wrapper.btn-operador-icone-emoji {
-    background: rgba(255, 255, 255, 0.2);
-    border: 3px solid rgba(255, 255, 255, 0.4);
-    box-shadow: none;
-}
-
 .btn-operador-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    border-radius: 18px;
+    object-fit: contain;
+    border-radius: 30px;
     display: block;
 }
 
 .btn-operador-label {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 14px;
-    font-size: clamp(26px, 4.4vw, 42px);
+    justify-content: center;
+    gap: 16px;
+    font-size: clamp(34px, 7.6vw, 54px);
     font-weight: 900;
     color: #FFFFFF;
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    text-align: left;
-    line-height: 1.15;
+    text-align: center;
+    line-height: 1.1;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
     .home-operador-container {
-        padding: 8px 10px;
-        gap: 12px;
+        padding: 4px 6px 6px 6px;
+        gap: 6px;
     }
     .btn-operador-solido {
-        min-height: 95px;
-        padding: 12px 16px;
-        gap: 16px;
-        border-radius: 24px;
+        border-radius: 28px;
+        padding: 8px 6px;
         border-width: 6px;
     }
     .btn-operador-icone-wrapper {
-        width: 76px;
-        height: 76px;
-        border-radius: 18px;
+        border-radius: 28px;
+        padding: 4px;
+    }
+    .btn-operador-img {
+        border-radius: 24px;
+    }
+    .home-title-badge {
+        padding: 4px 24px;
+        border-radius: 16px;
+    }
+    .home-title-badge h1 {
+        font-size: clamp(30px, 8.5vw, 48px);
+        letter-spacing: 4px;
     }
     .btn-operador-label {
-        font-size: clamp(22px, 6vw, 32px);
-        gap: 8px;
+        font-size: clamp(32px, 8vw, 50px);
+        gap: 12px;
     }
 }
 
