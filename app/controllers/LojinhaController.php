@@ -39,7 +39,14 @@ class LojinhaController
             exit;
         }
 
+        $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
         $lote = LoteVenda::buscarLoteAtivoParaSetor($usuario['setor']);
+
+        // Se a loja estiver fechada e for Master ou Setorial, conecta ao Lote Corporativo permanente
+        if (!$lote && ($tipoAcesso === 'master' || $tipoAcesso === 'setorial')) {
+            $lote = LoteVenda::obterLoteCorporativo();
+        }
+
         if (!$lote) {
             $_SESSION['flash_aviso'] = "O lote de compras para o seu setor ({$usuario['setor']}) foi encerrado ou expirou.";
             header('Location: ' . APP_URL . '/lojinha/login');
@@ -47,6 +54,7 @@ class LojinhaController
         }
 
         $_SESSION['lojinha_lote_id'] = (int)$lote['id'];
+        $_SESSION['colaborador_tipo_acesso'] = $tipoAcesso;
 
         return [
             'usuario' => $usuario,
@@ -70,7 +78,11 @@ class LojinhaController
 
         // Se já autenticado e com lote ativo, redireciona para a vitrine
         if (!empty($_SESSION['colaborador_id']) && !empty($_SESSION['colaborador_setor'])) {
+            $tipoAcesso = $_SESSION['colaborador_tipo_acesso'] ?? 'comum';
             $lote = LoteVenda::buscarLoteAtivoParaSetor((string)$_SESSION['colaborador_setor']);
+            if (!$lote && ($tipoAcesso === 'master' || $tipoAcesso === 'setorial')) {
+                $lote = LoteVenda::obterLoteCorporativo();
+            }
             if ($lote) {
                 header('Location: ' . APP_URL . '/lojinha');
                 exit;
@@ -88,8 +100,15 @@ class LojinhaController
                 if (!$usuario || (int)$usuario['ativo'] !== 1) {
                     $erro = 'Matrícula não encontrada ou cadastro inativo no sistema.';
                 } else {
+                    $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
+
                     // Valida se há lote de venda aberto no momento para o setor deste colaborador
                     $lote = LoteVenda::buscarLoteAtivoParaSetor($usuario['setor']);
+
+                    // Se a loja estiver fechada e for Master ou Setorial, conecta ao Lote Corporativo permanente
+                    if (!$lote && ($tipoAcesso === 'master' || $tipoAcesso === 'setorial')) {
+                        $lote = LoteVenda::obterLoteCorporativo();
+                    }
 
                     if (!$lote) {
                         $proximoLote = LoteVenda::buscarProximoLotePlanejado();
@@ -106,6 +125,7 @@ class LojinhaController
                         $_SESSION['colaborador_nome'] = $usuario['nome'];
                         $_SESSION['colaborador_matricula'] = $usuario['matricula'];
                         $_SESSION['colaborador_setor'] = $usuario['setor'];
+                        $_SESSION['colaborador_tipo_acesso'] = $tipoAcesso;
                         $_SESSION['lojinha_lote_id'] = (int)$lote['id'];
 
                         header('Location: ' . APP_URL . '/lojinha');
@@ -132,6 +152,7 @@ class LojinhaController
             $_SESSION['colaborador_nome'],
             $_SESSION['colaborador_matricula'],
             $_SESSION['colaborador_setor'],
+            $_SESSION['colaborador_tipo_acesso'],
             $_SESSION['lojinha_lote_id']
         );
 
@@ -149,15 +170,25 @@ class LojinhaController
         $usuario = $auth['usuario'];
         $lote = $auth['lote'];
 
+        $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
+        $isMaster = ($tipoAcesso === 'master');
+        $isSetorial = ($tipoAcesso === 'setorial');
+
         $flashSucesso = $_SESSION['flash_sucesso'] ?? '';
         $flashErro = $_SESSION['flash_erro'] ?? '';
         unset($_SESSION['flash_sucesso'], $_SESSION['flash_erro']);
 
         // Carrega produtos com o saldo dinâmico (Fórmula: Total - Reservas - Carrinhos Ativos)
-        $produtos = EstoqueLojinha::listarProdutosVitrine((int)$lote['id'], (int)$usuario['id']);
+        // Para Master: inclui produtos com reserva e estoque físico total
+        $produtos = EstoqueLojinha::listarProdutosVitrine((int)$lote['id'], (int)$usuario['id'], $isMaster);
 
-        // Resumo de limites e cotas do colaborador
+        // Resumo de limites e cotas do comprador
         $resumo = Pedido::obterResumoComprador((int)$lote['id'], (int)$usuario['id']);
+
+        $ultimoPedido = null;
+        if (!empty($resumo['ja_comprou_no_lote'])) {
+            $ultimoPedido = Pedido::buscarUltimoPedidoDoUsuarioNoLote((int)$lote['id'], (int)$usuario['id']);
+        }
 
         require __DIR__ . '/../views/lojinha/vitrine.php';
     }
@@ -327,7 +358,14 @@ class LojinhaController
             exit;
         }
 
+        $usuario = Usuario::buscarPorId($colaboradorId);
+        $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
+
         $lote = LoteVenda::buscarLoteAtivoParaSetor($setor);
+        if (!$lote && ($tipoAcesso === 'master' || $tipoAcesso === 'setorial')) {
+            $lote = LoteVenda::obterLoteCorporativo();
+        }
+
         if (!$lote) {
             http_response_code(403);
             echo json_encode([

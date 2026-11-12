@@ -233,14 +233,18 @@ const RepackOffline = (() => {
             });
         });
 
-        // Registro do Service Worker se suportado
+        // Registro do Service Worker isolado no escopo do Repack
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
+            const baseUrl = (typeof BASE_APP_URL !== 'undefined') ? BASE_APP_URL : '';
+            const swUrl = baseUrl + '/service-worker.js';
+            const swScope = (baseUrl !== '' ? baseUrl + '/' : './');
+            
+            navigator.serviceWorker.register(swUrl, { scope: swScope })
                 .then(reg => {
-                    console.log('Service Worker registrado:', reg.scope);
+                    console.log('Service Worker Repack registrado no escopo isolado:', reg.scope);
                 })
                 .catch(err => {
-                    console.warn('Falha ao registrar Service Worker:', err);
+                    console.warn('Falha ao registrar Service Worker Repack:', err);
                 });
         }
     };

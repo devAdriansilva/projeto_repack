@@ -23,7 +23,13 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle ?? 'Gestão - ' . APP_NAME) ?></title>
+    
+    <link rel="icon" type="image/png" sizes="64x64" href="<?= APP_URL ?>/assets/img/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= APP_URL ?>/assets/img/apple-touch-icon.png">
+    <link rel="shortcut icon" href="<?= APP_URL ?>/assets/img/favicon.png">
+    <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
     
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/urna.css">
@@ -261,11 +267,17 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             </ul>
 
             <div class="d-flex align-items-center gap-3 pt-2 pt-lg-0 border-top border-lg-0 border-secondary">
-                <span class="text-white-50 small d-none d-xl-inline">
-                    👤 <strong><?= sanitize_html($nomeGestor) ?></strong> (<?= sanitize_html($matriculaGestor) ?>)
-                </span>
+                <div class="d-none d-lg-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style="background: #374151; border: 1.5px solid #4B5563;">
+                    <span style="font-size: 16px;">👤</span>
+                    <span style="color: #FFFFFF; font-weight: 700; font-size: 14px; letter-spacing: 0.3px;">
+                        <?= sanitize_html($nomeGestor) ?>
+                    </span>
+                    <span style="color: #93C5FD; font-weight: 700; font-size: 12px; background: rgba(59, 130, 246, 0.25); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.5);">
+                        <?= sanitize_html($matriculaGestor) ?>
+                    </span>
+                </div>
 
-                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-outline-danger" title="Encerrar sessão administrativa">
+                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold px-3 py-1" style="border-radius: 8px;" title="Encerrar sessão administrativa">
                     Sair
                 </a>
             </div>

@@ -52,28 +52,92 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 ?>
 
 <!-- Banner do Lote Ativo e Cota do Colaborador -->
-<div class="banner-lote">
-    <div>
-        <div style="font-size: 13px; text-transform: uppercase; color: #10B981; font-weight: 800; letter-spacing: 0.5px;">
-            ● Lote Ativo Aberto para o Setor: <?= sanitize_html($usuario['setor']) ?>
+<?php if (!empty($isMaster)): ?>
+    <div class="banner-lote" style="background: linear-gradient(135deg, #1E1B4B, #312E81); border: 2px solid #818CF8;">
+        <div>
+            <div style="font-size: 13px; text-transform: uppercase; color: #FCD34D; font-weight: 800; letter-spacing: 0.5px;">
+                👑 ACESSO MASTER - GESTÃO REPACK
+            </div>
+            <h2 style="font-size: 24px; font-weight: 800; margin: 4px 0 2px 0;">
+                Visão Administrativa de Estoque & Retiradas
+            </h2>
+            <div style="font-size: 14px; color: #C7D2FE;">
+                Visualização do Estoque Físico Total e Reservas Ocultas. Retiradas liberadas sem restrição de cotas ou horários de fechamento.
+            </div>
         </div>
-        <h2 style="font-size: 24px; font-weight: 800; margin: 4px 0 2px 0;">
-            <?= sanitize_html($lote['titulo']) ?>
-        </h2>
-        <div style="font-size: 14px; color: #94A3B8;">
-            Vigência: <?= date('d/m/Y H:i', strtotime($lote['data_inicio'])) ?> até <?= date('d/m/Y H:i', strtotime($lote['data_fim'])) ?>
-        </div>
-    </div>
 
-    <div class="d-flex align-items-center gap-3 flex-wrap">
-        <div class="banner-cota">
-            Limite por pessoa: <strong><?= (int)$resumo['limite_lote'] ?> itens</strong>
-        </div>
-        <div class="banner-cota" style="background: rgba(16, 185, 129, 0.2); border-color: #10B981; color: #A7F3D0;">
-            Você ainda pode escolher: <strong id="cotaLimiteRestante" style="font-size: 18px; color: #FFFFFF;"><?= (int)$resumo['limite_restante'] ?></strong> itens
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <div class="banner-cota" style="background: rgba(252, 211, 77, 0.15); border-color: #FCD34D; color: #FDE68A;">
+                Regra: <strong>Retirada Master (Sem Limite)</strong>
+            </div>
         </div>
     </div>
-</div>
+<?php elseif (!empty($isSetorial)): ?>
+    <div class="banner-lote" style="background: linear-gradient(135deg, #0F172A, #0369A1); border: 2px solid #38BDF8;">
+        <div>
+            <div style="font-size: 13px; text-transform: uppercase; color: #38BDF8; font-weight: 800; letter-spacing: 0.5px;">
+                🏢 CONTA SETORIAL CORPORATIVA: <?= sanitize_html($usuario['nome']) ?>
+            </div>
+            <h2 style="font-size: 24px; font-weight: 800; margin: 4px 0 2px 0;">
+                Requisições Institucionais do Setor <?= sanitize_html($usuario['setor']) ?>
+            </h2>
+            <div style="font-size: 14px; color: #BAE6FD;">
+                Esta conta representa as demandas oficiais do setor para eventos e ações internas. Múltiplos pedidos autorizados no ciclo.
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <div class="banner-cota" style="background: rgba(56, 189, 248, 0.15); border-color: #38BDF8; color: #E0F2FE;">
+                Modalidade: <strong>Múltiplos Pedidos Liberados</strong>
+            </div>
+        </div>
+    </div>
+<?php else: ?>
+    <?php if (!empty($resumo['ja_comprou_no_lote'])): ?>
+        <!-- Aviso de Pedido Já Concluído no Lote (Regra 1B) -->
+        <div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-3 p-4 mb-4 shadow-sm" style="border-radius: 16px; border: 2px solid #10B981; background: #ECFDF5;">
+            <div>
+                <div style="font-size: 20px; font-weight: 800; color: #065F46;">
+                    ✅ Seu pedido para este lote já foi confirmado!
+                </div>
+                <div style="font-size: 15px; color: #047857; margin-top: 4px;">
+                    <?php if (!empty($ultimoPedido)): ?>
+                        Código de Retirada: <strong style="font-size: 16px; letter-spacing: 0.5px;"><?= sanitize_html($ultimoPedido['codigo_pedido']) ?></strong> (<?= (int)$ultimoPedido['quantidade_total'] ?> itens).
+                    <?php endif; ?>
+                    Cada colaborador tem direito a 1 pedido por lote de vendas. Aguarde a abertura do próximo ciclo para novas compras.
+                </div>
+            </div>
+            <?php if (!empty($ultimoPedido)): ?>
+                <a href="<?= APP_URL ?>/lojinha/sucesso?codigo=<?= urlencode($ultimoPedido['codigo_pedido']) ?>" class="btn btn-success" style="font-weight: 700; border-radius: 12px; padding: 12px 22px; font-size: 16px;">
+                    📄 Ver Comprovante do Pedido →
+                </a>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="banner-lote">
+        <div>
+            <div style="font-size: 13px; text-transform: uppercase; color: #10B981; font-weight: 800; letter-spacing: 0.5px;">
+                ● Lote Ativo Aberto para o Setor: <?= sanitize_html($usuario['setor']) ?>
+            </div>
+            <h2 style="font-size: 24px; font-weight: 800; margin: 4px 0 2px 0;">
+                <?= sanitize_html($lote['titulo']) ?>
+            </h2>
+            <div style="font-size: 14px; color: #94A3B8;">
+                Vigência: <?= date('d/m/Y H:i', strtotime($lote['data_inicio'])) ?> até <?= date('d/m/Y H:i', strtotime($lote['data_fim'])) ?>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <div class="banner-cota">
+                Limite por pessoa: <strong><?= (int)$resumo['limite_lote'] ?> itens (1 pedido)</strong>
+            </div>
+            <div class="banner-cota" style="background: rgba(16, 185, 129, 0.2); border-color: #10B981; color: #A7F3D0;">
+                Você ainda pode escolher: <strong id="cotaLimiteRestante" style="font-size: 18px; color: #FFFFFF;"><?= (int)$resumo['limite_restante'] ?></strong> itens
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 
 <?php if (!empty($flashSucesso)): ?>
     <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 12px; font-weight: 600;">
@@ -209,9 +273,14 @@ require __DIR__ . '/../layouts/lojinha_header.php';
     <?php else: ?>
         <?php foreach ($produtos as $p): 
             $saldoDisp = (int)$p['saldo_disponivel'];
+            $totalFisico = (int)($p['quantidade_total'] ?? 0);
+            $reservaGestao = (int)($p['quantidade_reservada_gestao'] ?? 0);
             $noCarrinho = (int)$p['no_meu_carrinho'];
-            $esgotado = ($saldoDisp <= 0);
-            $limiteAtingido = ((int)$resumo['limite_restante'] <= 0 && $saldoDisp > 0);
+            
+            // Para Master, esgotado é quando o total físico for 0; para os demais quando o saldo disponível for 0
+            $esgotado = (!empty($isMaster)) ? ($totalFisico <= 0) : ($saldoDisp <= 0);
+            $jaComprouNoLote = !empty($resumo['ja_comprou_no_lote']);
+            $limiteAtingido = (empty($isMaster) && empty($isSetorial) && (int)$resumo['limite_restante'] <= 0 && $saldoDisp > 0);
             $cat = $p['categoria'];
         ?>
             <div class="col-12 col-md-6 col-lg-4 col-xl-3 card-produto-wrapper" 
@@ -222,7 +291,11 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                 <div class="card-produto-lojinha <?= $esgotado ? 'esgotado' : '' ?>">
                     <div>
                         <!-- Badge de Saldo Real em Vitrine -->
-                        <?php if ($esgotado): ?>
+                        <?php if (!empty($isMaster)): ?>
+                            <span class="card-badge-estoque" style="background: #1E1B4B; color: #FDE68A; border: 1.5px solid #818CF8; font-size: 12px; padding: 4px 10px;">
+                                Físico: <?= $totalFisico ?> un | Res: <?= $reservaGestao ?> un
+                            </span>
+                        <?php elseif ($esgotado): ?>
                             <span class="card-badge-estoque esgotado">Esgotado</span>
                         <?php elseif ($saldoDisp <= 5): ?>
                             <span class="card-badge-estoque baixo">Últimas <?= $saldoDisp ?> un!</span>
@@ -260,7 +333,11 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 
                     <!-- Botão de Ação Gigante (80px - Filosofia Urna Eletrônica) -->
                     <div class="mt-3">
-                        <?php if ($esgotado): ?>
+                        <?php if ($jaComprouNoLote): ?>
+                            <button type="button" class="btn-urna w-100" disabled style="height: 80px; font-size: 18px; background: #E2E8F0; color: #64748B; border: 2px solid #CBD5E1; cursor: not-allowed;">
+                                <span>Pedido Já Realizado</span>
+                            </button>
+                        <?php elseif ($esgotado): ?>
                             <button type="button" class="btn-urna btn-urna-secondary w-100" disabled style="height: 80px; opacity: 0.5;">
                                 <span>Esgotado</span>
                             </button>

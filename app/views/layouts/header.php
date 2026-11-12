@@ -50,6 +50,9 @@ if ($operadorAtivoId) {
     <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle ?? APP_NAME) ?></title>
     
+    <link rel="icon" type="image/png" sizes="64x64" href="<?= APP_URL ?>/assets/img/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= APP_URL ?>/assets/img/apple-touch-icon.png">
+    <link rel="shortcut icon" href="<?= APP_URL ?>/assets/img/favicon.png">
     <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/bootstrap.min.css?v=1.1">
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/urna.css?v=<?= @filemtime(__DIR__ . '/../../../public/assets/css/urna.css') ?: time() ?>">

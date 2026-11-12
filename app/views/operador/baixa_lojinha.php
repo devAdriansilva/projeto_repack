@@ -32,9 +32,6 @@ require_once __DIR__ . '/../layouts/header.php';
     <h1 class="headline-lg" style="margin: 0; font-size: 46px; font-weight: 900; color: #DC2626; letter-spacing: 0.5px;">
         BAIXA NA LOJINHA
     </h1>
-    <p style="font-size: 20px; font-weight: 700; color: #64748B; margin: 4px 0 0 0;">
-        Descarte por avaria, quebra ou vencimento
-    </p>
 </div>
 
 <!-- ============================================================= -->
@@ -44,17 +41,13 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <!-- Entrada de Código SKU / Busca de Produto -->
     <div class="sku-entry-container">
-        <label for="inputCodigoSku" style="display: block; font-size: 32px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 14px; text-align: center;">
-            CÓDIGO DO PRODUTO:
-        </label>
-        
         <div class="sku-input-wrapper">
             <input type="text" 
                    id="inputCodigoSku" 
                    class="input-sku-gigante" 
                    inputmode="numeric" 
                    pattern="[0-9]*"
-                   placeholder="Digite o código ou nome" 
+                   placeholder="9068" 
                    value=""
                    autocomplete="off"
                    autofocus
@@ -120,7 +113,7 @@ require_once __DIR__ . '/../layouts/header.php';
         <label style="font-weight: 900; display: block; margin-bottom: 16px; font-size: 28px; color: #0F172A; text-transform: uppercase; text-align: center;">
             MOTIVO DO DESCARTE:
         </label>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
             <button type="button" 
                     class="btn-urna btn-motivo-baixa ativo" 
                     id="btnMotivoVencido" 
@@ -183,21 +176,31 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <style>
 .btn-motivo-baixa {
-    min-height: 75px;
-    font-size: 22px;
-    font-weight: 800;
-    border-radius: 20px;
-    background: #F8FAFC;
-    color: #334155;
-    border: 3px solid #CBD5E1;
+    min-height: 85px;
+    font-size: 28px;
+    font-weight: 900;
+    border-radius: 24px;
+    background: #F1F5F9;
+    color: #0F172A;
+    border: 4px solid #94A3B8;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
     transition: all 0.15s ease;
+    touch-action: manipulation;
+}
+.btn-motivo-baixa:hover {
+    background: #E2E8F0;
+    border-color: #64748B;
 }
 .btn-motivo-baixa.ativo {
-    background: #FEF2F2;
-    color: #DC2626;
-    border: 4px solid #DC2626;
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+    background: #DC2626 !important;
+    color: #FFFFFF !important;
+    border: 5px solid #991B1B !important;
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4) !important;
+    transform: scale(1.01);
 }
 </style>
 

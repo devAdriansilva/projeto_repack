@@ -3,22 +3,32 @@
  * Baseado estritamente em docs/FSD.md e AGENTS.md
  */
 
-const CACHE_NAME = 'repack-pwa-v1.43';
+const CACHE_NAME = 'repack-pwa-v1.44';
+
+// Determina dinamicamente o caminho base a partir do escopo registrado do Repack
+const SCOPE_URL = new URL(self.registration.scope);
+const BASE_PATH = SCOPE_URL.pathname.replace(/\/$/, '');
+const getAssetUrl = (path) => BASE_PATH + path;
+
 const STATIC_ASSETS = [
-    '/',
-    '/operador',
-    '/operador/avaria/passo1',
-    '/operador/avaria/passo2',
-    '/operador/avaria/resumo',
-    '/operador/cronometro',
-    '/operador/cronometro/resumo',
-    '/operador/baixa',
-    '/assets/css/bootstrap.min.css',
-    '/assets/css/urna.css',
-    '/assets/js/bootstrap.bundle.min.js',
-    '/assets/js/touch-handler.js',
-    '/assets/js/app-offline.js',
-    '/manifest.json'
+    getAssetUrl(''),
+    getAssetUrl('/operador'),
+    getAssetUrl('/operador/avaria/passo1'),
+    getAssetUrl('/operador/avaria/passo2'),
+    getAssetUrl('/operador/avaria/resumo'),
+    getAssetUrl('/operador/cronometro'),
+    getAssetUrl('/operador/cronometro/resumo'),
+    getAssetUrl('/operador/baixa'),
+    getAssetUrl('/assets/css/bootstrap.min.css'),
+    getAssetUrl('/assets/css/urna.css'),
+    getAssetUrl('/assets/js/bootstrap.bundle.min.js'),
+    getAssetUrl('/assets/js/touch-handler.js'),
+    getAssetUrl('/assets/js/app-offline.js'),
+    getAssetUrl('/assets/img/icon-192.png'),
+    getAssetUrl('/assets/img/icon-512.png'),
+    getAssetUrl('/assets/img/apple-touch-icon.png'),
+    getAssetUrl('/assets/img/favicon.png'),
+    getAssetUrl('/manifest.json')
 ];
 
 self.addEventListener('install', (event) => {
@@ -50,8 +60,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
-    // Não intercepta chamadas de API com cache estático
-    if (url.pathname.startsWith('/api/')) {
+    // Não intercepta chamadas de API ou requisições fora do escopo do Repack
+    if (url.pathname.includes('/api/') || !url.pathname.startsWith(BASE_PATH)) {
         return;
     }
 
@@ -72,7 +82,7 @@ self.addEventListener('fetch', (event) => {
                         return cachedResponse;
                     }
                     if (event.request.mode === 'navigate') {
-                        return caches.match('/operador');
+                        return caches.match(getAssetUrl('/operador'));
                     }
                 });
             })

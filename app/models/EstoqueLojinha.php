@@ -397,7 +397,7 @@ class EstoqueLojinha
      * @param int $usuarioId
      * @return array
      */
-    public static function listarProdutosVitrine(int $loteId, int $usuarioId): array
+    public static function listarProdutosVitrine(int $loteId, int $usuarioId, bool $isMaster = false): array
     {
         $pdo = Database::getConnection();
 
@@ -405,6 +405,26 @@ class EstoqueLojinha
         $pdo->exec("DELETE FROM carrinho_temporario WHERE expiracao_em < NOW()");
 
         // 2. Consulta os produtos ativos com saldos dinâmicos
+        $sqlCalculoSaldo = $isMaster 
+            ? "GREATEST(0, COALESCE(el.quantidade_total, 0) - COALESCE((
+                   SELECT SUM(ct.quantidade)
+                   FROM carrinho_temporario ct
+                   WHERE ct.produto_id = p.id 
+                     AND ct.expiracao_em > NOW()
+                     AND ct.usuario_id != :uid_outros_2
+               ), 0))"
+            : "GREATEST(0, COALESCE(el.quantidade_total, 0) - COALESCE(el.quantidade_reservada_gestao, 0) - COALESCE((
+                   SELECT SUM(ct.quantidade)
+                   FROM carrinho_temporario ct
+                   WHERE ct.produto_id = p.id 
+                     AND ct.expiracao_em > NOW()
+                     AND ct.usuario_id != :uid_outros_2
+               ), 0))";
+
+        $sqlWhere = $isMaster
+            ? "WHERE saldo_disponivel > 0 OR no_meu_carrinho > 0 OR quantidade_total > 0"
+            : "WHERE saldo_disponivel > 0 OR no_meu_carrinho > 0";
+
         $stmt = $pdo->prepare("
             SELECT * FROM (
                 SELECT p.id AS produto_id, p.codigo, p.nome, p.foto_url, p.pacote_padrao,
@@ -425,20 +445,14 @@ class EstoqueLojinha
                              AND ct.lote_id = :lote_id 
                              AND ct.expiracao_em > NOW()
                        ), 0) AS no_meu_carrinho,
-                       GREATEST(0, COALESCE(el.quantidade_total, 0) - COALESCE(el.quantidade_reservada_gestao, 0) - COALESCE((
-                           SELECT SUM(ct.quantidade)
-                           FROM carrinho_temporario ct
-                           WHERE ct.produto_id = p.id 
-                             AND ct.expiracao_em > NOW()
-                             AND ct.usuario_id != :uid_outros_2
-                       ), 0)) AS saldo_disponivel
+                       {$sqlCalculoSaldo} AS saldo_disponivel
                 FROM produtos p
                 LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
                 WHERE p.ativo = 1 
                   AND p.deleted_at IS NULL
                   AND COALESCE(el.quantidade_total, 0) > 0
             ) AS vitrine
-            WHERE saldo_disponivel > 0 OR no_meu_carrinho > 0
+            {$sqlWhere}
             ORDER BY saldo_disponivel DESC, nome ASC
         ");
 

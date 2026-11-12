@@ -37,7 +37,7 @@ class Usuario
     {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("
-            SELECT id, matricula, nome, perfil, setor, ativo, created_at
+            SELECT id, matricula, nome, perfil, setor, tipo_acesso_lojinha, ativo, created_at
             FROM usuarios 
             WHERE deleted_at IS NULL 
             ORDER BY nome ASC
@@ -55,7 +55,7 @@ class Usuario
     {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("
-            SELECT id, matricula, nome, perfil, setor, ativo 
+            SELECT id, matricula, nome, perfil, setor, tipo_acesso_lojinha, ativo 
             FROM usuarios 
             WHERE id = :id 
               AND deleted_at IS NULL 
@@ -75,7 +75,7 @@ class Usuario
     {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("
-            SELECT id, matricula, nome, senha_hash, perfil, setor, ativo 
+            SELECT id, matricula, nome, senha_hash, perfil, setor, tipo_acesso_lojinha, ativo 
             FROM usuarios 
             WHERE matricula = :matricula 
               AND deleted_at IS NULL 

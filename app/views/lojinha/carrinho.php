@@ -146,15 +146,22 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                     <strong><?= $totalItensCarrinho ?> itens</strong>
                 </div>
 
-                <div class="d-flex justify-content-between mb-2" style="font-size: 16px;">
-                    <span class="text-muted">Já comprados neste lote:</span>
-                    <strong><?= (int)$resumo['itens_comprados'] ?> itens</strong>
-                </div>
+                <?php if (($resumo['tipo_acesso'] ?? 'comum') === 'comum'): ?>
+                    <div class="d-flex justify-content-between mb-2" style="font-size: 16px;">
+                        <span class="text-muted">Já comprados neste lote:</span>
+                        <strong><?= (int)$resumo['itens_comprados'] ?> itens</strong>
+                    </div>
 
-                <div class="d-flex justify-content-between mb-3 pb-3" style="font-size: 16px; border-bottom: 2px dashed #E5E7EB;">
-                    <span class="text-muted">Limite máximo individual:</span>
-                    <strong><?= (int)$resumo['limite_lote'] ?> itens</strong>
-                </div>
+                    <div class="d-flex justify-content-between mb-3 pb-3" style="font-size: 16px; border-bottom: 2px dashed #E5E7EB;">
+                        <span class="text-muted">Limite máximo individual:</span>
+                        <strong><?= (int)$resumo['limite_lote'] ?> itens (1 pedido)</strong>
+                    </div>
+                <?php else: ?>
+                    <div class="d-flex justify-content-between mb-3 pb-3" style="font-size: 16px; border-bottom: 2px dashed #E5E7EB;">
+                        <span class="text-muted">Modalidade:</span>
+                        <strong class="text-success"><?= ($resumo['tipo_acesso'] ?? '') === 'master' ? '👑 Retirada Master (Sem Limites)' : '🏢 Demanda Setorial Corporativa' ?></strong>
+                    </div>
+                <?php endif; ?>
 
                 <div class="alert alert-info py-2 px-3 mb-4" style="border-radius: 10px; font-size: 14px;">
                     <strong>Retirada física:</strong> Na bancada de Repack após conferência do comprovante.

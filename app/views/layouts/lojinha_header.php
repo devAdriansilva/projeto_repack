@@ -19,6 +19,11 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
     <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle ?? 'Lojinha dos Colaboradores - Repack') ?></title>
     
+    <link rel="icon" type="image/png" sizes="64x64" href="<?= APP_URL ?>/assets/img/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= APP_URL ?>/assets/img/apple-touch-icon.png">
+    <link rel="shortcut icon" href="<?= APP_URL ?>/assets/img/favicon.png">
+    <link rel="manifest" href="<?= APP_URL ?>/manifest.json">
+    
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/urna.css">
     <style>
@@ -219,7 +224,16 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
 
     <div class="lojinha-user-info">
         <div class="lojinha-user-badge d-none d-md-flex">
-            <span class="lojinha-user-name"><?= sanitize_html($nomeColab) ?></span>
+            <div>
+                <?php 
+                $tipoAcessoColab = $_SESSION['colaborador_tipo_acesso'] ?? 'comum';
+                if ($tipoAcessoColab === 'master'): ?>
+                    <span class="badge bg-warning text-dark me-1" style="font-size: 11px; font-weight: 800;">👑 ACESSO MASTER</span>
+                <?php elseif ($tipoAcessoColab === 'setorial'): ?>
+                    <span class="badge bg-info text-dark me-1" style="font-size: 11px; font-weight: 800;">🏢 CONTA SETORIAL</span>
+                <?php endif; ?>
+                <span class="lojinha-user-name"><?= sanitize_html($nomeColab) ?></span>
+            </div>
             <span>Setor: <?= sanitize_html($setorColab) ?> (<?= sanitize_html($matriculaColab) ?>)</span>
         </div>
 

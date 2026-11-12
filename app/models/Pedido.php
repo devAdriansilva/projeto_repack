@@ -31,6 +31,55 @@ class Pedido
     }
 
     /**
+     * Verifica se o colaborador já possui pedido confirmado ou em processamento no lote especificado
+     * Regra 1B: Limite estrito de 1 único pedido por lote para colaboradores comuns
+     * @param int $loteId
+     * @param int $usuarioId
+     * @return bool
+     */
+    public static function usuarioJaComprouNoLote(int $loteId, int $usuarioId): bool
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) 
+            FROM pedidos 
+            WHERE lote_id = :lote_id 
+              AND usuario_id = :usuario_id 
+              AND status != 'cancelado' 
+              AND deleted_at IS NULL
+        ");
+        $stmt->execute([
+            'lote_id' => $loteId,
+            'usuario_id' => $usuarioId
+        ]);
+        return ((int)$stmt->fetchColumn()) > 0;
+    }
+
+    /**
+     * Retorna o último pedido confirmado do usuário em determinado lote
+     * @param int $loteId
+     * @param int $usuarioId
+     * @return array|null
+     */
+    public static function buscarUltimoPedidoDoUsuarioNoLote(int $loteId, int $usuarioId): ?array
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            SELECT id, codigo_pedido, quantidade_total, status, created_at
+            FROM pedidos
+            WHERE lote_id = :lote_id
+              AND usuario_id = :usuario_id
+              AND status != 'cancelado'
+              AND deleted_at IS NULL
+            ORDER BY created_at DESC
+            LIMIT 1
+        ");
+        $stmt->execute(['lote_id' => $loteId, 'usuario_id' => $usuarioId]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
+    /**
      * Adiciona ou atualiza uma reserva temporária no carrinho do colaborador
      * Conforme docs/FSD.md Seções 9, 13.3 e 14
      * @param int $loteId
@@ -52,51 +101,75 @@ class Pedido
 
         $pdo = Database::getConnection();
 
+        // Identifica perfil de acesso do usuário (comum, setorial ou master)
+        $usuario = Usuario::buscarPorId($usuarioId);
+        $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
+
         // 2. Valida o lote de venda
         $lote = LoteVenda::buscarPorId($loteId);
-        if (!$lote || $lote['status'] !== LoteVenda::STATUS_ABERTO) {
+        if (!$lote || ($lote['status'] !== LoteVenda::STATUS_ABERTO && $tipoAcesso === 'comum')) {
             throw new DomainException("Este lote de vendas não está aberto para compras no momento.");
         }
 
         $agora = time();
         $inicio = strtotime($lote['data_inicio']);
         $fim = strtotime($lote['data_fim']);
-        if ($agora < $inicio || $agora > $fim) {
+        if ($tipoAcesso === 'comum' && ($agora < $inicio || $agora > $fim)) {
             throw new DomainException("Este lote de vendas expirou ou ainda não iniciou sua vigência.");
         }
 
-        // 3. Valida teto máximo por comprador no lote
-        // Limite = total em pedidos válidos + total já no carrinho ativo
-        $stmtCompras = $pdo->prepare("
-            SELECT COALESCE(SUM(quantidade_total), 0)
-            FROM pedidos
-            WHERE lote_id = :lote_id 
-              AND usuario_id = :usuario_id 
-              AND status != 'cancelado' 
-              AND deleted_at IS NULL
-        ");
-        $stmtCompras->execute(['lote_id' => $loteId, 'usuario_id' => $usuarioId]);
-        $totalComprado = (int)$stmtCompras->fetchColumn();
+        // 3. Valida teto máximo e regra de 1 pedido por lote
+        if ($tipoAcesso === 'comum') {
+            // Regra 1B: Colaborador comum só pode fazer 1 pedido por lote
+            if (self::usuarioJaComprouNoLote($loteId, $usuarioId)) {
+                throw new DomainException("Você já realizou seu pedido neste lote. Cada colaborador tem direito a 1 pedido por ciclo.");
+            }
 
-        $stmtCarrinhoAtual = $pdo->prepare("
-            SELECT COALESCE(SUM(quantidade), 0)
-            FROM carrinho_temporario
-            WHERE lote_id = :lote_id 
-              AND usuario_id = :usuario_id 
-              AND expiracao_em > NOW()
-        ");
-        $stmtCarrinhoAtual->execute(['lote_id' => $loteId, 'usuario_id' => $usuarioId]);
-        $totalCarrinho = (int)$stmtCarrinhoAtual->fetchColumn();
+            // Limite = total em pedidos válidos + total já no carrinho ativo
+            $stmtCompras = $pdo->prepare("
+                SELECT COALESCE(SUM(quantidade_total), 0)
+                FROM pedidos
+                WHERE lote_id = :lote_id 
+                  AND usuario_id = :usuario_id 
+                  AND status != 'cancelado' 
+                  AND deleted_at IS NULL
+            ");
+            $stmtCompras->execute(['lote_id' => $loteId, 'usuario_id' => $usuarioId]);
+            $totalComprado = (int)$stmtCompras->fetchColumn();
 
-        $limiteLote = (int)$lote['limite_itens_por_comprador'];
-        if (($totalComprado + $totalCarrinho + $quantidade) > $limiteLote) {
-            $restante = max(0, $limiteLote - ($totalComprado + $totalCarrinho));
-            throw new DomainException("Limite individual do lote excedido. Você pode adicionar no máximo {$restante} item(ns).");
+            $stmtCarrinhoAtual = $pdo->prepare("
+                SELECT COALESCE(SUM(quantidade), 0)
+                FROM carrinho_temporario
+                WHERE lote_id = :lote_id 
+                  AND usuario_id = :usuario_id 
+                  AND expiracao_em > NOW()
+            ");
+            $stmtCarrinhoAtual->execute(['lote_id' => $loteId, 'usuario_id' => $usuarioId]);
+            $totalCarrinho = (int)$stmtCarrinhoAtual->fetchColumn();
+
+            $limiteLote = (int)$lote['limite_itens_por_comprador'];
+            if (($totalComprado + $totalCarrinho + $quantidade) > $limiteLote) {
+                $restante = max(0, $limiteLote - ($totalComprado + $totalCarrinho));
+                throw new DomainException("Limite individual do lote excedido. Você pode adicionar no máximo {$restante} item(ns).");
+            }
+        } else {
+            // Contas setoriais e Master: sem trava de 1 pedido e sem limite individual
+            $totalComprado = 0;
+            $stmtCarrinhoAtual = $pdo->prepare("
+                SELECT COALESCE(SUM(quantidade), 0)
+                FROM carrinho_temporario
+                WHERE lote_id = :lote_id 
+                  AND usuario_id = :usuario_id 
+                  AND expiracao_em > NOW()
+            ");
+            $stmtCarrinhoAtual->execute(['lote_id' => $loteId, 'usuario_id' => $usuarioId]);
+            $totalCarrinho = (int)$stmtCarrinhoAtual->fetchColumn();
+            $limiteLote = 9999;
         }
 
         // 4. Valida saldo disponível em estoque
-        // Fórmula: Disponível = Total - Reserva Oculta - Bloqueios em Carrinho Ativo (de outros ou geral)
-        // Obtém o estoque total e reserva
+        // Fórmula: Disponível = Total - Reserva Oculta - Bloqueios em Carrinho Ativo
+        // NOTA: Usuário MASTER tem acesso ao estoque total físico (incluindo a reserva da gestão)
         $stmtEstoque = $pdo->prepare("
             SELECT quantidade_total, quantidade_reservada_gestao
             FROM estoque_lojinha
@@ -110,7 +183,7 @@ class Pedido
         }
 
         $totalFisico = (int)$estoque['quantidade_total'];
-        $reservaGestao = (int)$estoque['quantidade_reservada_gestao'];
+        $reservaGestao = ($tipoAcesso === 'master') ? 0 : (int)$estoque['quantidade_reservada_gestao'];
 
         // Carrinhos ativos de outros colaboradores para este produto
         $stmtOutrosCarrinhos = $pdo->prepare("
@@ -279,6 +352,10 @@ class Pedido
 
         $pdo = Database::getConnection();
 
+        $usuario = Usuario::buscarPorId($usuarioId);
+        $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
+        $jaComprou = ($tipoAcesso === 'comum') && self::usuarioJaComprouNoLote($loteId, $usuarioId);
+
         // 1. Limite do lote
         $stmtLote = $pdo->prepare("SELECT limite_itens_por_comprador FROM lotes_venda WHERE id = :id AND deleted_at IS NULL");
         $stmtLote->execute(['id' => $loteId]);
@@ -313,10 +390,14 @@ class Pedido
 
         $totalCarrinho = (int)($row['total_itens'] ?? 0);
         $tempoRestanteSegundos = max(0, (int)($row['menor_tempo_segundos'] ?? 0));
-        $limiteRestante = max(0, $limiteLote - ($totalComprado + $totalCarrinho));
+        $limiteRestante = ($tipoAcesso === 'comum')
+            ? max(0, $limiteLote - ($totalComprado + $totalCarrinho))
+            : 9999;
 
         return [
-            'limite_lote' => $limiteLote,
+            'tipo_acesso' => $tipoAcesso,
+            'ja_comprou_no_lote' => $jaComprou,
+            'limite_lote' => ($tipoAcesso === 'comum' ? $limiteLote : 9999),
             'itens_comprados' => $totalComprado,
             'itens_carrinho' => $totalCarrinho,
             'limite_restante' => $limiteRestante,
@@ -342,6 +423,9 @@ class Pedido
         $pdo->beginTransaction();
 
         try {
+            $usuario = Usuario::buscarPorId($usuarioId);
+            $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
+
             // 2. Busca itens do carrinho com trava de leitura (FOR UPDATE)
             $stmtItens = $pdo->prepare("
                 SELECT ct.id, ct.produto_id, ct.quantidade, ct.expiracao_em,
@@ -373,35 +457,41 @@ class Pedido
             $stmtLote->execute(['id' => $loteId]);
             $lote = $stmtLote->fetch();
 
-            if (!$lote || $lote['status'] !== LoteVenda::STATUS_ABERTO) {
+            if (!$lote || ($lote['status'] !== LoteVenda::STATUS_ABERTO && $tipoAcesso === 'comum')) {
                 throw new DomainException("O lote de vendas não está mais aberto para pedidos.");
             }
 
             $agora = time();
-            if ($agora < strtotime($lote['data_inicio']) || $agora > strtotime($lote['data_fim'])) {
+            if ($tipoAcesso === 'comum' && ($agora < strtotime($lote['data_inicio']) || $agora > strtotime($lote['data_fim']))) {
                 throw new DomainException("O lote de vendas encerrou seu período de vigência.");
             }
 
-            // 4. Valida teto máximo do lote
+            // 4. Valida teto máximo do lote e regra de 1 pedido por lote
             $totalItensPedido = 0;
             foreach ($itensCarrinho as $item) {
                 $totalItensPedido += (int)$item['quantidade'];
             }
 
-            $stmtCompras = $pdo->prepare("
-                SELECT COALESCE(SUM(quantidade_total), 0)
-                FROM pedidos
-                WHERE lote_id = :lote_id 
-                  AND usuario_id = :usuario_id 
-                  AND status != 'cancelado' 
-                  AND deleted_at IS NULL
-            ");
-            $stmtCompras->execute(['lote_id' => $loteId, 'usuario_id' => $usuarioId]);
-            $totalComprado = (int)$stmtCompras->fetchColumn();
+            if ($tipoAcesso === 'comum') {
+                if (self::usuarioJaComprouNoLote($loteId, $usuarioId)) {
+                    throw new DomainException("Você já concluiu um pedido neste lote. Cada colaborador tem direito a 1 pedido por ciclo.");
+                }
 
-            $limiteMaximo = (int)$lote['limite_itens_por_comprador'];
-            if (($totalComprado + $totalItensPedido) > $limiteMaximo) {
-                throw new DomainException("Este pedido excede o limite máximo permitido de {$limiteMaximo} itens por colaborador.");
+                $stmtCompras = $pdo->prepare("
+                    SELECT COALESCE(SUM(quantidade_total), 0)
+                    FROM pedidos
+                    WHERE lote_id = :lote_id 
+                      AND usuario_id = :usuario_id 
+                      AND status != 'cancelado' 
+                      AND deleted_at IS NULL
+                ");
+                $stmtCompras->execute(['lote_id' => $loteId, 'usuario_id' => $usuarioId]);
+                $totalComprado = (int)$stmtCompras->fetchColumn();
+
+                $limiteMaximo = (int)$lote['limite_itens_por_comprador'];
+                if (($totalComprado + $totalItensPedido) > $limiteMaximo) {
+                    throw new DomainException("Este pedido excede o limite máximo permitido de {$limiteMaximo} itens por colaborador.");
+                }
             }
 
             // 5. Para cada item: verifica e abate estoque em estoque_lojinha (FOR UPDATE)
@@ -423,14 +513,18 @@ class Pedido
                 }
 
                 // Abate definitivo do estoque físico da lojinha
+                $novoTotal = max(0, (int)$estoqueRow['quantidade_total'] - $qtdItem);
+                $novaReserva = min((int)$estoqueRow['quantidade_reservada_gestao'], $novoTotal);
                 $stmtAbater = $pdo->prepare("
                     UPDATE estoque_lojinha
-                    SET quantidade_total = quantidade_total - :qtd,
+                    SET quantidade_total = :novo_total,
+                        quantidade_reservada_gestao = :nova_reserva,
                         updated_at = NOW()
                     WHERE produto_id = :produto_id
                 ");
                 $stmtAbater->execute([
-                    'qtd' => $qtdItem,
+                    'novo_total' => $novoTotal,
+                    'nova_reserva' => $novaReserva,
                     'produto_id' => $produtoId
                 ]);
             }

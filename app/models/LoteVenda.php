@@ -271,4 +271,46 @@ class LoteVenda
         $lote['setores_lista'] = is_array($decoded) ? $decoded : array_map('trim', explode(',', $setoresRaw));
         return $lote;
     }
+
+    /**
+     * Retorna o lote corporativo permanente utilizado por contas setoriais e gestão master
+     * @return array|null
+     */
+    public static function obterLoteCorporativo(): ?array
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            SELECT lv.*, u.nome AS criado_por_nome
+            FROM lotes_venda lv
+            LEFT JOIN usuarios u ON u.id = lv.criado_por_usuario_id
+            WHERE lv.titulo = 'Lote Corporativo e Setorial' 
+              AND lv.deleted_at IS NULL
+            ORDER BY lv.id DESC
+            LIMIT 1
+        ");
+        $stmt->execute();
+        $lote = $stmt->fetch();
+        if ($lote) {
+            $setoresRaw = $lote['setores_autorizados'] ?? '';
+            $decoded = json_decode($setoresRaw, true);
+            $lote['setores_lista'] = is_array($decoded) ? $decoded : ['*'];
+            return $lote;
+        }
+
+        // Fallback: se por algum motivo ainda não existir, cria sob demanda
+        $stmtGestor = $pdo->query("SELECT id FROM usuarios WHERE perfil = 'gestao' LIMIT 1");
+        $gestorId = (int)$stmtGestor->fetchColumn() ?: 1;
+
+        $novoId = self::salvar([
+            'titulo' => 'Lote Corporativo e Setorial',
+            'descricao' => 'Lote institucional contínuo para requisições de setores internos e gestão master.',
+            'data_inicio' => '2026-01-01 00:00:00',
+            'data_fim' => '2099-12-31 23:59:59',
+            'setores_autorizados' => ['*'],
+            'limite_itens_por_comprador' => 9999,
+            'status' => self::STATUS_ABERTO
+        ], $gestorId);
+
+        return self::buscarPorId($novoId);
+    }
 }

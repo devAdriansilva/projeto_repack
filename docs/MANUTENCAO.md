@@ -65,9 +65,14 @@ A interface do Operador opera sob a **Filosofia da Urna Eletrônica**: alto cont
    - Acesso Gestão: Clique na engrenagem cinza clara (`#D1D5DB`) no canto superior direito da tela do Operador ou acesse `http://localhost/projeto_repack/public/gestao/dashboard`
 
 ### 3.3 Credenciais Iniciais de Teste
-- **Gestão (Coordenadora):** Matrícula `GESTAO01` / Senha `admin123`
-- **Operadores de Turno:** Matrículas `OP001` (João Silva) e `OP002` (Maria Santos) - selecionáveis no quiosque.
-- **Colaboradores Compradores:** Matrícula `COLAB01` (Carlos Oliveira - Setor Logística), `COLAB02` (Ana Souza - Setor Comercial).
+- **Gestão (Coordenadora / Master):** Matrícula `GEST01` / Senha `gestao123` (Possui acesso ao painel de gestão e visão Master da Lojinha com estoque total + reservas).
+- **Operadores de Turno:** Matrículas `OP01` (Adriano Silva) e `OP02` (Pedro Cruz) - selecionáveis no quiosque.
+- **Colaboradores Comuns (Regra 1B):** Matrícula `COLAB01` (Carlos Ferreira - Armazém), `COLAB02` (Mariana Lima - Transporte). Limitados a 1 único pedido por lote.
+- **Contas Setoriais Corporativas (Múltiplos Pedidos / Demandas Internas):**
+  - `RH01` - Gente e Gestão (RH)
+  - `ADM01` - Setor Administrativo
+  - `VENDAS01` - Sala de Vendas
+  - `FIN01` - Setor Financeiro
 
 ---
 
@@ -186,8 +191,9 @@ O checkout utiliza transação atômica (`BEGIN TRANSACTION`, `SELECT ... FOR UP
 | Perfil | Mecanismo de Acesso | Duração / Comportamento |
 | :--- | :--- | :--- |
 | **Operador** | Quiosque compartilhado sem senha. Troca rápida via modal de toque na barra superior. | Persistente no navegador do tablet via cookie de sessão. |
-| **Gestão** | Acesso protegido via ícone de engrenagem cinza clara (`#D1D5DB`). Exige matrícula e senha validadas com `password_verify()`. | Sessão com expiração automática por inatividade de 30 minutos. Protegido pelo guard `AuthController::exigirGestao()`. |
-| **Colaborador** | Identificação por matrícula corporativa cadastrada. Valida vigência de lote aberto e pertencimento do setor. | Sessão temporária restrita ao lote em andamento. |
+| **Gestão / Master** | Acesso protegido via ícone de engrenagem cinza clara (`#D1D5DB`) ou azul. Exige matrícula (`GEST01`) e senha validadas com `password_verify()`. Na Lojinha, possui perfil `master` (enxerga estoque total físico + reservas da gestão e realiza retiradas a qualquer momento). | Sessão com expiração automática por inatividade de 30 minutos. Protegido pelo guard `AuthController::exigirGestao()`. |
+| **Colaborador Comum** | Identificação por matrícula cadastrada (`COLAB01`, etc.). Sujeito à vigência de lote aberto e **Regra 1B (estritamente 1 único pedido por lote)**. | Sessão temporária restrita ao lote em andamento. Após checkout, a vitrine é bloqueada para novas compras no ciclo. |
+| **Conta Setorial** | Identificação por matrícula institucional do setor (`RH01`, `ADM01`, `VENDAS01`, `FIN01`). | Sem trava de 1 pedido (múltiplas compras permitidas no ciclo). Enxerga estoque disponível (sem reservas) e pode operar mesmo com loja pública fechada via Lote Corporativo. |
 
 ---
 
@@ -220,3 +226,4 @@ O checkout utiliza transação atômica (`BEGIN TRANSACTION`, `SELECT ... FOR UP
 4. **Alvos de Toque (Urna Eletrônica):** Na interface do operador, preserve a altura mínima de 80px para botões, `touch-action: manipulation` e contraste rígido.
 5. **Fallback de Logs:** Em caso de exceção de banco, o tratador global redireciona a falha para `logs/app_errors.log`. Tentativas de violação de rota gravam em `logs/security.log`.
 6. **Proteção Web Server:** O arquivo `.htaccess` na raiz e nas pastas internas impede acesso HTTP direto aos códigos-fonte PHP fora da pasta `public/`.
+7. **Isolamento de PWA e Subdiretórios:** Quando a aplicação rodar em subpastas ou compartilhar a mesma hospedagem com outro site (ex: Alwaysdata), o `public/manifest.json` deve manter escopo e caminhos estritamente relativos (`scope: "./"`, `start_url: "./operador"` e ícones em `assets/img/...`). O Service Worker deve ser registrado com `{ scope: BASE_APP_URL + '/' }`, e todos os layouts devem declarar explicitamente favicons locais para evitar captura de ícones de aplicações vizinhas na raiz do servidor.

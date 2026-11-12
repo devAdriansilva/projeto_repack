@@ -426,6 +426,58 @@
     - **Testes & Versionamento:**
       - Testes unitários de payload e sintaxe de scripts executados com 100% de sucesso.
       - Versão elevada para `v1.43` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.43` em `public/service-worker.js`.
+  - [x] **MANUT-044 (12/11/2026):** Perfis de Acesso à Lojinha (Comum, Setorial e Master), Regra 1B (1 Pedido por Lote) e Lote Corporativo Permanente.
+    - **Governança de Perfis e Migration 007 (`database/migrations/007_ajuste_acesso_lojinha_e_setores.sql`):**
+      - Criação da coluna `tipo_acesso_lojinha ENUM('comum', 'setorial', 'master') DEFAULT 'comum'` na tabela `usuarios`.
+      - Usuária Coordenadora (`GEST01`) promovida ao perfil `master`.
+      - Cadastro oficial das Contas Setoriais Corporativas: `ADM01` (Setor Administrativo), `RH01` (Gente e Gestão - RH), `VENDAS01` (Sala de Vendas) e `FIN01` (Setor Financeiro), todas com `tipo_acesso_lojinha = 'setorial'`.
+      - Criação do Lote Institucional Permanente (`Lote Corporativo e Setorial`), assegurando integridade relacional quando a loja pública de colaboradores estiver com lotes fechados.
+    - **Regra 1B para Colaboradores Comuns (`app/models/Pedido.php` e `app/controllers/LojinhaController.php`):**
+      - Implementação de `Pedido::usuarioJaComprouNoLote()` e bloqueio estrito de novos carrinhos ou checkouts caso o colaborador comum já tenha 1 pedido confirmado no lote vigente.
+      - Vitrine exibe banner de conclusão com atalho direto `📄 Ver Comprovante do Pedido` e botões de ação desabilitados (`Pedido Já Realizado`).
+    - **Contas Setoriais Corporativas (RH, ADM, Vendas, Financeiro):**
+      - Isentas da restrição de 1 único pedido por lote, podendo realizar múltiplos pedidos no ciclo para demandas de eventos e ações internas.
+      - Respeitam o estoque disponível da lojinha (sem visualização da reserva oculta da gestão).
+      - Conexão garantida mesmo quando os lotes de colaboradores estiverem fechados.
+    - **Perfil Master (Coordenadora / Gestão):**
+      - Acesso irrestrito à lojinha a qualquer momento (mesmo com a loja fechada).
+      - Visualização em tempo real do Estoque Físico Total e da Reserva Oculta da Gestão em cada produto na vitrine.
+      - Pedidos sem trava de limite individual, com dedução atômica e rebalanceamento da reserva caso o estoque físico diminua.
+    - **Layouts & Feedback Visual:**
+      - Barra superior (`app/views/layouts/lojinha_header.php`) exibe crachás semânticos em destaque (`👑 ACESSO MASTER` e `🏢 CONTA SETORIAL`).
+      - Banners dinâmicos e adaptativos na vitrine (`app/views/lojinha/vitrine.php`) e na sacola (`app/views/lojinha/carrinho.php`).
+    - **Testes Automatizados:**
+      - Criação do script de testes integrados `tests/test_acesso_lojinha.php` validando com 100% de sucesso os 15 critérios de perfis, bloqueio da Regra 1B, múltiplos pedidos setoriais e visão master.
+      - Suíte oficial `tests/test_fase5.php` executada e aprovada com 35/35 asserções (0 falhas).
+      - Versão elevada para `v1.44` em `app/config/config.php` e `public/service-worker.js`.
+  - [x] **MANUT-045 (12/11/2026):** Refinamento Ergonômico de Layout na Home (PC/Desktop), Placeholders Translúcidos Globais, Simplificação da Baixa na Lojinha e Destaque do Usuário na Gestão.
+    - **Correção de Layout na Home do Operador (`app/views/operador/home.php` e `public/assets/css/urna.css`):**
+      - Resolução definitiva do overflow e sobreposição de caixas brancas de imagens no monitor de PC/desktop.
+      - Alinhamento horizontal harmônico (`display: flex; flex-direction: row; gap: 24px;`) dentro dos botões `.btn-operador-solido`, com ícone/imagem proporcional em caixa compacta de 96px (e 76px em telas pequenas) ao lado do texto da ação.
+      - Alturas mínimas de 110px e toques otimizados, mantendo 100% de conformidade com os tokens de 80px da Urna Eletrônica e `docs/DESIGN.md`.
+    - **Placeholders Translúcidos Globais (`public/assets/css/urna.css`):**
+      - Definição de regras globais de `::placeholder`, `::-webkit-input-placeholder` e `:-ms-input-placeholder` com `color: #94A3B8`, `opacity: 0.35` e `font-weight: 500`.
+      - Estilização dedicada para `.input-sku-gigante::placeholder` com `opacity: 0.28`, evitando qualquer confusão visual pelo operador leigo.
+    - **Aba "Baixa na Lojinha" (`app/views/operador/baixa_lojinha.php`):**
+      - Remoção do subtítulo redundante ("Descarte por avaria, quebra ou vencimento") e do rótulo textual de SKU.
+      - Placeholder do campo de código alterado para `"9068"`, suavemente translúcido.
+      - Botões de motivo de descarte reestruturados em coluna vertical (um abaixo do outro), ampliados para altura mínima de 85px, tipografia em 28px negrito 900 e contraste vigoroso (ativo em vermelho `#DC2626` sólido com texto branco).
+    - **Barra Superior da Gestão do Repack (`app/views/layouts/gestao_header.php`):**
+      - Destaque ao nome e matrícula da Coordenadora/Gestor através de badge/pill escuro (`#374151`) com borda `#4B5563`, texto em branco brilhante `#FFFFFF` e matrícula com realce sutil azul `#93C5FD`.
+  - [x] **MANUT-046 (12/11/2026):** Isolamento de Escopo PWA, Criação dos Ícones Oficiais do Repack e Eliminação de Colisão com Aplicação Raiz do Servidor.
+    - **Diagnóstico da Causa-Raiz (Colisão de Splash Screen e PWA):**
+      - A conta Alwaysdata hospeda o site principal no domínio raiz (`financas-facil-atelie.alwaysdata.net`) e o Projeto Repack na subpasta `/repack`.
+      - O arquivo `manifest.json` continha caminhos absolutos para a raiz (`/assets/img/icon-192.png`), e o Service Worker registrava na raiz (`/service-worker.js`), fazendo com que o navegador Android/Chrome buscasse o ícone do projeto da raiz (Maly crochê) ao gerar a Splash Screen nativa.
+    - **Criação dos Ícones Oficiais do Repack (`public/assets/img/`):**
+      - Gerados ícones de alta fidelidade: `icon-192.png` (192x192), `icon-512.png` (512x512), `apple-touch-icon.png` (180x180), `favicon.png` (64x64) e `favicon.ico`, com identidade visual própria do Repack (squircle industrial, gradiente esmeralda `#10B981` e cinza `#0F172A`, e tipografia "REPACK" de alto contraste).
+    - **Isolamento de Escopo no Manifesto (`public/manifest.json`):**
+      - Definidos explicitamente `"scope": "./"` e `"start_url": "./operador"`, e caminhos de ícone estritamente relativos (`"assets/img/icon-192.png"`), garantindo que o PWA opere exclusivamente no subdiretório do Repack.
+    - **Declaração de Favicons e Ícones nos Layouts:**
+      - Inclusão das tags `<link rel="icon">`, `<link rel="shortcut icon">` e `<link rel="apple-touch-icon">` em `app/views/layouts/header.php`, `gestao_header.php` e `lojinha_header.php` apontando para `<?= APP_URL ?>/assets/img/...`.
+    - **Isolamento do Service Worker (`public/assets/js/app-offline.js` e `public/service-worker.js`):**
+      - Registro do Service Worker agora calcula dinamicamente `BASE_APP_URL` e aplica `{ scope: BASE_APP_URL + '/' }`.
+      - O `service-worker.js` calcula seu prefixo de rota via `self.registration.scope` e não intercepta nenhuma requisição fora do escopo do Repack.
+    - **Incremento de Versão:** Versão elevada para `v1.44` com cache atualizado no Service Worker `repack-pwa-v1.44`.
 
 ---
 
