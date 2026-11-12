@@ -411,6 +411,21 @@
       - Exibição em tempo real do novo saldo resultante e da diferença (`+` verde / `-` vermelho).
       - Nova seção no histórico da tela exibindo as últimas contagens e balanços realizados.
     - **Incremento de Versão:** Versão elevada para `v1.42` com atualização do Service Worker `repack-pwa-v1.42`.
+  - [x] **MANUT-043 (12/11/2026):** Reformulação da Barra de Gestão e Nova Metodologia de Inventário por Coleta Sucessiva e Confronto.
+    - **Ajustes de Usabilidade na Barra Superior (`app/views/layouts/gestao_header.php`):**
+      - Título da barra alterado de `"Repack Gestão"` para `"Gestão do Repack"`.
+      - No layout mobile, o botão do menu hambúrguer foi reposicionado para o lado superior esquerdo (`order-1`), garantindo alcance ergonômico imediato com a mão do usuário.
+      - O botão de retorno à "Área de Reembalagem" recebeu alto destaque visual em gradiente esmeralda (`#10B981` / `#059669`), borda sólida `#047857`, sombra e ícone de fábrica (`🏭`), visível tanto no desktop quanto no mobile.
+    - **Nova Metodologia de Inventário por Coleta Sucessiva e Conciliação (`app/views/gestao/estoque.php` e `app/controllers/GestaoController.php`):**
+      - **Fase 1 (Coleta Dinâmica e Rápida):** Substituição do `<select>` por campo de busca instantânea inteligente com autocomplete. Teclado numérico em unidades e botões rápidos de soma (`+1`, `+6`, `+12`, `+24`, `+48` unidades).
+      - **Tabela Dinâmica da Sessão de Coleta:** Acúmulo automático de parcelas somadas por produto (ex: `12 + 12 + 1 = 25 un`), com botões rápidos para incrementar `+1` direto na linha ou remover itens antes do fechamento.
+      - **Fase 2 (Confronto e Conciliação):** Matriz analítica comparando *Produto*, *Esperado no Sistema*, *Total Coletado*, *Diferença (+/-)* e *Saldo Final Apurado*, permitindo ao gestor conferir e alterar qualquer saldo final antes de consolidar.
+      - **Flexibilização do Motivo:** Campo de motivo tornado opcional com valor padrão automático (`"Inventário periódico de rotina"`).
+      - **Regra de Ouro Inegociável:** Todas as movimentações, contagens, entradas e baixas são estritamente unitárias (unidades de garrafas/latas, sem caixas/fardos).
+      - **Processamento em Lote Atômico no Backend:** `GestaoController::salvarInventario()` atualizado para processar o lote consolidado em JSON (`payload_inventario_json`), auditando cada produto individualmente no banco de dados.
+    - **Testes & Versionamento:**
+      - Testes unitários de payload e sintaxe de scripts executados com 100% de sucesso.
+      - Versão elevada para `v1.43` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.43` em `public/service-worker.js`.
 
 ---
 

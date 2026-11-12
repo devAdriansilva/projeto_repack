@@ -198,19 +198,31 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 
 <!-- Barra de Navegação Superior da Gestão -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-gestao">
-    <div class="container-fluid px-0">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="<?= APP_URL ?>/gestao/dashboard">
-            <span style="display: inline-block; width: 14px; height: 14px; background: var(--gestao-primary); border-radius: 3px;"></span>
-            <strong>Repack Gestão</strong>
-            <span class="badge bg-secondary ms-1" style="font-size: 11px; font-weight: 500; opacity: 0.85;"><?= APP_VERSION ?></span>
-        </a>
+    <div class="container-fluid px-0 d-flex align-items-center justify-content-between">
+        <!-- Lado Esquerdo: Menu Hambúrguer (Mobile) e Marca do Sistema -->
+        <div class="d-flex align-items-center gap-2">
+            <button class="navbar-toggler me-1" type="button" data-bs-toggle="collapse" data-bs-target="#navGestao" aria-controls="navGestao" aria-expanded="false" aria-label="Alternar navegação" style="border: 2px solid rgba(255,255,255,0.25); padding: 6px 10px;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navGestao">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <a class="navbar-brand d-flex align-items-center gap-2 m-0" href="<?= APP_URL ?>/gestao/dashboard">
+                <span style="display: inline-block; width: 14px; height: 14px; background: var(--gestao-primary); border-radius: 3px;"></span>
+                <strong>Gestão do Repack</strong>
+                <span class="badge bg-secondary ms-1 d-none d-sm-inline" style="font-size: 11px; font-weight: 500; opacity: 0.85;"><?= APP_VERSION ?></span>
+            </a>
+        </div>
 
-        <div class="collapse navbar-collapse" id="navGestao">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1">
+        <!-- Botão de Alto Destaque: Retorno à Área de Reembalagem (Sempre visível e destacado no topo) -->
+        <div class="d-flex align-items-center gap-2">
+            <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #FFFFFF; font-weight: 800; border-radius: 10px; padding: 7px 14px; border: 1.5px solid #047857; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Retornar ao Terminal do Operador">
+                <span style="font-size: 15px;">🏭</span>
+                <span class="d-none d-md-inline">Área de Reembalagem</span>
+                <span class="d-inline d-md-none">Bancada</span>
+            </a>
+        </div>
+
+        <div class="collapse navbar-collapse w-100 mt-2 mt-lg-0" id="navGestao">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1 ps-lg-3">
                 <li class="nav-item">
                     <a class="nav-link <?= ($rotaAtual === '/gestao/dashboard' || $rotaAtual === '/gestao') ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/dashboard">
                         📊 Dashboard
@@ -248,16 +260,12 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                 </li>
             </ul>
 
-            <div class="d-flex align-items-center gap-3">
-                <span class="text-white-50 small d-none d-md-inline">
+            <div class="d-flex align-items-center gap-3 pt-2 pt-lg-0 border-top border-lg-0 border-secondary">
+                <span class="text-white-50 small d-none d-xl-inline">
                     👤 <strong><?= sanitize_html($nomeGestor) ?></strong> (<?= sanitize_html($matriculaGestor) ?>)
                 </span>
-                
-                <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm btn-outline-light" title="Retornar à Área de Reembalagem">
-                    ← Área de Reembalagem
-                </a>
 
-                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger" title="Encerrar sessão administrativa">
+                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-outline-danger" title="Encerrar sessão administrativa">
                     Sair
                 </a>
             </div>

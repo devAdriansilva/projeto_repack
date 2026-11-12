@@ -335,22 +335,78 @@ class GestaoController
     }
 
     /**
-     * Registra Inventário / Balanço de Estoque (com substituição ou incremento parcial)
+     * Registra Inventário / Balanço de Estoque (por lote consolidado ou unitário)
      */
     public function salvarInventario(): void
     {
         $this->validarCsrfOuAbortar();
 
+        $gestorId = (int)$_SESSION['usuario_id'];
+        $motivoPadrao = trim((string)($_POST['motivo'] ?? ''));
+        if ($motivoPadrao === '') {
+            $motivoPadrao = 'Inventário periódico de rotina';
+        }
+
+        $payloadJson = trim((string)($_POST['payload_inventario_json'] ?? ''));
+
+        // Se veio payload em lote (nova metodologia de conciliação por confronto)
+        if ($payloadJson !== '') {
+            $itens = json_decode($payloadJson, true);
+            if (!is_array($itens) || empty($itens)) {
+                $_SESSION['flash_erro'] = "Payload de inventário inválido ou vazio.";
+                header('Location: ' . APP_URL . '/gestao/estoque');
+                exit;
+            }
+
+            $sucessos = 0;
+            $erros = [];
+
+            foreach ($itens as $item) {
+                $pid = (int)($item['produto_id'] ?? 0);
+                $novoSaldo = max(0, (int)($item['novo_saldo'] ?? 0));
+                $detalhes = !empty($item['detalhes_contagem']) ? (string)$item['detalhes_contagem'] : null;
+
+                if ($pid <= 0) {
+                    continue;
+                }
+
+                try {
+                    EstoqueLojinha::realizarInventario(
+                        $pid,
+                        $novoSaldo,
+                        'substituicao',
+                        $gestorId,
+                        $motivoPadrao,
+                        $detalhes
+                    );
+                    $sucessos++;
+                    LogSistema::registrar('INFO', "Inventário em lote realizado para o produto #{$pid}: {$novoSaldo} un.", [
+                        'produto_id' => $pid,
+                        'novo_saldo' => $novoSaldo,
+                        'detalhes' => $detalhes,
+                        'gestor_id' => $gestorId
+                    ]);
+                } catch (\Throwable $e) {
+                    $erros[] = "Produto #{$pid}: " . $e->getMessage();
+                }
+            }
+
+            if ($sucessos > 0) {
+                $_SESSION['flash_sucesso'] = "Inventário concluído com sucesso! {$sucessos} produto(s) conciliado(s).";
+            }
+            if (!empty($erros)) {
+                $_SESSION['flash_erro'] = "Ocorreram erros parciais: " . implode('; ', $erros);
+            }
+
+            header('Location: ' . APP_URL . '/gestao/estoque');
+            exit;
+        }
+
+        // Modo unitário / legado
         $produtoId = (int)($_POST['produto_id'] ?? 0);
         $quantidadeContada = (int)($_POST['quantidade_contada'] ?? 0);
         $tipoOperacao = trim((string)($_POST['tipo_operacao'] ?? 'substituicao'));
         $detalhesContagem = trim((string)($_POST['detalhes_contagem'] ?? ''));
-        $motivo = trim((string)($_POST['motivo'] ?? ''));
-        $gestorId = (int)$_SESSION['usuario_id'];
-
-        if ($motivo === '') {
-            $motivo = $tipoOperacao === 'incremento' ? 'Entrada avulsa / Incremento de estoque' : 'Inventário físico geral';
-        }
 
         try {
             EstoqueLojinha::realizarInventario(
@@ -358,7 +414,7 @@ class GestaoController
                 $quantidadeContada,
                 $tipoOperacao,
                 $gestorId,
-                $motivo,
+                $motivoPadrao,
                 $detalhesContagem !== '' ? $detalhesContagem : null
             );
 
@@ -367,7 +423,7 @@ class GestaoController
                 'quantidade' => $quantidadeContada,
                 'tipo_operacao' => $tipoOperacao,
                 'detalhes' => $detalhesContagem,
-                'motivo' => $motivo,
+                'motivo' => $motivoPadrao,
                 'gestor_id' => $gestorId
             ]);
 

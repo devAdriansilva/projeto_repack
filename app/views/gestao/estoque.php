@@ -2,9 +2,19 @@
 declare(strict_types=1);
 
 /**
- * Projeto Repack - View Gestao Estoque & Reservas com Inventário / Balanço
+ * Projeto Repack - View Gestao Estoque & Reservas com Inventário por Coleta e Conciliação
  * Baseado estritamente em docs/FSD.md (Seção 6.4, 11.2, 12.3 e 17) e docs/DESIGN.md
  */
+
+// Prepara array JSON seguro dos produtos para busca instantânea no modal de inventário
+$produtosCatalogoJson = array_map(function($p) {
+    return [
+        'id' => (int)$p['id'],
+        'codigo' => (string)$p['codigo'],
+        'nome' => (string)$p['nome'],
+        'pacote_padrao' => (string)($p['pacote_padrao'] ?? 'Unidade')
+    ];
+}, $todosProdutos);
 
 require __DIR__ . '/../layouts/gestao_header.php';
 ?>
@@ -15,8 +25,8 @@ require __DIR__ . '/../layouts/gestao_header.php';
         <p class="body-md text-muted mb-0">Controle de saldos físicos recebidos do repack, balanços de inventário e reservas ocultas.</p>
     </div>
     <div>
-        <button type="button" class="btn btn-gestao btn-gestao-primary" onclick="abrirModalInventarioGeral()">
-            📋 Realizar Inventário / Balanço
+        <button type="button" class="btn btn-gestao btn-gestao-primary" onclick="iniciarSessaoInventario()">
+            📋 Iniciar Coleta de Inventário
         </button>
     </div>
 </div>
@@ -26,7 +36,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="headline-lg mb-0" style="font-size: 20px;">Visão Geral de Saldos Físicos</h2>
         <span class="badge bg-light text-dark border p-2">
-            Fórmula: <strong>Disponível = Total Físico - Reserva Gestão</strong>
+            Fórmula: <strong>Disponível = Total Físico - Reserva Gestão</strong> (Sempre em Unidades)
         </span>
     </div>
 
@@ -46,7 +56,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                 <?php if (empty($estoqueGeral)): ?>
                     <tr>
                         <td colspan="6" class="text-center py-4 text-muted">
-                            Nenhum produto com saldo em estoque. Clique em <strong>"Realizar Inventário / Balanço"</strong> para dar entrada no inventário inicial.
+                            Nenhum produto com saldo em estoque. Clique em <strong>"Iniciar Coleta de Inventário"</strong> para cadastrar o estoque inicial.
                         </td>
                     </tr>
                 <?php else: ?>
@@ -80,8 +90,8 @@ require __DIR__ . '/../layouts/gestao_header.php';
                             </td>
                             <td style="text-align: right;">
                                 <button type="button" class="btn btn-sm btn-outline-primary me-1" 
-                                        onclick="abrirModalInventarioItem(<?= (int)$item['produto_id'] ?>, '<?= sanitize_html(addslashes($item['nome'])) ?>', '<?= sanitize_html($item['codigo']) ?>', <?= (int)$item['quantidade_total'] ?>)" title="Inventário / Ajustar Saldo Físico">
-                                    📝 Inventário
+                                        onclick="abrirInventarioDiretoItem(<?= (int)$item['produto_id'] ?>, '<?= sanitize_html(addslashes($item['nome'])) ?>', '<?= sanitize_html($item['codigo']) ?>')" title="Inventariar este produto">
+                                    📝 Contar
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-warning me-1" 
                                         onclick="abrirModalReserva(<?= (int)$item['produto_id'] ?>, '<?= sanitize_html(addslashes($item['nome'])) ?>', <?= (int)$item['quantidade_total'] ?>, <?= (int)$item['quantidade_reservada_gestao'] ?>)" title="Ajustar reserva oculta">
@@ -100,7 +110,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
     </div>
 </div>
 
-<!-- Seção de Históricos Recentes (Três Colunas com Inventário) -->
+<!-- Seção de Históricos Recentes -->
 <div class="row g-4 mt-1">
     <!-- Histórico de Inventários / Balanços -->
     <div class="col-12 col-xl-4 col-lg-12">
@@ -217,127 +227,187 @@ require __DIR__ . '/../layouts/gestao_header.php';
 </div>
 
 <!-- ============================================================= -->
-<!-- MODAL DE INVENTÁRIO / BALANÇO COM INCREMENTOS PARCIAIS        -->
+<!-- MODAL DE INVENTÁRIO: COLETA SUCESSIVA & CONCILIAÇÃO FINAL      -->
 <!-- ============================================================= -->
-<div class="modal fade" id="modalInventario" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-            <div class="modal-header" style="border-bottom: 1px solid var(--gestao-border); padding: 20px 24px;">
-                <h5 class="modal-title headline-lg" style="font-size: 20px;">
-                    📋 Inventário & Balanço de Estoque
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+<div class="modal fade" id="modalInventarioColeta" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+            <div class="modal-header" style="border-bottom: 2px solid var(--gestao-border); padding: 18px 24px; background: #F8FAFC;">
+                <div>
+                    <h5 class="modal-title headline-lg m-0" style="font-size: 20px;">
+                        📋 Sessão de Inventário & Contagem Física
+                    </h5>
+                    <span class="text-muted small">Todos os lançamentos são expressos e contabilizados estritamente em <strong>unidades</strong>.</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar" onclick="confirmarFechamentoInventario(event)"></button>
             </div>
-            
-            <form action="<?= APP_URL ?>/gestao/estoque/inventario" method="POST" id="formInventario">
-                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-                <input type="hidden" name="detalhes_contagem" id="inv_detalhes_contagem" value="">
-                
+
+            <!-- FASE 1: COLETA CONTÍNUA DE ITENS -->
+            <div id="faseColetaInventario" style="display: block;">
                 <div class="modal-body" style="padding: 24px;">
-                    <!-- Seletor de Produto -->
-                    <div class="mb-3">
-                        <label for="inv_produto_id" class="form-label fw-bold small text-uppercase">Selecionar Produto *</label>
-                        <select class="form-select" id="inv_produto_id" name="produto_id" required style="height: 48px;" onchange="aoSelecionarProdutoInventario(this.value)">
-                            <option value="">-- Escolha o produto a inventariar --</option>
-                            <?php foreach ($todosProdutos as $p): ?>
-                                <option value="<?= (int)$p['id'] ?>" data-nome="<?= sanitize_html($p['nome']) ?>" data-codigo="<?= sanitize_html($p['codigo']) ?>" data-embalagem="<?= sanitize_html($p['pacote_padrao']) ?>">
-                                    <?= sanitize_html($p['nome']) ?> (<?= sanitize_html($p['codigo']) ?>)
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <!-- Card Informativo do Saldo Atual -->
-                    <div class="alert alert-secondary py-2 px-3 small mb-3 d-flex justify-content-between align-items-center" id="cardInfoSaldoAtual" style="display: none !important;">
-                        <div>
-                            Produto: <strong id="inv_display_produto"></strong> (<span id="inv_display_codigo"></span>)<br>
-                            Embalagem: <span id="inv_display_embalagem"></span>
-                        </div>
-                        <div class="text-end">
-                            <span class="text-muted d-block" style="font-size: 11px;">Saldo Atual no Sistema:</span>
-                            <strong style="font-size: 18px; color: #1E293B;" id="inv_display_saldo_atual">0 un</strong>
-                        </div>
-                    </div>
-
-                    <!-- Modo de Aplicação -->
-                    <div class="mb-3 p-3" style="background: #F8FAFC; border: 2px solid #E2E8F0; border-radius: 12px;">
-                        <label class="form-label fw-bold small text-uppercase d-block mb-2">Tipo de Aplicação da Contagem:</label>
-                        <div class="d-flex gap-3 flex-wrap">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="tipo_operacao" id="tipoSubstituicao" value="substituicao" checked onchange="recalcularResultadoInventario()">
-                                <label class="form-check-label fw-bold text-dark" for="tipoSubstituicao">
-                                    Substituir pelo Total Contado <span class="text-muted fw-normal">(Inventário Geral / Balanço)</span>
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="tipo_operacao" id="tipoIncremento" value="incremento" onchange="recalcularResultadoInventario()">
-                                <label class="form-check-label fw-bold text-dark" for="tipoIncremento">
-                                    Somar ao Estoque Atual <span class="text-muted fw-normal">(Entrada Avulsa / Lote Encontrado)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Calculadora / Somador de Incrementos Parciais -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small text-uppercase">Contagem / Quantidade Contada *</label>
-                        
-                        <div class="input-group mb-2">
-                            <input type="number" 
+                    <!-- Bloco de Busca Inteligente do Produto -->
+                    <div class="p-3 mb-3" style="background: #F1F5F9; border-radius: 14px; border: 2px solid #E2E8F0;">
+                        <label for="inputBuscaProdutoInv" class="form-label fw-bold small text-uppercase mb-1" style="color: #334155;">
+                            🔍 Buscar Produto (Digite Código SKU ou Nome da Bebida)
+                        </label>
+                        <div class="position-relative">
+                            <input type="text" 
+                                   id="inputBuscaProdutoInv" 
                                    class="form-control" 
-                                   id="inv_quantidade_contada" 
-                                   name="quantidade_contada" 
-                                   required 
-                                   min="0" 
-                                   value="0" 
-                                   style="height: 54px; font-size: 24px; font-weight: 800; text-align: center;"
-                                   oninput="aoDigitarQuantidadeDireta(this.value)">
-                            <button type="button" class="btn btn-outline-danger" onclick="zerarContadorInventario()" title="Zerar contagem">
-                                Zerar
+                                   placeholder="Ex: 9068, Brahma, Skol 350ml, Guaraná..." 
+                                   style="height: 50px; font-size: 17px; font-weight: 600; border-radius: 10px;"
+                                   autocomplete="off"
+                                   oninput="buscarSugestoesInventario(this.value)">
+                            <button type="button" 
+                                    id="btnLimparBuscaInv" 
+                                    class="btn position-absolute top-50 end-0 translate-middle-y me-2 text-muted" 
+                                    style="display: none; background: transparent; border: none; font-size: 20px;" 
+                                    onclick="limparBuscaInventario()">✕</button>
+                        </div>
+
+                        <!-- Menu de Sugestões / Resultados -->
+                        <div id="sugestoesInventarioWrapper" style="display: none; max-height: 240px; overflow-y: auto; background: #FFFFFF; border: 2px solid #CBD5E1; border-radius: 10px; margin-top: 6px; box-shadow: 0 4px 14px rgba(0,0,0,0.1);">
+                            <div id="listaSugestoesInv"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bloco do Produto Selecionado para Entrada de Unidades -->
+                    <div id="blocoEntradaUnidades" style="display: none; background: #FFFFFF; border: 2px solid #10B981; border-radius: 14px; padding: 18px; margin-bottom: 20px;">
+                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                            <div>
+                                <span class="badge bg-success" style="font-size: 11px;">PRODUTO SELECIONADO</span>
+                                <h4 id="displayInvNome" class="m-0 mt-1" style="font-size: 20px; font-weight: 800; color: #0F172A;"></h4>
+                                <span id="displayInvCodigo" class="text-muted small fw-bold"></span>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-muted small d-block">Esperado no Sistema:</span>
+                                <strong id="displayInvSaldoSistema" style="font-size: 20px; color: #1E293B;">0 un</strong>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 align-items-end mt-2">
+                            <div class="col-12 col-md-5">
+                                <label for="inputQtdColetada" class="form-label fw-bold small text-uppercase mb-1">
+                                    Unidades Contadas Nesta Parcela *
+                                </label>
+                                <input type="number" 
+                                       id="inputQtdColetada" 
+                                       class="form-control" 
+                                       min="1" 
+                                       value="1" 
+                                       inputmode="numeric" 
+                                       pattern="[0-9]*"
+                                       style="height: 52px; font-size: 24px; font-weight: 800; text-align: center;">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="d-flex gap-1 flex-wrap">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="somarUnidadesInput(1)">+1</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="somarUnidadesInput(6)">+6</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="somarUnidadesInput(12)">+12</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="somarUnidadesInput(24)">+24</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="somarUnidadesInput(48)">+48</button>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <button type="button" class="btn btn-gestao btn-gestao-primary w-100" style="height: 52px; font-size: 16px; font-weight: 800;" onclick="adicionarItemColetado()">
+                                    ➕ Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Itens Coletados na Sessão -->
+                    <div class="card p-3 border" style="border-radius: 12px; background: #F8FAFC;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold m-0 text-uppercase" style="font-size: 14px; color: #475569;">
+                                📦 Itens Coletados nesta Sessão (<span id="contagemItensSessao">0</span>)
+                            </h6>
+                            <button type="button" class="btn btn-link btn-sm text-danger text-decoration-none p-0" onclick="limparTodaSessao()" id="btnLimparTudo" style="display: none;">
+                                Limpar Sessão
                             </button>
                         </div>
 
-                        <!-- Botões de Incremento Rápido Parcial -->
-                        <div class="d-flex gap-2 flex-wrap align-items-center mb-2">
-                            <span class="small fw-bold text-muted">Somar Parcial:</span>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="somarParcial(1)">+1 un</button>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="somarParcial(6)">+6 (Fardo)</button>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="somarParcial(12)">+12 (Fardo)</button>
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="somarParcial(24)">+24 (Caixa)</button>
+                        <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                            <table class="table table-sm table-hover align-middle m-0" style="background: #FFFFFF; border-radius: 8px; overflow: hidden;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Código</th>
+                                        <th style="text-align: center;">Total Contado</th>
+                                        <th style="text-align: center;">Esperado Sistema</th>
+                                        <th style="width: 140px; text-align: right;">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaItensColetadosBody">
+                                    <tr id="linhaVaziaSessao">
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            Nenhum produto coletado ainda. Utilize o campo de busca acima para encontrar os itens contados.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-
-                        <!-- Fita / Histórico da Soma Parcial -->
-                        <div id="fitaSomaParcial" class="small text-muted p-2 rounded" style="background: #F1F5F9; border: 1px dashed #CBD5E1; min-height: 32px;">
-                            <em>Clique nos botões acima para somar caixas e fardos sucessivos...</em>
-                        </div>
-                    </div>
-
-                    <!-- Resumo Dinâmico do Impacto -->
-                    <div class="p-3 mb-3" style="background: #EFF6FF; border: 2px solid #BFDBFE; border-radius: 12px;">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="small text-muted d-block">Resultado Final após Gravação:</span>
-                                <strong id="inv_display_novo_saldo" style="font-size: 22px; color: #1D4ED8;">0 un</strong>
-                            </div>
-                            <div class="text-end">
-                                <span class="small text-muted d-block">Ajuste / Diferença:</span>
-                                <strong id="inv_display_diferenca" style="font-size: 20px; color: #64748B;">0 un</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Motivo / Justificativa -->
-                    <div class="mb-3">
-                        <label for="inv_motivo" class="form-label fw-bold small text-uppercase">Motivo do Ajuste *</label>
-                        <input type="text" class="form-control" id="inv_motivo" name="motivo" required placeholder="Ex: Inventário de implantação, contagem semanal de bancada, avaria recuperada..." style="height: 44px;">
                     </div>
                 </div>
 
-                <div class="modal-footer" style="border-top: 1px solid var(--gestao-border); padding: 16px 24px;">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-gestao btn-gestao-primary" id="btnSalvarInventario">Confirmar e Gravar Saldo</button>
+                <div class="modal-footer" style="border-top: 1px solid var(--gestao-border); padding: 16px 24px; justify-content: space-between;">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar / Pausar</button>
+                    <button type="button" class="btn btn-gestao btn-gestao-primary" id="btnIrParaConfronto" onclick="avancarParaConfronto()" disabled style="padding: 10px 24px; font-size: 16px;">
+                        Finalizar Coleta e Confrontar Estoque ➔
+                    </button>
                 </div>
-            </form>
+            </div>
+
+            <!-- FASE 2: CONFRONTO, AVERIGUAÇÃO E CONCILIAÇÃO FINAL -->
+            <div id="faseConfrontoInventario" style="display: none;">
+                <form action="<?= APP_URL ?>/gestao/estoque/inventario" method="POST" id="formSalvarInventarioLote">
+                    <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                    <input type="hidden" name="payload_inventario_json" id="inputPayloadInventarioJson" value="">
+
+                    <div class="modal-body" style="padding: 24px;">
+                        <div class="alert alert-info py-2 px-3 small mb-3">
+                            <strong>📊 Matriz de Confronto de Estoque:</strong> Revise as quantidades apuradas. Você pode ajustar individualmente o novo saldo de cada produto antes de confirmar.
+                        </div>
+
+                        <div class="table-responsive mb-3" style="max-height: 360px; overflow-y: auto;">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th style="width: 130px; text-align: center;">Esperado Sistema</th>
+                                        <th style="width: 160px; text-align: center;">Total Coletado</th>
+                                        <th style="width: 130px; text-align: center;">Diferença</th>
+                                        <th style="width: 180px; text-align: center;">Saldo Final Apurado *</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaConfrontoBody"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="inputMotivoConfronto" class="form-label fw-bold small text-uppercase text-muted">
+                                Observações do Balanço (Opcional)
+                            </label>
+                            <input type="text" 
+                                   id="inputMotivoConfronto" 
+                                   name="motivo_global" 
+                                   class="form-control" 
+                                   placeholder="Inventário periódico de rotina" 
+                                   value="Inventário periódico de rotina" 
+                                   style="height: 44px;">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer" style="border-top: 1px solid var(--gestao-border); padding: 16px 24px; justify-content: space-between;">
+                        <button type="button" class="btn btn-outline-secondary" onclick="voltarParaColeta()">
+                            ← Voltar e Coletar Mais Itens
+                        </button>
+                        <button type="submit" class="btn btn-gestao btn-gestao-primary" id="btnConfirmarConciliacao" style="padding: 12px 28px; font-size: 16px;">
+                            ✅ Gravar e Conciliar Estoque Definitivo
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -361,7 +431,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                     </div>
 
                     <div class="mb-3">
-                        <label for="reserva_quantidade" class="form-label fw-bold small text-uppercase">Quantidade Reservada *</label>
+                        <label for="reserva_quantidade" class="form-label fw-bold small text-uppercase">Quantidade Reservada * (Unidades)</label>
                         <input type="number" class="form-control" id="reserva_quantidade" name="quantidade_reserva" required min="0" style="height: 48px;">
                         <div class="form-text">As unidades reservadas não são exibidas nem vendidas na lojinha virtual.</div>
                     </div>
@@ -397,11 +467,11 @@ require __DIR__ . '/../layouts/gestao_header.php';
                     <div class="alert alert-danger py-2 px-3 small mb-3">
                         Produto: <strong id="baixa_produto_nome"></strong><br>
                         Saldo Total Físico Atual: <strong id="baixa_total_fisico"></strong> un.<br>
-                        <em>Atenção: A baixa abate o saldo total físico de forma permanente.</em>
+                        <em>Atenção: A baixa abate o saldo total físico de forma permanente. Lançamento sempre em unidades.</em>
                     </div>
 
                     <div class="mb-3">
-                        <label for="baixa_quantidade" class="form-label fw-bold small text-uppercase">Quantidade Perdida / Quebrada *</label>
+                        <label for="baixa_quantidade" class="form-label fw-bold small text-uppercase">Quantidade Perdida / Quebrada * (Unidades)</label>
                         <input type="number" class="form-control" id="baixa_quantidade" name="quantidade_baixa" required min="1" style="height: 48px;">
                     </div>
 
@@ -421,136 +491,320 @@ require __DIR__ . '/../layouts/gestao_header.php';
 </div>
 
 <script>
-// Mapa de saldos atuais carregados da tabela
+// Catálogo completo para busca instantânea e mapa de saldos atuais
+const PRODUTOS_CATALOGO = <?= json_encode($produtosCatalogoJson, JSON_UNESCAPED_UNICODE) ?>;
 const MAPA_SALDOS_ESTOQUE = {
     <?php foreach ($estoqueGeral as $item): ?>
         "<?= (int)$item['produto_id'] ?>": <?= (int)$item['quantidade_total'] ?>,
     <?php endforeach; ?>
 };
 
-let historicoParcelas = [];
-let saldoAtualProdutoSelecionado = 0;
+// Sessão de Coleta em Memória: [ produto_id => { id, nome, codigo, saldo_sistema, total_coletado, parcelas: [] } ]
+let sessaoColeta = {};
+let produtoAtivoColeta = null;
 
-function abrirModalInventarioGeral() {
-    zerarFormularioInventario();
-    const modal = new bootstrap.Modal(document.getElementById('modalInventario'));
+function iniciarSessaoInventario() {
+    document.getElementById('faseColetaInventario').style.display = 'block';
+    document.getElementById('faseConfrontoInventario').style.display = 'none';
+    limparBuscaInventario();
+    renderizarTabelaColeta();
+    const modal = new bootstrap.Modal(document.getElementById('modalInventarioColeta'));
     modal.show();
+    setTimeout(() => {
+        document.getElementById('inputBuscaProdutoInv').focus();
+    }, 400);
 }
 
-function abrirModalInventarioItem(produtoId, nome, codigo, saldoAtual) {
-    zerarFormularioInventario();
-    const select = document.getElementById('inv_produto_id');
-    select.value = produtoId;
-    aoSelecionarProdutoInventario(produtoId);
-    
-    const modal = new bootstrap.Modal(document.getElementById('modalInventario'));
-    modal.show();
+function abrirInventarioDiretoItem(produtoId, nome, codigo) {
+    iniciarSessaoInventario();
+    const prod = PRODUTOS_CATALOGO.find(p => p.id === produtoId) || { id: produtoId, nome, codigo };
+    selecionarProdutoParaColeta(prod);
 }
 
-function zerarFormularioInventario() {
-    document.getElementById('inv_produto_id').value = '';
-    document.getElementById('cardInfoSaldoAtual').style.setProperty('display', 'none', 'important');
-    saldoAtualProdutoSelecionado = 0;
-    zerarContadorInventario();
-    document.getElementById('inv_motivo').value = '';
-    document.getElementById('tipoSubstituicao').checked = true;
-    recalcularResultadoInventario();
-}
+function buscarSugestoesInventario(termo) {
+    termo = (termo || '').trim().toLowerCase();
+    const btnLimpar = document.getElementById('btnLimparBuscaInv');
+    const wrapper = document.getElementById('sugestoesInventarioWrapper');
+    const lista = document.getElementById('listaSugestoesInv');
 
-function aoSelecionarProdutoInventario(produtoId) {
-    const cardInfo = document.getElementById('cardInfoSaldoAtual');
-    if (!produtoId) {
-        cardInfo.style.setProperty('display', 'none', 'important');
-        saldoAtualProdutoSelecionado = 0;
-        recalcularResultadoInventario();
+    btnLimpar.style.display = termo !== '' ? 'block' : 'none';
+
+    if (termo === '') {
+        wrapper.style.display = 'none';
+        lista.innerHTML = '';
         return;
     }
 
-    const select = document.getElementById('inv_produto_id');
-    const opt = select.options[select.selectedIndex];
-    const nome = opt.getAttribute('data-nome') || '';
-    const codigo = opt.getAttribute('data-codigo') || '';
-    const emb = opt.getAttribute('data-embalagem') || '';
+    const filtrados = PRODUTOS_CATALOGO.filter(p => 
+        p.codigo.toLowerCase().includes(termo) || p.nome.toLowerCase().includes(termo)
+    );
 
-    saldoAtualProdutoSelecionado = MAPA_SALDOS_ESTOQUE[produtoId] || 0;
-
-    document.getElementById('inv_display_produto').innerText = nome;
-    document.getElementById('inv_display_codigo').innerText = codigo;
-    document.getElementById('inv_display_embalagem').innerText = emb;
-    document.getElementById('inv_display_saldo_atual').innerText = saldoAtualProdutoSelecionado + ' un';
-
-    cardInfo.style.setProperty('display', 'flex', 'important');
-    recalcularResultadoInventario();
-}
-
-function somarParcial(qtd) {
-    historicoParcelas.push(qtd);
-    const input = document.getElementById('inv_quantidade_contada');
-    const valorAtual = parseInt(input.value || '0', 10);
-    input.value = valorAtual + qtd;
-    atualizarFitaParcelas();
-    recalcularResultadoInventario();
-}
-
-function zerarContadorInventario() {
-    historicoParcelas = [];
-    document.getElementById('inv_quantidade_contada').value = '0';
-    atualizarFitaParcelas();
-    recalcularResultadoInventario();
-}
-
-function aoDigitarQuantidadeDireta(val) {
-    historicoParcelas = [];
-    const num = parseInt(val || '0', 10);
-    if (num > 0) {
-        historicoParcelas.push(num);
-    }
-    atualizarFitaParcelas();
-    recalcularResultadoInventario();
-}
-
-function atualizarFitaParcelas() {
-    const fita = document.getElementById('fitaSomaParcial');
-    const inputDetalhes = document.getElementById('inv_detalhes_contagem');
-    if (historicoParcelas.length === 0) {
-        fita.innerHTML = '<em>Nenhuma parcela somada ainda...</em>';
-        inputDetalhes.value = '';
-    } else {
-        const texto = historicoParcelas.join(' + ') + ' = ' + historicoParcelas.reduce((a, b) => a + b, 0) + ' un';
-        fita.innerHTML = '<strong>Soma das Parciais:</strong> ' + texto;
-        inputDetalhes.value = historicoParcelas.join(' + ');
-    }
-}
-
-function recalcularResultadoInventario() {
-    const qtdContada = parseInt(document.getElementById('inv_quantidade_contada').value || '0', 10);
-    const isIncremento = document.getElementById('tipoIncremento').checked;
-
-    let novoSaldo = 0;
-    let diferenca = 0;
-
-    if (isIncremento) {
-        novoSaldo = saldoAtualProdutoSelecionado + qtdContada;
-        diferenca = qtdContada;
-    } else {
-        novoSaldo = qtdContada;
-        diferenca = novoSaldo - saldoAtualProdutoSelecionado;
+    if (filtrados.length === 0) {
+        lista.innerHTML = `<div class="p-3 text-muted text-center small">Nenhum produto cadastrado com "${termo}".</div>`;
+        wrapper.style.display = 'block';
+        return;
     }
 
-    document.getElementById('inv_display_novo_saldo').innerText = novoSaldo + ' un';
+    lista.innerHTML = '';
+    filtrados.slice(0, 10).forEach(p => {
+        const saldo = MAPA_SALDOS_ESTOQUE[p.id] || 0;
+        const item = document.createElement('div');
+        item.className = 'p-2 border-bottom d-flex justify-content-between align-items-center';
+        item.style.cursor = 'pointer';
+        item.innerHTML = `
+            <div>
+                <strong style="color: #0F172A; font-size: 15px;">${p.nome}</strong>
+                <div class="text-muted small">Código: <strong>${p.codigo}</strong> &bull; Saldo Atual: <span class="badge bg-light text-dark border">${saldo} un</span></div>
+            </div>
+            <span class="btn btn-sm btn-outline-success">Selecionar ➔</span>
+        `;
+        item.onclick = () => {
+            selecionarProdutoParaColeta(p);
+            wrapper.style.display = 'none';
+        };
+        lista.appendChild(item);
+    });
+    wrapper.style.display = 'block';
+}
 
-    const elDif = document.getElementById('inv_display_diferenca');
-    const sinal = diferenca > 0 ? '+' : '';
-    elDif.innerText = sinal + diferenca + ' un';
-    if (diferenca > 0) {
-        elDif.style.color = '#059669';
-    } else if (diferenca < 0) {
-        elDif.style.color = '#DC2626';
-    } else {
-        elDif.style.color = '#64748B';
+function limparBuscaInventario() {
+    const input = document.getElementById('inputBuscaProdutoInv');
+    input.value = '';
+    document.getElementById('btnLimparBuscaInv').style.display = 'none';
+    document.getElementById('sugestoesInventarioWrapper').style.display = 'none';
+    input.focus();
+}
+
+function selecionarProdutoParaColeta(prod) {
+    produtoAtivoColeta = prod;
+    const saldo = MAPA_SALDOS_ESTOQUE[prod.id] || 0;
+
+    document.getElementById('displayInvNome').innerText = prod.nome;
+    document.getElementById('displayInvCodigo').innerText = 'SKU ' + prod.codigo;
+    document.getElementById('displayInvSaldoSistema').innerText = saldo + ' un';
+
+    const inputQtd = document.getElementById('inputQtdColetada');
+    inputQtd.value = '1';
+
+    document.getElementById('blocoEntradaUnidades').style.display = 'block';
+    inputQtd.focus();
+    inputQtd.select();
+}
+
+function somarUnidadesInput(qtd) {
+    const input = document.getElementById('inputQtdColetada');
+    let val = parseInt(input.value || '0', 10);
+    input.value = Math.max(1, val + qtd);
+}
+
+function adicionarItemColetado() {
+    if (!produtoAtivoColeta) return;
+
+    const inputQtd = document.getElementById('inputQtdColetada');
+    const qtd = parseInt(inputQtd.value || '1', 10);
+    if (qtd <= 0) {
+        alert('A quantidade unitária deve ser maior que zero.');
+        return;
+    }
+
+    const id = produtoAtivoColeta.id;
+    const saldoSistema = MAPA_SALDOS_ESTOQUE[id] || 0;
+
+    if (!sessaoColeta[id]) {
+        sessaoColeta[id] = {
+            produto_id: id,
+            nome: produtoAtivoColeta.nome,
+            codigo: produtoAtivoColeta.codigo,
+            saldo_sistema: saldoSistema,
+            total_coletado: 0,
+            parcelas: []
+        };
+    }
+
+    sessaoColeta[id].total_coletado += qtd;
+    sessaoColeta[id].parcelas.push(qtd);
+
+    // Feedback rápido e limpeza para a próxima contagem
+    document.getElementById('blocoEntradaUnidades').style.display = 'none';
+    limparBuscaInventario();
+    produtoAtivoColeta = null;
+
+    renderizarTabelaColeta();
+}
+
+function somarDiretoNaLinha(produtoId, qtd) {
+    if (sessaoColeta[produtoId]) {
+        sessaoColeta[produtoId].total_coletado += qtd;
+        sessaoColeta[produtoId].parcelas.push(qtd);
+        renderizarTabelaColeta();
     }
 }
 
+function removerItemSessao(produtoId) {
+    if (sessaoColeta[produtoId]) {
+        delete sessaoColeta[produtoId];
+        renderizarTabelaColeta();
+    }
+}
+
+function limparTodaSessao() {
+    if (confirm('Deseja limpar todos os itens contados nesta sessão?')) {
+        sessaoColeta = {};
+        renderizarTabelaColeta();
+    }
+}
+
+function renderizarTabelaColeta() {
+    const tbody = document.getElementById('tabelaItensColetadosBody');
+    const chaves = Object.keys(sessaoColeta);
+    const contagem = chaves.length;
+
+    document.getElementById('contagemItensSessao').innerText = contagem;
+    document.getElementById('btnLimparTudo').style.display = contagem > 0 ? 'inline-block' : 'none';
+    document.getElementById('btnIrParaConfronto').disabled = contagem === 0;
+
+    if (contagem === 0) {
+        tbody.innerHTML = `
+            <tr id="linhaVaziaSessao">
+                <td colspan="5" class="text-center py-4 text-muted">
+                    Nenhum produto coletado ainda. Utilize o campo de busca acima para encontrar os itens contados.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = '';
+    chaves.forEach(id => {
+        const item = sessaoColeta[id];
+        const historicoTexto = item.parcelas.length > 1 ? `<div class="text-muted" style="font-size: 11px;">(${item.parcelas.join(' + ')})</div>` : '';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>
+                <strong>${item.nome}</strong>
+                ${historicoTexto}
+            </td>
+            <td><code>${item.codigo}</code></td>
+            <td style="text-align: center;">
+                <span class="badge bg-primary" style="font-size: 16px; padding: 6px 12px;">
+                    ${item.total_coletado} un
+                </span>
+            </td>
+            <td style="text-align: center;">
+                <span class="text-muted">${item.saldo_sistema} un</span>
+            </td>
+            <td style="text-align: right;">
+                <button type="button" class="btn btn-outline-success btn-sm me-1" onclick="somarDiretoNaLinha(${item.produto_id}, 1)" title="Somar +1 unidade">+1</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removerItemSessao(${item.produto_id})" title="Remover da contagem">✕</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function avancarParaConfronto() {
+    const chaves = Object.keys(sessaoColeta);
+    if (chaves.length === 0) return;
+
+    const tbody = document.getElementById('tabelaConfrontoBody');
+    tbody.innerHTML = '';
+
+    chaves.forEach(id => {
+        const item = sessaoColeta[id];
+        const dif = item.total_coletado - item.saldo_sistema;
+        const difClass = dif > 0 ? 'text-success' : (dif < 0 ? 'text-danger' : 'text-muted');
+        const sinal = dif > 0 ? '+' : '';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>
+                <strong>${item.nome}</strong><br>
+                <code class="small">${item.codigo}</code>
+            </td>
+            <td style="text-align: center; font-size: 16px;">
+                ${item.saldo_sistema} un
+            </td>
+            <td style="text-align: center; font-size: 18px; font-weight: 800; color: #1D4ED8;">
+                ${item.total_coletado} un
+                ${item.parcelas.length > 1 ? `<div style="font-size: 10px; font-weight: normal; color: #64748B;">(${item.parcelas.join(' + ')})</div>` : ''}
+            </td>
+            <td style="text-align: center; font-weight: 800; font-size: 17px;" class="${difClass}" id="confronto_dif_${item.produto_id}">
+                ${sinal}${dif} un
+            </td>
+            <td style="text-align: center;">
+                <input type="number" 
+                       class="form-control form-control-sm text-center fw-bold input-apurado-confronto" 
+                       id="confronto_apurado_${item.produto_id}" 
+                       data-id="${item.produto_id}" 
+                       data-esperado="${item.saldo_sistema}" 
+                       value="${item.total_coletado}" 
+                       min="0" 
+                       style="height: 42px; font-size: 18px; color: #0F172A;"
+                       oninput="recalcularDiferencaConfronto(${item.produto_id}, this.value, ${item.saldo_sistema})">
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    document.getElementById('faseColetaInventario').style.display = 'none';
+    document.getElementById('faseConfrontoInventario').style.display = 'block';
+}
+
+function recalcularDiferencaConfronto(produtoId, valApurado, saldoSistema) {
+    const apurado = parseInt(valApurado || '0', 10);
+    const dif = apurado - saldoSistema;
+    const el = document.getElementById('confronto_dif_' + produtoId);
+    if (el) {
+        const sinal = dif > 0 ? '+' : '';
+        el.innerText = `${sinal}${dif} un`;
+        el.className = 'text-center fw-bold ' + (dif > 0 ? 'text-success' : (dif < 0 ? 'text-danger' : 'text-muted'));
+    }
+}
+
+function voltarParaColeta() {
+    document.getElementById('faseConfrontoInventario').style.display = 'none';
+    document.getElementById('faseColetaInventario').style.display = 'block';
+}
+
+function confirmarFechamentoInventario(e) {
+    if (Object.keys(sessaoColeta).length > 0) {
+        if (!confirm('Você possui itens coletados nesta sessão. Deseja realmente fechar?')) {
+            e.preventDefault();
+        }
+    }
+}
+
+// Submissão da Conciliação de Todos os Itens
+document.getElementById('formSalvarInventarioLote')?.addEventListener('submit', function(e) {
+    const inputs = document.querySelectorAll('.input-apurado-confronto');
+    const loteApurado = [];
+
+    inputs.forEach(inp => {
+        const pid = parseInt(inp.getAttribute('data-id'), 10);
+        const novoSaldo = parseInt(inp.value || '0', 10);
+        const detalhes = sessaoColeta[pid] && sessaoColeta[pid].parcelas ? sessaoColeta[pid].parcelas.join(' + ') : null;
+
+        loteApurado.push({
+            produto_id: pid,
+            novo_saldo: novoSaldo,
+            detalhes_contagem: detalhes
+        });
+    });
+
+    if (loteApurado.length === 0) {
+        e.preventDefault();
+        alert('Nenhum item válido para conciliação.');
+        return;
+    }
+
+    document.getElementById('inputPayloadInventarioJson').value = JSON.stringify(loteApurado);
+    const btn = document.getElementById('btnConfirmarConciliacao');
+    btn.disabled = true;
+    btn.innerText = 'Gravando Estoque Conciliado...';
+});
+
+// Funções dos modais de Reserva e Baixa
 function abrirModalReserva(produtoId, produtoNome, totalFisico, reservaAtual) {
     document.getElementById('reserva_produto_id').value = produtoId;
     document.getElementById('reserva_produto_nome').innerText = produtoNome;
