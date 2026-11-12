@@ -34,7 +34,7 @@ define('DB_CHARSET', 'utf8mb4');
 
 // Configurações da Aplicação e Regras de Negócio
 define('APP_NAME', 'Projeto Repack');
-define('APP_VERSION', 'v1.47');
+define('APP_VERSION', 'v1.48');
 define('APP_ENV', getenv('APP_ENV') ?: 'development'); // 'development' ou 'production'
 
 // Auto-detecção inteligente de APP_URL (suporta raiz '/', Alwaysdata, localhost e subpastas)

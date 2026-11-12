@@ -501,6 +501,17 @@
       - Botão "Sair" em vermelho rubi (`#DC2626` / `#B91C1C`) em formato de pílula ergonômica.
       - Aplicação harmônica do mesmo design de alto contraste no crachá do desktop e no menu expandido do mobile.
     - **Incremento de Versão:** Versão elevada para `v1.47` com cache atualizado no Service Worker `repack-pwa-v1.47`.
+  - [x] **MANUT-050 (12/11/2026):** Equiparação Geométrica dos Botões Iniciar/Cancelar com Setas Vetoriais Espessas e Ampliação Monumental dos Motivos da Baixa.
+    - **Equiparação dos Botões Iniciar e Cancelar (`app/views/operador/cronometro.php`):**
+      - Proporções rigorosamente idênticas para ambos os botões: `min-height: 130px`, `font-size: 42px`, `font-weight: 900`, `border-radius: 36px`, `width: 100%; max-width: 600px;` e `gap: 16px`.
+      - Eliminação dos caracteres unicode finos e assimétricos (`➔` e `←`).
+      - Inclusão de setas vetoriais SVG ultra-espessas (`stroke-width="3.8"`, 44x44px), perfeitamente simétricas e de alto impacto visual em qualquer tela ou sistema operacional móvel.
+      - Botão Cancelar estruturado exatamente conforme especificado: `[Seta Grossa Esquerda] ✕ CANCELAR`.
+    - **Ampliação Monumental dos Botões de Motivo da Baixa (`app/views/operador/baixa_lojinha.php`):**
+      - Aumento expressivo da altura mínima de 85px para 115px (105px em celulares pequenos) e da tipografia de 28px para 36px (32px em celulares pequenos) em peso 900.
+      - Emojis `⏳` e `💥` ampliados para 46px com alinhamento flexível e sem quebras visuais.
+      - Bordas reforçadas para 5px (inativo) e 6px com sombra luminosa (ativo em vermelho `#DC2626`), preenchendo a tela com equilíbrio e facilitando o toque rápido com luvas.
+    - **Incremento de Versão:** Versão elevada para `v1.48` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.48` em `public/service-worker.js`.
 
 ---
 

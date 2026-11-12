@@ -126,22 +126,28 @@ require_once __DIR__ . '/../layouts/header.php';
         ⚠️ DIGITE O CÓDIGO DO PRODUTO!
     </div>
 
-    <!-- Rodapé Momento 1: Ações Empilhadas Verticalmente -->
-    <div style="width: 100%; margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 18px;">
+    <!-- Rodapé Momento 1: Ações Empilhadas Verticalmente (Escala Monumental) -->
+    <div style="width: 100%; margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
         <button type="button" 
                 class="btn-urna btn-urna-primary" 
                 id="btnIniciarProducao" 
                 onclick="iniciarProducao()" 
-                style="width: 100%; max-width: 600px; min-height: 135px; font-size: 44px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 auto; box-shadow: 0 12px 28px rgba(16, 185, 129, 0.35);">
+                style="width: 100%; max-width: 650px; min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; box-shadow: 0 14px 32px rgba(16, 185, 129, 0.4);">
             <span>INICIAR</span>
-            <span style="font-size: 46px;">➔</span>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <polyline points="13 4 21 12 13 20"></polyline>
+            </svg>
         </button>
 
         <a href="<?= APP_URL ?>/operador" 
            class="btn-urna btn-urna-warning" 
-           style="width: 100%; max-width: 600px; min-height: 115px; font-size: 36px; font-weight: 900; border-radius: 32px; display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 auto; text-decoration: none;">
-            <span style="font-size: 38px;">←</span>
-            <span>✕</span>
+           style="width: 100%; max-width: 650px; min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; text-decoration: none;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
+                <line x1="21" y1="12" x2="3" y2="12"></line>
+                <polyline points="11 4 3 12 11 20"></polyline>
+            </svg>
+            <span style="font-size: 38px; font-weight: 900; line-height: 1;">✕</span>
             <span>CANCELAR</span>
         </a>
     </div>

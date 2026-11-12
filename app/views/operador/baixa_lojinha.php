@@ -109,32 +109,34 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <!-- Seleção Rápida de Motivo da Baixa -->
-    <div class="urna-card" style="width: 100%; margin: 0 0 24px 0; padding: 24px; border-radius: 32px; border: 7px solid #0F172A; background: #FFFFFF;">
-        <label style="font-weight: 900; display: block; margin-bottom: 16px; font-size: 28px; color: #0F172A; text-transform: uppercase; text-align: center;">
+    <div class="urna-card" style="width: 100%; margin: 0 0 24px 0; padding: 26px 20px; border-radius: 32px; border: 7px solid #0F172A; background: #FFFFFF;">
+        <label style="font-weight: 900; display: block; margin-bottom: 20px; font-size: 32px; color: #0F172A; text-transform: uppercase; text-align: center; letter-spacing: 0.5px;">
             MOTIVO DO DESCARTE:
         </label>
-        <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 18px;">
             <button type="button" 
                     class="btn-urna btn-motivo-baixa ativo" 
                     id="btnMotivoVencido" 
                     onclick="selecionarMotivo('Produto Vencido / Passou da Validade', this)">
-                ⏳ Passou da Validade
+                <span class="motivo-emoji">⏳</span>
+                <span>Passou da Validade</span>
             </button>
             <button type="button" 
                     class="btn-urna btn-motivo-baixa" 
                     id="btnMotivoQuebra" 
                     onclick="selecionarMotivo('Avaria / Quebra na Lojinha', this)">
-                💥 Quebra / Vazamento
+                <span class="motivo-emoji">💥</span>
+                <span>Quebra / Vazamento</span>
             </button>
         </div>
     </div>
 
     <!-- Botões de Ação do Rodapé -->
-    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 20px 0 0 0; gap: 18px;">
-        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 120px; font-size: 38px; font-weight: 900; border-radius: 32px;">
+    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 24px 0 0 0; gap: 20px;">
+        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
             CANCELAR
         </a>
-        <button type="button" class="btn-urna btn-urna-primary" id="btnAvancar" onclick="avancarConferencia()" style="min-height: 120px; font-size: 38px; font-weight: 900; border-radius: 32px;">
+        <button type="button" class="btn-urna btn-urna-primary" id="btnAvancar" onclick="avancarConferencia()" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
             AVANÇAR ➔
         </button>
     </div>
@@ -176,20 +178,26 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <style>
 .btn-motivo-baixa {
-    min-height: 85px;
-    font-size: 28px;
+    min-height: 125px;
+    font-size: 38px;
     font-weight: 900;
-    border-radius: 24px;
+    border-radius: 28px;
     background: #F1F5F9;
     color: #0F172A;
-    border: 4px solid #94A3B8;
+    border: 5px solid #94A3B8;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 18px;
+    padding: 18px 24px;
     transition: all 0.15s ease;
     touch-action: manipulation;
+}
+.btn-motivo-baixa .motivo-emoji {
+    font-size: 50px;
+    line-height: 1;
+    flex-shrink: 0;
 }
 .btn-motivo-baixa:hover {
     background: #E2E8F0;
@@ -198,9 +206,20 @@ require_once __DIR__ . '/../layouts/header.php';
 .btn-motivo-baixa.ativo {
     background: #DC2626 !important;
     color: #FFFFFF !important;
-    border: 5px solid #991B1B !important;
-    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4) !important;
+    border: 6px solid #991B1B !important;
+    box-shadow: 0 12px 30px rgba(220, 38, 38, 0.45) !important;
     transform: scale(1.01);
+}
+@media (max-width: 480px) {
+    .btn-motivo-baixa {
+        min-height: 118px;
+        font-size: 34px;
+        padding: 16px 18px;
+        gap: 14px;
+    }
+    .btn-motivo-baixa .motivo-emoji {
+        font-size: 44px;
+    }
 }
 </style>
 
