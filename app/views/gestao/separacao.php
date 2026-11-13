@@ -354,7 +354,7 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
                                             </td>
                                             <td>
                                                 <?php if (!empty($item['foto_url'])): ?>
-                                                    <img src="<?= sanitize_html($item['foto_url']) ?>" alt="Foto" style="width: 42px; height: 42px; object-fit: contain; border-radius: 6px; border: 1px solid #E5E7EB;">
+                                                    <img src="<?= APP_URL . sanitize_html($item['foto_url']) ?>" alt="Foto" style="width: 42px; height: 42px; object-fit: contain; border-radius: 6px; border: 1px solid #E5E7EB;">
                                                 <?php else: ?>
                                                     <span class="badge bg-light text-muted border p-2">Sem foto</span>
                                                 <?php endif; ?>

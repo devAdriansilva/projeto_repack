@@ -64,7 +64,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                         <tr>
                             <td style="width: 60px;">
                                 <?php if (!empty($item['foto_url'])): ?>
-                                    <img src="<?= sanitize_html($item['foto_url']) ?>" alt="Foto" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gestao-border);">
+                                    <img src="<?= APP_URL . sanitize_html($item['foto_url']) ?>" alt="Foto" style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gestao-border);">
                                 <?php else: ?>
                                     <div style="width: 44px; height: 44px; background: #E5E7EB; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;">
                                         🍾

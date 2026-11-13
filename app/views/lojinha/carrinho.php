@@ -87,8 +87,8 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                         <div class="d-flex align-items-center justify-content-between p-3 mb-2" style="background: #F9FAFB; border-radius: 12px; border: 1px solid #E5E7EB; flex-wrap: wrap; gap: 12px;">
                             <div class="d-flex align-items-center gap-3">
                                 <div style="width: 64px; height: 64px; background: #FFFFFF; border-radius: 8px; border: 1px solid #D1D5DB; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                    <?php if (!empty($item['foto_url']) && file_exists(PUBLIC_PATH . $item['foto_url'])): ?>
-                                        <img src="<?= sanitize_html($item['foto_url']) ?>" alt="<?= sanitize_html($item['produto_nome']) ?>" style="max-width: 100%; max-height: 100%;">
+                                    <?php if (!empty($item['foto_url'])): ?>
+                                        <img src="<?= APP_URL . sanitize_html($item['foto_url']) ?>" alt="<?= sanitize_html($item['produto_nome']) ?>" style="max-width: 100%; max-height: 100%;">
                                     <?php else: ?>
                                         <svg width="32" height="32" fill="#9CA3AF" viewBox="0 0 24 24">
                                             <path d="M7 2v2h1v4.54c-.6.28-1 .88-1 1.46v9c0 1.66 1.34 3 3 3h4c1.66 0 3-1.34 3-3v-9c0-.58-.4-1.18-1-1.46V4h1V2H7zm8 15c0 .55-.45 1-1 1h-4c-.55 0-1-.45-1-1v-7h6v7zm-1-9h-4V4h4v4z"/>

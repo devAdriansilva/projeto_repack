@@ -305,8 +305,8 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 
                         <!-- Imagem do Produto -->
                         <div class="card-img-container">
-                            <?php if (!empty($p['foto_url']) && file_exists(PUBLIC_PATH . $p['foto_url'])): ?>
-                                <img src="<?= sanitize_html($p['foto_url']) ?>" alt="<?= sanitize_html($p['nome']) ?>">
+                            <?php if (!empty($p['foto_url'])): ?>
+                                <img src="<?= APP_URL . sanitize_html($p['foto_url']) ?>" alt="<?= sanitize_html($p['nome']) ?>">
                             <?php else: ?>
                                 <svg width="72" height="72" fill="#9CA3AF" viewBox="0 0 24 24">
                                     <path d="M7 2v2h1v4.54c-.6.28-1 .88-1 1.46v9c0 1.66 1.34 3 3 3h4c1.66 0 3-1.34 3-3v-9c0-.58-.4-1.18-1-1.46V4h1V2H7zm8 15c0 .55-.45 1-1 1h-4c-.55 0-1-.45-1-1v-7h6v7zm-1-9h-4V4h4v4z"/>

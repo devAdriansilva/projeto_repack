@@ -45,7 +45,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
                         <tr style="<?= $p['ativo'] ? '' : 'opacity: 0.6; background-color: #F9FAFB;' ?>">
                             <td>
                                 <?php if (!empty($p['foto_url'])): ?>
-                                    <img src="<?= sanitize_html($p['foto_url']) ?>" alt="Foto" style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gestao-border);">
+                                    <img src="<?= APP_URL . sanitize_html($p['foto_url']) ?>" alt="Foto" style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px; border: 1px solid var(--gestao-border);">
                                 <?php else: ?>
                                     <div style="width: 48px; height: 48px; background: #E5E7EB; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #9CA3AF; font-size: 20px;">
                                         🍾
