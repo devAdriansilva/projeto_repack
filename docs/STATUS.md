@@ -762,6 +762,17 @@
       - Novo teste unitário `tests/test_ajustes_produtividade_lojinha.php` executado com 100% de êxito.
       - Versão da aplicação incrementada para `v1.62` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-067 (13/11/2026):** Padronização do Tempo de Reserva e Contagem Regressiva do Carrinho em 5 Minutos.
+    - **Ajuste Normativo de Tempo de Reserva do Carrinho:**
+      - **Migration 011 (`database/migrations/011_padronizar_tempo_carrinho_5_minutos.sql`):** Atualizados todos os lotes de vendas para `tempo_carrinho_minutos = 5` e definido o `DEFAULT 5` para novas criações de lotes no MySQL.
+      - **Model LoteVenda (`app/models/LoteVenda.php`):** Fallback padrão atualizado para 5 minutos.
+      - **Model Pedido (`app/models/Pedido.php`):** Fallback na ausência de lote ativo e nos cálculos de expiração e contagem regressiva alinhado estritamente com `CARRINHO_TIMEOUT_MINUTOS` (5 minutos).
+      - **Gestão de Lotes (`app/views/gestao/lotes.php`):** Modal de criação/edição e valores de exemplo na interface administrativa atualizados para 5 minutos.
+    - **Testes & Versionamento:**
+      - Execução do migrator CLI com sucesso.
+      - Validação de 35/35 testes na suíte oficial (`php tests/test_fase5.php`) e testes dedicados de expiração.
+      - Versão da aplicação incrementada para `v1.63` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

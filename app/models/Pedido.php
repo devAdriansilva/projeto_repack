@@ -224,10 +224,10 @@ class Pedido
             throw new DomainException("Quantidade solicitada ({$quantidade}) indisponível. Restam {$disponivelParaMim} unidade(s) disponíveis no momento.");
         }
 
-        // 5. Grava ou atualiza a reserva conforme o tempo definido dinamicamente para o lote
+        // 5. Grava ou atualiza a reserva conforme o tempo definido dinamicamente para o lote (padrão 5 min)
         $minutosTimeout = !empty($lote['tempo_carrinho_minutos']) 
             ? (int)$lote['tempo_carrinho_minutos'] 
-            : (defined('CARRINHO_TIMEOUT_MINUTOS') ? (int)CARRINHO_TIMEOUT_MINUTOS : 10);
+            : (defined('CARRINHO_TIMEOUT_MINUTOS') ? (int)CARRINHO_TIMEOUT_MINUTOS : 5);
         $sessionTokenFinal = $sessionToken !== '' ? $sessionToken : session_id();
 
         if ($itemMeuCarrinho) {
@@ -336,7 +336,9 @@ class Pedido
                 return ['sucesso' => false, 'mensagem' => $e->getMessage(), 'nova_quantidade' => $qtdAtual];
             }
         } else {
-            $minutosTimeout = !empty($item['tempo_carrinho_minutos']) ? (int)$item['tempo_carrinho_minutos'] : 10;
+            $minutosTimeout = !empty($item['tempo_carrinho_minutos']) 
+                ? (int)$item['tempo_carrinho_minutos'] 
+                : (defined('CARRINHO_TIMEOUT_MINUTOS') ? (int)CARRINHO_TIMEOUT_MINUTOS : 5);
             $stmtUp = $pdo->prepare("
                 UPDATE carrinho_temporario
                 SET quantidade = :qtd,

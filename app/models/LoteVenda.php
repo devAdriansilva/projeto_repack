@@ -85,7 +85,7 @@ class LoteVenda
         $dataInicio = trim((string)($dados['data_inicio'] ?? ''));
         $dataFim = trim((string)($dados['data_fim'] ?? ''));
         $limiteItens = max(1, (int)($dados['limite_itens_por_comprador'] ?? 5));
-        $tempoCarrinho = max(1, (int)($dados['tempo_carrinho_minutos'] ?? 10));
+        $tempoCarrinho = max(1, (int)($dados['tempo_carrinho_minutos'] ?? 5));
         $status = strtolower(trim((string)($dados['status'] ?? self::STATUS_PLANEJADO)));
 
         if (!in_array($status, [self::STATUS_PLANEJADO, self::STATUS_ABERTO, self::STATUS_ENCERRADO], true)) {
