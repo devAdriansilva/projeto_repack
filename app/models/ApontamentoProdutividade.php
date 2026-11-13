@@ -269,4 +269,51 @@ class ApontamentoProdutividade
             'por_produto' => $porProduto
         ];
     }
+
+    /**
+     * Lista apontamentos de produtividade com filtros dinâmicos de período, operador e produto
+     * Utiliza Prepared Statements nativos e índices para alta performance em tempo real
+     * @param array $filtros ['data_inicio', 'data_fim', 'usuario_id', 'produto_id', 'limite']
+     * @return array
+     */
+    public static function listarComFiltros(array $filtros = []): array
+    {
+        $pdo = Database::getConnection();
+        $sql = "
+            SELECT ap.*, 
+                   p.nome AS produto_nome, p.codigo AS produto_codigo, p.pacote_padrao,
+                   u.nome AS operador_nome, u.matricula AS operador_matricula
+            FROM apontamentos_produtividade ap
+            INNER JOIN produtos p ON p.id = ap.produto_id
+            INNER JOIN usuarios u ON u.id = ap.usuario_id
+            WHERE ap.deleted_at IS NULL
+        ";
+        $params = [];
+
+        if (!empty($filtros['data_inicio'])) {
+            $sql .= " AND ap.created_at >= :data_inicio";
+            $params['data_inicio'] = $filtros['data_inicio'] . ' 00:00:00';
+        }
+        if (!empty($filtros['data_fim'])) {
+            $sql .= " AND ap.created_at <= :data_fim";
+            $params['data_fim'] = $filtros['data_fim'] . ' 23:59:59';
+        }
+        if (!empty($filtros['produto_id'])) {
+            $sql .= " AND ap.produto_id = :produto_id";
+            $params['produto_id'] = (int)$filtros['produto_id'];
+        }
+        if (!empty($filtros['usuario_id'])) {
+            $sql .= " AND ap.usuario_id = :usuario_id";
+            $params['usuario_id'] = (int)$filtros['usuario_id'];
+        }
+
+        $sql .= " ORDER BY ap.created_at DESC, ap.id DESC";
+
+        $limite = (int)($filtros['limite'] ?? 50);
+        $sql .= " LIMIT " . max(1, min(500, $limite));
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
 }

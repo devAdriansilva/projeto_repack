@@ -14,6 +14,7 @@ require_once __DIR__ . '/../models/Produto.php';
 require_once __DIR__ . '/../models/LoteVenda.php';
 require_once __DIR__ . '/../models/EstoqueLojinha.php';
 require_once __DIR__ . '/../models/ApontamentoBO.php';
+require_once __DIR__ . '/../models/ApontamentoProdutividade.php';
 require_once __DIR__ . '/../models/LogSistema.php';
 require_once __DIR__ . '/../models/Configuracao.php';
 
@@ -27,20 +28,97 @@ class GestaoController
     /**
      * Tela 2: Painel Consolidado de Gestão
      */
+    /**
+     * Tela 2: Painel Consolidado de Gestão com Telemetria em Tempo Real e Filtros
+     * Suporta visualização ao vivo, filtros por período (Hoje, Ontem, 7 Dias, Mês, Customizado),
+     * filtros por categoria de avaria, destino, operador e produto, além de auto-refresh assíncrono.
+     */
     public function dashboard(): void
     {
         $pdo = Database::getConnection();
 
-        // 1. Métricas de Avarias (B.O.)
-        $stmtBO = $pdo->query("
+        // Leitura dos parâmetros de filtro
+        $periodo = trim((string)($_GET['periodo'] ?? 'hoje'));
+        $dataInicio = trim((string)($_GET['data_inicio'] ?? ''));
+        $dataFim = trim((string)($_GET['data_fim'] ?? ''));
+        $tipoAvaria = trim((string)($_GET['tipo_avaria'] ?? ''));
+        $destino = trim((string)($_GET['destino'] ?? ''));
+        $produtoId = !empty($_GET['produto_id']) ? (int)$_GET['produto_id'] : null;
+        $usuarioId = !empty($_GET['usuario_id']) ? (int)$_GET['usuario_id'] : null;
+
+        // Normalização das datas conforme o período selecionado
+        $hoje = date('Y-m-d');
+        if (!empty($_GET['data_inicio']) || !empty($_GET['data_fim'])) {
+            $periodo = 'custom';
+        } else {
+            switch ($periodo) {
+                case 'hoje':
+                    $dataInicio = $hoje;
+                    $dataFim = $hoje;
+                    break;
+                case 'ontem':
+                    $dataInicio = date('Y-m-d', strtotime('-1 day'));
+                    $dataFim = date('Y-m-d', strtotime('-1 day'));
+                    break;
+                case '7dias':
+                    $dataInicio = date('Y-m-d', strtotime('-6 days'));
+                    $dataFim = $hoje;
+                    break;
+                case 'mes':
+                    $dataInicio = date('Y-m-01');
+                    $dataFim = $hoje;
+                    break;
+                case 'tudo':
+                    $dataInicio = '';
+                    $dataFim = '';
+                    break;
+                default:
+                    $periodo = 'hoje';
+                    $dataInicio = $hoje;
+                    $dataFim = $hoje;
+                    break;
+            }
+        }
+
+        // 1. Métricas de Avarias (B.O.) com filtros aplicados
+        $whereBO = "WHERE bo.deleted_at IS NULL";
+        $paramsBO = [];
+
+        if (!empty($dataInicio)) {
+            $whereBO .= " AND bo.created_at >= :bo_data_inicio";
+            $paramsBO['bo_data_inicio'] = $dataInicio . ' 00:00:00';
+        }
+        if (!empty($dataFim)) {
+            $whereBO .= " AND bo.created_at <= :bo_data_fim";
+            $paramsBO['bo_data_fim'] = $dataFim . ' 23:59:59';
+        }
+        if (!empty($tipoAvaria)) {
+            $whereBO .= " AND bo.tipo_avaria = :bo_tipo_avaria";
+            $paramsBO['bo_tipo_avaria'] = $tipoAvaria;
+        }
+        if (!empty($destino)) {
+            $whereBO .= " AND bo.destino = :bo_destino";
+            $paramsBO['bo_destino'] = $destino;
+        }
+        if ($produtoId !== null && $produtoId > 0) {
+            $whereBO .= " AND bo.produto_id = :bo_produto_id";
+            $paramsBO['bo_produto_id'] = $produtoId;
+        }
+        if ($usuarioId !== null && $usuarioId > 0) {
+            $whereBO .= " AND bo.usuario_id = :bo_usuario_id";
+            $paramsBO['bo_usuario_id'] = $usuarioId;
+        }
+
+        $stmtBO = $pdo->prepare("
             SELECT 
                 COUNT(*) AS total_bo,
-                COALESCE(SUM(CASE WHEN destino = 'lojinha' THEN quantidade ELSE 0 END), 0) AS total_recuperado_lojinha,
-                COALESCE(SUM(CASE WHEN destino = 'descarte' THEN quantidade ELSE 0 END), 0) AS total_descartado,
-                COALESCE(SUM(quantidade), 0) AS total_unidades_avariadas
-            FROM apontamentos_bo
-            WHERE deleted_at IS NULL
+                COALESCE(SUM(CASE WHEN bo.destino = 'lojinha' THEN bo.quantidade ELSE 0 END), 0) AS total_recuperado_lojinha,
+                COALESCE(SUM(CASE WHEN bo.destino = 'descarte' THEN bo.quantidade ELSE 0 END), 0) AS total_descartado,
+                COALESCE(SUM(bo.quantidade), 0) AS total_unidades_avariadas
+            FROM apontamentos_bo bo
+            {$whereBO}
         ");
+        $stmtBO->execute($paramsBO);
         $metricasBO = $stmtBO->fetch();
 
         $totalAvarias = (int)($metricasBO['total_unidades_avariadas'] ?? 0);
@@ -48,7 +126,57 @@ class GestaoController
         $totalDescarte = (int)($metricasBO['total_descartado'] ?? 0);
         $taxaRecuperacao = $totalAvarias > 0 ? round(($totalRecuperado / $totalAvarias) * 100, 1) : 0.0;
 
-        // 2. Métricas de Estoque da Lojinha
+        // Distribuição de avarias por categoria (tipo_avaria) no período
+        $stmtCategoriasBO = $pdo->prepare("
+            SELECT bo.tipo_avaria, bo.destino, COALESCE(SUM(bo.quantidade), 0) AS total_qtd, COUNT(*) AS total_ocorrencias
+            FROM apontamentos_bo bo
+            {$whereBO}
+            GROUP BY bo.tipo_avaria, bo.destino
+            ORDER BY total_qtd DESC
+        ");
+        $stmtCategoriasBO->execute($paramsBO);
+        $distribuicaoCategoriasBO = $stmtCategoriasBO->fetchAll();
+
+        // 2. Métricas de Produtividade Operacional com filtros aplicados
+        $whereProd = "WHERE ap.deleted_at IS NULL";
+        $paramsProd = [];
+
+        if (!empty($dataInicio)) {
+            $whereProd .= " AND ap.created_at >= :prod_data_inicio";
+            $paramsProd['prod_data_inicio'] = $dataInicio . ' 00:00:00';
+        }
+        if (!empty($dataFim)) {
+            $whereProd .= " AND ap.created_at <= :prod_data_fim";
+            $paramsProd['prod_data_fim'] = $dataFim . ' 23:59:59';
+        }
+        if ($produtoId !== null && $produtoId > 0) {
+            $whereProd .= " AND ap.produto_id = :prod_produto_id";
+            $paramsProd['prod_produto_id'] = $produtoId;
+        }
+        if ($usuarioId !== null && $usuarioId > 0) {
+            $whereProd .= " AND ap.usuario_id = :prod_usuario_id";
+            $paramsProd['prod_usuario_id'] = $usuarioId;
+        }
+
+        $stmtProd = $pdo->prepare("
+            SELECT 
+                COUNT(*) AS total_ciclos,
+                COALESCE(SUM(ap.pacotes_refeitos), 0) AS total_pacotes,
+                COALESCE(SUM(ap.duracao_segundos), 0) AS total_segundos
+            FROM apontamentos_produtividade ap
+            {$whereProd}
+        ");
+        $stmtProd->execute($paramsProd);
+        $metricasProd = $stmtProd->fetch();
+
+        $totalPacotes = (int)($metricasProd['total_pacotes'] ?? 0);
+        $totalSegundos = (int)($metricasProd['total_segundos'] ?? 0);
+        $totalCiclos = (int)($metricasProd['total_ciclos'] ?? 0);
+        $tempoMedioPorPacote = $totalPacotes > 0 ? round($totalSegundos / $totalPacotes, 0) : 0;
+        $totalHoras = $totalSegundos > 0 ? ($totalSegundos / 3600) : 0;
+        $pacotesPorHora = $totalHoras > 0 ? round($totalPacotes / $totalHoras, 1) : 0.0;
+
+        // 3. Métricas de Estoque da Lojinha (Saldo Global Ativo)
         $stmtEstoque = $pdo->query("
             SELECT 
                 COALESCE(SUM(quantidade_total), 0) AS estoque_total,
@@ -60,20 +188,6 @@ class GestaoController
         $estoqueReservado = (int)($metricasEstoque['total_reservado'] ?? 0);
         $estoqueDisponivel = max(0, $estoqueTotal - $estoqueReservado);
 
-        // 3. Métricas de Produtividade Operacional
-        $stmtProd = $pdo->query("
-            SELECT 
-                COUNT(*) AS total_ciclos,
-                COALESCE(SUM(pacotes_refeitos), 0) AS total_pacotes,
-                COALESCE(SUM(duracao_segundos), 0) AS total_segundos
-            FROM apontamentos_produtividade
-            WHERE deleted_at IS NULL
-        ");
-        $metricasProd = $stmtProd->fetch();
-        $totalPacotes = (int)($metricasProd['total_pacotes'] ?? 0);
-        $totalSegundos = (int)($metricasProd['total_segundos'] ?? 0);
-        $tempoMedioPorPacote = $totalPacotes > 0 ? round($totalSegundos / $totalPacotes, 0) : 0;
-
         // 4. Lotes Ativos
         $stmtLotes = $pdo->query("
             SELECT COUNT(*) 
@@ -82,10 +196,29 @@ class GestaoController
         ");
         $lotesAtivos = (int)$stmtLotes->fetchColumn();
 
-        // 5. Últimos 10 B.O.s registrados
-        $ultimosBOs = ApontamentoBO::listarComFiltros(['limite' => 10]);
+        // 5. Últimos Lançamentos de B.O. (com filtros)
+        $filtrosBO = [
+            'data_inicio' => $dataInicio,
+            'data_fim' => $dataFim,
+            'tipo_avaria' => $tipoAvaria,
+            'destino' => $destino,
+            'produto_id' => $produtoId,
+            'usuario_id' => $usuarioId,
+            'limite' => 20
+        ];
+        $ultimosBOs = ApontamentoBO::listarComFiltros($filtrosBO);
 
-        // 6. Dados dos 5 produtos com maior estoque na lojinha
+        // 6. Últimos Lançamentos de Produtividade (com filtros)
+        $filtrosProd = [
+            'data_inicio' => $dataInicio,
+            'data_fim' => $dataFim,
+            'produto_id' => $produtoId,
+            'usuario_id' => $usuarioId,
+            'limite' => 20
+        ];
+        $ultimosProd = ApontamentoProdutividade::listarComFiltros($filtrosProd);
+
+        // 7. Dados dos 5 produtos com maior estoque na lojinha
         $stmtTopEstoque = $pdo->query("
             SELECT p.nome, p.codigo, el.quantidade_total, el.quantidade_reservada_gestao,
                    (el.quantidade_total - el.quantidade_reservada_gestao) AS disponivel
@@ -97,9 +230,48 @@ class GestaoController
         ");
         $topEstoque = $stmtTopEstoque->fetchAll();
 
-        // 7. Operadores ativos e Operador Padrão global
+        // 8. Catálogo e Operadores para os filtros
+        $todosProdutos = Produto::listarTodos();
         $operadoresAtivos = Usuario::listarOperadoresAtivos();
         $operadorPadrao = Configuracao::obterOperadorPadrao();
+
+        // Se requisição AJAX em formato JSON (auto-refresh)
+        if (isset($_GET['format']) && $_GET['format'] === 'json') {
+            header('Content-Type: application/json; charset=UTF-8');
+            echo json_encode([
+                'status' => 'success',
+                'timestamp' => date('H:i:s'),
+                'periodo' => $periodo,
+                'metricas' => [
+                    'totalAvarias' => $totalAvarias,
+                    'totalRecuperado' => $totalRecuperado,
+                    'totalDescarte' => $totalDescarte,
+                    'taxaRecuperacao' => $taxaRecuperacao,
+                    'totalPacotes' => $totalPacotes,
+                    'totalCiclos' => $totalCiclos,
+                    'tempoMedioPorPacote' => $tempoMedioPorPacote,
+                    'pacotesPorHora' => $pacotesPorHora,
+                    'estoqueDisponivel' => $estoqueDisponivel,
+                    'estoqueTotal' => $estoqueTotal,
+                    'estoqueReservado' => $estoqueReservado,
+                    'lotesAtivos' => $lotesAtivos
+                ],
+                'ultimosBOs' => $ultimosBOs,
+                'ultimosProd' => $ultimosProd,
+                'distribuicaoCategoriasBO' => $distribuicaoCategoriasBO
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+        $filtrosAtivos = [
+            'periodo' => $periodo,
+            'data_inicio' => $dataInicio,
+            'data_fim' => $dataFim,
+            'tipo_avaria' => $tipoAvaria,
+            'destino' => $destino,
+            'produto_id' => $produtoId,
+            'usuario_id' => $usuarioId
+        ];
 
         $pageTitle = "Painel da Gestão - " . APP_NAME;
         require __DIR__ . '/../views/gestao/dashboard.php';

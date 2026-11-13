@@ -610,6 +610,21 @@
       - Ampliação da miniatura no cabeçalho do Passo 2 de B.O. (`app/views/operador/avaria_passo2.php`) para 160px x 160px com borda esmeralda de 5px.
     - **Incremento de Versão:** Versão elevada para `v1.54` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.54` em `public/service-worker.js`.
 
+  - [x] **MANUT-058 (13/11/2026):** Telemetria em Tempo Real no Painel de Gestão com Filtros Dinâmicos de Período, Categorias de Avaria e Duplo Feed de Produtividade/B.O.
+    - **Model de Produtividade (`app/models/ApontamentoProdutividade.php`):**
+      - Implementação do método seguro `listarComFiltros(array $filtros = [])` com Prepared Statements nativos e junção às tabelas de usuários e produtos, permitindo consultas filtradas por período, operador e produto.
+    - **Controller de Gestão (`app/controllers/GestaoController.php`):**
+      - Reformulação do método `dashboard()` para receber e tratar parâmetros de filtro via GET (`periodo`, `data_inicio`, `data_fim`, `tipo_avaria`, `destino`, `produto_id`, `usuario_id`).
+      - Recálculo dinâmico das métricas de cabeçalho (recuperados, descarte, taxa %, pacotes e ritmo operacional) contextualizadas ao filtro ativo.
+      - Suporte à requisição assíncrona com `format=json`, permitindo auto-refresh em tempo real sem recarregar a página.
+      - Geração de matriz agregada de distribuição de avarias por categoria/defeito no período selecionado.
+    - **Interface Visual do Dashboard (`app/views/gestao/dashboard.php`):**
+      - Barra de telemetria ao vivo com badge pulsante "AO VIVO", carimbo de última sincronização e alternador de auto-atualização a cada 30 segundos.
+      - Barra de filtros de 1 clique com pílulas para períodos rápidos (Hoje, Ontem, 7 Dias, Mês Atual, Todo o Histórico, Intervalo Específico) e seletores por Categoria de Avaria, Destino, Operador e Produto.
+      - Duplo feed em tempo real lado a lado: tabela de lançamentos de B.O. (com badges de categoria e destino) e tabela de ciclos de produtividade da bancada (com ritmo seg/pacote, pacotes montados e duração formatada).
+      - Card visual de distribuição percentual das avarias por categoria no período selecionado.
+    - **Incremento de Versão:** Versão elevada para `v1.55` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.55` em `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
