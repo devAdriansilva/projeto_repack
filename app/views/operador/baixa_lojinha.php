@@ -71,8 +71,8 @@ require_once __DIR__ . '/../layouts/header.php';
             </div>
 
             <!-- Foto Destaque do Produto (Monumental para Acessibilidade) -->
-            <div id="wrapperFotoBaixa" style="text-align: center; margin: 16px 0 12px 0;">
-                <img id="imgFotoBaixa" src="" alt="Foto" style="width: 210px; height: 210px; object-fit: contain; border-radius: 24px; background: #FFFFFF; border: 4px solid #DC2626; box-shadow: 0 6px 18px rgba(0,0,0,0.12); display: none; padding: 6px;">
+            <div id="wrapperFotoBaixa" style="text-align: center; margin: 18px 0 16px 0;">
+                <img id="imgFotoBaixa" src="" alt="Foto" style="width: 100%; max-width: 400px; height: 380px; object-fit: contain; border-radius: 28px; background: #FFFFFF; border: 5px solid #DC2626; box-shadow: 0 10px 28px rgba(220,38,38,0.25); display: none; padding: 8px;">
             </div>
 
             <div class="nome-produto-destaque" id="displayNomeProduto"></div>
@@ -159,8 +159,8 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
 
         <!-- Foto Destaque na Confirmação da Baixa (Monumental) -->
-        <div id="wrapperFotoResumoBaixa" style="text-align: center; margin: 16px 0 12px 0;">
-            <img id="imgFotoResumoBaixa" src="" alt="Foto" style="width: 210px; height: 210px; object-fit: contain; border-radius: 24px; background: #FFFFFF; border: 4px solid #DC2626; box-shadow: 0 6px 18px rgba(0,0,0,0.12); display: none; padding: 6px;">
+        <div id="wrapperFotoResumoBaixa" style="text-align: center; margin: 18px 0 16px 0;">
+            <img id="imgFotoResumoBaixa" src="" alt="Foto" style="width: 100%; max-width: 400px; height: 380px; object-fit: contain; border-radius: 28px; background: #FFFFFF; border: 5px solid #DC2626; box-shadow: 0 10px 28px rgba(220,38,38,0.25); display: none; padding: 8px;">
         </div>
 
         <div class="headline-lg" id="resumoNomeProduto" style="color: #0F172A; font-size: 46px; font-weight: 900; line-height: 1.2;"></div>

@@ -92,11 +92,11 @@ require_once __DIR__ . '/../layouts/header.php';
             </div>
 
             <!-- Foto Destaque do Produto (Monumental para Acessibilidade) -->
-            <div id="wrapperFotoProduto" style="text-align: center; margin: 16px 0 12px 0;">
+            <div id="wrapperFotoProduto" style="text-align: center; margin: 18px 0 16px 0;">
                 <img id="imgFotoProduto" 
                      src="<?= !empty($produtoPreSelecionado['foto_url']) ? (APP_URL . sanitize_html($produtoPreSelecionado['foto_url'])) : '' ?>" 
                      alt="Foto" 
-                     style="width: 210px; height: 210px; object-fit: contain; border-radius: 24px; background: #FFFFFF; border: 4px solid #10B981; box-shadow: 0 6px 18px rgba(0,0,0,0.12); padding: 6px; <?= empty($produtoPreSelecionado['foto_url']) ? 'display: none;' : 'display: inline-block;' ?>">
+                     style="width: 100%; max-width: 400px; height: 380px; object-fit: contain; border-radius: 28px; background: #FFFFFF; border: 5px solid #059669; box-shadow: 0 10px 28px rgba(5,150,105,0.25); padding: 8px; <?= empty($produtoPreSelecionado['foto_url']) ? 'display: none;' : 'display: inline-block;' ?>">
             </div>
 
             <div class="nome-produto-destaque" id="displayNomeProduto">

@@ -598,6 +598,17 @@
     - **Ampliação de Imagens na Gestão de Estoque (`gestao/estoque.php`):**
       - Expansão das miniaturas da tabela de saldos físicos de 44px para 68px x 68px com `object-fit: contain` e bordas suaves, facilitando a identificação imediata dos rótulos pela Coordenadora.
     - **Incremento de Versão:** Versão elevada para `v1.53` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.53` em `public/service-worker.js`.
+  - [x] **MANUT-057 (13/11/2026):** Destaque Heroico de Imagens nos Cards de Informações Operacionais (380px de Altura) e Header Expandido.
+    - **Ampliação Heroica da Imagem (Hero Display de 380px):**
+      - Substituição da moldura tímida de 210px por uma área visual heroica de até 400px de largura e 380px de altura (`width: 100%; max-width: 400px; height: 380px; object-fit: contain;`), garantindo que latas, garrafas e fardos ocupem o palco central do card com presença quadruplicada.
+      - Aplicação da escala heroica em todos os cards de confirmação da Urna:
+        - Registro de B.O. Passo 1 (`app/views/operador/avaria_passo1.php`).
+        - Registro de B.O. Resumo Final (`app/views/operador/avaria_resumo.php`).
+        - Cronômetro de Produtividade Momento 1 e Momento 2 (`app/views/operador/cronometro.php`).
+        - Resumo Final de Produtividade (`app/views/operador/cronometro_resumo.php`).
+        - Baixa da Lojinha - Identificação e Confirmação (`app/views/operador/baixa_lojinha.php`).
+      - Ampliação da miniatura no cabeçalho do Passo 2 de B.O. (`app/views/operador/avaria_passo2.php`) para 160px x 160px com borda esmeralda de 5px.
+    - **Incremento de Versão:** Versão elevada para `v1.54` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.54` em `public/service-worker.js`.
 
 ---
 
