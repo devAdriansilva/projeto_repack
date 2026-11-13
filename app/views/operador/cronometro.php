@@ -451,6 +451,11 @@ function exibirSugestoes(itens) {
     wrapper.style.display = 'block';
 }
 
+function formatarDataHoraLocal(d = new Date()) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
 function iniciarProducao() {
     const alerta = document.getElementById('alertaSemProduto');
     if (!produtoSelecionadoMomento1) {
@@ -462,7 +467,7 @@ function iniciarProducao() {
 
     alerta.style.display = 'none';
     const agora = new Date();
-    const timestampInicio = agora.toISOString();
+    const timestampInicio = formatarDataHoraLocal(agora);
 
     producaoAtiva = {
         produto_id: produtoSelecionadoMomento1.id,
@@ -507,7 +512,7 @@ function restaurarMomento2(prod) {
         }
     }
 
-    const dataObj = new Date(prod.data_hora_inicio);
+    const dataObj = new Date(prod.data_hora_inicio.replace(' ', 'T'));
     const horas = String(dataObj.getHours()).padStart(2, '0');
     const mins = String(dataObj.getMinutes()).padStart(2, '0');
     document.getElementById('ativoHoraInicioDisplay').innerText = `${horas}:${mins}`;
@@ -569,7 +574,7 @@ function togglePausaProducao() {
     if (!producaoAtiva.pausado) {
         // Pausar
         producaoAtiva.pausado = true;
-        producaoAtiva.pausa_inicio = agora.toISOString();
+        producaoAtiva.pausa_inicio = formatarDataHoraLocal(agora);
 
         localStorage.setItem('repack_producao_ativa', JSON.stringify(producaoAtiva));
 
@@ -582,7 +587,7 @@ function togglePausaProducao() {
         if (navigator.vibrate) navigator.vibrate(60);
     } else {
         // Retomar
-        const inicioPausaMs = new Date(producaoAtiva.pausa_inicio || agora.toISOString()).getTime();
+        const inicioPausaMs = new Date((producaoAtiva.pausa_inicio || formatarDataHoraLocal(agora)).replace(' ', 'T')).getTime();
         const diffPausaSeg = Math.max(0, Math.round((agora.getTime() - inicioPausaMs) / 1000));
         producaoAtiva.segundos_pausa = (producaoAtiva.segundos_pausa || 0) + diffPausaSeg;
         producaoAtiva.pausado = false;
@@ -636,16 +641,16 @@ function finalizarProducao() {
     if (!producaoAtiva) return;
 
     const agora = new Date();
-    const timestampFim = agora.toISOString();
+    const timestampFim = formatarDataHoraLocal(agora);
 
     // Se estava pausado ao finalizar, computa última fração de pausa
     if (producaoAtiva.pausado && producaoAtiva.pausa_inicio) {
-        const inicioPausaMs = new Date(producaoAtiva.pausa_inicio).getTime();
+        const inicioPausaMs = new Date(producaoAtiva.pausa_inicio.replace(' ', 'T')).getTime();
         const diffPausaSeg = Math.max(0, Math.round((agora.getTime() - inicioPausaMs) / 1000));
         producaoAtiva.segundos_pausa = (producaoAtiva.segundos_pausa || 0) + diffPausaSeg;
     }
 
-    const inicioMs = new Date(producaoAtiva.data_hora_inicio).getTime();
+    const inicioMs = new Date(producaoAtiva.data_hora_inicio.replace(' ', 'T')).getTime();
     const fimMs = agora.getTime();
     const duracaoBruta = Math.max(0, Math.round((fimMs - inicioMs) / 1000));
     const duracaoLiquida = Math.max(0, duracaoBruta - (producaoAtiva.segundos_pausa || 0));

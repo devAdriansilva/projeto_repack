@@ -88,6 +88,11 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <script>
+function formatarDataHoraLocal(d = new Date()) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
 async function confirmarApontamentoProdutividade() {
     const btn = document.getElementById('btnConfirmarProdutividade');
     btn.disabled = true;
@@ -102,7 +107,7 @@ async function confirmarApontamentoProdutividade() {
         data_hora_fim: '<?= sanitize_html($fim) ?>',
         pacotes_refeitos: <?= $pacotes ?>,
         duracao_segundos: <?= $duracao ?>,
-        created_at: new Date().toISOString()
+        created_at: formatarDataHoraLocal()
     };
 
     try {

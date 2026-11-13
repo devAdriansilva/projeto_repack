@@ -718,6 +718,17 @@
       - Suíte oficial `tests/test_fase5.php` validada com 35/35 sucessos.
       - Versão da aplicação incrementada para `v1.60` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-065 (13/11/2026):** Sincronização e Bloqueio Global do Fuso Horário de Brasília (UTC-3) no Backend, Banco MySQL e Frontend.
+    - **Diagnóstico do Descompasso de Horário:**
+      1. Os servidores da Alwaysdata estão localizados na Europa (UTC / CET). Sem a parametrização explícita da timezone na sessão PDO, chamadas a `NOW()`, `CURRENT_TIMESTAMP`, `CURDATE()` e cálculos de vigência no MySQL operavam em UTC (+00:00), adiantando os horários do banco em 3 horas em relação ao Horário de Brasília.
+      2. No frontend, rotinas JavaScript de marcação de início/fim utilizavam `new Date().toISOString()`, que converte datas locais para UTC com sufixo `Z`, provocando conversões distorcidas ao gravar no banco ou sessões.
+    - **Contramedidas e Correção Definitiva:**
+      - **Sessão MySQL (`app/config/database.php` e `database/migrator.php`):** Inclusão de `time_zone = '-03:00'` tanto no `PDO::MYSQL_ATTR_INIT_COMMAND` quanto por chamada explícita `self::$instance->exec("SET time_zone = '-03:00'")`. Todas as inserções automáticas (`NOW()`) e filtros de data passam a operar com exatidão no fuso brasileiro.
+      - **Padronização no Frontend (`cronometro.php`, `cronometro_resumo.php`, `avaria_resumo.php`, `app-offline.js`):** Implementada função helper `formatarDataHoraLocal()` enviando a string pura de horário local (`YYYY-MM-DD HH:mm:ss`) sem conversão UTC, eliminando discrepâncias.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) validada com sucesso.
+      - Versão da aplicação incrementada para `v1.61` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

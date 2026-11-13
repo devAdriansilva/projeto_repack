@@ -8,6 +8,11 @@ const RepackOffline = (() => {
     const DB_VERSION = 1;
     let db = null;
 
+    const formatarDataHoraLocal = (d = new Date()) => {
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    };
+
     // Inicialização do Banco de Dados IndexedDB
     const openDatabase = () => {
         return new Promise((resolve, reject) => {
@@ -77,7 +82,7 @@ const RepackOffline = (() => {
                 ...dados,
                 synced: 0,
                 origem_sincronizacao: 'offline',
-                created_at: new Date().toISOString()
+                created_at: formatarDataHoraLocal()
             };
             const req = store.add(registro);
             req.onsuccess = () => resolve(req.result);
@@ -95,7 +100,7 @@ const RepackOffline = (() => {
                 ...dados,
                 synced: 0,
                 origem_sincronizacao: 'offline',
-                created_at: new Date().toISOString()
+                created_at: formatarDataHoraLocal()
             };
             const req = store.add(registro);
             req.onsuccess = () => resolve(req.result);

@@ -85,6 +85,11 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <script>
+function formatarDataHoraLocal(d = new Date()) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
 async function confirmarApontamentoBO() {
     const btn = document.getElementById('btnConfirmarBO');
     btn.disabled = true;
@@ -98,7 +103,8 @@ async function confirmarApontamentoBO() {
         tipo_avaria: '<?= sanitize_html($tipoAvaria) ?>',
         quantidade: <?= $quantidade ?>,
         operador_id: operadorId,
-        criado_em: new Date().toISOString()
+        created_at: formatarDataHoraLocal(),
+        criado_em: formatarDataHoraLocal()
     };
 
     try {
