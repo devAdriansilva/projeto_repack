@@ -224,8 +224,10 @@ class Pedido
             throw new DomainException("Quantidade solicitada ({$quantidade}) indisponível. Restam {$disponivelParaMim} unidade(s) disponíveis no momento.");
         }
 
-        // 5. Grava ou atualiza a reserva por 10 minutos (CARRINHO_TIMEOUT_MINUTOS)
-        $minutosTimeout = defined('CARRINHO_TIMEOUT_MINUTOS') ? (int)CARRINHO_TIMEOUT_MINUTOS : 10;
+        // 5. Grava ou atualiza a reserva conforme o tempo definido dinamicamente para o lote
+        $minutosTimeout = !empty($lote['tempo_carrinho_minutos']) 
+            ? (int)$lote['tempo_carrinho_minutos'] 
+            : (defined('CARRINHO_TIMEOUT_MINUTOS') ? (int)CARRINHO_TIMEOUT_MINUTOS : 10);
         $sessionTokenFinal = $sessionToken !== '' ? $sessionToken : session_id();
 
         if ($itemMeuCarrinho) {
@@ -288,6 +290,67 @@ class Pedido
             'id' => $carrinhoId,
             'usuario_id' => $usuarioId
         ]);
+    }
+
+    /**
+     * Incrementa ou decrementa a quantidade de um item no carrinho
+     * @param int $carrinhoId
+     * @param int $usuarioId
+     * @param int $delta (+1 ou -1)
+     * @return array ['sucesso' => bool, 'mensagem' => string, 'nova_quantidade' => int]
+     */
+    public static function alterarQuantidadeCarrinho(int $carrinhoId, int $usuarioId, int $delta): array
+    {
+        $pdo = Database::getConnection();
+
+        $stmt = $pdo->prepare("
+            SELECT ct.*, p.nome AS produto_nome, l.limite_itens_por_comprador, l.tempo_carrinho_minutos
+            FROM carrinho_temporario ct
+            INNER JOIN produtos p ON p.id = ct.produto_id
+            INNER JOIN lotes_venda l ON l.id = ct.lote_id
+            WHERE ct.id = :id AND ct.usuario_id = :usuario_id AND ct.expiracao_em > NOW()
+            LIMIT 1
+        ");
+        $stmt->execute(['id' => $carrinhoId, 'usuario_id' => $usuarioId]);
+        $item = $stmt->fetch();
+
+        if (!$item) {
+            return ['sucesso' => false, 'mensagem' => 'Item não encontrado no carrinho ou reserva expirada.', 'nova_quantidade' => 0];
+        }
+
+        $loteId = (int)$item['lote_id'];
+        $produtoId = (int)$item['produto_id'];
+        $qtdAtual = (int)$item['quantidade'];
+        $novaQtd = $qtdAtual + $delta;
+
+        if ($novaQtd <= 0) {
+            self::removerDoCarrinho($carrinhoId, $usuarioId);
+            return ['sucesso' => true, 'mensagem' => 'Item removido do carrinho.', 'nova_quantidade' => 0];
+        }
+
+        if ($delta > 0) {
+            try {
+                self::adicionarAoCarrinho($loteId, $usuarioId, $produtoId, $delta, (string)$item['session_token']);
+                return ['sucesso' => true, 'mensagem' => 'Quantidade incrementada com sucesso.', 'nova_quantidade' => $novaQtd];
+            } catch (\Throwable $e) {
+                return ['sucesso' => false, 'mensagem' => $e->getMessage(), 'nova_quantidade' => $qtdAtual];
+            }
+        } else {
+            $minutosTimeout = !empty($item['tempo_carrinho_minutos']) ? (int)$item['tempo_carrinho_minutos'] : 10;
+            $stmtUp = $pdo->prepare("
+                UPDATE carrinho_temporario
+                SET quantidade = :qtd,
+                    expiracao_em = DATE_ADD(NOW(), INTERVAL :timeout MINUTE)
+                WHERE id = :id AND usuario_id = :usuario_id
+            ");
+            $stmtUp->execute([
+                'qtd' => $novaQtd,
+                'timeout' => $minutosTimeout,
+                'id' => $carrinhoId,
+                'usuario_id' => $usuarioId
+            ]);
+            return ['sucesso' => true, 'mensagem' => 'Quantidade decrementada com sucesso.', 'nova_quantidade' => $novaQtd];
+        }
     }
 
     /**

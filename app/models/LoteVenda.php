@@ -85,6 +85,7 @@ class LoteVenda
         $dataInicio = trim((string)($dados['data_inicio'] ?? ''));
         $dataFim = trim((string)($dados['data_fim'] ?? ''));
         $limiteItens = max(1, (int)($dados['limite_itens_por_comprador'] ?? 5));
+        $tempoCarrinho = max(1, (int)($dados['tempo_carrinho_minutos'] ?? 10));
         $status = strtolower(trim((string)($dados['status'] ?? self::STATUS_PLANEJADO)));
 
         if (!in_array($status, [self::STATUS_PLANEJADO, self::STATUS_ABERTO, self::STATUS_ENCERRADO], true)) {
@@ -125,6 +126,7 @@ class LoteVenda
                     data_fim = :data_fim,
                     setores_autorizados = :setores_autorizados,
                     limite_itens_por_comprador = :limite,
+                    tempo_carrinho_minutos = :tempo_carrinho,
                     status = :status,
                     updated_at = NOW()
                 WHERE id = :id AND deleted_at IS NULL
@@ -136,6 +138,7 @@ class LoteVenda
                 'data_fim' => date('Y-m-d H:i:s', $dtFim),
                 'setores_autorizados' => $setoresJson,
                 'limite' => $limiteItens,
+                'tempo_carrinho' => $tempoCarrinho,
                 'status' => $status,
                 'id' => $id
             ]);
@@ -145,10 +148,10 @@ class LoteVenda
         $stmt = $pdo->prepare("
             INSERT INTO lotes_venda (
                 titulo, descricao, data_inicio, data_fim, setores_autorizados,
-                limite_itens_por_comprador, status, criado_por_usuario_id, created_at, updated_at
+                limite_itens_por_comprador, tempo_carrinho_minutos, status, criado_por_usuario_id, created_at, updated_at
             ) VALUES (
                 :titulo, :descricao, :data_inicio, :data_fim, :setores_autorizados,
-                :limite, :status, :criado_por, NOW(), NOW()
+                :limite, :tempo_carrinho, :status, :criado_por, NOW(), NOW()
             )
         ");
         $stmt->execute([
@@ -158,6 +161,7 @@ class LoteVenda
             'data_fim' => date('Y-m-d H:i:s', $dtFim),
             'setores_autorizados' => $setoresJson,
             'limite' => $limiteItens,
+            'tempo_carrinho' => $tempoCarrinho,
             'status' => $status,
             'criado_por' => $usuarioGestorId
         ]);

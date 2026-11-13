@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 /**
- * Projeto Repack - Sacola / Carrinho com Trava Temporária de 10 minutos
+ * Projeto Repack - Carrinho com Trava Temporária Dinâmica por Lote
  * Baseado estritamente em docs/FSD.md (Seções 12.2, 13.3 e 14) e docs/DESIGN.md
  */
 
-$pageTitle = 'Minha Sacola - Lojinha dos Colaboradores';
+$pageTitle = 'Meu Carrinho - Lojinha dos Colaboradores';
 $csrfToken = AuthController::gerarCsrfToken();
 require __DIR__ . '/../layouts/lojinha_header.php';
 
@@ -19,7 +19,7 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h2 class="headline-lg mb-1">Minha Sacola de Compras</h2>
+        <h2 class="headline-lg mb-1">Meu Carrinho de Compras</h2>
         <p class="body-md text-muted mb-0">Confira seus itens reservados antes de finalizar o pedido</p>
     </div>
 
@@ -47,10 +47,10 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
     <div class="text-center py-5" style="background: #FFFFFF; border-radius: 20px; border: 2px dashed #D1D5DB; padding: 48px 24px;">
         <div style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: #F3F4F6; border-radius: 50%; color: #9CA3AF; margin-bottom: 20px;">
             <svg width="44" height="44" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12zm-7-8c-1.66 0-3-1.34-3-3H7c0 2.76 2.24 5 5 5s5-2.24 5-5h-2c0 1.66-1.34 3-3 3z"/>
+                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
             </svg>
         </div>
-        <h3 class="headline-lg text-muted mb-2">Sua sacola está vazia</h3>
+        <h3 class="headline-lg text-muted mb-2">Seu carrinho está vazio</h3>
         <p class="body-md text-secondary mb-4">Você ainda não reservou nenhum produto deste lote ou o tempo de reserva expirou.</p>
         <a href="<?= APP_URL ?>/lojinha" class="btn-urna btn-urna-secondary d-inline-flex" style="height: 80px; padding: 0 40px; font-size: 22px; text-decoration: none;">
             <span>Explorar Vitrine de Produtos</span>
@@ -58,7 +58,7 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
     </div>
 <?php else: ?>
 
-    <!-- Caixa de Contagem Regressiva da Trava de 5 Minutos -->
+    <!-- Caixa de Contagem Regressiva Geral da Reserva do Lote -->
     <div class="timer-trava-box" id="caixaTimer">
         <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0;">
             <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/>
@@ -86,9 +86,9 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                     <?php foreach ($itensCarrinho as $item): ?>
                         <div class="d-flex align-items-center justify-content-between p-3 mb-2" style="background: #F9FAFB; border-radius: 12px; border: 1px solid #E5E7EB; flex-wrap: wrap; gap: 12px;">
                             <div class="d-flex align-items-center gap-3">
-                                <div style="width: 64px; height: 64px; background: #FFFFFF; border-radius: 8px; border: 1px solid #D1D5DB; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                <div style="width: 68px; height: 68px; background: #FFFFFF; border-radius: 10px; border: 1px solid #D1D5DB; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                     <?php if (!empty($item['foto_url'])): ?>
-                                        <img src="<?= APP_URL . sanitize_html($item['foto_url']) ?>" alt="<?= sanitize_html($item['produto_nome']) ?>" style="max-width: 100%; max-height: 100%;">
+                                        <img src="<?= APP_URL . sanitize_html($item['foto_url']) ?>" alt="<?= sanitize_html($item['produto_nome']) ?>" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                                     <?php else: ?>
                                         <svg width="32" height="32" fill="#9CA3AF" viewBox="0 0 24 24">
                                             <path d="M7 2v2h1v4.54c-.6.28-1 .88-1 1.46v9c0 1.66 1.34 3 3 3h4c1.66 0 3-1.34 3-3v-9c0-.58-.4-1.18-1-1.46V4h1V2H7zm8 15c0 .55-.45 1-1 1h-4c-.55 0-1-.45-1-1v-7h6v7zm-1-9h-4V4h4v4z"/>
@@ -101,21 +101,47 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                                         <?= sanitize_html($item['produto_nome']) ?>
                                     </h4>
                                     <div class="text-muted" style="font-size: 13px;">
-                                        Código: <strong><?= sanitize_html($item['produto_codigo']) ?></strong> | Embalagem: <?= sanitize_html($item['pacote_padrao']) ?>
+                                        Código: <strong><?= sanitize_html($item['produto_codigo']) ?></strong>
+                                    </div>
+                                    <!-- Contador Regressivo Individual por Item -->
+                                    <div class="item-timer-box text-muted small mt-1 d-flex align-items-center gap-1" data-segundos="<?= (int)$item['segundos_restantes'] ?>">
+                                        <span>⏳ Expira em:</span>
+                                        <strong class="item-timer-display" style="font-family: monospace; font-size: 13px; color: #D97706;">--:--</strong>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="d-flex align-items-center gap-4">
-                                <div style="font-size: 20px; font-weight: 800; color: #111827;">
-                                    <?= (int)$item['quantidade'] ?> un
+                            <div class="d-flex align-items-center gap-3">
+                                <!-- Controles de Incrementar e Decrementar Quantidade -->
+                                <div class="d-flex align-items-center bg-white border rounded p-1 shadow-sm">
+                                    <!-- Decrementar (-) -->
+                                    <form method="POST" action="<?= APP_URL ?>/lojinha/carrinho/alterar" class="m-0">
+                                        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                                        <input type="hidden" name="carrinho_id" value="<?= (int)$item['carrinho_id'] ?>">
+                                        <input type="hidden" name="delta" value="-1">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary fw-bold px-2 py-1" style="border-radius: 6px; font-size: 15px; min-width: 32px;" title="Diminuir 1 unidade">−</button>
+                                    </form>
+
+                                    <!-- Valor Atual -->
+                                    <span style="font-size: 18px; font-weight: 800; min-width: 44px; text-align: center; color: #111827;">
+                                        <?= (int)$item['quantidade'] ?> un
+                                    </span>
+
+                                    <!-- Incrementar (+) -->
+                                    <form method="POST" action="<?= APP_URL ?>/lojinha/carrinho/alterar" class="m-0">
+                                        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                                        <input type="hidden" name="carrinho_id" value="<?= (int)$item['carrinho_id'] ?>">
+                                        <input type="hidden" name="delta" value="1">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary fw-bold px-2 py-1" style="border-radius: 6px; font-size: 15px; min-width: 32px;" title="Aumentar 1 unidade">+</button>
+                                    </form>
                                 </div>
 
-                                <form method="POST" action="<?= APP_URL ?>/lojinha/carrinho/remover" onsubmit="return confirm('Deseja liberar este item da sua sacola?');">
+                                <!-- Botão Excluir Item -->
+                                <form method="POST" action="<?= APP_URL ?>/lojinha/carrinho/remover" onsubmit="return confirm('Deseja liberar este item do seu carrinho?');" class="m-0">
                                     <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                                     <input type="hidden" name="carrinho_id" value="<?= (int)$item['carrinho_id'] ?>">
-                                    <button type="submit" class="btn btn-outline-danger" title="Remover item da sacola" style="border-radius: 8px; padding: 8px 12px;">
-                                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                    <button type="submit" class="btn btn-outline-danger" title="Remover item do carrinho" style="border-radius: 8px; padding: 7px 11px;">
+                                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                                         </svg>
                                     </button>
@@ -129,7 +155,7 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                     <form method="POST" action="<?= APP_URL ?>/lojinha/carrinho/esvaziar" onsubmit="return confirm('Tem certeza que deseja liberar todos os itens da sua reserva?');">
                         <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
                         <button type="submit" class="btn btn-link text-danger text-decoration-none" style="font-weight: 600; font-size: 14px;">
-                            Esvaziar toda a sacola
+                            Esvaziar todo o carrinho
                         </button>
                     </form>
                 </div>
@@ -142,7 +168,7 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                 <h3 class="headline-lg mb-3" style="font-size: 22px;">Resumo do Pedido</h3>
 
                 <div class="d-flex justify-content-between mb-2" style="font-size: 16px;">
-                    <span class="text-muted">Itens nesta sacola:</span>
+                    <span class="text-muted">Itens neste carrinho:</span>
                     <strong><?= $totalItensCarrinho ?> itens</strong>
                 </div>
 
@@ -162,10 +188,6 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
                         <strong class="text-success"><?= ($resumo['tipo_acesso'] ?? '') === 'master' ? '👑 Retirada Master (Sem Limites)' : '🏢 Demanda Setorial Corporativa' ?></strong>
                     </div>
                 <?php endif; ?>
-
-                <div class="alert alert-info py-2 px-3 mb-4" style="border-radius: 10px; font-size: 14px;">
-                    <strong>Retirada física:</strong> Na bancada de Repack após conferência do comprovante.
-                </div>
 
                 <!-- Formulário de Finalização Transacional (Checkout) -->
                 <form method="POST" action="<?= APP_URL ?>/lojinha/checkout" id="formCheckout">
@@ -194,11 +216,11 @@ $segundosRestantes = (int)($resumo['segundos_restantes'] ?? 0);
 <?php endif; ?>
 
 <script>
-// Cronômetro regressivo da Trava Temporária de 5 minutos
-let segundosRestantes = <?= $segundosRestantes ?>;
+// Cronômetro regressivo da Trava Temporária do Lote
+let segundosRestantesGeral = <?= $segundosRestantes ?>;
 
-function atualizarCronometro() {
-    if (segundosRestantes <= 0) {
+function atualizarCronometroGeral() {
+    if (segundosRestantesGeral <= 0) {
         document.getElementById('displayCronometro').innerText = '00:00 (Expirado)';
         document.getElementById('caixaTimer').style.background = '#FEE2E2';
         document.getElementById('caixaTimer').style.borderColor = '#EF4444';
@@ -209,13 +231,13 @@ function atualizarCronometro() {
             btnFinalizar.disabled = true;
         }
 
-        alert('O tempo de reserva temporária de 5 minutos expirou. Os produtos retornaram à vitrine.');
+        alert('O tempo de reserva temporária do lote expirou. Os produtos retornaram à vitrine.');
         window.location.reload();
         return;
     }
 
-    const min = Math.floor(segundosRestantes / 60);
-    const seg = segundosRestantes % 60;
+    const min = Math.floor(segundosRestantesGeral / 60);
+    const seg = segundosRestantesGeral % 60;
     const formatado = String(min).padStart(2, '0') + ':' + String(seg).padStart(2, '0');
 
     const display = document.getElementById('displayCronometro');
@@ -223,12 +245,39 @@ function atualizarCronometro() {
         display.innerText = formatado;
     }
 
-    segundosRestantes--;
-    setTimeout(atualizarCronometro, 1000);
+    segundosRestantesGeral--;
+    setTimeout(atualizarCronometroGeral, 1000);
 }
 
-if (segundosRestantes > 0) {
-    atualizarCronometro();
+// Cronômetros regressivos individuais por item
+function atualizarCronometrosIndividuais() {
+    const boxes = document.querySelectorAll('.item-timer-box');
+    boxes.forEach(box => {
+        let segs = parseInt(box.getAttribute('data-segundos'), 10) || 0;
+        const display = box.querySelector('.item-timer-display');
+        
+        if (segs <= 0) {
+            if (display) display.innerText = 'Expirado';
+        } else {
+            const m = Math.floor(segs / 60);
+            const s = segs % 60;
+            if (display) {
+                display.innerText = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                if (segs <= 60) {
+                    display.style.color = '#DC2626';
+                    display.style.fontWeight = 'bold';
+                }
+            }
+            box.setAttribute('data-segundos', segs - 1);
+        }
+    });
+
+    setTimeout(atualizarCronometrosIndividuais, 1000);
+}
+
+if (segundosRestantesGeral > 0) {
+    atualizarCronometroGeral();
+    atualizarCronometrosIndividuais();
 }
 
 document.getElementById('formCheckout')?.addEventListener('submit', function() {

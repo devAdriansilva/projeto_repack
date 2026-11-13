@@ -10,55 +10,129 @@ $pageTitle = 'Comprovante do Pedido - ' . ($pedido['codigo_pedido'] ?? '');
 require __DIR__ . '/../layouts/lojinha_header.php';
 ?>
 
+<style>
+/* Estilos Especiais para Impressão Dual: A4 vs Cupom Fiscal 80mm */
+@media print {
+    body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .navbar, header, footer, .btn-acao-comprovante, .nav-gestao, .lojinha-header {
+        display: none !important;
+    }
+    .card-comprovante-print {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    /* Modo A4: Página Única Compacta */
+    body.modo-print-a4 {
+        font-size: 13px !important;
+    }
+    body.modo-print-a4 .card-comprovante-print {
+        max-width: 100% !important;
+        page-break-inside: avoid !important;
+    }
+    body.modo-print-a4 .box-codigo-retirada {
+        padding: 10px !important;
+        margin-bottom: 16px !important;
+    }
+    body.modo-print-a4 .box-codigo-retirada .headline-xl {
+        font-size: 26px !important;
+    }
+    body.modo-print-a4 .table td, 
+    body.modo-print-a4 .table th {
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+    }
+
+    /* Modo Cupom Fiscal: Bobina Térmica 80mm */
+    body.modo-print-cupom {
+        width: 80mm !important;
+        max-width: 80mm !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        font-size: 12px !important;
+    }
+    body.modo-print-cupom .card-comprovante-print {
+        width: 76mm !important;
+        max-width: 76mm !important;
+        margin: 0 auto !important;
+    }
+    body.modo-print-cupom .icone-sucesso-destaque {
+        display: none !important;
+    }
+    body.modo-print-cupom .box-codigo-retirada {
+        border: 1px dashed #000 !important;
+        padding: 8px 4px !important;
+        margin-bottom: 12px !important;
+    }
+    body.modo-print-cupom .box-codigo-retirada .headline-xl {
+        font-size: 22px !important;
+    }
+    body.modo-print-cupom .table {
+        font-size: 11px !important;
+    }
+    body.modo-print-cupom .table td, 
+    body.modo-print-cupom .table th {
+        padding: 4px 2px !important;
+    }
+}
+</style>
+
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8">
         <!-- Card Principal do Comprovante -->
-        <div style="background: #FFFFFF; border-radius: 20px; border: 2px solid #E5E7EB; padding: 40px 32px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); text-align: center;">
+        <div class="card-comprovante-print" style="background: #FFFFFF; border-radius: 20px; border: 2px solid #E5E7EB; padding: 32px 28px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); text-align: center;">
             
             <!-- Ícone de Sucesso Gigante (Primary #10B981) -->
-            <div style="display: inline-flex; align-items: center; justify-content: center; width: 88px; height: 88px; background: #D1FAE5; border-radius: 50%; color: #10B981; margin-bottom: 20px;">
-                <svg width="52" height="52" fill="currentColor" viewBox="0 0 24 24">
+            <div class="icone-sucesso-destaque" style="display: inline-flex; align-items: center; justify-content: center; width: 76px; height: 76px; background: #D1FAE5; border-radius: 50%; color: #10B981; margin-bottom: 16px;">
+                <svg width="44" height="44" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
             </div>
 
-            <h2 class="headline-lg" style="color: #065F46; margin-bottom: 8px;">
+            <h2 class="headline-lg mb-1" style="color: #065F46; font-size: 26px;">
                 Pedido Confirmado com Sucesso!
             </h2>
-            <p class="body-md text-muted mb-4">
+            <p class="body-md text-muted mb-3" style="font-size: 14px;">
                 Sua compra interna foi registrada no sistema e os itens foram reservados definitivamente.
             </p>
 
-            <!-- Número do Pedido em Destaque Absoluto (headline-xl 32px) -->
-            <div style="background: #F8FAFC; border: 2px dashed #CBD5E1; border-radius: 16px; padding: 20px; margin-bottom: 32px;">
-                <div style="font-size: 14px; text-transform: uppercase; color: #64748B; font-weight: 700; letter-spacing: 1px;">
+            <!-- Número do Pedido em Destaque Absoluto -->
+            <div class="box-codigo-retirada" style="background: #F8FAFC; border: 2px dashed #CBD5E1; border-radius: 14px; padding: 16px; margin-bottom: 24px;">
+                <div style="font-size: 13px; text-transform: uppercase; color: #64748B; font-weight: 700; letter-spacing: 1px;">
                     Código de Retirada
                 </div>
-                <div class="headline-xl" style="color: #1E293B; margin-top: 6px; font-family: monospace;">
+                <div class="headline-xl" style="color: #1E293B; margin-top: 4px; font-family: monospace; font-size: 32px; font-weight: 900;">
                     <?= sanitize_html($pedido['codigo_pedido']) ?>
                 </div>
-                <div style="font-size: 13px; color: #94A3B8; margin-top: 4px;">
+                <div style="font-size: 12px; color: #94A3B8; margin-top: 4px;">
                     Realizado em: <?= date('d/m/Y \à\s H:i:s', strtotime($pedido['created_at'])) ?>
                 </div>
             </div>
 
             <!-- Dados do Comprador e Lote -->
-            <div class="row g-3 text-start mb-4" style="background: #F9FAFB; border-radius: 12px; padding: 16px 20px; border: 1px solid #E5E7EB;">
+            <div class="row g-2 text-start mb-3" style="background: #F9FAFB; border-radius: 12px; padding: 14px 18px; border: 1px solid #E5E7EB; font-size: 14px;">
                 <div class="col-12 col-md-6">
-                    <div class="text-muted" style="font-size: 13px;">Colaborador:</div>
-                    <div style="font-weight: 700; color: #111827; font-size: 16px;">
+                    <div class="text-muted" style="font-size: 12px;">Colaborador:</div>
+                    <div style="font-weight: 700; color: #111827;">
                         <?= sanitize_html($pedido['usuario_nome']) ?> (<?= sanitize_html($pedido['usuario_matricula']) ?>)
                     </div>
                 </div>
                 <div class="col-12 col-md-6">
-                    <div class="text-muted" style="font-size: 13px;">Setor Autorizado:</div>
-                    <div style="font-weight: 700; color: #111827; font-size: 16px;">
+                    <div class="text-muted" style="font-size: 12px;">Setor Autorizado:</div>
+                    <div style="font-weight: 700; color: #111827;">
                         <?= sanitize_html($pedido['usuario_setor']) ?>
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="text-muted" style="font-size: 13px;">Lote de Venda:</div>
-                    <div style="font-weight: 600; color: #374151; font-size: 15px;">
+                    <div class="text-muted" style="font-size: 12px;">Lote de Venda:</div>
+                    <div style="font-weight: 600; color: #374151;">
                         <?= sanitize_html($pedido['lote_titulo']) ?>
                     </div>
                 </div>
@@ -66,15 +140,15 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 
             <!-- Tabela dos Itens Confirmados -->
             <div class="text-start mb-4">
-                <h4 style="font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #111827;">
+                <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #111827;">
                     Itens Adquiridos
                 </h4>
-                <div class="table-responsive" style="border: 1px solid #E5E7EB; border-radius: 12px; overflow: hidden;">
+                <div class="table-responsive" style="border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden;">
                     <table class="table mb-0 align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>Produto</th>
-                                <th>Embalagem</th>
+                                <th>Código</th>
                                 <th class="text-end">Quantidade</th>
                             </tr>
                         </thead>
@@ -83,12 +157,11 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                                 <tr>
                                     <td>
                                         <strong><?= sanitize_html($item['produto_nome']) ?></strong>
-                                        <div class="text-muted" style="font-size: 12px;"><?= sanitize_html($item['produto_codigo']) ?></div>
                                     </td>
-                                    <td>
-                                        <span class="badge bg-secondary"><?= sanitize_html($item['pacote_padrao']) ?></span>
+                                    <td class="text-muted" style="font-size: 12px;">
+                                        <?= sanitize_html($item['produto_codigo']) ?>
                                     </td>
-                                    <td class="text-end" style="font-weight: 800; font-size: 16px;">
+                                    <td class="text-end" style="font-weight: 800; font-size: 15px;">
                                         <?= (int)$item['quantidade'] ?> un
                                     </td>
                                 </tr>
@@ -97,7 +170,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                         <tfoot class="table-light">
                             <tr>
                                 <th colspan="2" class="text-end">Total de Itens:</th>
-                                <th class="text-end" style="font-size: 18px; color: #10B981;">
+                                <th class="text-end" style="font-size: 17px; color: #10B981; font-weight: 900;">
                                     <?= (int)$pedido['quantidade_total'] ?> un
                                 </th>
                             </tr>
@@ -106,36 +179,20 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                 </div>
             </div>
 
-            <!-- Orientações de Retirada Física -->
-            <div class="alert alert-warning text-start mb-4" style="border-radius: 12px; font-size: 15px;">
-                <div class="d-flex gap-2">
-                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0;">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-                    </svg>
-                    <div>
-                        <strong>Instruções de Retirada:</strong>
-                        <ul class="mb-0 ps-3 mt-1">
-                            <li>Dirija-se à bancada do setor de <strong>Repack</strong> no galpão logístico.</li>
-                            <li>Apresente este código (<strong><?= sanitize_html($pedido['codigo_pedido']) ?></strong>) ao operador responsável.</li>
-                            <li>A conferência física será realizada com base na lista de separação emitida pela Gestão.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Botões de Ação do Comprovante (Filosofia Urna Eletrônica) -->
-            <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-                <button type="button" class="btn btn-outline-secondary" onclick="window.print()" style="font-weight: 700; border-radius: 12px; padding: 14px 28px; font-size: 16px;">
-                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" class="me-1">
-                        <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
-                    </svg>
-                    Imprimir Comprovante
+            <!-- Botões de Ação do Comprovante com Escolha de Impressora -->
+            <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center btn-acao-comprovante">
+                <!-- Opção 1: Impressora Regular (Folha A4 em 1 Página) -->
+                <button type="button" class="btn btn-outline-primary py-2 px-3 fw-bold" onclick="imprimirComprovante('a4')" title="Imprimir em folha sulfite padrão A4 (cabe em 1 página)">
+                    🖨️ Imprimir (Folha A4)
                 </button>
 
-                <a href="<?= APP_URL ?>/lojinha" class="btn-urna btn-urna-primary d-inline-flex align-items-center justify-content-center" style="height: 64px; padding: 0 32px; font-size: 20px; text-decoration: none; border-radius: 12px;">
-                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="me-2">
-                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-                    </svg>
+                <!-- Opção 2: Impressora de Cupom Fiscal (Térmica 80mm) -->
+                <button type="button" class="btn btn-outline-secondary py-2 px-3 fw-bold" onclick="imprimirComprovante('cupom')" title="Imprimir em bobina térmica de 80mm">
+                    🧾 Imprimir (Cupom 80mm)
+                </button>
+
+                <!-- Voltar à Vitrine -->
+                <a href="<?= APP_URL ?>/lojinha" class="btn btn-success py-2 px-4 fw-bold text-decoration-none">
                     <span>Voltar à Vitrine</span>
                 </a>
             </div>
@@ -143,5 +200,24 @@ require __DIR__ . '/../layouts/lojinha_header.php';
         </div>
     </div>
 </div>
+
+<script>
+function imprimirComprovante(tipo) {
+    document.body.classList.remove('modo-print-a4', 'modo-print-cupom');
+    
+    if (tipo === 'cupom') {
+        document.body.classList.add('modo-print-cupom');
+    } else {
+        document.body.classList.add('modo-print-a4');
+    }
+
+    window.print();
+
+    // Restaura classes após envio para a impressora
+    setTimeout(() => {
+        document.body.classList.remove('modo-print-a4', 'modo-print-cupom');
+    }, 1000);
+}
+</script>
 
 <?php require __DIR__ . '/../layouts/lojinha_footer.php'; ?>

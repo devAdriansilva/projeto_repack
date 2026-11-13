@@ -256,6 +256,33 @@ class LojinhaController
     }
 
     /**
+     * Altera a quantidade de um item no carrinho (+1 ou -1)
+     */
+    public function alterarQuantidade(): void
+    {
+        $this->validarCsrfOuAbortar();
+        $auth = $this->exigirColaborador();
+        $usuario = $auth['usuario'];
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $carrinhoId = (int)($_POST['carrinho_id'] ?? 0);
+            $delta = (int)($_POST['delta'] ?? 0);
+
+            if ($carrinhoId > 0 && ($delta === 1 || $delta === -1)) {
+                $res = Pedido::alterarQuantidadeCarrinho($carrinhoId, (int)$usuario['id'], $delta);
+                if ($res['sucesso']) {
+                    $_SESSION['flash_sucesso'] = $res['mensagem'];
+                } else {
+                    $_SESSION['flash_erro'] = $res['mensagem'];
+                }
+            }
+        }
+
+        header('Location: ' . APP_URL . '/lojinha/carrinho');
+        exit;
+    }
+
+    /**
      * Remove um item específico do carrinho
      */
     public function removerItem(): void

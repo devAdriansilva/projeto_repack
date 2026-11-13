@@ -232,6 +232,10 @@ switch ($route) {
         (new LojinhaController())->carrinho();
         break;
 
+    case '/lojinha/carrinho/alterar':
+        (new LojinhaController())->alterarQuantidade();
+        break;
+
     case '/lojinha/carrinho/remover':
         (new LojinhaController())->removerItem();
         break;

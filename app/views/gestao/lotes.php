@@ -67,6 +67,9 @@ require __DIR__ . '/../layouts/gestao_header.php';
                                 <span class="badge bg-secondary" style="font-size: 13px;">
                                     Até <?= (int)$lote['limite_itens_por_comprador'] ?> itens
                                 </span>
+                                <div class="text-muted small mt-1" style="font-size: 11px;">
+                                    ⏱️ <?= (int)($lote['tempo_carrinho_minutos'] ?? 10) ?> min reserva
+                                </div>
                             </td>
                             <td>
                                 <div class="small">
@@ -159,11 +162,15 @@ require __DIR__ . '/../layouts/gestao_header.php';
                     </div>
 
                     <div class="row g-3 mb-3">
-                        <div class="col-12 col-md-6">
-                            <label for="lote_limite" class="form-label fw-bold small text-uppercase">Limite Máximo de Itens por Pessoa *</label>
+                        <div class="col-12 col-md-4">
+                            <label for="lote_limite" class="form-label fw-bold small text-uppercase">Limite por Pessoa *</label>
                             <input type="number" class="form-control" id="lote_limite" name="limite_itens_por_comprador" required min="1" max="50" value="5" style="height: 48px;">
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-4">
+                            <label for="lote_tempo_carrinho" class="form-label fw-bold small text-uppercase">Reserva Carrinho (min) *</label>
+                            <input type="number" class="form-control" id="lote_tempo_carrinho" name="tempo_carrinho_minutos" required min="1" max="120" value="10" style="height: 48px;" title="Minutos que o item fica retido no carrinho">
+                        </div>
+                        <div class="col-12 col-md-4">
                             <label for="lote_status" class="form-label fw-bold small text-uppercase">Status do Lote *</label>
                             <select class="form-select" id="lote_status" name="status" style="height: 48px;">
                                 <option value="planejado">Planejado (Agendado)</option>
@@ -212,6 +219,7 @@ function abrirModalLote() {
     document.getElementById('lote_fim').value = amanha.toISOString().slice(0, 16);
     
     document.getElementById('lote_limite').value = '5';
+    document.getElementById('lote_tempo_carrinho').value = '10';
     document.getElementById('lote_status').value = 'planejado';
     
     document.querySelectorAll('.check-setor').forEach(cb => cb.checked = true);
@@ -229,6 +237,7 @@ function editarLote(lote) {
     document.getElementById('lote_inicio').value = lote.data_inicio.replace(' ', 'T').slice(0, 16);
     document.getElementById('lote_fim').value = lote.data_fim.replace(' ', 'T').slice(0, 16);
     document.getElementById('lote_limite').value = lote.limite_itens_por_comprador;
+    document.getElementById('lote_tempo_carrinho').value = lote.tempo_carrinho_minutos || 10;
     document.getElementById('lote_status').value = lote.status;
     
     const setoresMarcados = lote.setores_lista || [];

@@ -194,19 +194,17 @@ require __DIR__ . '/../layouts/lojinha_header.php';
     </div>
 <?php endif; ?>
 
-<!-- Alerta de Itens em Sacola com Reserva Ativa -->
+<!-- Alerta de Itens no Carrinho com Reserva Ativa -->
 <?php if ((int)$resumo['itens_carrinho'] > 0): ?>
     <div class="timer-trava-box d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div class="d-flex align-items-center gap-2">
-            <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-            </svg>
+            <span style="font-size: 24px;">🛒</span>
             <span>
-                Você possui <strong><?= (int)$resumo['itens_carrinho'] ?> item(ns)</strong> na sacola com reserva garantida temporariamente.
+                Você possui <strong><?= (int)$resumo['itens_carrinho'] ?> item(ns)</strong> no carrinho com reserva garantida temporariamente.
             </span>
         </div>
         <a href="<?= APP_URL ?>/lojinha/carrinho" class="btn btn-warning" style="font-weight: 700; border-radius: 10px; padding: 10px 20px;">
-            Ver Sacola e Finalizar →
+            Ver Carrinho e Finalizar →
         </a>
     </div>
 <?php endif; ?>
@@ -355,17 +353,14 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                             <?php endif; ?>
                         </div>
 
-                        <!-- Descrição e Embalagem Padrão -->
-                        <div class="mb-2">
-                            <span class="badge bg-secondary" style="font-size: 11px;">
-                                <?= sanitize_html($p['pacote_padrao']) ?>
-                            </span>
-                            <?php if ($noCarrinho > 0): ?>
-                                <span class="badge bg-warning text-dark" style="font-size: 11px;">
-                                    <?= $noCarrinho ?> na sua sacola
+                        <!-- Indicador se já está no carrinho -->
+                        <?php if ($noCarrinho > 0): ?>
+                            <div class="mb-2">
+                                <span class="badge bg-warning text-dark" style="font-size: 12px; font-weight: 700;">
+                                    🛒 <?= $noCarrinho ?> no seu carrinho
                                 </span>
-                            <?php endif; ?>
-                        </div>
+                            </div>
+                        <?php endif; ?>
 
                         <h3 class="body-lg" style="font-weight: 700; color: #111827; margin-bottom: 8px; min-height: 54px;">
                             <?= sanitize_html($p['nome']) ?>
@@ -383,18 +378,16 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                                 <span>Esgotado</span>
                             </button>
                         <?php elseif ($limiteAtingido): ?>
-                            <button type="button" class="btn-urna btn-urna-warning w-100" disabled style="height: 80px; font-size: 18px;">
-                                <span>Cota do Lote Atingida</span>
+                            <button type="button" class="btn-urna btn-urna-warning w-100" disabled style="height: 80px; font-size: 17px; padding: 0 8px;">
+                                <span>Quantidade Máxima de Itens Atingida</span>
                             </button>
                         <?php else: ?>
                             <button type="button" 
                                     class="btn-urna btn-urna-secondary w-100" 
                                     style="height: 80px; font-size: 20px;"
                                     onclick="adicionarAoCarrinho(<?= (int)$p['produto_id'] ?>, this)">
-                                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                                </svg>
-                                <span>Adicionar à Sacola</span>
+                                <span style="font-size: 22px;">🛒</span>
+                                <span>Adicionar ao Carrinho</span>
                             </button>
                         <?php endif; ?>
                     </div>

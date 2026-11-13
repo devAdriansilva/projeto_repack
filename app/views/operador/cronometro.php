@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /**
- * Projeto Repack - Urna Eletrônica (Registro de Produção - Dois Momentos: Iniciar / Pausar / Finalizar)
+ * Projeto Repack - Urna Eletrônica (Registro de Produção - Três Etapas Lineares: Produto -> Quantidade -> Início/Execução)
  * Baseado estritamente em docs/DESIGN.md e docs/FSD.md (Seção 12.1 e 13.2)
  */
 
@@ -64,7 +64,7 @@ require_once __DIR__ . '/../layouts/header.php';
 ?>
 
 <!-- ============================================================= -->
-<!-- MOMENTO 1: SELEÇÃO DE PRODUTO E INÍCIO (Antes de Iniciar)       -->
+<!-- ETAPA 1: DIGITAÇÃO DO ITEM / CÓDIGO DO PRODUTO                -->
 <!-- ============================================================= -->
 <div id="secaoMomento1" style="<?= $producaoAtiva ? 'display: none;' : 'display: block;' ?>">
     <div style="text-align: center; margin-bottom: 20px;">
@@ -84,7 +84,7 @@ require_once __DIR__ . '/../layouts/header.php';
                    id="inputCodigoSku" 
                    class="input-sku-gigante" 
                    inputmode="numeric" 
-                   pattern="[0-9]*"
+                   pattern="[0-9]*" 
                    placeholder="9068" 
                    value=""
                    autocomplete="off"
@@ -107,7 +107,7 @@ require_once __DIR__ . '/../layouts/header.php';
                 <span>PRODUTO IDENTIFICADO</span>
             </div>
 
-            <!-- Foto Destaque Momento 1 (Monumental para Acessibilidade) -->
+            <!-- Foto Destaque (Heroica para Acessibilidade) -->
             <div id="wrapperFotoMomento1" style="text-align: center; margin: 18px 0 16px 0;">
                 <img id="imgFotoMomento1" src="" alt="Foto" style="width: 100%; max-width: 400px; height: 380px; object-fit: contain; border-radius: 28px; background: #FFFFFF; border: 5px solid #059669; box-shadow: 0 10px 28px rgba(5,150,105,0.25); display: none; padding: 8px;">
             </div>
@@ -118,7 +118,7 @@ require_once __DIR__ . '/../layouts/header.php';
             </div>
         </div>
 
-        <!-- Alerta de Código Não Encontrado (Sem legendas ou textos explicativos) -->
+        <!-- Alerta de Código Não Encontrado -->
         <div class="card-nao-encontrado" id="cardNaoEncontrado" style="display: none;">
             ⚠️ PRODUTO NÃO ENCONTRADO (<strong id="codigoNaoEncontrado"></strong>)
         </div>
@@ -129,32 +129,24 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-    <!-- Alerta Flutuante se tentar iniciar sem produto -->
+    <!-- Alerta Flutuante se tentar avançar sem produto -->
     <div id="alertaSemProduto" style="display: none; width: 100%; margin: 24px 0 0 0; background: #FEF2F2; color: #991B1B; border: 4.5px solid #EF4444; border-radius: 22px; padding: 22px; font-weight: 900; text-align: center; font-size: 24px;">
         ⚠️ DIGITE O CÓDIGO DO PRODUTO!
     </div>
 
-    <!-- Rodapé Momento 1: Ações Empilhadas Verticalmente (Escala Monumental) -->
+    <!-- Rodapé Etapa 1: PRÓXIMO ou CANCELAR -->
     <div style="width: 100%; margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
         <button type="button" 
                 class="btn-urna btn-urna-primary" 
-                id="btnIniciarProducao" 
-                onclick="iniciarProducao()" 
+                id="btnAvancarParaQuantidade" 
+                onclick="avancarParaEtapaQuantidade()" 
                 style="width: 100%; max-width: 650px; min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; box-shadow: 0 14px 32px rgba(16, 185, 129, 0.4);">
-            <span>INICIAR</span>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <polyline points="13 4 21 12 13 20"></polyline>
-            </svg>
+            <span>PRÓXIMO ➔</span>
         </button>
 
         <a href="<?= APP_URL ?>/operador" 
            class="btn-urna btn-urna-warning" 
            style="width: 100%; max-width: 650px; min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; text-decoration: none;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
-                <line x1="21" y1="12" x2="3" y2="12"></line>
-                <polyline points="11 4 3 12 11 20"></polyline>
-            </svg>
             <span style="font-size: 38px; font-weight: 900; line-height: 1;">✕</span>
             <span>CANCELAR</span>
         </a>
@@ -162,10 +154,74 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <!-- ============================================================= -->
-<!-- MOMENTO 2: PRODUÇÃO EM ANDAMENTO & FINALIZAÇÃO                -->
+<!-- ETAPA 2: DEFINIÇÃO DE QUANTIDADE (TELA DEDICADA E ISOLADA)    -->
+<!-- ============================================================= -->
+<div id="secaoMomentoQuantidade" style="display: none;">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h1 class="headline-lg" style="margin: 0; font-size: 44px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
+            DEFINIR QUANTIDADE
+        </h1>
+    </div>
+
+    <!-- Card de Confirmação do Produto Selecionado -->
+    <div class="urna-card" style="width: 100%; text-align: center; padding: 24px 20px; border-radius: 28px; border: 5px solid #059669; background: #FFFFFF; margin-bottom: 24px;">
+        <div id="qtdWrapperFoto" style="text-align: center; margin-bottom: 12px;">
+            <img id="qtdFotoProduto" src="" alt="Foto" style="width: 100%; max-width: 280px; height: 240px; object-fit: contain; border-radius: 20px; background: #FFFFFF; display: none; padding: 6px;">
+        </div>
+        <div class="headline-lg" id="qtdNomeProduto" style="color: #0F172A; font-size: 38px; font-weight: 900; line-height: 1.2;"></div>
+        <div style="margin-top: 8px;">
+            <span class="badge-sku" id="qtdSkuBadge" style="font-size: 22px; padding: 6px 18px;"></span>
+        </div>
+    </div>
+
+    <!-- Seletor Monumental de Quantidade (80px e Botões -/+) -->
+    <div class="sku-entry-container" style="margin-top: 10px;">
+        <label for="displayPacotesEtapa2" style="display: block; font-size: 36px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
+            PACOTES A REFAZER:
+        </label>
+        <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 26px; margin: 0;">
+            <button type="button" class="btn-counter" onclick="alterarPacotesEtapa2(-1)" aria-label="Diminuir pacotes">−</button>
+            <input type="number" 
+                   id="displayPacotesEtapa2" 
+                   class="counter-display" 
+                   inputmode="numeric" 
+                   pattern="[0-9]*" 
+                   min="1" 
+                   autocomplete="off" 
+                   value="<?= $pacotesIniciais ?>" 
+                   onfocus="this.select()" 
+                   oninput="atualizarPacotesEtapa2Digitados(this.value)" 
+                   onblur="validarPacotesEtapa2Blur()" 
+                   aria-label="Pacotes a refazer"
+                   style="font-size: 72px; font-weight: 900; width: 180px; text-align: center; height: 110px; border-radius: 24px; border: 4px solid #CBD5E1;">
+            <button type="button" class="btn-counter" onclick="alterarPacotesEtapa2(1)" aria-label="Aumentar pacotes">+</button>
+        </div>
+    </div>
+
+    <!-- Rodapé Etapa 2: Ações Empilhadas Verticalmente (Escala Monumental) -->
+    <div style="width: 100%; margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+        <button type="button" 
+                class="btn-urna btn-urna-primary" 
+                id="btnIniciarComQuantidade" 
+                onclick="iniciarProducaoComQuantidade()" 
+                style="width: 100%; max-width: 650px; min-height: 140px; font-size: 44px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; box-shadow: 0 14px 32px rgba(16, 185, 129, 0.4);">
+            <span>INICIAR PRODUÇÃO ➔</span>
+        </button>
+
+        <button type="button" 
+                class="btn-urna btn-urna-secondary" 
+                onclick="voltarParaEtapaProduto()" 
+                style="width: 100%; max-width: 650px; min-height: 130px; font-size: 40px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto;">
+            <span>⬅ VOLTAR AO PRODUTO</span>
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ETAPA 3: PRODUÇÃO EM ANDAMENTO (CRONÔMETRO ATIVO)             -->
 <!-- ============================================================= -->
 <div id="secaoMomento2" style="<?= $producaoAtiva ? 'display: block;' : 'display: none;' ?>">
-    <!-- Cartão Central com Produto, Início e Status de Pausa (Sem legenda redundante) -->
+    <!-- Cartão Central com Produto, Início e Status de Pausa -->
     <div class="urna-card" style="width: 100%; text-align: center; padding: 38px 28px; border-radius: 36px; border: 8px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18); background: #FFFFFF; margin-top: 10px;">
         
         <!-- Badge de Pausa (quando pausado) -->
@@ -177,7 +233,7 @@ require_once __DIR__ . '/../layouts/header.php';
             <?= sanitize_html($producaoAtiva['produto_nome'] ?? '') ?>
         </div>
 
-        <!-- Foto Destaque Momento 2 (Monumental para Acessibilidade) -->
+        <!-- Foto Destaque Momento 2 (Heroica para Acessibilidade) -->
         <div id="wrapperFotoMomento2" style="text-align: center; margin: 18px 0 16px 0;">
             <img id="ativoFotoProduto" 
                  src="<?= !empty($producaoAtiva['produto_foto_url']) ? sanitize_html($producaoAtiva['produto_foto_url']) : '' ?>" 
@@ -197,10 +253,10 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-    <!-- Seletor Monumental de Pacotes Refeitos (com digitação direta e botões -/+) -->
+    <!-- Bloco de Pacotes Fixados (com possibilidade de ajuste fino durante a contagem) -->
     <div class="sku-entry-container" style="margin-top: 26px;">
-        <label for="displayPacotes" style="display: block; font-size: 36px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
-            PACOTES REFEITOS:
+        <label for="displayPacotes" style="display: block; font-size: 34px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
+            PACOTES EM ANDAMENTO:
         </label>
         <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 26px; margin: 0;">
             <button type="button" class="btn-counter" onclick="alterarPacotes(-1)" aria-label="Diminuir pacotes">−</button>
@@ -215,7 +271,8 @@ require_once __DIR__ . '/../layouts/header.php';
                    onfocus="this.select()" 
                    oninput="atualizarPacotesDigitados(this.value)" 
                    onblur="validarPacotesBlur()" 
-                   aria-label="Pacotes refeitos">
+                   aria-label="Pacotes refeitos"
+                   style="font-size: 72px; font-weight: 900; width: 180px; text-align: center; height: 110px; border-radius: 24px; border: 4px solid #CBD5E1;">
             <button type="button" class="btn-counter" onclick="alterarPacotes(1)" aria-label="Aumentar pacotes">+</button>
         </div>
     </div>
@@ -231,7 +288,7 @@ require_once __DIR__ . '/../layouts/header.php';
         </button>
     </div>
 
-    <!-- Rodapé Momento 2: CANCELAR ou FINALIZAR PRODUÇÃO -->
+    <!-- Rodapé: CANCELAR ou FINALIZAR PRODUÇÃO -->
     <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
         <button type="button" class="btn-urna btn-urna-warning" onclick="descartarProducaoAtiva()" style="min-height: 135px; font-size: 38px; font-weight: 900; border-radius: 36px;">
             CANCELAR
@@ -256,10 +313,9 @@ window.addEventListener('DOMContentLoaded', () => {
     if (window.location.search.includes('novo=1')) {
         localStorage.removeItem('repack_producao_ativa');
         producaoAtiva = null;
-        const m1 = document.getElementById('secaoMomento1');
-        const m2 = document.getElementById('secaoMomento2');
-        if (m1) m1.style.display = 'block';
-        if (m2) m2.style.display = 'none';
+        document.getElementById('secaoMomento1').style.display = 'block';
+        document.getElementById('secaoMomentoQuantidade').style.display = 'none';
+        document.getElementById('secaoMomento2').style.display = 'none';
         return;
     }
 
@@ -270,7 +326,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 producaoAtiva = JSON.parse(local);
                 if (producaoAtiva && producaoAtiva.produto_id && producaoAtiva.data_hora_inicio) {
                     restaurarMomento2(producaoAtiva);
-                    // Re-sincroniza silenciosamente com o backend caso a sessão PHP tenha expirado
                     fetch('<?= APP_URL ?>/api/produtividade/iniciar', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -298,7 +353,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   MOMENTO 1: ENTRADA DE SKU E INÍCIO
+   ETAPA 1: ENTRADA DE SKU E IDENTIFICAÇÃO DO PRODUTO
    ========================================================================== */
 function processarEntradaSku(valor) {
     const termo = valor.trim().toLowerCase();
@@ -387,8 +442,6 @@ function selecionarProdutoConfirmado(p) {
     produtoSelecionadoMomento1 = p;
     document.getElementById('displayNomeProduto').innerText = p.nome;
     document.getElementById('displaySkuBadge').innerText = 'SKU ' + p.codigo;
-    const embDisplay = document.getElementById('displayEmbalagem');
-    if (embDisplay) embDisplay.innerText = p.embalagem || 'Unidade';
 
     const imgMomento1 = document.getElementById('imgFotoMomento1');
     if (imgMomento1) {
@@ -456,7 +509,10 @@ function formatarDataHoraLocal(d = new Date()) {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
-function iniciarProducao() {
+/* ==========================================================================
+   TRANSIÇÃO: ETAPA 1 -> ETAPA 2 (DEFINIR QUANTIDADE)
+   ========================================================================== */
+function avancarParaEtapaQuantidade() {
     const alerta = document.getElementById('alertaSemProduto');
     if (!produtoSelecionadoMomento1) {
         alerta.style.display = 'block';
@@ -466,6 +522,74 @@ function iniciarProducao() {
     }
 
     alerta.style.display = 'none';
+    document.getElementById('secaoMomento1').style.display = 'none';
+    document.getElementById('secaoMomentoQuantidade').style.display = 'block';
+
+    // Preenche os dados do produto na Etapa 2
+    document.getElementById('qtdNomeProduto').innerText = produtoSelecionadoMomento1.nome;
+    document.getElementById('qtdSkuBadge').innerText = 'SKU ' + produtoSelecionadoMomento1.codigo;
+
+    const imgQtd = document.getElementById('qtdFotoProduto');
+    if (imgQtd) {
+        if (produtoSelecionadoMomento1.foto_url) {
+            imgQtd.src = produtoSelecionadoMomento1.foto_url;
+            imgQtd.style.display = 'inline-block';
+        } else {
+            imgQtd.src = '';
+            imgQtd.style.display = 'none';
+        }
+    }
+
+    const inputQtd = document.getElementById('displayPacotesEtapa2');
+    inputQtd.value = pacotesContador || 1;
+    inputQtd.focus();
+    inputQtd.select();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function voltarParaEtapaProduto() {
+    document.getElementById('secaoMomentoQuantidade').style.display = 'none';
+    document.getElementById('secaoMomento1').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ==========================================================================
+   ETAPA 2: CONTROLE NUMÉRICO DA QUANTIDADE
+   ========================================================================== */
+function alterarPacotesEtapa2(delta) {
+    const input = document.getElementById('displayPacotesEtapa2');
+    let atual = parseInt(input.value, 10) || 1;
+    let nova = Math.max(1, atual + delta);
+    input.value = nova;
+    pacotesContador = nova;
+    if (navigator.vibrate) navigator.vibrate(25);
+}
+
+function atualizarPacotesEtapa2Digitados(val) {
+    const parsed = parseInt(val, 10);
+    if (!isNaN(parsed) && parsed >= 1) {
+        pacotesContador = parsed;
+    }
+}
+
+function validarPacotesEtapa2Blur() {
+    const input = document.getElementById('displayPacotesEtapa2');
+    const parsed = parseInt(input.value, 10);
+    if (isNaN(parsed) || parsed < 1) {
+        pacotesContador = 1;
+        input.value = 1;
+    } else {
+        pacotesContador = parsed;
+        input.value = parsed;
+    }
+}
+
+/* ==========================================================================
+   TRANSIÇÃO: ETAPA 2 -> ETAPA 3 (INICIAR CRONÔMETRO)
+   ========================================================================== */
+function iniciarProducaoComQuantidade() {
+    validarPacotesEtapa2Blur();
+
     const agora = new Date();
     const timestampInicio = formatarDataHoraLocal(agora);
 
@@ -476,6 +600,7 @@ function iniciarProducao() {
         produto_embalagem: produtoSelecionadoMomento1.embalagem,
         produto_foto_url: produtoSelecionadoMomento1.foto_url,
         data_hora_inicio: timestampInicio,
+        pacotes_refeitos: pacotesContador,
         pausado: false,
         segundos_pausa: 0
     };
@@ -494,12 +619,11 @@ function iniciarProducao() {
 
 function restaurarMomento2(prod) {
     document.getElementById('secaoMomento1').style.display = 'none';
+    document.getElementById('secaoMomentoQuantidade').style.display = 'none';
     document.getElementById('secaoMomento2').style.display = 'block';
 
     document.getElementById('ativoNomeProduto').innerText = prod.produto_nome;
     document.getElementById('ativoSkuBadge').innerText = 'SKU ' + (prod.produto_codigo || '');
-    const embBadge = document.getElementById('ativoEmbalagemBadge');
-    if (embBadge) embBadge.innerText = prod.produto_embalagem || 'Unidade';
 
     const imgAtivo = document.getElementById('ativoFotoProduto');
     if (imgAtivo) {
@@ -517,19 +641,19 @@ function restaurarMomento2(prod) {
     const mins = String(dataObj.getMinutes()).padStart(2, '0');
     document.getElementById('ativoHoraInicioDisplay').innerText = `${horas}:${mins}`;
 
-    // Restaura a contagem de pacotes refeitos se já estava em andamento
+    // Restaura a contagem de pacotes refeitos
     if (prod.pacotes_refeitos) {
         pacotesContador = Math.max(1, parseInt(prod.pacotes_refeitos, 10));
-        const disp = document.getElementById('displayPacotes');
-        if (disp) disp.value = pacotesContador;
     }
+    const disp = document.getElementById('displayPacotes');
+    if (disp) disp.value = pacotesContador;
 
     atualizarVisualPausa();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ==========================================================================
-   MOMENTO 2: PAUSA, RETOMADA E FINALIZAÇÃO
+   ETAPA 3: EXECUÇÃO, PAUSA, RETOMADA E FINALIZAÇÃO
    ========================================================================== */
 function alterarPacotes(delta) {
     pacotesContador = Math.max(1, pacotesContador + delta);
@@ -610,7 +734,6 @@ function togglePausaProducao() {
 function atualizarVisualPausa() {
     const btn = document.getElementById('btnPausarRetomar');
     const badge = document.getElementById('badgeStatusPausa');
-    const titulo = document.getElementById('tituloMomento2');
 
     if (!btn || !producaoAtiva) return;
 
@@ -619,13 +742,11 @@ function atualizarVisualPausa() {
         btn.style.background = 'linear-gradient(145deg, #10B981 0%, #059669 100%)';
         btn.style.border = '6px solid #047857';
         if (badge) badge.style.display = 'inline-flex';
-        if (titulo) titulo.innerText = 'PRODUÇÃO EM PAUSA';
     } else {
         btn.innerText = '⏸ PAUSAR PRODUÇÃO';
         btn.style.background = 'linear-gradient(145deg, #F59E0B 0%, #D97706 100%)';
         btn.style.border = '6px solid #B45309';
         if (badge) badge.style.display = 'none';
-        if (titulo) titulo.innerText = 'PRODUÇÃO EM ANDAMENTO';
     }
 }
 
@@ -643,7 +764,6 @@ function finalizarProducao() {
     const agora = new Date();
     const timestampFim = formatarDataHoraLocal(agora);
 
-    // Se estava pausado ao finalizar, computa última fração de pausa
     if (producaoAtiva.pausado && producaoAtiva.pausa_inicio) {
         const inicioPausaMs = new Date(producaoAtiva.pausa_inicio.replace(' ', 'T')).getTime();
         const diffPausaSeg = Math.max(0, Math.round((agora.getTime() - inicioPausaMs) / 1000));
@@ -657,7 +777,6 @@ function finalizarProducao() {
 
     if (navigator.vibrate) navigator.vibrate(100);
 
-    // Submete formulário dinâmico para a conferência dupla
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '<?= APP_URL ?>/operador/cronometro/resumo';

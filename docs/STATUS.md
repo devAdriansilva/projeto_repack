@@ -729,6 +729,39 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) validada com sucesso.
       - Versão da aplicação incrementada para `v1.61` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-066 (13/11/2026):** Quebra do Fluxo de Produtividade em Etapas Lineares, Tempo Dinâmico de Reserva por Lote, Ajustes na Lojinha, Impressão Dual e Filtros no Catálogo de Produtos.
+    - **Registro de Produtividade em Etapas Lineares (`app/views/operador/cronometro.php`):**
+      - Quebra do fluxo em 3 etapas sequenciais (filosofia da Urna Eletrônica):
+        - **Etapa 1:** Entrada de código SKU e identificação imediata do produto com foto heroica e botão "PRÓXIMO ➔".
+        - **Etapa 2 (Tela Exclusiva e Dedicada):** Definição obrigatória da quantidade de pacotes a refazer, com display numérico monumental (72px) e botões de `[-]` e `[+]` de 80px para luvas, eliminando o esquecimento involuntário da quantidade em 1.
+        - **Etapa 3:** Início e execução da contagem do cronômetro com a quantidade fixada e visível em tela, botão de pausa/retomada e finalização para o resumo de conferência dupla.
+    - **Tempo Dinâmico de Reserva de Carrinho por Lote de Vendas:**
+      - **Migration 010 (`database/migrations/010_adicionar_tempo_carrinho_lote.sql`):** Adicionada coluna `tempo_carrinho_minutos` na tabela `lotes_venda`.
+      - **Model LoteVenda (`app/models/LoteVenda.php`):** Suporte ao campo `tempo_carrinho_minutos` no cadastro e atualização de lotes.
+      - **Model Pedido (`app/models/Pedido.php`):** O cálculo de expiração (`expiracao_em`) no método `adicionarAoCarrinho()` passa a respeitar dinamicamente o tempo estipulado no lote ativo em vez de um valor fixo.
+      - **Gestão de Lotes (`app/views/gestao/lotes.php`):** Inclusão do campo "Reserva Carrinho (min)" no formulário de criação/edição de lotes e coluna indicativa na listagem.
+    - **Vitrine e Cards da Lojinha (`app/views/lojinha/vitrine.php` e `app/views/layouts/lojinha_header.php`):**
+      - Remoção da legenda com quantidade por fardo/caixa (`pacote_padrao`) nos cards de produtos.
+      - Substituição da mensagem nos cards com limite atingido para: **"Quantidade máxima de itens atingida"**.
+      - Troca universal do ícone e termos de sacola (🛍️) para **carrinho (🛒)**.
+    - **Carrinho dos Colaboradores (`app/views/lojinha/carrinho.php`, `LojinhaController.php` e `Pedido.php`):**
+      - Inclusão de botões `[-]` e `[+]` para alterar a quantidade de produtos diretamente na tela do carrinho, respeitando cotas e estoques disponíveis.
+      - Implementação de **contador regressivo individual em `MM:SS`** para cada item no carrinho, baseado no tempo de expiração do lote.
+      - Remoção definitiva do bloco sobre instruções de retirada física no carrinho.
+    - **Comprovante de Pedido com Impressão Dual (`app/views/lojinha/sucesso.php`):**
+      - Remoção do bloco de orientações de retirada física.
+      - Adição de dois modos de impressão:
+        - **🖨️ Folha A4 (Impressora Regular):** Formatação otimizada com `@page { margin: 8mm; }` garantindo que o comprovante caiba integralmente em **1 única folha** sem quebra de página indesejada.
+        - **🧾 Cupom Térmico (80mm):** Formatação para impressora térmica de bobina contínua.
+    - **Catálogo de Produtos na Gestão (`app/views/gestao/produtos.php`):**
+      - Inclusão de barra de filtros rápidos: "Todos", "🟢 Na Lojinha (Saldo > 0)", "⚪ Sem Estoque", "Ativos" e "Inativos".
+      - Adição de coluna visual exibindo o saldo físico e disponível de cada produto na lojinha.
+      - Filtro dinâmico por texto em tempo real sem recarregar a tela.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` validada com 35/35 sucessos.
+      - Novo teste unitário `tests/test_ajustes_produtividade_lojinha.php` executado com 100% de êxito.
+      - Versão da aplicação incrementada para `v1.62` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
