@@ -7,6 +7,7 @@ declare(strict_types=1);
  */
 
 $producaoAtiva = $_SESSION['producao_ativa'] ?? null;
+$boAtivo = !empty($_SESSION['avaria_temp']['produto_id']);
 
 $pageTitle = "Repack - Início";
 require_once __DIR__ . '/../layouts/header.php';
@@ -33,6 +34,9 @@ require_once __DIR__ . '/../layouts/header.php';
                 <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
             </svg>
             <span>REGISTRAR B.O.</span>
+        </div>
+        <div id="badgeHomeBoAtivo" style="<?= $boAtivo ? 'display: inline-flex;' : 'display: none;' ?> align-items: center; gap: 8px; background: #DBEAFE; color: #1E40AF; border: 3px solid #3B82F6; padding: 6px 20px; border-radius: 9999px; font-size: 20px; font-weight: 900; margin-top: 10px;">
+            <span>⏸</span> <span>EM ANDAMENTO</span>
         </div>
     </a>
 
@@ -66,13 +70,26 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-    const local = localStorage.getItem('repack_producao_ativa');
-    const badge = document.getElementById('badgeHomeProducaoAtiva');
-    if (local && badge) {
+    // 1. Monitora rascunho de Produção Ativa
+    const localProd = localStorage.getItem('repack_producao_ativa');
+    const badgeProd = document.getElementById('badgeHomeProducaoAtiva');
+    if (localProd && badgeProd) {
         try {
-            const data = JSON.parse(local);
-            if (data && data.produto_id) {
-                badge.style.display = 'inline-flex';
+            const dataProd = JSON.parse(localProd);
+            if (dataProd && dataProd.produto_id) {
+                badgeProd.style.display = 'inline-flex';
+            }
+        } catch(e) {}
+    }
+
+    // 2. Monitora rascunho de B.O. Ativo (persistência paralela em espera)
+    const localBo = localStorage.getItem('repack_bo_ativo');
+    const badgeBo = document.getElementById('badgeHomeBoAtivo');
+    if (localBo && badgeBo) {
+        try {
+            const dataBo = JSON.parse(localBo);
+            if (dataBo && dataBo.produto_id) {
+                badgeBo.style.display = 'inline-flex';
             }
         } catch(e) {}
     }

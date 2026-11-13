@@ -547,6 +547,18 @@
     - **Gestão de B.O. (`app/views/gestao/correcao_bo.php`):**
       - Movido "Validade (30 Dias)" para o grupo de destino da lojinha no modal de retificação.
     - **Incremento de Versão:** Versão elevada para `v1.50` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.50` em `public/service-worker.js`.
+  - [x] **MANUT-053 (13/11/2026):** Remoção de Destino no Resumo de B.O. e Persistência Paralela e Simultânea de B.O. e Produção em Espera.
+    - **Remoção de Destino no Resumo de B.O. (`app/views/operador/avaria_resumo.php`):**
+      - Remoção completa do selo/bloco informativo de destino ("Lojinha Interna / Descarte"), mantendo a tela focada estritamente no essencial: Produto, Quantidade monumental (96px) e Tipo de Avaria.
+    - **Persistência Paralela de B.O. em Espera (`app/views/operador/avaria_passo1.php`, `app/controllers/AvariaController.php` e `app/controllers/OperadorController.php`):**
+      - Desacoplamento de rotinas destrutivas: remoção de `unset($_SESSION['avaria_temp'])` involuntários em `OperadorController::index()` e `AvariaController::passo1()`. O rascunho de B.O. agora é preservado de forma contínua durante a navegação.
+      - Sincronização contínua do rascunho de B.O. no `localStorage` sob a chave isolada `repack_bo_ativo` (código, produto, embalagem e quantidade), sem interferir com `repack_producao_ativa`.
+      - Auto-restauração imediata ao retornar ao fluxo de B.O., recuperando o produto e a quantidade digitados mesmo se a aplicação for fechada acidentalmente.
+      - Botão Cancelar no Passo 1 realiza a limpeza intencional (`localStorage.removeItem('repack_bo_ativo')` e `?limpar_bo=1`).
+    - **Visibilidade de Estado Duplo na Home (`app/views/operador/home.php`):**
+      - Inclusão do badge `badgeHomeBoAtivo` (`⏸ EM ANDAMENTO`) no botão "REGISTRAR B.O." (azul `#DBEAFE`/`#1E40AF`).
+      - Coexistência perfeita e simultânea: o operador pode manter uma produção longa em andamento no cronômetro e um rascunho de B.O. em espera ao mesmo tempo, ambos destacados visualmente na Home e com restauração independente ao toque.
+    - **Incremento de Versão:** Versão elevada para `v1.51` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.51` em `public/service-worker.js`.
 
 ---
 

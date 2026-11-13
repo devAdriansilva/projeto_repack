@@ -10,14 +10,13 @@ require_once __DIR__ . '/../../models/Produto.php';
 
 $produtos = Produto::listarAtivos();
 
-// Produto previamente selecionado (caso esteja voltando explicitamente do Passo 2)
-$isOrigemVoltar = (isset($_GET['origem']) && $_GET['origem'] === 'voltar');
-if (!$isOrigemVoltar) {
+// Produto previamente selecionado (caso esteja em andamento na sessão ou voltando do Passo 2)
+if (isset($_GET['novo']) && $_GET['novo'] === '1') {
     unset($_SESSION['avaria_temp']);
 }
 
-$produtoPreSelecionadoId = $isOrigemVoltar ? (int)($_SESSION['avaria_temp']['produto_id'] ?? 0) : 0;
-$quantidadeInicial = $isOrigemVoltar ? (int)($_SESSION['avaria_temp']['quantidade'] ?? 1) : 1;
+$produtoPreSelecionadoId = (int)($_SESSION['avaria_temp']['produto_id'] ?? 0);
+$quantidadeInicial = (int)($_SESSION['avaria_temp']['quantidade'] ?? 1);
 if ($quantidadeInicial < 1) {
     $quantidadeInicial = 1;
 }
@@ -147,7 +146,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <!-- Botões de Ação do Rodapé (Grandes Alvos 140px de Alto Contraste) -->
     <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
-        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px;">
+        <a href="<?= APP_URL ?>/operador?limpar_bo=1" onclick="cancelarRascunhoBO()" class="btn-urna btn-urna-warning" style="min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px; text-decoration: none; display: flex; align-items: center; justify-content: center;">
             CANCELAR
         </a>
         <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px;">
@@ -166,6 +165,55 @@ let produtoAtivo = <?= $produtoPreSelecionado ? json_encode([
 ], JSON_UNESCAPED_UNICODE) : 'null' ?>;
 
 let quantidadeAtual = <?= $quantidadeInicial ?>;
+
+function persistirBoLocalStorage() {
+    if (produtoAtivo && produtoAtivo.id) {
+        localStorage.setItem('repack_bo_ativo', JSON.stringify({
+            produto_id: produtoAtivo.id,
+            produto_codigo: produtoAtivo.codigo,
+            produto_nome: produtoAtivo.nome,
+            produto_embalagem: produtoAtivo.embalagem || '',
+            quantidade: quantidadeAtual
+        }));
+    }
+}
+
+function cancelarRascunhoBO() {
+    try {
+        localStorage.removeItem('repack_bo_ativo');
+    } catch(e) {}
+}
+
+// Restauração de rascunho persistido
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('novo') === '1') {
+        cancelarRascunhoBO();
+        return;
+    }
+
+    if (!produtoAtivo) {
+        const salvoStr = localStorage.getItem('repack_bo_ativo');
+        if (salvoStr) {
+            try {
+                const salvo = JSON.parse(salvoStr);
+                if (salvo && salvo.produto_id) {
+                    const match = PRODUTOS.find(p => Number(p.id) === Number(salvo.produto_id));
+                    if (match) {
+                        selecionarProdutoConfirmado(match);
+                        if (salvo.quantidade && Number(salvo.quantidade) >= 1) {
+                            quantidadeAtual = Number(salvo.quantidade);
+                            document.getElementById('displayQtd').value = quantidadeAtual;
+                            document.getElementById('inputQuantidade').value = quantidadeAtual;
+                        }
+                    }
+                }
+            } catch(e) {}
+        }
+    } else {
+        persistirBoLocalStorage();
+    }
+});
 
 function processarEntradaSku(valor) {
     const termo = valor.trim().toLowerCase();
@@ -267,11 +315,13 @@ function selecionarProdutoConfirmado(p) {
     input.classList.add('sucesso-encontrado');
     input.value = p.codigo;
     document.getElementById('btnLimparSku').style.display = 'flex';
+    persistirBoLocalStorage();
 }
 
 function desmarcarProduto() {
     produtoAtivo = null;
     document.getElementById('inputProdutoId').value = '';
+    try { localStorage.removeItem('repack_bo_ativo'); } catch(e) {}
 }
 
 function exibirSugestoes(lista) {
@@ -318,6 +368,7 @@ function alterarQuantidade(delta) {
     quantidadeAtual = Math.max(1, atual + delta);
     document.getElementById('displayQtd').value = quantidadeAtual;
     document.getElementById('inputQuantidade').value = quantidadeAtual;
+    persistirBoLocalStorage();
 }
 
 function atualizarQuantidadeDigitada(valor) {
@@ -325,6 +376,7 @@ function atualizarQuantidadeDigitada(valor) {
     if (!isNaN(num) && num > 0) {
         quantidadeAtual = num;
         document.getElementById('inputQuantidade').value = quantidadeAtual;
+        persistirBoLocalStorage();
     }
 }
 
@@ -337,6 +389,7 @@ function validarQuantidadeBlur() {
     quantidadeAtual = num;
     input.value = quantidadeAtual;
     document.getElementById('inputQuantidade').value = quantidadeAtual;
+    persistirBoLocalStorage();
 }
 
 function validarEnvio(e) {
@@ -350,6 +403,7 @@ function validarEnvio(e) {
         if (navigator.vibrate) navigator.vibrate(150);
         return false;
     }
+    persistirBoLocalStorage();
     return true;
 }
 
@@ -358,22 +412,6 @@ function escapeHtml(text) {
     div.innerText = text;
     return div.innerHTML;
 }
-
-// Protege contra restauração de cache do navegador em novo lançamento
-window.addEventListener('pageshow', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('origem') !== 'voltar') {
-        const prodId = document.getElementById('inputProdutoId');
-        if (!prodId || !prodId.value) {
-            const inputSku = document.getElementById('inputCodigoSku');
-            if (inputSku) inputSku.value = '';
-            const cardOk = document.getElementById('cardConfirmacaoSku');
-            if (cardOk) cardOk.style.display = 'none';
-            const btnLimpar = document.getElementById('btnLimparSku');
-            if (btnLimpar) btnLimpar.style.display = 'none';
-        }
-    }
-});
 </script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

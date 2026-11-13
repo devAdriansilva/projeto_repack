@@ -59,17 +59,11 @@ require_once __DIR__ . '/../layouts/header.php';
             </div>
         </div>
 
-        <!-- Tipo de Avaria com Largura Total e Badge de Destino (Sem Truncamento) -->
+        <!-- Tipo de Avaria com Largura Total (Sem Truncamento) -->
         <div style="border-top: 3px dashed #CBD5E1; padding-top: 22px;">
             <span class="body-md" style="color: #475569; font-weight: 900; font-size: 28px; text-transform: uppercase;">TIPO DE AVARIA:</span>
             <div style="color: <?= ($destino === 'descarte') ? '#DC2626' : '#D97706' ?>; font-size: clamp(36px, 7.5vw, 48px); font-weight: 900; margin-top: 8px; line-height: 1.2; word-break: break-word;">
                 <?= sanitize_html($tipoRotulo) ?>
-            </div>
-            <div style="margin-top: 14px;">
-                <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 900; padding: 8px 24px; border-radius: 9999px; <?= ($destino === 'descarte') ? 'background: #FEF2F2; color: #991B1B; border: 3px solid #EF4444;' : 'background: #FEF3C7; color: #92400E; border: 3px solid #F59E0B;' ?>">
-                    <span><?= ($destino === 'descarte') ? '🗑️' : '🏪' ?></span>
-                    <span><?= ($destino === 'descarte') ? 'DESTINO: DESCARTE / PERDA' : 'DESTINO: LOJINHA INTERNA' ?></span>
-                </span>
             </div>
         </div>
     </div>
@@ -112,6 +106,7 @@ async function confirmarApontamentoBO() {
         const data = await response.json();
 
         if (response.ok && data.status === 'success') {
+            localStorage.removeItem('repack_bo_ativo');
             exibirSucessoFeedback('GRAVADO COM SUCESSO!', 'Redirecionando...', () => {
                 window.location.href = '<?= APP_URL ?>/operador';
             });
@@ -122,6 +117,7 @@ async function confirmarApontamentoBO() {
         console.warn('Falha online, gravando no IndexedDB para sincronização posterior...', err);
         if (window.RepackOffline) {
             await window.RepackOffline.salvarBOOffline(payload);
+            localStorage.removeItem('repack_bo_ativo');
             exibirSucessoFeedback('SALVO OFFLINE!', 'Será sincronizado automaticamente.', () => {
                 window.location.href = '<?= APP_URL ?>/operador';
             });
