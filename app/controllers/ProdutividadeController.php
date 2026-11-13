@@ -86,6 +86,16 @@ class ProdutividadeController
     }
 
     /**
+     * Endpoint API de Heartbeat (keep-alive) para manter a sessão viva em processos longos
+     */
+    public function heartbeat(): void
+    {
+        header('Content-Type: application/json; charset=UTF-8');
+        $_SESSION['ultimo_heartbeat'] = time();
+        echo json_encode(['status' => 'success', 'timestamp' => time()]);
+    }
+
+    /**
      * Tela de Conferência de Produtividade
      */
     public function resumo(): void

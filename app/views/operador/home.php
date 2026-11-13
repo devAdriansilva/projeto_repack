@@ -37,7 +37,7 @@ require_once __DIR__ . '/../layouts/header.php';
     </a>
 
     <!-- Botão 2: REGISTRAR PRODUÇÃO (Sólido Verde Monumental) -->
-    <a href="<?= APP_URL ?>/operador/cronometro?novo=1" class="btn-operador-solido btn-operador-producao">
+    <a href="<?= APP_URL ?>/operador/cronometro" class="btn-operador-solido btn-operador-producao">
         <div class="btn-operador-icone-wrapper">
             <img src="<?= APP_URL ?>/assets/img/btn_producao.jpg?v=<?= @filemtime(__DIR__ . '/../../../public/assets/img/btn_producao.jpg') ?: time() ?>" 
                  alt="Encolhimento térmico - Produção" 

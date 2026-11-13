@@ -254,6 +254,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 producaoAtiva = JSON.parse(local);
                 if (producaoAtiva && producaoAtiva.produto_id && producaoAtiva.data_hora_inicio) {
                     restaurarMomento2(producaoAtiva);
+                    // Re-sincroniza silenciosamente com o backend caso a sessão PHP tenha expirado
+                    fetch('<?= APP_URL ?>/api/produtividade/iniciar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(producaoAtiva)
+                    }).catch(() => {});
                 }
             } catch (e) {
                 console.error('Falha ao restaurar producao do localStorage', e);
@@ -262,6 +268,17 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
         atualizarVisualPausa();
     }
+
+    // Heartbeat automático a cada 2 minutos para manter a sessão PHP viva em turnos longos
+    setInterval(() => {
+        if (producaoAtiva && producaoAtiva.produto_id) {
+            fetch('<?= APP_URL ?>/api/produtividade/heartbeat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ping: Date.now() })
+            }).catch(() => {});
+        }
+    }, 120000);
 });
 
 /* ==========================================================================
@@ -451,6 +468,13 @@ function restaurarMomento2(prod) {
     const mins = String(dataObj.getMinutes()).padStart(2, '0');
     document.getElementById('ativoHoraInicioDisplay').innerText = `${horas}:${mins}`;
 
+    // Restaura a contagem de pacotes refeitos se já estava em andamento
+    if (prod.pacotes_refeitos) {
+        pacotesContador = Math.max(1, parseInt(prod.pacotes_refeitos, 10));
+        const disp = document.getElementById('displayPacotes');
+        if (disp) disp.value = pacotesContador;
+    }
+
     atualizarVisualPausa();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -462,12 +486,14 @@ function alterarPacotes(delta) {
     pacotesContador = Math.max(1, pacotesContador + delta);
     document.getElementById('displayPacotes').value = pacotesContador;
     if (navigator.vibrate) navigator.vibrate(25);
+    persistirPacotesLocalStorage();
 }
 
 function atualizarPacotesDigitados(val) {
     const parsed = parseInt(val, 10);
     if (!isNaN(parsed) && parsed >= 1) {
         pacotesContador = parsed;
+        persistirPacotesLocalStorage();
     }
 }
 
@@ -480,6 +506,14 @@ function validarPacotesBlur() {
     } else {
         pacotesContador = parsed;
         display.value = parsed;
+    }
+    persistirPacotesLocalStorage();
+}
+
+function persistirPacotesLocalStorage() {
+    if (producaoAtiva) {
+        producaoAtiva.pacotes_refeitos = pacotesContador;
+        localStorage.setItem('repack_producao_ativa', JSON.stringify(producaoAtiva));
     }
 }
 

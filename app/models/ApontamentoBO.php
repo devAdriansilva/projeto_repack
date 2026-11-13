@@ -11,8 +11,8 @@ require_once __DIR__ . '/EstoqueLojinha.php';
 
 class ApontamentoBO
 {
-    public const TIPOS_LOJINHA = ['amassada', 'def_rotulo', 'emba_danificada'];
-    public const TIPOS_DESCARTE = ['furo', 'micro_furo', 'quebrada', 'validade'];
+    public const TIPOS_LOJINHA = ['amassada', 'def_rotulo', 'emba_danificada', 'validade'];
+    public const TIPOS_DESCARTE = ['furo', 'micro_furo', 'quebrada'];
 
     /**
      * Determina o destino da avaria com base no tipo padronizado

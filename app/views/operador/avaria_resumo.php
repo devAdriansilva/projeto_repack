@@ -50,28 +50,37 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 5px solid #CBD5E1; padding-top: 28px;">
+    <div style="display: flex; flex-direction: column; gap: 24px; border-top: 5px solid #CBD5E1; padding-top: 26px;">
+        <!-- Quantidade em Destaque Monumental -->
         <div>
-            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">QUANTIDADE:</span>
-            <div class="headline-xl" style="color: #0F172A; font-size: 104px; font-weight: 900; margin-top: 6px; line-height: 1.05;">
-                <?= $quantidade ?> <span style="font-size: 36px; font-weight: 800; color: #64748B;">un.</span>
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 28px; text-transform: uppercase;">QUANTIDADE:</span>
+            <div class="headline-xl" style="color: #0F172A; font-size: 96px; font-weight: 900; margin-top: 4px; line-height: 1.05;">
+                <?= $quantidade ?> <span style="font-size: 38px; font-weight: 800; color: #64748B;">un.</span>
             </div>
         </div>
-        <div>
-            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; text-transform: uppercase;">TIPO DE AVARIA:</span>
-            <div class="headline-lg" style="color: <?= ($destino === 'descarte') ? '#DC2626' : '#D97706' ?>; font-size: 46px; font-weight: 900; margin-top: 8px;">
+
+        <!-- Tipo de Avaria com Largura Total e Badge de Destino (Sem Truncamento) -->
+        <div style="border-top: 3px dashed #CBD5E1; padding-top: 22px;">
+            <span class="body-md" style="color: #475569; font-weight: 900; font-size: 28px; text-transform: uppercase;">TIPO DE AVARIA:</span>
+            <div style="color: <?= ($destino === 'descarte') ? '#DC2626' : '#D97706' ?>; font-size: clamp(36px, 7.5vw, 48px); font-weight: 900; margin-top: 8px; line-height: 1.2; word-break: break-word;">
                 <?= sanitize_html($tipoRotulo) ?>
+            </div>
+            <div style="margin-top: 14px;">
+                <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 900; padding: 8px 24px; border-radius: 9999px; <?= ($destino === 'descarte') ? 'background: #FEF2F2; color: #991B1B; border: 3px solid #EF4444;' : 'background: #FEF3C7; color: #92400E; border: 3px solid #F59E0B;' ?>">
+                    <span><?= ($destino === 'descarte') ? '🗑️' : '🏪' ?></span>
+                    <span><?= ($destino === 'descarte') ? 'DESTINO: DESCARTE / PERDA' : 'DESTINO: LOJINHA INTERNA' ?></span>
+                </span>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Rodapé de Dupla Confirmação da Urna Eletrônica (Grandes Alvos 135px) -->
+<!-- Rodapé de Dupla Confirmação da Urna Eletrônica (Grandes Alvos 140px) -->
 <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 28px 0 0 0; gap: 20px;">
-    <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
+    <a href="<?= APP_URL ?>/operador/avaria/passo2" class="btn-urna btn-urna-warning" style="min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px;">
         CORRIGIR
     </a>
-    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarBO" onclick="confirmarApontamentoBO()" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
+    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarBO" onclick="confirmarApontamentoBO()" style="min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px;">
         CONFIRMAR
     </button>
 </div>

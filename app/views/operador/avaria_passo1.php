@@ -59,8 +59,8 @@ require_once __DIR__ . '/../layouts/header.php';
     <div class="sku-entry-container">
         
         <!-- Campo de Código Gigante com Teclado Numérico Nativo -->
-        <label for="inputCodigoSku" style="display: block; font-size: 36px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
-            CÓDIGO (SKU):
+        <label for="inputCodigoSku" style="display: block; font-size: 42px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
+            CÓDIGO:
         </label>
         
         <div class="sku-input-wrapper">
@@ -69,7 +69,7 @@ require_once __DIR__ . '/../layouts/header.php';
                    class="input-sku-gigante <?= $produtoPreSelecionado ? 'sucesso-encontrado' : '' ?>" 
                    inputmode="numeric" 
                    pattern="[0-9]*"
-                   placeholder="Ex: 25174" 
+                   placeholder="9068" 
                    value="<?= sanitize_html($produtoPreSelecionado['codigo'] ?? '') ?>"
                    autocomplete="off"
                    autofocus
@@ -119,7 +119,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <!-- Seletor Numérico Gigante -->
     <div class="urna-card" style="text-align: center; width: 100%; margin: 0 0 24px 0; padding: 30px 24px; border-radius: 32px; border: 7px solid #0F172A; background: #FFFFFF; box-shadow: 0 8px 24px rgba(0,0,0,0.12);">
-        <label class="body-lg" style="font-weight: 900; display: block; margin-bottom: 22px; font-size: 34px; color: #0F172A; text-transform: uppercase; letter-spacing: 0.5px;">
+        <label class="body-lg" style="font-weight: 900; display: block; margin-bottom: 22px; font-size: 42px; color: #0F172A; text-transform: uppercase; letter-spacing: 0.5px;">
             QUANTIDADE:
         </label>
         <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 26px; margin: 0;">
@@ -145,12 +145,12 @@ require_once __DIR__ . '/../layouts/header.php';
         ⚠️ DIGITE UM CÓDIGO VÁLIDO ANTES DE AVANÇAR!
     </div>
 
-    <!-- Botões de Ação do Rodapé (Grandes Alvos 135px de Alto Contraste) -->
+    <!-- Botões de Ação do Rodapé (Grandes Alvos 140px de Alto Contraste) -->
     <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
-        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
+        <a href="<?= APP_URL ?>/operador" class="btn-urna btn-urna-warning" style="min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px;">
             CANCELAR
         </a>
-        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
+        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancar" style="min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px;">
             PRÓXIMO ➔
         </button>
     </div>

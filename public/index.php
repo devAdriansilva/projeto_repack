@@ -292,6 +292,10 @@ switch ($route) {
         (new ProdutividadeController())->descartarSessao();
         break;
 
+    case '/api/produtividade/heartbeat':
+        (new ProdutividadeController())->heartbeat();
+        break;
+
     case '/api/produtividade/sincronizar':
     case '/api/produtividade/sincronizar.php':
         (new ProdutividadeController())->sincronizar();

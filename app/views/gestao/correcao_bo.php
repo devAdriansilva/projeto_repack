@@ -166,16 +166,16 @@ require __DIR__ . '/../layouts/gestao_header.php';
                     <div class="mb-3">
                         <label for="corrigir_tipo" class="form-label fw-bold small text-uppercase">Tipo de Avaria Correto *</label>
                         <select class="form-select" id="corrigir_tipo" name="tipo_avaria" required style="height: 48px;">
-                            <optgroup label="Destino Lojinha (Avarias Leves)">
+                            <optgroup label="Destino Lojinha (Avarias Leves e Prazo)">
                                 <option value="amassada">Amassada</option>
                                 <option value="def_rotulo">Defeito no Rótulo</option>
                                 <option value="emba_danificada">Embalagem Danificada</option>
+                                <option value="validade">Validade (30 Dias)</option>
                             </optgroup>
                             <optgroup label="Destino Descarte (Perdas Irreversíveis)">
                                 <option value="furo">Furo</option>
                                 <option value="micro_furo">Micro Furo</option>
                                 <option value="quebrada">Quebrada</option>
-                                <option value="validade">Validade</option>
                             </optgroup>
                         </select>
                         <div class="form-text">Alterar entre avaria leve e furo ajustará o saldo de estoque automaticamente.</div>

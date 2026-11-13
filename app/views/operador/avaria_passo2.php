@@ -42,7 +42,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
     <div style="display: flex; flex-direction: column; gap: 22px; width: 100%;">
         
-        <!-- Destinados à Lojinha Interna (Amarelo / Laranja) -->
+        <!-- Destinados à Lojinha Interna (Amarelo / Laranja - Prazo e Avarias Leves) -->
         <button type="button" class="btn-urna btn-urna-warning btn-avaria-opcao" onclick="submeterTipo('amassada')">
             <span style="font-size: 58px;">🥫</span> <span>AMASSADA</span>
         </button>
@@ -53,6 +53,10 @@ require_once __DIR__ . '/../layouts/header.php';
 
         <button type="button" class="btn-urna btn-urna-warning btn-avaria-opcao" onclick="submeterTipo('emba_danificada')">
             <span style="font-size: 58px;">📦</span> <span>EMBALAGEM DANIFICADA</span>
+        </button>
+
+        <button type="button" class="btn-urna btn-urna-warning btn-avaria-opcao" onclick="submeterTipo('validade')">
+            <span style="font-size: 58px;">⏳</span> <span>VALIDADE (30 DIAS)</span>
         </button>
 
         <!-- Destinados ao Descarte Crítico (Vermelho Perigo - Não Vão para a Lojinha) -->
@@ -79,16 +83,16 @@ require_once __DIR__ . '/../layouts/header.php';
             </span>
             <span>QUEBRADA</span>
         </button>
-
-        <button type="button" class="btn-urna btn-urna-danger btn-avaria-opcao" onclick="submeterTipo('validade')">
-            <span style="font-size: 58px;">⏳</span> <span>VALIDADE</span>
-        </button>
     </div>
 
-    <!-- Botão Voltar (Fundo Azul de Alto Destaque) -->
+    <!-- Botão Voltar (Fundo Azul de Alto Destaque com Seta Vetorial Espessa) -->
     <div style="margin-top: 26px; width: 100%;">
-        <a href="<?= APP_URL ?>/operador/avaria/passo1?origem=voltar" class="btn-urna btn-urna-secondary" style="min-height: 125px; font-size: 36px; font-weight: 900; border-radius: 32px; background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%); color: #FFFFFF; border: 6px solid #1E40AF; box-shadow: 0 10px 26px rgba(37, 99, 235, 0.35);">
-            ⬅ VOLTAR / CORRIGIR
+        <a href="<?= APP_URL ?>/operador/avaria/passo1?origem=voltar" class="btn-urna btn-urna-secondary" style="min-height: 135px; font-size: 40px; font-weight: 900; border-radius: 36px; background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%); color: #FFFFFF; border: 6px solid #1E40AF; box-shadow: 0 10px 26px rgba(37, 99, 235, 0.35); display: flex; align-items: center; justify-content: center; gap: 18px; text-decoration: none;">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
+                <line x1="21" y1="12" x2="3" y2="12"></line>
+                <polyline points="11 4 3 12 11 20"></polyline>
+            </svg>
+            <span>VOLTAR / CORRIGIR</span>
         </a>
     </div>
 </form>

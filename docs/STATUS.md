@@ -526,6 +526,27 @@
     - **Gestão e Retificação (`app/views/gestao/correcao_bo.php`):**
       - Inclusão dos dois novos tipos no modal administrativo de correção sob "Destino Descarte (Perdas Irreversíveis)".
     - **Incremento de Versão:** Versão elevada para `v1.49` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.49` em `public/service-worker.js`.
+  - [x] **MANUT-052 (13/11/2026):** Roteamento de Validade para Lojinha (30 dias), Ajustes Tipográficos de B.O., Correção de Truncamento no Resumo e Persistência Inviolável da Produtividade.
+    - **Aba Registrar B.O. (`app/views/operador/avaria_passo1.php`):**
+      - Placeholder ajustado para `"9068"`.
+      - Rótulo alterado de `CÓDIGO (SKU):` para `CÓDIGO:` e fonte ampliada para 42px.
+      - Rótulo `QUANTIDADE:` ampliado para 42px.
+      - Botões do rodapé (`CANCELAR` e `PRÓXIMO ➔`) elevados para 140px de altura e fonte 46px com peso 900.
+    - **Regra de Negócio de Validade e Visual no Passo 2 (`app/models/ApontamentoBO.php` e `app/views/operador/avaria_passo2.php`):**
+      - Transferência de `'validade'` para `TIPOS_LOJINHA` (sai de `TIPOS_DESCARTE`).
+      - Roteamento automático configurado para `'lojinha'`, garantindo incremento no estoque disponível da lojinha (produtos próprios para consumo com 30 dias de prazo).
+      - Botão `VALIDADE (30 DIAS)` posicionado no grupo de Lojinha Interna (`btn-urna-warning` amarelo/laranja).
+      - Botão `VOLTAR / CORRIGIR` atualizado com seta vetorial SVG espessa (`stroke-width="4"` em 46x46px), altura de 135px e fonte 40px.
+    - **Eliminação de Truncamento na Conferência (`app/views/operador/avaria_resumo.php`):**
+      - Fim da divisão lateral estreita de 2 colunas: o resumo agora exibe a Quantidade em número monumental de 96px e o Tipo de Avaria com largura total, quebra fluida e selo colorido de destino (`🏪 DESTINADO À LOJINHA` ou `🗑️ DESTINO: DESCARTE / PERDA`), eliminando 100% da sobreposição do texto "Embalagem Danificada".
+      - Botões de confirmação ampliados para 140px de altura e fonte 46px.
+    - **Persistência Inviolável de Produtividade em Turnos Longos (`home.php`, `cronometro.php`, `ProdutividadeController.php` e `index.php`):**
+      - Remoção do parâmetro destrutivo `?novo=1` no botão da Home, permitindo que o operador retorne à produção em andamento a qualquer momento.
+      - Auto-restauração resiliente: sincronização contínua do estado e da contagem de pacotes no `localStorage`, reativando Momento 2 mesmo se o navegador fechar ou o aparelho reiniciar.
+      - Criação do endpoint `/api/produtividade/heartbeat` com ping automático a cada 2 minutos no cliente, impedindo a expiração da sessão PHP do servidor durante trabalhos de várias horas.
+    - **Gestão de B.O. (`app/views/gestao/correcao_bo.php`):**
+      - Movido "Validade (30 Dias)" para o grupo de destino da lojinha no modal de retificação.
+    - **Incremento de Versão:** Versão elevada para `v1.50` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.50` em `public/service-worker.js`.
 
 ---
 
