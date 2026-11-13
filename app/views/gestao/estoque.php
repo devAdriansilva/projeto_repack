@@ -26,7 +26,7 @@ require __DIR__ . '/../layouts/gestao_header.php';
     </div>
     <div class="d-flex align-items-center gap-2 flex-wrap">
         <button type="button" class="btn btn-outline-success" style="font-weight: 700; border-radius: 12px; padding: 10px 18px;" onclick="abrirModalImportacaoCsv()">
-            📥 Importar B.O. via CSV
+            📥 Importar B.O. (Excel / CSV)
         </button>
         <button type="button" class="btn btn-gestao btn-gestao-primary" onclick="iniciarSessaoInventario()">
             📋 Iniciar Coleta de Inventário
@@ -525,6 +525,8 @@ require __DIR__ . '/../layouts/gestao_header.php';
     </div>
 </div>
 
+<script src="<?= APP_URL ?>/assets/js/xlsx.mini.min.js?v=<?= APP_VERSION ?>"></script>
+
 <script>
 // Catálogo completo para busca instantânea e mapa de saldos atuais
 const PRODUTOS_CATALOGO = <?= json_encode($produtosCatalogoJson, JSON_UNESCAPED_UNICODE) ?>;
@@ -908,15 +910,48 @@ async function analisarArquivoCsv() {
     let nomeArquivo = 'relatorio_bo.csv';
 
     if (inputArquivo.files && inputArquivo.files.length > 0) {
-        nomeArquivo = inputArquivo.files[0].name;
-        conteudo = await inputArquivo.files[0].text();
+        const file = inputArquivo.files[0];
+        nomeArquivo = file.name;
+        const ext = nomeArquivo.split('.').pop().toLowerCase();
+
+        if (ext === 'xlsx' || ext === 'xls') {
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Lendo planilha Excel...';
+
+            if (typeof XLSX === 'undefined') {
+                alert('Erro: Biblioteca de leitura do Excel não carregada. Por favor, recarregue a página.');
+                btn.disabled = false;
+                btn.innerHTML = 'Analisar Relatório e Gerar Prévia ➔';
+                return;
+            }
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+                    throw new Error('Nenhuma aba encontrada no arquivo Excel.');
+                }
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                conteudo = XLSX.utils.sheet_to_csv(worksheet);
+            } catch (errXlsx) {
+                alert('Falha ao processar arquivo Excel: ' + errXlsx.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Analisar Relatório e Gerar Prévia ➔';
+                return;
+            }
+        } else {
+            conteudo = await file.text();
+        }
     } else if (inputTexto.value.trim() !== '') {
         conteudo = inputTexto.value.trim();
         nomeArquivo = 'relatorio_colado_' + (new Date().toISOString().slice(0, 10)) + '.csv';
     }
 
     if (!conteudo.trim()) {
-        alert('Por favor, selecione um arquivo .csv ou cole as linhas do relatório corporativo.');
+        alert('Por favor, selecione um arquivo Excel (.xlsx, .xls), CSV ou cole as linhas do relatório corporativo.');
+        btn.disabled = false;
+        btn.innerHTML = 'Analisar Relatório e Gerar Prévia ➔';
         return;
     }
 
@@ -938,7 +973,7 @@ async function analisarArquivoCsv() {
         const json = await resp.json();
 
         if (!resp.ok || json.status !== 'success') {
-            throw new Error(json.message || 'Falha ao analisar o arquivo CSV.');
+            throw new Error(json.message || 'Falha ao analisar o arquivo.');
         }
 
         dadosPreviaCsv = json;
@@ -947,7 +982,7 @@ async function analisarArquivoCsv() {
         document.getElementById('stepUploadCsv').style.display = 'none';
         document.getElementById('stepPreviaCsv').style.display = 'block';
     } catch (err) {
-        alert('Erro na análise do CSV: ' + err.message);
+        alert('Erro na análise da planilha: ' + err.message);
     } finally {
         btn.disabled = false;
         btn.innerHTML = 'Analisar Relatório e Gerar Prévia ➔';
@@ -1090,8 +1125,8 @@ function escapeHtml(text) {
                         📥
                     </div>
                     <div>
-                        <h5 class="modal-title" id="modalImportarCsvBOLabel" style="font-weight: 800; font-size: 20px;">Importar Relatório de B.O. Corporativo (CSV)</h5>
-                        <p class="mb-0 text-muted" style="font-size: 13px; color: #94A3B8 !important;">Alimente o estoque da Lojinha diretamente a partir da planilha de quebras do sistema central</p>
+                        <h5 class="modal-title" id="modalImportarCsvBOLabel" style="font-weight: 800; font-size: 20px;">Importar Relatório de B.O. Corporativo (Excel / CSV)</h5>
+                        <p class="mb-0 text-muted" style="font-size: 13px; color: #94A3B8 !important;">Alimente o estoque da Lojinha diretamente a partir da planilha de quebras (Excel .xlsx / .xls ou .csv)</p>
                     </div>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -1124,7 +1159,7 @@ function escapeHtml(text) {
                             
                             <div class="d-flex align-items-center gap-2 mb-3">
                                 <button type="button" id="btnAbaArquivo" class="btn btn-sm btn-outline-primary active" style="font-weight: 700; border-radius: 8px;" onclick="trocarAbaEntradaCsv('arquivo')">
-                                    📁 Selecionar Arquivo .CSV
+                                    📁 Selecionar Arquivo Excel / CSV
                                 </button>
                                 <button type="button" id="btnAbaTexto" class="btn btn-sm btn-outline-secondary" style="font-weight: 700; border-radius: 8px;" onclick="trocarAbaEntradaCsv('texto')">
                                     📋 Colar Linhas da Planilha
@@ -1133,10 +1168,10 @@ function escapeHtml(text) {
 
                             <!-- Aba Arquivo -->
                             <div id="abaArquivoContainer">
-                                <label class="form-label" style="font-weight: 700; color: #334155;">Escolha o arquivo CSV exportado do sistema de perdas:</label>
-                                <input type="file" id="inputCsvFile" class="form-control" accept=".csv,text/csv" style="padding: 12px; border-radius: 12px; border: 2px dashed #CBD5E1; font-weight: 600;">
+                                <label class="form-label" style="font-weight: 700; color: #334155;">Escolha o arquivo Excel (.xlsx, .xls) ou CSV exportado do sistema corporativo:</label>
+                                <input type="file" id="inputCsvFile" class="form-control" accept=".xlsx,.xls,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" style="padding: 12px; border-radius: 12px; border: 2px dashed #CBD5E1; font-weight: 600;">
                                 <div class="form-text mt-2 text-muted">
-                                    Dica: Aceita arquivos com delimitador vírgula (,) ou ponto-e-vírgula (;). As colunas essenciais são <strong>Código</strong>, <strong>Quantidade</strong> e <strong>Motivo</strong>.
+                                    Dica: Aceita arquivos do <strong>Excel (.xlsx, .xls)</strong> ou planilhas <strong>.CSV</strong>. As colunas essenciais são <strong>Código</strong>, <strong>Quantidade</strong> e <strong>Motivo</strong>.
                                 </div>
                             </div>
 

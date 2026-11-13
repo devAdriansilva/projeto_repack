@@ -671,6 +671,21 @@
       - Suítes de regressão `tests/test_fase5.php` (35/35), `tests/test_acesso_lojinha.php` (15/15) e `tests/test_importacao_csv_bo.php` (19/19) validadas com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.57` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-061 (13/11/2026):** Suporte Nativo ao Upload de Planilhas Excel (.xlsx e .xls) no Módulo de Importação de B.O. Corporativo.
+    - **Biblioteca Local de Leitura Excel (`public/assets/js/xlsx.mini.min.js`):**
+      - Integração do parser SheetJS mini armazenado estritamente local (em conformidade com a proibição de CDNs externas em `AGENTS.md`).
+      - Inclusão do asset no Service Worker PWA (`public/service-worker.js`) para garantia de funcionamento offline.
+    - **Leitor Instantâneo Client-Side no Módulo de Estoque (`app/views/gestao/estoque.php`):**
+      - Extensão do input de arquivo para aceitar formatos `.xlsx`, `.xls` e `.csv` (`accept=".xlsx,.xls,.csv,text/csv,..."`).
+      - Aprimoramento da rotina `analisarArquivoCsv()` para detectar a extensão do arquivo selecionado: ao identificar planilhas `.xlsx` ou `.xls`, realiza a leitura assíncrona do `ArrayBuffer`, extrai as células da primeira aba e as converte diretamente em formato CSV na memória do navegador.
+      - Envio do texto resultante para o backend de auditoria (`/api/gestao/bo/previa-csv`), aproveitando 100% da matriz de classificação de motivos, transação atômica e proteção anti-duplicidade já homologadas.
+    - **Atualização de Interface e Usabilidade:**
+      - Atualização de textos e rótulos para refletir o suporte a **"📥 Importar B.O. (Excel / CSV)"** tanto nos botões quanto nos títulos e textos de ajuda do modal.
+    - **Testes & Versionamento:**
+      - Validação com a planilha Excel real enviada pelo usuário (`relatorio_perdas_cbb_13-11-2026.xlsx` com 23 linhas e 86 unidades apuradas com sucesso).
+      - Suítes de regressão `tests/test_ultima_entrada_e_espelho.php` (10/10) e `tests/test_importacao_csv_bo.php` (19/19) 100% aprovadas.
+      - Versão da aplicação incrementada para `v1.58` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
