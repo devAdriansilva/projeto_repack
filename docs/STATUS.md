@@ -572,6 +572,18 @@
       - Banco de dados local `repack_db` atualizado com o caminho `foto_url` de cada produto.
       - Geração automática do script transacional `atualizar_fotos_producao.sql` para replicação no servidor de produção (Alwaysdata).
       - Atualização do `.gitignore` protegendo arquivos temporários de lote e scripts de carga contra commits desnecessários.
+  - [x] **MANUT-055 (13/11/2026):** Confirmação Visual Monumental com Fotos nas Telas Operacionais (B.O. e Produtividade) e Prefixo Inteligente de URL.
+    - **Registro de B.O. com Reconhecimento Visual (`avaria_passo1.php`, `avaria_passo2.php`, `avaria_resumo.php`):**
+      - No Passo 1: exibição imediata da foto do produto em card verde de confirmação ao digitar o código SKU e miniaturas na lista de sugestões.
+      - No Passo 2: inclusão da foto no cabeçalho superior unificado junto ao nome e à quantidade de unidades.
+      - No Passo 3 (Resumo): exibição da foto monumental de 140x140px no card de confirmação final da Urna Eletrônica.
+    - **Registro de Produtividade com Foto em Tempo Real (`cronometro.php`, `cronometro_resumo.php`):**
+      - No Momento 1: foto no card de confirmação verde do SKU antes de iniciar a contagem.
+      - No Momento 2: exibição contínua da foto da bebida durante a contagem do cronômetro digital.
+      - No Momento 3 (Resumo): foto no cartão de confirmação de pacotes montados e horários de ciclo.
+    - **Normalização de URL e Caminhos Subdiretório (`APP_URL`):**
+      - Correção nos templates de Gestão e Lojinha para prefixar `APP_URL`, assegurando que a hospedagem no Alwaysdata em `/repack/` carregue todas as fotos sem erro 404.
+    - **Incremento de Versão:** Versão elevada para `v1.52` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.52` em `public/service-worker.js`.
 
 ---
 

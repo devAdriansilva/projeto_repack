@@ -15,10 +15,12 @@ $fim = (string)($_POST['data_hora_fim'] ?? ($_SESSION['cronometro_temp']['data_h
 $duracao = (int)($_POST['duracao_segundos'] ?? ($_SESSION['cronometro_temp']['duracao_segundos'] ?? 0));
 $pacotes = (int)($_POST['pacotes_refeitos'] ?? ($_SESSION['cronometro_temp']['pacotes_refeitos'] ?? 1));
 
-if (empty($produtoNome) && $produtoId > 0) {
+$prod = null;
+if ($produtoId > 0) {
     $prod = Produto::buscarPorId($produtoId);
-    $produtoNome = $prod['nome'] ?? 'Produto';
+    $produtoNome = $prod['nome'] ?? $produtoNome;
 }
+$fotoUrl = (!empty($prod['foto_url'])) ? (APP_URL . $prod['foto_url']) : null;
 
 $_SESSION['cronometro_temp'] = [
     'produto_id' => $produtoId,
@@ -47,9 +49,14 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <!-- Cartão Central de Resumo (Ultra Alto Contraste Massivo - Sem Poluição Visual) -->
 <div class="urna-card" style="width: 100%; text-align: center; padding: 44px 32px; border-radius: 36px; border: 8px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22); background: #FFFFFF;">
-    <div style="margin-bottom: 28px;">
+    <div style="margin-bottom: 24px;">
         <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; letter-spacing: 1px; text-transform: uppercase;">PRODUTO:</span>
-        <div class="headline-lg" style="color: #0F172A; margin-top: 12px; font-size: 54px; font-weight: 900; line-height: 1.2; word-break: break-word;">
+        <?php if ($fotoUrl): ?>
+            <div style="margin: 14px 0 10px 0;">
+                <img src="<?= $fotoUrl ?>" alt="Foto" style="width: 140px; height: 140px; object-fit: contain; border-radius: 20px; border: 4px solid #059669; background: #FFFFFF; box-shadow: 0 6px 16px rgba(0,0,0,0.1);">
+            </div>
+        <?php endif; ?>
+        <div class="headline-lg" style="color: #0F172A; margin-top: 8px; font-size: 50px; font-weight: 900; line-height: 1.2; word-break: break-word;">
             <?= sanitize_html($produtoNome) ?>
         </div>
     </div>

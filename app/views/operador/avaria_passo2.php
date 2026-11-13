@@ -30,9 +30,14 @@ require_once __DIR__ . '/../layouts/header.php';
     <h1 class="headline-lg" style="margin: 0 0 16px 0; font-size: 54px; font-weight: 900; color: #0F172A;">
         TIPO DE AVARIA
     </h1>
-    <div style="background: #FFFFFF; border: 7px solid #0F172A; border-radius: 32px; padding: 22px 40px; margin: 0 auto; display: inline-block; max-width: 100%; box-shadow: 0 10px 26px rgba(0,0,0,0.14);">
-        <span style="font-size: 38px; font-weight: 900; color: #0F172A;"><?= sanitize_html($produtoNome) ?></span>
-        <span style="font-size: 38px; font-weight: 900; color: #2563EB; margin-left: 20px;">➔ <?= $quantidade ?> un.</span>
+    <div style="background: #FFFFFF; border: 7px solid #0F172A; border-radius: 32px; padding: 18px 30px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 20px; max-width: 100%; box-shadow: 0 10px 26px rgba(0,0,0,0.14); flex-wrap: wrap;">
+        <?php if (!empty($produto['foto_url'])): ?>
+            <img src="<?= APP_URL . sanitize_html($produto['foto_url']) ?>" alt="Foto" style="width: 80px; height: 80px; object-fit: contain; border-radius: 14px; border: 3px solid #10B981; background: #FFFFFF; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+        <?php endif; ?>
+        <div style="text-align: left;">
+            <div style="font-size: 34px; font-weight: 900; color: #0F172A; line-height: 1.15;"><?= sanitize_html($produtoNome) ?></div>
+            <div style="font-size: 32px; font-weight: 900; color: #2563EB; margin-top: 4px;">➔ <?= $quantidade ?> un.</div>
+        </div>
     </div>
 </div>
 

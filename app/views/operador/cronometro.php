@@ -36,12 +36,13 @@ if ($isOrigemVoltar && isset($_SESSION['cronometro_temp'])) {
     $pacotesIniciais = 1;
 }
 
-// Se tiver produto ativo, preenche código e embalagem se necessário
+// Se tiver produto ativo, preenche código, embalagem e foto se necessário
 if ($producaoAtiva && empty($producaoAtiva['produto_codigo'])) {
     foreach ($produtos as $p) {
         if ((int)$p['id'] === (int)$producaoAtiva['produto_id']) {
             $producaoAtiva['produto_codigo'] = (string)$p['codigo'];
             $producaoAtiva['produto_embalagem'] = (string)($p['pacote_padrao'] ?? '');
+            $producaoAtiva['produto_foto_url'] = !empty($p['foto_url']) ? (APP_URL . $p['foto_url']) : null;
             break;
         }
     }
@@ -53,7 +54,8 @@ $produtosJson = array_map(function($p) {
         'id' => (int)$p['id'],
         'codigo' => (string)$p['codigo'],
         'nome' => (string)$p['nome'],
-        'embalagem' => (string)($p['pacote_padrao'] ?? '')
+        'embalagem' => (string)($p['pacote_padrao'] ?? ''),
+        'foto_url' => !empty($p['foto_url']) ? (APP_URL . $p['foto_url']) : null
     ];
 }, $produtos);
 
@@ -104,6 +106,12 @@ require_once __DIR__ . '/../layouts/header.php';
                 </svg>
                 <span>PRODUTO IDENTIFICADO</span>
             </div>
+
+            <!-- Foto Destaque Momento 1 -->
+            <div id="wrapperFotoMomento1" style="text-align: center; margin: 12px 0 8px 0;">
+                <img id="imgFotoMomento1" src="" alt="Foto" style="width: 120px; height: 120px; object-fit: contain; border-radius: 16px; background: #FFFFFF; border: 3px solid #10B981; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: none;">
+            </div>
+
             <div class="nome-produto-destaque" id="displayNomeProduto"></div>
             <div class="detalhes-produto">
                 <span class="badge-sku" id="displaySkuBadge"></span>
@@ -167,6 +175,14 @@ require_once __DIR__ . '/../layouts/header.php';
 
         <div class="headline-lg" id="ativoNomeProduto" style="color: #0F172A; font-size: 52px; font-weight: 900; line-height: 1.2; word-break: break-word;">
             <?= sanitize_html($producaoAtiva['produto_nome'] ?? '') ?>
+        </div>
+
+        <!-- Foto Destaque Momento 2 -->
+        <div id="wrapperFotoMomento2" style="text-align: center; margin: 16px 0 10px 0;">
+            <img id="ativoFotoProduto" 
+                 src="<?= !empty($producaoAtiva['produto_foto_url']) ? sanitize_html($producaoAtiva['produto_foto_url']) : '' ?>" 
+                 alt="Foto" 
+                 style="width: 140px; height: 140px; object-fit: contain; border-radius: 20px; border: 4px solid #059669; background: #FFFFFF; box-shadow: 0 6px 16px rgba(0,0,0,0.1); <?= empty($producaoAtiva['produto_foto_url']) ? 'display: none;' : 'display: inline-block;' ?>">
         </div>
         <div style="margin-top: 14px; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
             <span class="badge-sku" id="ativoSkuBadge" style="font-size: 24px; padding: 8px 22px;">
@@ -374,6 +390,17 @@ function selecionarProdutoConfirmado(p) {
     const embDisplay = document.getElementById('displayEmbalagem');
     if (embDisplay) embDisplay.innerText = p.embalagem || 'Unidade';
 
+    const imgMomento1 = document.getElementById('imgFotoMomento1');
+    if (imgMomento1) {
+        if (p.foto_url) {
+            imgMomento1.src = p.foto_url;
+            imgMomento1.style.display = 'inline-block';
+        } else {
+            imgMomento1.src = '';
+            imgMomento1.style.display = 'none';
+        }
+    }
+
     const input = document.getElementById('inputCodigoSku');
     input.value = p.codigo;
     input.classList.add('sucesso-encontrado');
@@ -391,6 +418,11 @@ function limparSku() {
     input.value = '';
     input.classList.remove('sucesso-encontrado');
     produtoSelecionadoMomento1 = null;
+    const imgMomento1 = document.getElementById('imgFotoMomento1');
+    if (imgMomento1) {
+        imgMomento1.src = '';
+        imgMomento1.style.display = 'none';
+    }
     document.getElementById('cardConfirmacaoSku').style.display = 'none';
     document.getElementById('cardNaoEncontrado').style.display = 'none';
     document.getElementById('wrapperSugestoes').style.display = 'none';
@@ -437,6 +469,7 @@ function iniciarProducao() {
         produto_nome: produtoSelecionadoMomento1.nome,
         produto_codigo: produtoSelecionadoMomento1.codigo,
         produto_embalagem: produtoSelecionadoMomento1.embalagem,
+        produto_foto_url: produtoSelecionadoMomento1.foto_url,
         data_hora_inicio: timestampInicio,
         pausado: false,
         segundos_pausa: 0
@@ -462,6 +495,17 @@ function restaurarMomento2(prod) {
     document.getElementById('ativoSkuBadge').innerText = 'SKU ' + (prod.produto_codigo || '');
     const embBadge = document.getElementById('ativoEmbalagemBadge');
     if (embBadge) embBadge.innerText = prod.produto_embalagem || 'Unidade';
+
+    const imgAtivo = document.getElementById('ativoFotoProduto');
+    if (imgAtivo) {
+        if (prod.produto_foto_url) {
+            imgAtivo.src = prod.produto_foto_url;
+            imgAtivo.style.display = 'inline-block';
+        } else {
+            imgAtivo.src = '';
+            imgAtivo.style.display = 'none';
+        }
+    }
 
     const dataObj = new Date(prod.data_hora_inicio);
     const horas = String(dataObj.getHours()).padStart(2, '0');

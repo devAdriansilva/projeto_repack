@@ -37,7 +37,8 @@ $produtosJson = array_map(function($p) {
         'id' => (int)$p['id'],
         'codigo' => (string)$p['codigo'],
         'nome' => (string)$p['nome'],
-        'embalagem' => (string)($p['pacote_padrao'] ?? '')
+        'embalagem' => (string)($p['pacote_padrao'] ?? ''),
+        'foto_url' => !empty($p['foto_url']) ? (APP_URL . $p['foto_url']) : null
     ];
 }, $produtos);
 
@@ -89,6 +90,15 @@ require_once __DIR__ . '/../layouts/header.php';
                 </svg>
                 <span>PRODUTO IDENTIFICADO</span>
             </div>
+
+            <!-- Foto Destaque do Produto -->
+            <div id="wrapperFotoProduto" style="text-align: center; margin: 14px 0 10px 0;">
+                <img id="imgFotoProduto" 
+                     src="<?= !empty($produtoPreSelecionado['foto_url']) ? (APP_URL . sanitize_html($produtoPreSelecionado['foto_url'])) : '' ?>" 
+                     alt="Foto" 
+                     style="width: 130px; height: 130px; object-fit: contain; border-radius: 18px; background: #FFFFFF; border: 3px solid #10B981; box-shadow: 0 4px 12px rgba(0,0,0,0.08); <?= empty($produtoPreSelecionado['foto_url']) ? 'display: none;' : 'display: inline-block;' ?>">
+            </div>
+
             <div class="nome-produto-destaque" id="displayNomeProduto">
                 <?= sanitize_html($produtoPreSelecionado['nome'] ?? '') ?>
             </div>
@@ -308,6 +318,17 @@ function selecionarProdutoConfirmado(p) {
     document.getElementById('displaySkuBadge').innerText = 'SKU ' + p.codigo;
     document.getElementById('displayEmbalagem').innerText = p.embalagem || 'Padrão';
     
+    const imgFoto = document.getElementById('imgFotoProduto');
+    if (imgFoto) {
+        if (p.foto_url) {
+            imgFoto.src = p.foto_url;
+            imgFoto.style.display = 'inline-block';
+        } else {
+            imgFoto.src = '';
+            imgFoto.style.display = 'none';
+        }
+    }
+
     const cardOk = document.getElementById('cardConfirmacaoSku');
     cardOk.style.display = 'block';
 
@@ -321,6 +342,11 @@ function selecionarProdutoConfirmado(p) {
 function desmarcarProduto() {
     produtoAtivo = null;
     document.getElementById('inputProdutoId').value = '';
+    const imgFoto = document.getElementById('imgFotoProduto');
+    if (imgFoto) {
+        imgFoto.src = '';
+        imgFoto.style.display = 'none';
+    }
     try { localStorage.removeItem('repack_bo_ativo'); } catch(e) {}
 }
 
@@ -338,14 +364,21 @@ function exibirSugestoes(lista) {
             wrapper.style.display = 'none';
         };
 
+        const fotoHtml = p.foto_url 
+            ? `<img src="${p.foto_url}" style="width: 44px; height: 44px; object-fit: contain; border-radius: 8px; border: 1.5px solid #CBD5E1; background: #fff; margin-right: 12px; flex-shrink: 0;">` 
+            : `<div style="width: 44px; height: 44px; border-radius: 8px; background: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px; flex-shrink: 0;">🏷️</div>`;
+
         btn.innerHTML = `
-            <div>
-                <span class="sku-badge">SKU ${escapeHtml(p.codigo)}</span>
-                <div style="font-weight: 800; font-size: 16px; color: var(--on-surface); line-height: 1.2;">
-                    ${escapeHtml(p.nome)}
-                </div>
-                <div style="font-size: 13px; color: var(--on-surface-muted);">
-                    ${escapeHtml(p.embalagem || '')}
+            <div style="display: flex; align-items: center; text-align: left;">
+                ${fotoHtml}
+                <div>
+                    <span class="sku-badge">SKU ${escapeHtml(p.codigo)}</span>
+                    <div style="font-weight: 800; font-size: 16px; color: var(--on-surface); line-height: 1.2;">
+                        ${escapeHtml(p.nome)}
+                    </div>
+                    <div style="font-size: 13px; color: var(--on-surface-muted);">
+                        ${escapeHtml(p.embalagem || '')}
+                    </div>
                 </div>
             </div>
             <div style="color: #2563EB; font-weight: 900; font-size: 20px;">➔</div>
