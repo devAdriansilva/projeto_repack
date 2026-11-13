@@ -45,6 +45,7 @@ public/uploads/**
 !public/uploads/**/
 !public/uploads/**/.gitkeep
 !public/uploads/**/.htaccess
+!public/uploads/produtos/*.*
 
 # Dumps e Backups de Banco de Dados
 *.sql.gz
@@ -66,3 +67,10 @@ tmp/
 
 # Preservar arquivos .gitkeep em pastas estruturais
 !.gitkeep
+
+# Arquivos e pastas temporárias de migração de imagens
+temp_images/*
+!temp_images/.gitkeep
+atualizar_fotos_producao.sql
+importar_imagens.php
+public/importar_imagens.php

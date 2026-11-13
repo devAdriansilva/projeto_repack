@@ -560,6 +560,19 @@
       - Coexistência perfeita e simultânea: o operador pode manter uma produção longa em andamento no cronômetro e um rascunho de B.O. em espera ao mesmo tempo, ambos destacados visualmente na Home e com restauração independente ao toque.
     - **Incremento de Versão:** Versão elevada para `v1.51` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.51` em `public/service-worker.js`.
 
+  - [x] **MANUT-054 (13/11/2026):** Importação em Lote de Imagens com Reconhecimento Inteligente por Volume/Marca e Painel Interativo de Associação.
+    - **Algoritmo de Correspondência Semântica e Volume Estrito:**
+      - Normalização fonética e textual de nomes de arquivos, eliminando stopwords, acentuação e ruídos de embalagem.
+      - Extração matemática e pareamento estrito de volumes em mililitros (`350ml`, `269ml`, `330ml`, `473ml`, `600ml`, `1L`, `2L`, etc.), zerando o score de correspondência em caso de divergência volumétrica (ex: impedindo que Spaten 350ml case com 600ml).
+      - Isolamento absoluto de marcas comerciais e sabores específicos (Brahma, Spaten, Corona, Stella, Skol, Tanqueray, Gordons, White Horse, Red Bull, etc.).
+    - **Interface Web Interativa de Associação (`importar_imagens.php` e `public/importar_imagens.php`):**
+      - Tabela interativa com seletores `<select>` pré-carregados para cada imagem, permitindo que a coordenação altere qualquer produto associado com 1 clique antes da gravação ou ignore fotos fora de catálogo.
+    - **Execução e Migração Concluídas:**
+      - 65 imagens descritivas associadas, renomeadas para os SKUs oficiais e copiadas para `public/uploads/produtos/`.
+      - Banco de dados local `repack_db` atualizado com o caminho `foto_url` de cada produto.
+      - Geração automática do script transacional `atualizar_fotos_producao.sql` para replicação no servidor de produção (Alwaysdata).
+      - Atualização do `.gitignore` protegendo arquivos temporários de lote e scripts de carga contra commits desnecessários.
+
 ---
 
 ## Próximo Passo
