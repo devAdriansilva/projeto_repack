@@ -64,15 +64,36 @@ A interface do Operador opera sob a **Filosofia da Urna Eletrônica**: alto cont
    - Acesso Lojinha: `http://localhost/projeto_repack/public/lojinha/login`
    - Acesso Gestão: Clique na engrenagem cinza clara (`#D1D5DB`) no canto superior direito da tela do Operador ou acesse `http://localhost/projeto_repack/public/gestao/dashboard`
 
-### 3.3 Credenciais Iniciais de Teste
-- **Gestão (Coordenadora / Master):** Matrícula `GEST01` / Senha `gestao123` (Possui acesso ao painel de gestão e visão Master da Lojinha com estoque total + reservas).
-- **Operadores de Turno:** Matrículas `OP01` (Adriano Silva) e `OP02` (Pedro Cruz) - selecionáveis no quiosque.
-- **Colaboradores Comuns (Regra 1B):** Matrícula `COLAB01` (Carlos Ferreira - Armazém), `COLAB02` (Mariana Lima - Transporte). Limitados a 1 único pedido por lote.
-- **Contas Setoriais Corporativas (Múltiplos Pedidos / Demandas Internas):**
-  - `RH01` - Gente e Gestão (RH)
-  - `ADM01` - Setor Administrativo
-  - `VENDAS01` - Sala de Vendas
-  - `FIN01` - Setor Financeiro
+### 3.3 Credenciais de Teste Disponíveis
+
+#### A) Gestão e Acesso Master
+- **Coordenadora / Master:** Matrícula `GEST01` / Senha `gestao123`
+  - Acesso ao painel administrativo (`/gestao/dashboard`) e visão Master da Lojinha com estoque total + reservas da gestão.
+  - Na Lojinha, conta com alternador de perspectiva (`👑 Modo Master` vs `👤 Modo Colaborador`).
+
+#### B) Operadores de Bancada (Repack)
+- Matrículas `OP01` (Adriano Silva) e `OP02` (Pedro Cruz) - selecionáveis no quiosque da Urna Eletrônica e elegíveis na Lojinha quando o setor Repack está autorizado.
+
+#### C) Colaboradores Comuns (Regra de 1 Pedido por Lote de Venda)
+- `COLAB01` - Carlos Ferreira (Setor: **Armazém**)
+- `COLAB02` - Mariana Lima (Setor: **Transporte**)
+- `COLAB03` - Roberto Costa (Setor: **Administrativo**)
+- `COLAB04` - Juliana Mendes (Setor: **Armazém**)
+- `COLAB05` - Lucas Souza (Setor: **Transporte**)
+- `COLAB06` - Beatriz Santos (Setor: **Repack**)
+- `COLAB07` - Fernando Dias (Setor: **Logística**)
+- `COLAB08` - Camila Rocha (Setor: **Qualidade**)
+- `COLAB09` - Rodrigo Alves (Setor: **Produção**)
+- `COLAB10` - Patricia Ramos (Setor: **Administrativo**)
+
+#### D) Contas Setoriais Corporativas (Múltiplos Pedidos e Requisições Institucionais)
+- `ADM01` - Setor Administrativo
+- `RH01` - Gente e Gestão (RH)
+- `VENDAS01` - Sala de Vendas
+- `FIN01` - Setor Financeiro
+- `SEG01` - Segurança do Trabalho
+- `DIRETORIA01` - Diretoria Executiva
+*(Possuem acesso garantido através do Lote Corporativo contínuo, sem limitação de 1 pedido único).*
 
 ---
 

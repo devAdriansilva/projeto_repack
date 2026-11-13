@@ -73,30 +73,40 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
         .navbar-gestao {
-            background-color: #1F2937;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 12px 24px;
+            background-color: #0F172A;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 8px 18px;
         }
 
         .navbar-gestao .nav-link {
-            color: #D1D5DB !important;
+            color: #94A3B8 !important;
             font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
+            font-size: 13.5px;
+            padding: 6px 12px;
+            border-radius: 7px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            line-height: 1.4;
         }
 
         .navbar-gestao .nav-link:hover {
             color: #FFFFFF !important;
-            background-color: #374151;
+            background-color: rgba(255, 255, 255, 0.08);
         }
 
         .navbar-gestao .nav-link.active {
             color: #FFFFFF !important;
-            background-color: var(--gestao-secondary);
+            background-color: #2563EB;
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.4);
         }
 
         .gestao-container {
@@ -222,137 +232,135 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 <body class="gestao-body">
 
 <!-- Barra de Navegação Superior da Gestão -->
-<nav class="navbar navbar-expand-lg navbar-dark navbar-gestao">
+<nav class="navbar navbar-expand-xl navbar-dark navbar-gestao">
     <div class="container-fluid px-0 d-flex align-items-center justify-content-between">
         <!-- Lado Esquerdo: Menu Hambúrguer (Mobile) e Marca do Sistema -->
-        <div class="d-flex align-items-center gap-2">
-            <button class="navbar-toggler me-1" type="button" data-bs-toggle="collapse" data-bs-target="#navGestao" aria-controls="navGestao" aria-expanded="false" aria-label="Alternar navegação" style="border: 2px solid rgba(255,255,255,0.25); padding: 6px 10px;">
-                <span class="navbar-toggler-icon"></span>
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+            <button class="navbar-toggler d-xl-none" type="button" data-bs-toggle="collapse" data-bs-target="#navGestao" aria-controls="navGestao" aria-expanded="false" aria-label="Alternar navegação" style="border: 1px solid rgba(255,255,255,0.25); padding: 5px 9px;">
+                <span class="navbar-toggler-icon" style="width: 20px; height: 20px;"></span>
             </button>
 
-            <a class="navbar-brand d-flex align-items-center gap-2 m-0" href="<?= APP_URL ?>/gestao/dashboard">
-                <span style="display: inline-block; width: 14px; height: 14px; background: var(--gestao-primary); border-radius: 3px;"></span>
-                <strong>Gestão do Repack</strong>
+            <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-white" href="<?= APP_URL ?>/gestao/dashboard" style="font-size: 16px;">
+                <span style="display: inline-block; width: 12px; height: 12px; background: #10B981; border-radius: 3px; box-shadow: 0 0 8px rgba(16,185,129,0.5);"></span>
+                <strong style="letter-spacing: -0.2px;">Gestão do Repack</strong>
                 <span class="badge bg-secondary ms-1 d-none d-sm-inline" style="font-size: 11px; font-weight: 500; opacity: 0.85;"><?= APP_VERSION ?></span>
             </a>
         </div>
 
-        <!-- Botões de Acesso Rápido no Topo -->
-        <div class="d-flex align-items-center gap-2">
-            <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm" style="background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); color: #FFFFFF; font-weight: 800; border-radius: 10px; padding: 7px 14px; border: 1.5px solid #5B21B6; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Acessar Vitrine da Lojinha (com visão de colaborador / master)">
-                <span style="font-size: 15px;">🛍️</span>
-                <span class="d-none d-md-inline">Ver Lojinha</span>
-                <span class="d-inline d-md-none">Lojinha</span>
-            </a>
-
-            <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #FFFFFF; font-weight: 800; border-radius: 10px; padding: 7px 14px; border: 1.5px solid #047857; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Retornar ao Terminal do Operador">
-                <span style="font-size: 15px;">🏭</span>
-                <span class="d-none d-md-inline">Área de Reembalagem</span>
-                <span class="d-inline d-md-none">Bancada</span>
-            </a>
-        </div>
-
-        <div class="collapse navbar-collapse w-100 mt-2 mt-lg-0" id="navGestao">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1 ps-lg-3">
+        <!-- Conteúdo do Menu (Links Centrais + Atalhos + Usuário) -->
+        <div class="collapse navbar-collapse mt-3 mt-xl-0" id="navGestao">
+            <!-- Módulos de Gestão Centrais -->
+            <ul class="navbar-nav mx-auto mb-2 mb-xl-0 gap-1 ps-xl-2 align-items-xl-center">
                 <li class="nav-item">
                     <a class="nav-link <?= ($rotaAtual === '/gestao/dashboard' || $rotaAtual === '/gestao') ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/dashboard">
-                        📊 Dashboard
+                        <span>📊</span><span>Dashboard</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/produtos') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/produtos">
-                        📦 Produtos
+                        <span>📦</span><span>Produtos</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/lotes') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/lotes">
-                        🏷️ Lotes de Venda
+                        <span>🏷️</span><span>Lotes</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/estoque') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/estoque">
-                        🏪 Estoque & Reservas
+                        <span>🏪</span><span>Estoque</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/bo') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/bo">
-                        📋 Correção de B.O.
+                        <span>📋</span><span>Correção B.O.</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/separacao') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/separacao">
-                        📝 Separação
+                        <span>📝</span><span>Separação</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/relatorios') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/relatorios">
-                        📈 Relatórios
-                    </a>
-                </li>
-                <li class="nav-item d-lg-none">
-                    <a class="nav-link text-warning" href="<?= APP_URL ?>/lojinha" style="font-weight: 700;">
-                        🛍️ Vitrine da Lojinha
+                        <span>📈</span><span>Relatórios</span>
                     </a>
                 </li>
             </ul>
 
-            <div class="d-flex align-items-center gap-3 pt-2 pt-lg-0 border-top border-lg-0 border-secondary">
-                <!-- Crachá Desktop (Alto Contraste Cromático em Azul Cobalto e Dourado) -->
-                <div class="d-none d-lg-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border: 2px solid #3B82F6; box-shadow: 0 2px 8px rgba(30, 58, 138, 0.35);">
-                    <div style="width: 28px; height: 28px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <span style="font-size: 15px; line-height: 1;">👤</span>
+            <!-- Lado Direito: Atalhos Externos + Crachá do Usuário + Sair -->
+            <div class="d-flex flex-column flex-xl-row align-items-stretch align-items-xl-center gap-2 pt-2 pt-xl-0 border-top border-xl-0 border-secondary">
+                <!-- Atalhos Rápidos da Gestão -->
+                <div class="d-flex align-items-center gap-2">
+                    <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm text-nowrap flex-grow-1 flex-xl-grow-0" style="background: rgba(139, 92, 246, 0.12); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.35); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 11px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" title="Acessar Vitrine da Lojinha (com perspectiva Master / Colaborador)">
+                        <span style="font-size: 14px;">🛍️</span>
+                        <span>Lojinha</span>
+                    </a>
+
+                    <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm text-nowrap flex-grow-1 flex-xl-grow-0" style="background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.35); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 11px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" title="Retornar ao Terminal do Operador">
+                        <span style="font-size: 14px;">🏭</span>
+                        <span>Bancada</span>
+                    </a>
+                </div>
+
+                <div class="vr bg-secondary d-none d-xl-block mx-1" style="height: 20px; opacity: 0.25;"></div>
+
+                <!-- Crachá Desktop do Usuário -->
+                <div class="d-none d-xl-inline-flex align-items-center gap-2 px-2.5 py-1 rounded-pill flex-shrink-0" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);">
+                    <div style="width: 22px; height: 22px; background: #3B82F6; color: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;">
+                        👤
                     </div>
-                    <span style="color: #FFFFFF; font-weight: 800; font-size: 14px; letter-spacing: 0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                    <span style="color: #F1F5F9; font-weight: 700; font-size: 13px; white-space: nowrap;">
                         <?= sanitize_html($nomeGestor) ?>
                     </span>
-                    <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 12px; font-weight: 900; border: 1.5px solid #F59E0B; padding: 3px 8px; border-radius: 6px;">
+                    <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1px solid #F59E0B; padding: 2px 6px; border-radius: 4px;">
                         <?= sanitize_html($matriculaGestor) ?>
                     </span>
                 </div>
 
                 <!-- Botão Sair Desktop -->
-                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold px-3 py-1 d-none d-lg-inline-block" style="border-radius: 8px; background: #DC2626; border: 1.5px solid #B91C1C; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);" title="Encerrar sessão administrativa">
-                    Sair
+                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-outline-danger fw-bold px-2.5 py-1 d-none d-xl-inline-flex align-items-center gap-1 flex-shrink-0" style="border-radius: 7px; font-size: 12.5px; border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5; text-decoration: none;" title="Encerrar sessão administrativa">
+                    <span>Sair</span>
                 </a>
 
                 <!-- Cartão do Usuário Mobile (dentro do menu hambúrguer quando expandido) -->
-                <div class="d-lg-none w-100 p-3 my-2 rounded d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border: 2px solid #3B82F6; box-shadow: 0 4px 10px rgba(0,0,0,0.25);">
+                <div class="d-xl-none w-100 p-3 my-2 rounded d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border: 1px solid #3B82F6;">
                     <div class="d-flex align-items-center gap-2">
                         <div style="width: 36px; height: 36px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                             <span style="font-size: 20px; line-height: 1;">👤</span>
                         </div>
                         <div>
-                            <div style="color: #FFFFFF; font-weight: 900; font-size: 15px; text-shadow: 0 1px 2px rgba(0,0,0,0.3);"><?= sanitize_html($nomeGestor) ?></div>
+                            <div style="color: #FFFFFF; font-weight: 900; font-size: 15px;"><?= sanitize_html($nomeGestor) ?></div>
                             <span class="badge mt-1" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1.5px solid #F59E0B;">
                                 MATRÍCULA: <?= sanitize_html($matriculaGestor) ?> &bull; GESTÃO
                             </span>
                         </div>
                     </div>
-                    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold" style="background: #DC2626; border: 2px solid #B91C1C; border-radius: 20px; padding: 6px 14px;">Sair</a>
+                    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold" style="background: #DC2626; border: 1px solid #B91C1C; border-radius: 20px; padding: 6px 14px;">Sair</a>
                 </div>
             </div>
         </div>
     </div>
 </nav>
 
-<!-- Sub-barra Móvel de Identificação do Usuário (Alto Contraste Cromático) -->
-<div class="d-flex d-lg-none align-items-center justify-content-between px-3 py-2" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border-bottom: 3px solid #3B82F6; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.35);">
+<!-- Sub-barra Móvel de Identificação do Usuário (Mobile apenas, d-xl-none) -->
+<div class="d-flex d-xl-none align-items-center justify-content-between px-3 py-2" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border-bottom: 2px solid #3B82F6;">
     <div class="d-flex align-items-center gap-2">
-        <div style="width: 34px; height: 34px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2); flex-shrink: 0;">
-            <span style="font-size: 18px; line-height: 1;">👤</span>
+        <div style="width: 32px; height: 32px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <span style="font-size: 16px; line-height: 1;">👤</span>
         </div>
         <div class="d-flex flex-column" style="line-height: 1.15;">
-            <span style="color: #FFFFFF; font-weight: 900; font-size: 15px; letter-spacing: 0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">
+            <span style="color: #FFFFFF; font-weight: 800; font-size: 14px;">
                 <?= sanitize_html($nomeGestor) ?>
             </span>
             <div class="d-flex align-items-center gap-1 mt-1">
-                <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 900; border: 1.5px solid #F59E0B; padding: 2px 7px; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.15);">
+                <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 10px; font-weight: 800; border: 1px solid #F59E0B; padding: 2px 6px; border-radius: 4px;">
                     MATRÍCULA: <?= sanitize_html($matriculaGestor) ?>
                 </span>
             </div>
         </div>
     </div>
-    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold d-flex align-items-center gap-1" style="background: #DC2626; border: 2px solid #B91C1C; border-radius: 20px; padding: 5px 14px; font-size: 13px; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4); text-decoration: none; color: #FFFFFF;" title="Encerrar sessão administrativa">
+    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold d-flex align-items-center gap-1" style="background: #DC2626; border: 1px solid #B91C1C; border-radius: 16px; padding: 4px 12px; font-size: 12px; color: #FFFFFF;" title="Encerrar sessão administrativa">
         <span>Sair</span> ➔
     </a>
 </div>

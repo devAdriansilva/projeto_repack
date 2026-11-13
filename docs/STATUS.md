@@ -686,6 +686,38 @@
       - Suítes de regressão `tests/test_ultima_entrada_e_espelho.php` (10/10) e `tests/test_importacao_csv_bo.php` (19/19) 100% aprovadas.
       - Versão da aplicação incrementada para `v1.58` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-062 (13/11/2026):** Expansão da Carga de Credenciais de Usuários para Testes da Lojinha Virtual.
+    - **Migration DDL/DML (`database/migrations/009_seed_novos_usuarios_lojinha.sql`):**
+      - Criação e execução idempotente via CLI (`php database/migrator.php`) adicionando novos colaboradores e contas setoriais.
+      - Adição de 7 novos colaboradores comuns (`COLAB04` a `COLAB10`) distribuídos nos setores Armazém, Transporte, Repack, Logística, Qualidade, Produção e Administrativo.
+      - Adição de 2 novas contas corporativas setoriais (`SEG01` para Segurança do Trabalho e `DIRETORIA01` para Diretoria Executiva).
+      - Criação de Lote Geral Aberto com vigência de 30 dias contemplando todos os setores operacionais para permitir testes contínuos sem restrições de calendário.
+    - **Documentação Atualizada:**
+      - Seção 3.3 de `docs/MANUTENCAO.md` atualizada com o catálogo completo de credenciais por perfil e setor.
+    - **Testes:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_router.php` validadas com sucesso absoluto.
+
+  - [x] **MANUT-063 (13/11/2026):** Refatoração e Alinhamento Visual da Barra de Navegação da Gestão (`navbar-gestao`).
+    - **Correção de Layout e Alinhamento (`app/views/layouts/gestao_header.php`):**
+      - **Resolução de quebra de linhas nas abas:** Adicionado `white-space: nowrap`, `display: inline-flex`, `align-items: center` e espaçamento uniforme (`gap: 6px`) para todos os links (`.nav-link`), garantindo ícone e rótulo rigorosamente na mesma linha sem quebra vertical assimétrica.
+      - **Reorganização de hierarquia visual:** Os botões externos ("Ver Lojinha" e "Bancada"), anteriormente alocados logo após a marca e espremendo os menus centrais, foram reposicionados no bloco de ações utilitárias à direita, integrados ao lado do crachá da gestora.
+      - **Estilização refinada dos atalhos:** Substituição de gradientes densos por botões translúcidos elegantes com bordas suaves (`rgba(139, 92, 246, 0.18)` e `rgba(16, 185, 129, 0.18)`), equilibrando a harmonia cromática do tema escuro (`#111827`).
+      - **Eliminação de overflow e corte de botão:** Correção do crachá e botão "Sair" com `flex-shrink: 0`, margens e paddings calibrados para que nenhum elemento seja empurrado para fora da tela.
+      - **Responsividade aprimorada:** Transição para `navbar-expand-xl`, colapsando de forma limpa em dispositivos móveis e tablets com menu hambúrguer vertical sem rolagem horizontal indesejada (`overflow-x: hidden`).
+    - **Testes & Versionamento:**
+      - Suítes de regressão `tests/test_fase5.php` (35/35) e `tests/test_router.php` 100% aprovadas.
+      - Versão da aplicação incrementada para `v1.59` em `app/config/config.php` e `public/service-worker.js`.
+
+  - [x] **MANUT-064 (13/11/2026):** Correção Crítica do Layout da Home do Operador (Sobreposição de Cards e Imagens na Tela do PC).
+    - **Diagnóstico da Falha:** Em telas de PC (orientação horizontal/landscape onde a altura útil é limitada a ~700px), a combinação de `flex-direction: column` com imagens em `clamp(185px, 31vh, 300px)` e `flex: 1 1 0` forçava os botões a se comprimirem verticalmente enquanto as imagens mantinham tamanho fixo, provocando estouro de container (`overflow`) e empilhamento desordenado das imagens no centro da tela sobre os botões.
+    - **Refatoração Estrutural (`app/views/operador/home.php` e `public/assets/css/urna.css`):**
+      - **Layout Horizontal (`flex-direction: row`):** Cada botão de ação agora é estruturado como uma sólida barra horizontal contínua, com a miniatura ilustrativa na esquerda (tamanho proporcional e seguro entre 62px e 105px) e o título monumental com ícone alinhados no centro/direita.
+      - **Padronização do 3º Botão:** O botão "BAIXA NA LOJINHA" foi harmonizado com o mesmo container de ícone (`btn-operador-icone-emoji`), garantindo equilíbrio visual perfeito entre os 3 botões da Home.
+      - **Zero Colisão:** Adicionado `overflow: hidden` e contenção nos botões; a altura total calculada cabe com folga em qualquer resolução de PC ou mobile sem requerer scroll e sem sobreposição de imagens.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` validada com 35/35 sucessos.
+      - Versão da aplicação incrementada para `v1.60` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

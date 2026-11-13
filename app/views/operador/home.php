@@ -29,14 +29,16 @@ require_once __DIR__ . '/../layouts/header.php';
                  alt="Lata amassada - B.O." 
                  class="btn-operador-img">
         </div>
-        <div class="btn-operador-label">
-            <svg width="54" height="54" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0;">
-                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
-            </svg>
-            <span>REGISTRAR B.O.</span>
-        </div>
-        <div id="badgeHomeBoAtivo" style="<?= $boAtivo ? 'display: inline-flex;' : 'display: none;' ?> align-items: center; gap: 8px; background: #DBEAFE; color: #1E40AF; border: 3px solid #3B82F6; padding: 6px 20px; border-radius: 9999px; font-size: 20px; font-weight: 900; margin-top: 10px;">
-            <span>⏸</span> <span>EM ANDAMENTO</span>
+        <div class="btn-operador-content">
+            <div class="btn-operador-label">
+                <svg width="44" height="44" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0;">
+                    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+                </svg>
+                <span>REGISTRAR B.O.</span>
+            </div>
+            <div id="badgeHomeBoAtivo" class="badge-em-andamento" style="<?= $boAtivo ? 'display: inline-flex;' : 'display: none;' ?> background: #DBEAFE; color: #1E40AF; border-color: #3B82F6;">
+                <span>⏸</span> <span>EM ANDAMENTO</span>
+            </div>
         </div>
     </a>
 
@@ -47,22 +49,28 @@ require_once __DIR__ . '/../layouts/header.php';
                  alt="Encolhimento térmico - Produção" 
                  class="btn-operador-img">
         </div>
-        <div class="btn-operador-label">
-            <svg width="54" height="54" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0;">
-                <path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
-            </svg>
-            <span>REGISTRAR PRODUÇÃO</span>
-        </div>
-        <div id="badgeHomeProducaoAtiva" style="<?= $producaoAtiva ? 'display: inline-flex;' : 'display: none;' ?> align-items: center; gap: 8px; background: #FEF3C7; color: #92400E; border: 3px solid #F59E0B; padding: 6px 20px; border-radius: 9999px; font-size: 20px; font-weight: 900; margin-top: 10px;">
-            <span>⏸</span> <span>EM ANDAMENTO</span>
+        <div class="btn-operador-content">
+            <div class="btn-operador-label">
+                <svg width="44" height="44" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0;">
+                    <path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                <span>REGISTRAR PRODUÇÃO</span>
+            </div>
+            <div id="badgeHomeProducaoAtiva" class="badge-em-andamento" style="<?= $producaoAtiva ? 'display: inline-flex;' : 'display: none;' ?>">
+                <span>⏸</span> <span>EM ANDAMENTO</span>
+            </div>
         </div>
     </a>
 
     <!-- Botão 3: BAIXA NA LOJINHA (Sólido Vermelho/Coral Monumental - Perdas / Vencimento) -->
     <a href="<?= APP_URL ?>/operador/baixa" class="btn-operador-solido btn-operador-baixa">
-        <div class="btn-operador-label">
-            <span style="font-size: 48px; line-height: 1;">🗑️</span>
-            <span>BAIXA NA LOJINHA</span>
+        <div class="btn-operador-icone-wrapper btn-operador-icone-emoji">
+            <span style="font-size: 44px; line-height: 1;">🗑️</span>
+        </div>
+        <div class="btn-operador-content">
+            <div class="btn-operador-label">
+                <span>BAIXA NA LOJINHA</span>
+            </div>
         </div>
     </a>
 
