@@ -584,6 +584,20 @@
     - **Normalização de URL e Caminhos Subdiretório (`APP_URL`):**
       - Correção nos templates de Gestão e Lojinha para prefixar `APP_URL`, assegurando que a hospedagem no Alwaysdata em `/repack/` carregue todas as fotos sem erro 404.
     - **Incremento de Versão:** Versão elevada para `v1.52` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.52` em `public/service-worker.js`.
+  - [x] **MANUT-056 (13/11/2026):** Escala Monumental das Imagens Operacionais (210px), Fotos no Fluxo de Baixas e Ampliação na Gestão de Estoque.
+    - **Ampliação Monumental para Super-Acessibilidade Operacional (~210px):**
+      - Aumento da foto no Momento 1 de seleção e no Momento 2 em execução de `cronometro.php` de 120px/140px para 210px x 210px com molduras esmeralda de 4px e cantos arredondados de 24px.
+      - Aumento proporcional no resumo final de produtividade (`cronometro_resumo.php`) para 210px x 210px.
+      - Aumento no Passo 1 de B.O. (`avaria_passo1.php`) e no Resumo final (`avaria_resumo.php`) para 210px x 210px.
+      - Aumento da miniatura de cabeçalho do Passo 2 de B.O. (`avaria_passo2.php`) para 110px.
+    - **Inclusão Completa de Fotos no Fluxo de Baixas da Lojinha (`baixa_lojinha.php`):**
+      - Mapeamento de `foto_url` no payload de produtos em estoque da lojinha.
+      - Exibição de foto monumental de 210px no card de confirmação de produto a ser descartado.
+      - Miniaturas visuais de 44px na lista rápida de sugestões de busca por nome.
+      - Foto monumental de 210px no cartão de confirmação final da baixa definitiva.
+    - **Ampliação de Imagens na Gestão de Estoque (`gestao/estoque.php`):**
+      - Expansão das miniaturas da tabela de saldos físicos de 44px para 68px x 68px com `object-fit: contain` e bordas suaves, facilitando a identificação imediata dos rótulos pela Coordenadora.
+    - **Incremento de Versão:** Versão elevada para `v1.53` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.53` em `public/service-worker.js`.
 
 ---
 

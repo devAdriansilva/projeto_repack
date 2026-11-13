@@ -107,9 +107,9 @@ require_once __DIR__ . '/../layouts/header.php';
                 <span>PRODUTO IDENTIFICADO</span>
             </div>
 
-            <!-- Foto Destaque Momento 1 -->
-            <div id="wrapperFotoMomento1" style="text-align: center; margin: 12px 0 8px 0;">
-                <img id="imgFotoMomento1" src="" alt="Foto" style="width: 120px; height: 120px; object-fit: contain; border-radius: 16px; background: #FFFFFF; border: 3px solid #10B981; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: none;">
+            <!-- Foto Destaque Momento 1 (Monumental para Acessibilidade) -->
+            <div id="wrapperFotoMomento1" style="text-align: center; margin: 16px 0 12px 0;">
+                <img id="imgFotoMomento1" src="" alt="Foto" style="width: 210px; height: 210px; object-fit: contain; border-radius: 24px; background: #FFFFFF; border: 4px solid #10B981; box-shadow: 0 6px 18px rgba(0,0,0,0.12); display: none; padding: 6px;">
             </div>
 
             <div class="nome-produto-destaque" id="displayNomeProduto"></div>
@@ -177,12 +177,12 @@ require_once __DIR__ . '/../layouts/header.php';
             <?= sanitize_html($producaoAtiva['produto_nome'] ?? '') ?>
         </div>
 
-        <!-- Foto Destaque Momento 2 -->
-        <div id="wrapperFotoMomento2" style="text-align: center; margin: 16px 0 10px 0;">
+        <!-- Foto Destaque Momento 2 (Monumental para Acessibilidade) -->
+        <div id="wrapperFotoMomento2" style="text-align: center; margin: 18px 0 14px 0;">
             <img id="ativoFotoProduto" 
                  src="<?= !empty($producaoAtiva['produto_foto_url']) ? sanitize_html($producaoAtiva['produto_foto_url']) : '' ?>" 
                  alt="Foto" 
-                 style="width: 140px; height: 140px; object-fit: contain; border-radius: 20px; border: 4px solid #059669; background: #FFFFFF; box-shadow: 0 6px 16px rgba(0,0,0,0.1); <?= empty($producaoAtiva['produto_foto_url']) ? 'display: none;' : 'display: inline-block;' ?>">
+                 style="width: 210px; height: 210px; object-fit: contain; border-radius: 24px; border: 4px solid #059669; background: #FFFFFF; box-shadow: 0 6px 18px rgba(0,0,0,0.12); <?= empty($producaoAtiva['produto_foto_url']) ? 'display: none;' : 'display: inline-block;' ?>; padding: 6px;">
         </div>
         <div style="margin-top: 14px; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
             <span class="badge-sku" id="ativoSkuBadge" style="font-size: 24px; padding: 8px 22px;">

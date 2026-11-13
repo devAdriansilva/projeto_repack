@@ -91,12 +91,12 @@ require_once __DIR__ . '/../layouts/header.php';
                 <span>PRODUTO IDENTIFICADO</span>
             </div>
 
-            <!-- Foto Destaque do Produto -->
-            <div id="wrapperFotoProduto" style="text-align: center; margin: 14px 0 10px 0;">
+            <!-- Foto Destaque do Produto (Monumental para Acessibilidade) -->
+            <div id="wrapperFotoProduto" style="text-align: center; margin: 16px 0 12px 0;">
                 <img id="imgFotoProduto" 
                      src="<?= !empty($produtoPreSelecionado['foto_url']) ? (APP_URL . sanitize_html($produtoPreSelecionado['foto_url'])) : '' ?>" 
                      alt="Foto" 
-                     style="width: 130px; height: 130px; object-fit: contain; border-radius: 18px; background: #FFFFFF; border: 3px solid #10B981; box-shadow: 0 4px 12px rgba(0,0,0,0.08); <?= empty($produtoPreSelecionado['foto_url']) ? 'display: none;' : 'display: inline-block;' ?>">
+                     style="width: 210px; height: 210px; object-fit: contain; border-radius: 24px; background: #FFFFFF; border: 4px solid #10B981; box-shadow: 0 6px 18px rgba(0,0,0,0.12); padding: 6px; <?= empty($produtoPreSelecionado['foto_url']) ? 'display: none;' : 'display: inline-block;' ?>">
             </div>
 
             <div class="nome-produto-destaque" id="displayNomeProduto">

@@ -32,7 +32,7 @@ require_once __DIR__ . '/../layouts/header.php';
     </h1>
     <div style="background: #FFFFFF; border: 7px solid #0F172A; border-radius: 32px; padding: 18px 30px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 20px; max-width: 100%; box-shadow: 0 10px 26px rgba(0,0,0,0.14); flex-wrap: wrap;">
         <?php if (!empty($produto['foto_url'])): ?>
-            <img src="<?= APP_URL . sanitize_html($produto['foto_url']) ?>" alt="Foto" style="width: 80px; height: 80px; object-fit: contain; border-radius: 14px; border: 3px solid #10B981; background: #FFFFFF; box-shadow: 0 4px 10px rgba(0,0,0,0.08);">
+            <img src="<?= APP_URL . sanitize_html($produto['foto_url']) ?>" alt="Foto" style="width: 110px; height: 110px; object-fit: contain; border-radius: 18px; border: 4px solid #10B981; background: #FFFFFF; box-shadow: 0 6px 14px rgba(0,0,0,0.1); padding: 4px;">
         <?php endif; ?>
         <div style="text-align: left;">
             <div style="font-size: 34px; font-weight: 900; color: #0F172A; line-height: 1.15;"><?= sanitize_html($produtoNome) ?></div>

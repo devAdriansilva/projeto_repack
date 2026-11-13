@@ -20,7 +20,8 @@ $produtosJson = array_map(function($p) {
         'nome' => (string)$p['nome'],
         'embalagem' => (string)($p['pacote_padrao'] ?? ''),
         'saldo_total' => (int)($p['quantidade_total'] ?? 0),
-        'saldo_disponivel' => (int)($p['saldo_disponivel'] ?? 0)
+        'saldo_disponivel' => (int)($p['saldo_disponivel'] ?? 0),
+        'foto_url' => !empty($p['foto_url']) ? (APP_URL . $p['foto_url']) : null
     ];
 }, $itensEstoque);
 
@@ -68,6 +69,12 @@ require_once __DIR__ . '/../layouts/header.php';
                 </svg>
                 <span>PRODUTO IDENTIFICADO NO ESTOQUE</span>
             </div>
+
+            <!-- Foto Destaque do Produto (Monumental para Acessibilidade) -->
+            <div id="wrapperFotoBaixa" style="text-align: center; margin: 16px 0 12px 0;">
+                <img id="imgFotoBaixa" src="" alt="Foto" style="width: 210px; height: 210px; object-fit: contain; border-radius: 24px; background: #FFFFFF; border: 4px solid #DC2626; box-shadow: 0 6px 18px rgba(0,0,0,0.12); display: none; padding: 6px;">
+            </div>
+
             <div class="nome-produto-destaque" id="displayNomeProduto"></div>
             <div class="detalhes-produto">
                 <span class="badge-sku" id="displaySkuBadge"></span>
@@ -150,6 +157,12 @@ require_once __DIR__ . '/../layouts/header.php';
         <div style="font-size: 24px; font-weight: 900; color: #DC2626; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">
             CONFIRMAR BAIXA DEFINITIVA
         </div>
+
+        <!-- Foto Destaque na Confirmação da Baixa (Monumental) -->
+        <div id="wrapperFotoResumoBaixa" style="text-align: center; margin: 16px 0 12px 0;">
+            <img id="imgFotoResumoBaixa" src="" alt="Foto" style="width: 210px; height: 210px; object-fit: contain; border-radius: 24px; background: #FFFFFF; border: 4px solid #DC2626; box-shadow: 0 6px 18px rgba(0,0,0,0.12); display: none; padding: 6px;">
+        </div>
+
         <div class="headline-lg" id="resumoNomeProduto" style="color: #0F172A; font-size: 46px; font-weight: 900; line-height: 1.2;"></div>
         <div style="font-size: 26px; font-weight: 800; color: #64748B; margin-top: 8px;" id="resumoSku"></div>
 
@@ -275,10 +288,17 @@ function processarEntradaSku(termo) {
         filtrados.slice(0, 10).forEach(p => {
             const item = document.createElement('div');
             item.className = 'item-sugestao-sku';
+            const fotoThumb = p.foto_url 
+                ? `<img src="${p.foto_url}" style="width: 44px; height: 44px; object-fit: contain; border-radius: 8px; border: 1.5px solid #CBD5E1; background: #fff; margin-right: 12px; flex-shrink: 0;">` 
+                : `<div style="width: 44px; height: 44px; border-radius: 8px; background: #FEE2E2; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 12px; flex-shrink: 0;">🏷️</div>`;
+
             item.innerHTML = `
-                <div>
-                    <strong style="font-size: 20px; color: #0F172A; display: block;">${p.nome}</strong>
-                    <span style="font-size: 15px; color: #64748B;">SKU: <strong>${p.codigo}</strong> | Saldo: <strong style="color: #059669;">${p.saldo_total} un.</strong></span>
+                <div style="display: flex; align-items: center; text-align: left;">
+                    ${fotoThumb}
+                    <div>
+                        <strong style="font-size: 20px; color: #0F172A; display: block;">${p.nome}</strong>
+                        <span style="font-size: 15px; color: #64748B;">SKU: <strong>${p.codigo}</strong> | Saldo: <strong style="color: #059669;">${p.saldo_total} un.</strong></span>
+                    </div>
                 </div>
                 <span style="font-size: 24px;">➔</span>
             `;
@@ -303,6 +323,18 @@ function selecionarProduto(prod) {
     document.getElementById('displayNomeProduto').textContent = prod.nome;
     document.getElementById('displaySkuBadge').textContent = 'SKU ' + prod.codigo;
     document.getElementById('displaySaldoBadge').textContent = 'Saldo Total: ' + prod.saldo_total + ' un.';
+
+    const imgBaixa = document.getElementById('imgFotoBaixa');
+    if (imgBaixa) {
+        if (prod.foto_url) {
+            imgBaixa.src = prod.foto_url;
+            imgBaixa.style.display = 'inline-block';
+        } else {
+            imgBaixa.src = '';
+            imgBaixa.style.display = 'none';
+        }
+    }
+
     document.getElementById('cardConfirmacaoSku').style.display = 'block';
     document.getElementById('cardNaoEncontrado').style.display = 'none';
     document.getElementById('wrapperSugestoes').style.display = 'none';
@@ -312,6 +344,11 @@ function selecionarProduto(prod) {
 function limparSku() {
     produtoSelecionado = null;
     document.getElementById('inputCodigoSku').value = '';
+    const imgBaixa = document.getElementById('imgFotoBaixa');
+    if (imgBaixa) {
+        imgBaixa.src = '';
+        imgBaixa.style.display = 'none';
+    }
     document.getElementById('cardConfirmacaoSku').style.display = 'none';
     document.getElementById('cardNaoEncontrado').style.display = 'none';
     document.getElementById('wrapperSugestoes').style.display = 'none';
@@ -366,6 +403,17 @@ function avancarConferencia() {
     document.getElementById('resumoSku').textContent = 'SKU ' + produtoSelecionado.codigo;
     document.getElementById('resumoQuantidade').textContent = quantidadeBaixa + ' un.';
     document.getElementById('resumoMotivo').textContent = motivoBaixa;
+
+    const imgResumo = document.getElementById('imgFotoResumoBaixa');
+    if (imgResumo) {
+        if (produtoSelecionado.foto_url) {
+            imgResumo.src = produtoSelecionado.foto_url;
+            imgResumo.style.display = 'inline-block';
+        } else {
+            imgResumo.src = '';
+            imgResumo.style.display = 'none';
+        }
+    }
 
     document.getElementById('etapaSelecaoBaixa').style.display = 'none';
     document.getElementById('etapaConferenciaBaixa').style.display = 'block';

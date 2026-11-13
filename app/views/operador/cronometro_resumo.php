@@ -52,8 +52,8 @@ require_once __DIR__ . '/../layouts/header.php';
     <div style="margin-bottom: 24px;">
         <span class="body-md" style="color: #475569; font-weight: 900; font-size: 26px; letter-spacing: 1px; text-transform: uppercase;">PRODUTO:</span>
         <?php if ($fotoUrl): ?>
-            <div style="margin: 14px 0 10px 0;">
-                <img src="<?= $fotoUrl ?>" alt="Foto" style="width: 140px; height: 140px; object-fit: contain; border-radius: 20px; border: 4px solid #059669; background: #FFFFFF; box-shadow: 0 6px 16px rgba(0,0,0,0.1);">
+            <div style="margin: 18px 0 14px 0;">
+                <img src="<?= $fotoUrl ?>" alt="Foto" style="width: 210px; height: 210px; object-fit: contain; border-radius: 24px; border: 4px solid #059669; background: #FFFFFF; box-shadow: 0 6px 18px rgba(0,0,0,0.12); padding: 6px;">
             </div>
         <?php endif; ?>
         <div class="headline-lg" style="color: #0F172A; margin-top: 8px; font-size: 50px; font-weight: 900; line-height: 1.2; word-break: break-word;">
