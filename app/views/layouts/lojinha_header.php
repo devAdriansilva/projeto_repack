@@ -245,6 +245,13 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             <span class="sacola-counter" id="headerCarrinhoContador"><?= (int)$itensCarrinhoCount ?></span>
         </a>
 
+        <?php if (!empty($_SESSION['usuario_id']) && ($_SESSION['perfil'] ?? '') === 'gestao'): ?>
+            <a href="<?= APP_URL ?>/gestao/dashboard" class="btn btn-sm" style="background: #1F2937; color: #FFFFFF; font-weight: 700; border-radius: 10px; padding: 8px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid #374151;" title="Retornar ao Painel de Gestão">
+                <span>⚙️</span>
+                <span class="d-none d-sm-inline">Painel Gestão</span>
+            </a>
+        <?php endif; ?>
+
         <a href="<?= APP_URL ?>/lojinha/logout" class="btn-sair-header" title="Sair da Lojinha">
             Sair
         </a>

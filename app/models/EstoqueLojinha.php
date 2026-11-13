@@ -481,7 +481,7 @@ class EstoqueLojinha
                 SELECT SUM(ct.quantidade)
                 FROM carrinho_temporario ct
                 WHERE ct.produto_id = :produto_id_ct 
-                  AND ct.expiracao_em > NOW()
+                AND ct.expiracao_em > NOW()
             ), 0)) AS saldo_disponivel
             FROM produtos p
             LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
@@ -494,5 +494,143 @@ class EstoqueLojinha
         ]);
         $val = $stmt->fetchColumn();
         return $val !== false ? max(0, (int)$val) : 0;
+    }
+
+    /**
+     * Calcula representação amigável de tempo decorrido
+     * @param string $dataHora
+     * @return string
+     */
+    public static function calcularTempoRelativo(string $dataHora): string
+    {
+        $tempo = time() - strtotime($dataHora);
+        if ($tempo < 60) {
+            return "há instantes";
+        }
+        $minutos = (int)round($tempo / 60);
+        if ($minutos < 60) {
+            return "há " . $minutos . " min";
+        }
+        $horas = (int)round($tempo / 3600);
+        if ($horas < 24) {
+            return "há " . $horas . ($horas === 1 ? " hora" : " horas");
+        }
+        $dias = (int)round($tempo / 86400);
+        if ($dias < 30) {
+            return "há " . $dias . ($dias === 1 ? " dia" : " dias");
+        }
+        return date('d/m/Y', strtotime($dataHora));
+    }
+
+    /**
+     * Retorna o registro da última importação CSV realizada
+     * @return array|null
+     */
+    public static function obterUltimaImportacaoCsv(): ?array
+    {
+        try {
+            $pdo = Database::getConnection();
+            $stmt = $pdo->prepare("
+                SELECT i.*, u.nome AS usuario_nome
+                FROM importacoes_csv_log i
+                LEFT JOIN usuarios u ON u.id = i.usuario_id
+                ORDER BY i.created_at DESC
+                LIMIT 1
+            ");
+            $stmt->execute();
+            $row = $stmt->fetch();
+            if (!$row) {
+                return null;
+            }
+
+            $row['data_formatada'] = date('d/m/Y H:i', strtotime($row['created_at']));
+            $row['tempo_relativo'] = self::calcularTempoRelativo($row['created_at']);
+            return $row;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Retorna informações sobre a última entrada de mercadorias no estoque da lojinha
+     * Consolida importações CSV, B.O.s leves da bancada de repack e inventários com saldo positivo
+     * @return array|null
+     */
+    public static function obterUltimaEntradaEstoque(): ?array
+    {
+        try {
+            $pdo = Database::getConnection();
+            $entradas = [];
+
+            // 1. Última importação CSV com unidades para a lojinha
+            $stmtCsv = $pdo->query("
+                SELECT i.id, i.nome_arquivo, i.unidades_lojinha, i.created_at, u.nome AS usuario_nome,
+                       'importacao_csv' AS tipo,
+                       CONCAT('Importação CSV (', i.nome_arquivo, ')') AS descricao,
+                       i.unidades_lojinha AS quantidade,
+                       'Importação CSV' AS canal
+                FROM importacoes_csv_log i
+                LEFT JOIN usuarios u ON u.id = i.usuario_id
+                WHERE i.unidades_lojinha > 0
+                ORDER BY i.created_at DESC
+                LIMIT 1
+            ");
+            if ($stmtCsv && ($csv = $stmtCsv->fetch())) {
+                $entradas[] = $csv;
+            }
+
+            // 2. Último B.O. originado da bancada de repack
+            $stmtBo = $pdo->query("
+                SELECT b.id, b.created_at, b.quantidade, p.nome AS produto_nome, u.nome AS usuario_nome,
+                       'apontamento_bo' AS tipo,
+                       CONCAT('Bancada Repack: ', p.nome) AS descricao,
+                       b.quantidade,
+                       'Bancada Operacional' AS canal
+                FROM apontamentos_bo b
+                LEFT JOIN produtos p ON p.id = b.produto_id
+                LEFT JOIN usuarios u ON u.id = b.usuario_id
+                WHERE b.destino = 'lojinha' AND b.deleted_at IS NULL
+                ORDER BY b.created_at DESC
+                LIMIT 1
+            ");
+            if ($stmtBo && ($bo = $stmtBo->fetch())) {
+                $entradas[] = $bo;
+            }
+
+            // 3. Último inventário com incremento ou conciliação positiva
+            $stmtInv = $pdo->query("
+                SELECT inv.id, inv.created_at, inv.diferenca AS quantidade, p.nome AS produto_nome, u.nome AS usuario_nome,
+                       'inventario' AS tipo,
+                       CONCAT('Inventário: ', p.nome) AS descricao,
+                       inv.diferenca AS quantidade,
+                       'Ajuste de Inventário' AS canal
+                FROM inventarios_estoque_historico inv
+                LEFT JOIN produtos p ON p.id = inv.produto_id
+                LEFT JOIN usuarios u ON u.id = inv.usuario_id
+                WHERE inv.diferenca > 0
+                ORDER BY inv.created_at DESC
+                LIMIT 1
+            ");
+            if ($stmtInv && ($inv = $stmtInv->fetch())) {
+                $entradas[] = $inv;
+            }
+
+            if (empty($entradas)) {
+                return null;
+            }
+
+            // Ordena pela data/hora mais recente
+            usort($entradas, function($a, $b) {
+                return strtotime($b['created_at']) <=> strtotime($a['created_at']);
+            });
+
+            $recente = $entradas[0];
+            $recente['data_formatada'] = date('d/m/Y H:i', strtotime($recente['created_at']));
+            $recente['tempo_relativo'] = self::calcularTempoRelativo($recente['created_at']);
+
+            return $recente;
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 }

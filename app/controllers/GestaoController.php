@@ -273,6 +273,9 @@ class GestaoController
             'usuario_id' => $usuarioId
         ];
 
+        $ultimaEntrada = EstoqueLojinha::obterUltimaEntradaEstoque();
+        $ultimaImportacaoCsv = EstoqueLojinha::obterUltimaImportacaoCsv();
+
         $pageTitle = "Painel da Gestão - " . APP_NAME;
         require __DIR__ . '/../views/gestao/dashboard.php';
     }
@@ -440,6 +443,8 @@ class GestaoController
         $historicoReservas = EstoqueLojinha::listarHistoricoReservas(null, 30);
         $historicoBaixas = EstoqueLojinha::listarHistoricoBaixas(null, 30);
         $historicoInventarios = EstoqueLojinha::listarHistoricoInventarios(null, 30);
+        $ultimaEntrada = EstoqueLojinha::obterUltimaEntradaEstoque();
+        $ultimaImportacaoCsv = EstoqueLojinha::obterUltimaImportacaoCsv();
         $pageTitle = "Gestão de Estoque da Lojinha - " . APP_NAME;
         require __DIR__ . '/../views/gestao/estoque.php';
     }
@@ -664,6 +669,103 @@ class GestaoController
         }
 
         header('Location: ' . APP_URL . '/gestao/bo');
+        exit;
+    }
+
+    /**
+     * Endpoint Assíncrono: Analisa e retorna a prévia do CSV de B.O. corporativo
+     */
+    public function apiPreviaCsvBO(): void
+    {
+        header('Content-Type: application/json; charset=UTF-8');
+
+        try {
+            $conteudoCsv = '';
+            if (!empty($_FILES['arquivo_csv']['tmp_name'])) {
+                $conteudoCsv = (string)file_get_contents($_FILES['arquivo_csv']['tmp_name']);
+            } elseif (!empty($_POST['conteudo_csv'])) {
+                $conteudoCsv = (string)$_POST['conteudo_csv'];
+            }
+
+            if (trim($conteudoCsv) === '') {
+                throw new InvalidArgumentException("Nenhum arquivo ou conteúdo CSV foi enviado.");
+            }
+
+            $destinosCustomizados = [];
+            if (!empty($_POST['destinos_customizados'])) {
+                $dec = json_decode((string)$_POST['destinos_customizados'], true);
+                if (is_array($dec)) {
+                    $destinosCustomizados = $dec;
+                }
+            }
+
+            $previa = ApontamentoBO::analisarPreviaCsv($conteudoCsv, $destinosCustomizados);
+            echo json_encode($previa, JSON_UNESCAPED_UNICODE);
+            exit;
+        } catch (\Throwable $e) {
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+    }
+
+    /**
+     * Processa a importação definitiva do CSV de B.O. corporativo
+     */
+    public function importarCsvBO(): void
+    {
+        $this->validarCsrfOuAbortar();
+        $gestorId = (int)$_SESSION['usuario_id'];
+
+        try {
+            $conteudoCsv = '';
+            $nomeArquivo = 'relatorio_bo.csv';
+
+            if (!empty($_FILES['arquivo_csv']['tmp_name'])) {
+                $conteudoCsv = (string)file_get_contents($_FILES['arquivo_csv']['tmp_name']);
+                $nomeArquivo = basename((string)$_FILES['arquivo_csv']['name']);
+            } elseif (!empty($_POST['conteudo_csv'])) {
+                $conteudoCsv = (string)$_POST['conteudo_csv'];
+                $nomeArquivo = trim((string)($_POST['nome_arquivo'] ?? 'colado_' . date('Ymd_His') . '.csv'));
+            }
+
+            if (trim($conteudoCsv) === '') {
+                throw new InvalidArgumentException("O conteúdo do arquivo CSV está vazio.");
+            }
+
+            $destinosCustomizados = [];
+            if (!empty($_POST['destinos_customizados'])) {
+                $dec = json_decode((string)$_POST['destinos_customizados'], true);
+                if (is_array($dec)) {
+                    $destinosCustomizados = $dec;
+                }
+            }
+
+            $forcarReimportacao = !empty($_POST['forcar_reimportacao']);
+
+            $resultado = ApontamentoBO::processarImportacaoCsv(
+                $conteudoCsv,
+                $gestorId,
+                $nomeArquivo,
+                $destinosCustomizados,
+                $forcarReimportacao
+            );
+
+            LogSistema::registrar('INFO', "Importação de B.O. via CSV concluída: {$resultado['unidades_lojinha']} un. para lojinha e {$resultado['unidades_descarte']} para descarte.", [
+                'arquivo' => $nomeArquivo,
+                'resultado' => $resultado,
+                'gestor_id' => $gestorId
+            ]);
+
+            $_SESSION['flash_sucesso'] = "✅ " . $resultado['message'];
+        } catch (\Throwable $e) {
+            $_SESSION['flash_erro'] = "❌ Falha na importação do CSV: " . $e->getMessage();
+        }
+
+        header('Location: ' . APP_URL . '/gestao/estoque');
         exit;
     }
 

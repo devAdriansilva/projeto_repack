@@ -24,10 +24,45 @@ require __DIR__ . '/../layouts/gestao_header.php';
         <h1 class="headline-lg mb-1">Gestão de Estoque da Lojinha</h1>
         <p class="body-md text-muted mb-0">Controle de saldos físicos recebidos do repack, balanços de inventário e reservas ocultas.</p>
     </div>
-    <div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button type="button" class="btn btn-outline-success" style="font-weight: 700; border-radius: 12px; padding: 10px 18px;" onclick="abrirModalImportacaoCsv()">
+            📥 Importar B.O. via CSV
+        </button>
         <button type="button" class="btn btn-gestao btn-gestao-primary" onclick="iniciarSessaoInventario()">
             📋 Iniciar Coleta de Inventário
         </button>
+    </div>
+</div>
+
+<!-- Card Informativo de Carimbo da Última Entrada no Estoque -->
+<div class="card mb-4" style="background: #FFFFFF; border: 1.5px solid #E5E7EB; border-left: 5px solid #10B981; border-radius: 14px; padding: 16px 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div style="width: 44px; height: 44px; border-radius: 10px; background: #ECFDF5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; border: 1px solid #A7F3D0;">
+                🕒
+            </div>
+            <div>
+                <div style="font-size: 12px; text-transform: uppercase; font-weight: 700; color: #6B7280; letter-spacing: 0.5px;">
+                    Carimbo de Última Entrada de Itens no Estoque
+                </div>
+                <div style="font-size: 15px; font-weight: 800; color: #111827; margin-top: 2px;">
+                    <?php if (!empty($ultimaEntrada)): ?>
+                        <?= sanitize_html($ultimaEntrada['data_formatada']) ?>
+                        <span class="badge bg-light text-secondary border ms-1" style="font-weight: 600; font-size: 12px;"><?= sanitize_html($ultimaEntrada['tempo_relativo']) ?></span>
+                        &bull; <span class="text-success"><?= sanitize_html($ultimaEntrada['descricao']) ?></span>
+                        <span class="badge bg-success ms-1">+<?= (int)$ultimaEntrada['quantidade'] ?> un</span>
+                        <span class="text-muted small ms-1">(<?= sanitize_html($ultimaEntrada['canal']) ?>)</span>
+                    <?php else: ?>
+                        <span class="text-muted">Nenhuma movimentação de entrada registrada no sistema.</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <?php if (!empty($ultimaImportacaoCsv)): ?>
+            <div class="d-flex align-items-center gap-2 px-3 py-2 rounded" style="background: #F8FAFC; border: 1px solid #E2E8F0; font-size: 13px;">
+                <span>📊 Último CSV: <strong><?= sanitize_html($ultimaImportacaoCsv['nome_arquivo']) ?></strong> (<?= sanitize_html($ultimaImportacaoCsv['data_formatada']) ?> &bull; <strong>+<?= (int)$ultimaImportacaoCsv['unidades_lojinha'] ?> un</strong>)</span>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -828,6 +863,421 @@ function abrirModalBaixa(produtoId, produtoNome, totalFisico) {
     const modal = new bootstrap.Modal(document.getElementById('modalBaixa'));
     modal.show();
 }
+
+// =========================================================================
+// GESTÃO DE IMPORTAÇÃO DE B.O. VIA CSV CORPORATIVO
+// =========================================================================
+let dadosPreviaCsv = null;
+let conteudoCsvAtual = '';
+let nomeArquivoCsvAtual = '';
+
+function abrirModalImportacaoCsv() {
+    document.getElementById('formImportarCsvBO').reset();
+    document.getElementById('stepPreviaCsv').style.display = 'none';
+    document.getElementById('stepUploadCsv').style.display = 'block';
+    document.getElementById('btnAnalisarCsv').disabled = false;
+    document.getElementById('btnAnalisarCsv').innerHTML = 'Analisar Relatório e Gerar Prévia ➔';
+    dadosPreviaCsv = null;
+    conteudoCsvAtual = '';
+    nomeArquivoCsvAtual = '';
+
+    const modal = new bootstrap.Modal(document.getElementById('modalImportarCsvBO'));
+    modal.show();
+}
+
+function trocarAbaEntradaCsv(aba) {
+    if (aba === 'arquivo') {
+        document.getElementById('abaArquivoContainer').style.display = 'block';
+        document.getElementById('abaTextoContainer').style.display = 'none';
+        document.getElementById('btnAbaArquivo').classList.add('active');
+        document.getElementById('btnAbaTexto').classList.remove('active');
+    } else {
+        document.getElementById('abaArquivoContainer').style.display = 'none';
+        document.getElementById('abaTextoContainer').style.display = 'block';
+        document.getElementById('btnAbaArquivo').classList.remove('active');
+        document.getElementById('btnAbaTexto').classList.add('active');
+    }
+}
+
+async function analisarArquivoCsv() {
+    const inputArquivo = document.getElementById('inputCsvFile');
+    const inputTexto = document.getElementById('inputCsvTexto');
+    const btn = document.getElementById('btnAnalisarCsv');
+
+    let conteudo = '';
+    let nomeArquivo = 'relatorio_bo.csv';
+
+    if (inputArquivo.files && inputArquivo.files.length > 0) {
+        nomeArquivo = inputArquivo.files[0].name;
+        conteudo = await inputArquivo.files[0].text();
+    } else if (inputTexto.value.trim() !== '') {
+        conteudo = inputTexto.value.trim();
+        nomeArquivo = 'relatorio_colado_' + (new Date().toISOString().slice(0, 10)) + '.csv';
+    }
+
+    if (!conteudo.trim()) {
+        alert('Por favor, selecione um arquivo .csv ou cole as linhas do relatório corporativo.');
+        return;
+    }
+
+    conteudoCsvAtual = conteudo;
+    nomeArquivoCsvAtual = nomeArquivo;
+
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Processando linhas e cruzando SKUs...';
+
+    try {
+        const formData = new FormData();
+        formData.append('conteudo_csv', conteudo);
+
+        const resp = await fetch('<?= APP_URL ?>/api/gestao/bo/previa-csv', {
+            method: 'POST',
+            body: formData
+        });
+
+        const json = await resp.json();
+
+        if (!resp.ok || json.status !== 'success') {
+            throw new Error(json.message || 'Falha ao analisar o arquivo CSV.');
+        }
+
+        dadosPreviaCsv = json;
+        renderizarPreviaCsv(json);
+
+        document.getElementById('stepUploadCsv').style.display = 'none';
+        document.getElementById('stepPreviaCsv').style.display = 'block';
+    } catch (err) {
+        alert('Erro na análise do CSV: ' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Analisar Relatório e Gerar Prévia ➔';
+    }
+}
+
+function renderizarPreviaCsv(dados) {
+    document.getElementById('previaNomeArquivo').innerText = nomeArquivoCsvAtual;
+    document.getElementById('previaTotalLinhas').innerText = dados.total_linhas;
+    document.getElementById('previaTotalUnidades').innerText = dados.total_unidades;
+    document.getElementById('previaUnidadesLojinha').innerText = dados.unidades_lojinha;
+    document.getElementById('previaProdsLojinha').innerText = dados.produtos_lojinha_distintos;
+    document.getElementById('previaUnidadesDescarte').innerText = dados.unidades_descarte;
+    document.getElementById('previaProdsDescarte').innerText = dados.produtos_descarte_distintos;
+
+    // Renderiza tabela de motivos com selects para flexibilidade
+    const tbodyMotivos = document.getElementById('tbodyPreviaMotivos');
+    tbodyMotivos.innerHTML = '';
+
+    dados.motivos.forEach(m => {
+        const tr = document.createElement('tr');
+        const badgeCor = m.destino === 'lojinha' ? 'success' : 'danger';
+        const labelDestino = m.destino === 'lojinha' ? 'Lojinha (Venda)' : 'Descarte (Perda)';
+
+        tr.innerHTML = `
+            <td><strong style="font-size: 15px;">${escapeHtml(m.motivo)}</strong></td>
+            <td class="text-center"><span class="badge bg-secondary">${m.total_ocorrencias} reg</span></td>
+            <td class="text-center"><strong style="font-size: 16px;">${m.total_unidades}</strong> un</td>
+            <td>
+                <select class="form-select select-destino-motivo" data-motivo="${escapeHtml(m.motivo)}" onchange="recalcularDestinosPrevia()" style="font-weight: 700; border-radius: 8px;">
+                    <option value="lojinha" ${m.destino === 'lojinha' ? 'selected' : ''} style="color: #059669; font-weight: 700;">🟢 Direcionar para Lojinha (Venda)</option>
+                    <option value="descarte" ${m.destino === 'descarte' ? 'selected' : ''} style="color: #DC2626; font-weight: 700;">🔴 Registrar como Descarte (Perda)</option>
+                </select>
+            </td>
+        `;
+        tbodyMotivos.appendChild(tr);
+    });
+
+    // Renderiza produtos da lojinha
+    const tbodyProds = document.getElementById('tbodyPreviaProdutosLojinha');
+    tbodyProds.innerHTML = '';
+
+    if (dados.produtos_lojinha.length === 0) {
+        tbodyProds.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-3">Nenhum item direcionado para a lojinha com a configuração atual.</td></tr>';
+    } else {
+        dados.produtos_lojinha.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><code>${escapeHtml(p.codigo)}</code></td>
+                <td><strong>${escapeHtml(p.nome)}</strong></td>
+                <td class="text-center">${p.estoque_atual} un</td>
+                <td class="text-center text-success"><strong style="font-size: 16px;">+${p.quantidade}</strong></td>
+                <td class="text-center"><span class="badge bg-success" style="font-size: 14px;">${p.novo_estoque} un</span></td>
+            `;
+            tbodyProds.appendChild(tr);
+        });
+    }
+
+    // Alerta de novos produtos cadastrados sob demanda
+    const boxNovos = document.getElementById('boxProdutosNovos');
+    if (dados.produtos_novos && dados.produtos_novos.length > 0) {
+        boxNovos.style.display = 'block';
+        boxNovos.innerHTML = `ℹ️ <strong>${dados.produtos_novos.length} SKU(s) novo(s)</strong> serão cadastrados automaticamente no catálogo de produtos do Repack.`;
+    } else {
+        boxNovos.style.display = 'none';
+    }
+}
+
+async function recalcularDestinosPrevia() {
+    const selects = document.querySelectorAll('.select-destino-motivo');
+    const destinos = {};
+    selects.forEach(s => {
+        destinos[s.getAttribute('data-motivo')] = s.value;
+    });
+
+    try {
+        const formData = new FormData();
+        formData.append('conteudo_csv', conteudoCsvAtual);
+        formData.append('destinos_customizados', JSON.stringify(destinos));
+
+        const resp = await fetch('<?= APP_URL ?>/api/gestao/bo/previa-csv', {
+            method: 'POST',
+            body: formData
+        });
+
+        const json = await resp.json();
+        if (resp.ok && json.status === 'success') {
+            dadosPreviaCsv = json;
+            renderizarPreviaCsv(json);
+        }
+    } catch (e) {
+        console.error('Falha ao recalcular prévia:', e);
+    }
+}
+
+function submeterImportacaoCsvFinal() {
+    const selects = document.querySelectorAll('.select-destino-motivo');
+    const destinos = {};
+    selects.forEach(s => {
+        destinos[s.getAttribute('data-motivo')] = s.value;
+    });
+
+    document.getElementById('hiddenConteudoCsv').value = conteudoCsvAtual;
+    document.getElementById('hiddenNomeArquivoCsv').value = nomeArquivoCsvAtual;
+    document.getElementById('hiddenDestinosCustomizados').value = JSON.stringify(destinos);
+
+    const btn = document.getElementById('btnConfirmarImportacaoFinal');
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Abastecendo Estoque da Lojinha...';
+
+    document.getElementById('formImportarCsvFinal').submit();
+}
+
+function voltarUploadCsv() {
+    document.getElementById('stepPreviaCsv').style.display = 'none';
+    document.getElementById('stepUploadCsv').style.display = 'block';
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return text.toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
 </script>
+
+<!-- ========================================================================= -->
+<!-- MODAL DE IMPORTAÇÃO DE B.O. VIA CSV CORPORATIVO                           -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="modalImportarCsvBO" tabindex="-1" aria-labelledby="modalImportarCsvBOLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);">
+            
+            <div class="modal-header" style="background: linear-gradient(135deg, #0F172A, #1E293B); color: #FFFFFF; padding: 20px 24px; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; border: 1px solid #10B981;">
+                        📥
+                    </div>
+                    <div>
+                        <h5 class="modal-title" id="modalImportarCsvBOLabel" style="font-weight: 800; font-size: 20px;">Importar Relatório de B.O. Corporativo (CSV)</h5>
+                        <p class="mb-0 text-muted" style="font-size: 13px; color: #94A3B8 !important;">Alimente o estoque da Lojinha diretamente a partir da planilha de quebras do sistema central</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4" style="background: #F8FAFC;">
+                
+                <!-- ETAPA 1: SELEÇÃO DO ARQUIVO OU TEXTO -->
+                <div id="stepUploadCsv">
+                    <form id="formImportarCsvBO" onsubmit="event.preventDefault(); analisarArquivoCsv();">
+                        
+                        <?php if (!empty($ultimaImportacaoCsv)): ?>
+                            <div class="alert alert-info d-flex align-items-center gap-3 p-3 mb-3" style="border-radius: 12px; border-left: 5px solid #2563EB; background: #EFF6FF;">
+                                <div style="font-size: 26px;">ℹ️</div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 14px; color: #1E40AF;">
+                                        Última importação registrada: <?= sanitize_html($ultimaImportacaoCsv['data_formatada']) ?> (<?= sanitize_html($ultimaImportacaoCsv['tempo_relativo']) ?>)
+                                    </div>
+                                    <div style="font-size: 13px; color: #1E3A8A; margin-top: 2px;">
+                                        Arquivo: <strong><?= sanitize_html($ultimaImportacaoCsv['nome_arquivo']) ?></strong> &bull; Abasteceu <strong>+<?= (int)$ultimaImportacaoCsv['unidades_lojinha'] ?> unidades</strong> na Lojinha (por <?= sanitize_html($ultimaImportacaoCsv['usuario_nome'] ?? 'Gestão') ?>).
+                                        <div class="text-danger fw-bold mt-1" style="font-size: 12px;">
+                                            ⚠️ Verifique o período do relatório antes de enviar para não duplicar entradas no estoque!
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <div class="card p-3 mb-4 shadow-sm border-0" style="border-radius: 16px; background: #FFFFFF;">
+                            
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <button type="button" id="btnAbaArquivo" class="btn btn-sm btn-outline-primary active" style="font-weight: 700; border-radius: 8px;" onclick="trocarAbaEntradaCsv('arquivo')">
+                                    📁 Selecionar Arquivo .CSV
+                                </button>
+                                <button type="button" id="btnAbaTexto" class="btn btn-sm btn-outline-secondary" style="font-weight: 700; border-radius: 8px;" onclick="trocarAbaEntradaCsv('texto')">
+                                    📋 Colar Linhas da Planilha
+                                </button>
+                            </div>
+
+                            <!-- Aba Arquivo -->
+                            <div id="abaArquivoContainer">
+                                <label class="form-label" style="font-weight: 700; color: #334155;">Escolha o arquivo CSV exportado do sistema de perdas:</label>
+                                <input type="file" id="inputCsvFile" class="form-control" accept=".csv,text/csv" style="padding: 12px; border-radius: 12px; border: 2px dashed #CBD5E1; font-weight: 600;">
+                                <div class="form-text mt-2 text-muted">
+                                    Dica: Aceita arquivos com delimitador vírgula (,) ou ponto-e-vírgula (;). As colunas essenciais são <strong>Código</strong>, <strong>Quantidade</strong> e <strong>Motivo</strong>.
+                                </div>
+                            </div>
+
+                            <!-- Aba Texto Colado -->
+                            <div id="abaTextoContainer" style="display: none;">
+                                <label class="form-label" style="font-weight: 700; color: #334155;">Cole as linhas do relatório com cabeçalho:</label>
+                                <textarea id="inputCsvTexto" class="form-control font-monospace" rows="8" placeholder="Código,Quantidade,Descrição,Motivo...&#10;9084,1,GUARANA CHP ANTARCTICA,Amassada&#10;9069,2,BRAHMA CHOPP,Amassada" style="border-radius: 12px; font-size: 13px;"></textarea>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 600;">Cancelar</button>
+                            <button type="submit" id="btnAnalisarCsv" class="btn btn-success px-4" style="border-radius: 10px; font-weight: 700; height: 50px; font-size: 16px;">
+                                Analisar Relatório e Gerar Prévia ➔
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ETAPA 2: PRÉVIA ANALÍTICA E CLASSIFICAÇÃO DE MOTIVOS -->
+                <div id="stepPreviaCsv" style="display: none;">
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <div>
+                            <span class="badge bg-primary" id="previaNomeArquivo" style="font-size: 13px;">relatorio.csv</span>
+                            <span class="text-muted ms-2" style="font-size: 14px;"><strong id="previaTotalLinhas">0</strong> registros / <strong id="previaTotalUnidades">0</strong> unidades computadas</span>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="voltarUploadCsv()" style="font-weight: 600;">
+                            ← Trocar Arquivo
+                        </button>
+                    </div>
+
+                    <!-- Cards de Destinação Consolidada -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <div class="p-3" style="background: #ECFDF5; border-radius: 14px; border: 2px solid #10B981;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div style="font-size: 13px; font-weight: 800; color: #047857; text-transform: uppercase;">● Abastecerá a Lojinha</div>
+                                        <div style="font-size: 32px; font-weight: 900; color: #065F46;" id="previaUnidadesLojinha">0</div>
+                                        <div style="font-size: 13px; color: #047857;">unidades recuperáveis (<span id="previaProdsLojinha">0</span> SKUs distintos)</div>
+                                    </div>
+                                    <div style="font-size: 40px;">🛍️</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="p-3" style="background: #FEF2F2; border-radius: 14px; border: 2px solid #EF4444;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div style="font-size: 13px; font-weight: 800; color: #B91C1C; text-transform: uppercase;">● Direcionado para Descarte</div>
+                                        <div style="font-size: 32px; font-weight: 900; color: #991B1B;" id="previaUnidadesDescarte">0</div>
+                                        <div style="font-size: 13px; color: #B91C1C;">unidades de perda física (<span id="previaProdsDescarte">0</span> SKUs distintos)</div>
+                                    </div>
+                                    <div style="font-size: 40px;">🗑️</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="boxProdutosNovos" class="alert alert-info py-2 px-3 mb-3" style="border-radius: 10px; font-size: 14px; display: none;"></div>
+
+                    <!-- Mapeamento Flexível de Motivos de Avaria -->
+                    <div class="card p-3 mb-4 shadow-sm border-0" style="border-radius: 16px; background: #FFFFFF;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0" style="font-weight: 800; color: #1E293B; font-size: 16px;">
+                                ⚙️ Matriz de Destinação de Motivos (Flexível para novos motivos)
+                            </h6>
+                            <span class="badge bg-light text-muted border">Pré-classificado automaticamente</span>
+                        </div>
+                        <p class="text-muted small mb-3">Você pode alterar livremente a destinação de qualquer motivo nos seletores abaixo. Os saldos e a Lojinha se adaptam instantaneamente.</p>
+
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Motivo Constante no CSV</th>
+                                        <th class="text-center" style="width: 140px;">Ocorrências</th>
+                                        <th class="text-center" style="width: 140px;">Qtd Total</th>
+                                        <th style="width: 320px;">Destinação no Repack</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyPreviaMotivos"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Produtos que entrarão na Lojinha -->
+                    <div class="card p-3 mb-4 shadow-sm border-0" style="border-radius: 16px; background: #FFFFFF;">
+                        <h6 class="mb-2" style="font-weight: 800; color: #1E293B; font-size: 16px;">
+                            📦 Produtos que terão Estoque Incrementado na Lojinha
+                        </h6>
+                        <div class="table-responsive" style="max-height: 260px; overflow-y: auto;">
+                            <table class="table table-sm table-hover align-middle mb-0">
+                                <thead class="table-light sticky-top">
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Descrição do Produto</th>
+                                        <th class="text-center">Estoque Atual</th>
+                                        <th class="text-center">Incremento (+)</th>
+                                        <th class="text-center">Novo Saldo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyPreviaProdutosLojinha"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Formulário de Confirmação Definitiva -->
+                    <form id="formImportarCsvFinal" method="POST" action="<?= APP_URL ?>/gestao/estoque/importar-csv">
+                        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                        <input type="hidden" name="conteudo_csv" id="hiddenConteudoCsv" value="">
+                        <input type="hidden" name="nome_arquivo" id="hiddenNomeArquivoCsv" value="">
+                        <input type="hidden" name="destinos_customizados" id="hiddenDestinosCustomizados" value="">
+
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="forcar_reimportacao" value="1" id="checkForcarReimportacao">
+                                <label class="form-check-label text-muted small" for="checkForcarReimportacao">
+                                    Forçar reimportação mesmo se o arquivo já tiver sido importado anteriormente
+                                </label>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-secondary px-3" onclick="voltarUploadCsv()" style="border-radius: 10px; font-weight: 600;">Voltar</button>
+                                <button type="button" id="btnConfirmarImportacaoFinal" class="btn btn-success px-4" onclick="submeterImportacaoCsvFinal()" style="border-radius: 12px; font-weight: 800; height: 50px; font-size: 16px; background: linear-gradient(135deg, #10B981, #059669); border: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                                    ✅ Confirmar Importação e Abastecer Lojinha
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 <?php require __DIR__ . '/../layouts/gestao_footer.php'; ?>

@@ -29,6 +29,21 @@ class LojinhaController
 
         $colaboradorId = $_SESSION['colaborador_id'] ?? null;
         if (!$colaboradorId) {
+            // Autologin para gestores acessando a partir do painel administrativo
+            if (!empty($_SESSION['usuario_id']) && ($_SESSION['perfil'] ?? '') === 'gestao') {
+                $uGestor = Usuario::buscarPorId((int)$_SESSION['usuario_id']);
+                if ($uGestor && (int)$uGestor['ativo'] === 1) {
+                    $_SESSION['colaborador_id'] = (int)$uGestor['id'];
+                    $_SESSION['colaborador_nome'] = $uGestor['nome'];
+                    $_SESSION['colaborador_matricula'] = $uGestor['matricula'];
+                    $_SESSION['colaborador_setor'] = $uGestor['setor'];
+                    $_SESSION['colaborador_tipo_acesso'] = $uGestor['tipo_acesso_lojinha'] ?? 'master';
+                    $colaboradorId = $uGestor['id'];
+                }
+            }
+        }
+
+        if (!$colaboradorId) {
             header('Location: ' . APP_URL . '/lojinha/login');
             exit;
         }
@@ -40,11 +55,22 @@ class LojinhaController
         }
 
         $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
+        $isGestor = (!empty($_SESSION['usuario_id']) && ($_SESSION['perfil'] ?? '') === 'gestao');
         $lote = LoteVenda::buscarLoteAtivoParaSetor($usuario['setor']);
 
-        // Se a loja estiver fechada e for Master ou Setorial, conecta ao Lote Corporativo permanente
-        if (!$lote && ($tipoAcesso === 'master' || $tipoAcesso === 'setorial')) {
-            $lote = LoteVenda::obterLoteCorporativo();
+        // Se a loja estiver fechada para o setor e for Master/Gestor/Setorial
+        if (!$lote && ($tipoAcesso === 'master' || $tipoAcesso === 'setorial' || $isGestor)) {
+            // Se gestor estiver simulando colaborador, tenta conectar a qualquer lote aberto de colaborador
+            $stmtLoteAtivo = Database::getConnection()->query("
+                SELECT * FROM lotes_venda 
+                WHERE status = 'aberto' 
+                  AND data_inicio <= NOW() 
+                  AND data_fim >= NOW() 
+                  AND deleted_at IS NULL 
+                ORDER BY id DESC LIMIT 1
+            ");
+            $loteAbertoColab = $stmtLoteAtivo ? $stmtLoteAtivo->fetch() : null;
+            $lote = $loteAbertoColab ?: LoteVenda::obterLoteCorporativo();
         }
 
         if (!$lote) {
@@ -171,8 +197,21 @@ class LojinhaController
         $lote = $auth['lote'];
 
         $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
-        $isMaster = ($tipoAcesso === 'master');
-        $isSetorial = ($tipoAcesso === 'setorial');
+        $isGestor = (!empty($_SESSION['usuario_id']) && ($_SESSION['perfil'] ?? '') === 'gestao');
+        $podeAlternarPerspectiva = ($isGestor || $tipoAcesso === 'master');
+
+        if ($podeAlternarPerspectiva && isset($_GET['modo'])) {
+            $modoReq = trim((string)$_GET['modo']);
+            if ($modoReq === 'colaborador' || $modoReq === 'master') {
+                $_SESSION['lojinha_modo_simulacao'] = $modoReq;
+            }
+        }
+
+        $modoSimulacao = $_SESSION['lojinha_modo_simulacao'] ?? 'master';
+        $simulandoColaborador = ($podeAlternarPerspectiva && $modoSimulacao === 'colaborador');
+
+        $isMaster = ($podeAlternarPerspectiva && !$simulandoColaborador);
+        $isSetorial = (!$isMaster && $tipoAcesso === 'setorial');
 
         $flashSucesso = $_SESSION['flash_sucesso'] ?? '';
         $flashErro = $_SESSION['flash_erro'] ?? '';

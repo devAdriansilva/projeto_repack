@@ -167,6 +167,14 @@ switch ($route) {
         (new GestaoController())->salvarInventario();
         break;
 
+    case '/api/gestao/bo/previa-csv':
+        (new GestaoController())->apiPreviaCsvBO();
+        break;
+
+    case '/gestao/estoque/importar-csv':
+        (new GestaoController())->importarCsvBO();
+        break;
+
     // Correção de B.O.
     case '/gestao/bo':
     case '/gestao/correcao_bo':

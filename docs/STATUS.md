@@ -625,6 +625,52 @@
       - Card visual de distribuição percentual das avarias por categoria no período selecionado.
     - **Incremento de Versão:** Versão elevada para `v1.55` em `app/config/config.php` e cache atualizado para `repack-pwa-v1.55` em `public/service-worker.js`.
 
+  - [x] **MANUT-059 (13/11/2026):** Importação de B.O. via CSV Corporativo, Matriz Flexível de Motivos de Avaria e Abastecimento Automático da Lojinha.
+    - **Banco de Dados (Migration 008 - `database/migrations/008_flexibilizar_motivos_bo_e_importacao.sql`):**
+      - Flexibilização da coluna `tipo_avaria` em `apontamentos_bo` para `VARCHAR(100)`, permitindo qualquer nova descrição textual de avaria no futuro.
+      - Adição das colunas `motivo_original` (descrição textual original da planilha) e `arquivo_origem` (nome do arquivo CSV vinculado ao lançamento).
+      - Criação da tabela de auditoria `importacoes_csv_log` (nome_arquivo, hash_conteudo, total_linhas, unidades_lojinha, unidades_descarte, usuario_id, detalhes_json e created_at).
+    - **Backend e Mapeamento Flexível (`app/models/ApontamentoBO.php` e `app/controllers/GestaoController.php`):**
+      - Criação do método `classificarMotivoExterno()` com dicionário expansível e heurísticas para avarias leves (`Amassada`, `Def. Rótulo`, `Emba. Danificada`, `Validade`, `Troca de Embalagem`, etc. -> `lojinha`) e críticas (`Furo`, `Quebrada`, `Vazamento` -> `descarte`).
+      - Suporte à sobreposição customizada pelo usuário diretamente na tela para motivos desconhecidos ou regras pontuais.
+      - Métodos `parseCsvLinhas()`, `analisarPreviaCsv()` e `processarImportacaoCsv()`, executando a carga em transação atômica PDO, incrementando o saldo de `estoque_lojinha`, cadastrando SKUs novos sob demanda e protegendo contra importações duplicadas acidentais via hash SHA-256.
+      - Endpoints `/api/gestao/bo/previa-csv` e `/gestao/estoque/importar-csv` integrados ao Front Controller (`public/index.php`).
+    - **Interface Visual do Estoque (`app/views/gestao/estoque.php`):**
+      - Botão de destaque **"📥 Importar B.O. via CSV"** no cabeçalho da Gestão de Estoque.
+      - Modal interativo com suporte a upload de arquivo `.csv` ou colagem direta de texto da planilha.
+      - Prévia analítica em tempo real: cards consolidados de unidades para a Lojinha e unidades para Descarte.
+      - Tabela de conferência de motivos com seletores `<select>` permitindo à gestora alternar qualquer motivo entre Lojinha e Descarte com recálculo instantâneo na tela.
+      - Tabela de produtos com visualização de estoque atual, acréscimo (+) e novo saldo previsto.
+      - Checkbox para forçar reimportação intencional.
+    - **Testes & Versionamento:**
+      - Script de testes automatizados `tests/test_importacao_csv_bo.php` validando 19/19 asserções com dados reais de amostra.
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_acesso_lojinha.php` (15/15) validadas com 100% de sucesso.
+      - Versão elevada para `v1.56` em `app/config/config.php` e `public/service-worker.js`.
+
+  - [x] **MANUT-060 (13/11/2026):** Carimbo de Última Entrada de Estoque, Alerta Anti-Duplicidade no Modal de CSV e Acesso Direto com Modo Espelho da Gestão (👑 Modo Master vs 👤 Modo Colaborador).
+    - **Backend e Model de Estoque (`app/models/EstoqueLojinha.php`):**
+      - Criação do método `obterUltimaEntradaEstoque()`, consolidando e ordenando cronologicamente as entradas provenientes de:
+        1. Importações de relatórios CSV corporativos (`importacoes_csv_log`).
+        2. Apontamentos de B.O.s leves da bancada de repack (`apontamentos_bo` com destino `lojinha`).
+        3. Inventários com balanço ou incremento positivo (`inventarios_estoque_historico`).
+      - Criação do método `obterUltimaImportacaoCsv()`, recuperando detalhes do último arquivo processado, data, operador e unidades abastecidas.
+      - Criação do helper `calcularTempoRelativo()` gerando etiquetas humanizadas ("há instantes", "há X min", "há X horas", "há X dias").
+    - **Controladores (`app/controllers/GestaoController.php` e `app/controllers/LojinhaController.php`):**
+      - Injeção das informações de última entrada nas views de `estoque()` e `dashboard()`.
+      - Autologin da Gestão para a Lojinha: ao clicar no atalho da Lojinha a partir do painel de gestão, a sessão do gestor é reconhecida de forma transparente sem exigir reautenticação.
+      - Controle de Perspectiva na Lojinha (`?modo=colaborador` / `?modo=master`): permite à Coordenadora simular com fidelidade total a visão de um colaborador comum (sem expor reservas ocultas e sem o selo Master) ou retornar à visão Master com saldos físicos integrais.
+    - **Interfaces Visuais (`app/views/`):**
+      - **Gestão de Estoque (`app/views/gestao/estoque.php`):** Card em destaque no topo exibindo o carimbo da última entrada de itens com data/hora formatada, tempo decorrido, canal de origem, produto/arquivo e quantidade (+unidades).
+      - **Modal de Importação de B.O. CSV (`#modalImportarCsvBO`):** Alerta informativo chamativo no topo da tela de upload exibindo a data, nome do arquivo e quantidade da última importação realizada, acompanhado de aviso em destaque para verificação prévia de data para prevenir envios em duplicidade.
+      - **Dashboard da Gestão (`app/views/gestao/dashboard.php`):** Card métrico de Lojinha enriquecido com o carimbo e tempo relativo da última entrada de mercadorias.
+      - **Navegação Superior da Gestão (`app/views/layouts/gestao_header.php`):** Botão de atalho em roxo realce **"🛍️ Ver Lojinha"** no topo da navbar e no menu mobile.
+      - **Cabeçalho da Lojinha (`app/views/layouts/lojinha_header.php`):** Botão **"⚙️ Painel Gestão"** para retorno instantâneo ao dashboard administrativo quando a sessão de gestor estiver ativa.
+      - **Vitrine da Lojinha (`app/views/lojinha/vitrine.php`):** Painel de controle de perspectiva da gestão no topo da página, com botões pílula para alternar entre `👑 Modo Master` e `👤 Modo Colaborador` e link de retorno à Gestão.
+    - **Testes & Versionamento:**
+      - Script de testes automatizados `tests/test_ultima_entrada_e_espelho.php` com 10/10 asserções aprovadas.
+      - Suítes de regressão `tests/test_fase5.php` (35/35), `tests/test_acesso_lojinha.php` (15/15) e `tests/test_importacao_csv_bo.php` (19/19) validadas com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.57` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

@@ -217,6 +217,11 @@ O checkout utiliza transação atômica (`BEGIN TRANSACTION`, `SELECT ... FOR UP
 3. **Controller:** Crie o método de ação no Controller responsável em `app/controllers/`. Se for rota administrativa, aplique `AuthController::exigirGestao()`.
 4. **Roteamento:** Adicione a rota no switch/case de `public/index.php`.
 
+### 7.3 Importação de B.O. via CSV e Extensão de Motivos de Avaria
+1. **Importação via Painel de Gestão:** Em `app/views/gestao/estoque.php`, a gestão pode carregar relatórios CSV corporativos de perdas diárias.
+2. **Mapeamento de Motivos:** Em `app/models/ApontamentoBO.php` (`MAPEAMENTO_MOTIVOS`), novos motivos podem ser adicionados associando a `'lojinha'` ou `'descarte'`.
+3. **Sobreposição Interativa:** Caso o CSV apresente um motivo não cadastrado, o modal de prévia permite à gestora escolher o destino em tempo real via seletor dropdown antes de confirmar a gravação.
+
 ---
 
 ## 8. Diretrizes Rígidas de Segurança e Usabilidade

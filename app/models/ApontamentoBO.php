@@ -447,4 +447,483 @@ class ApontamentoBO
             'por_produto' => $porProduto
         ];
     }
+
+    /**
+     * Dicionário expansível de motivos conhecidos
+     */
+    public const MAPEAMENTO_MOTIVOS = [
+        // Lojinha (Avarias leves, embalagens, validade, descaracterização)
+        'amassada' => 'lojinha',
+        'def_rotulo' => 'lojinha',
+        'def. rótulo' => 'lojinha',
+        'def rotulo' => 'lojinha',
+        'defeito rotulo' => 'lojinha',
+        'rotulo' => 'lojinha',
+        'emba_danificada' => 'lojinha',
+        'emba. danificada' => 'lojinha',
+        'embalagem danificada' => 'lojinha',
+        'validade' => 'lojinha',
+        'vencimento' => 'lojinha',
+        'vencimento proximo' => 'lojinha',
+        'troca de embalagem' => 'lojinha',
+        'descaracterizacao' => 'lojinha',
+        'palete' => 'lojinha',
+
+        // Descarte (Perda crítica irreversível)
+        'furo' => 'descarte',
+        'furada' => 'descarte',
+        'micro_furo' => 'descarte',
+        'micro furo' => 'descarte',
+        'microfuro' => 'descarte',
+        'quebrada' => 'descarte',
+        'quebra' => 'descarte',
+        'vazamento' => 'descarte',
+        'contaminada' => 'descarte'
+    ];
+
+    /**
+     * Classifica um motivo externo vindo de relatórios CSV corporativos
+     * Permite sobreposição manual enviada pelo gestor
+     * @param string $motivoTexto
+     * @param string|null $destinoForcado
+     * @return array [chave, destino, nome_formatado, customizado]
+     */
+    public static function classificarMotivoExterno(string $motivoTexto, ?string $destinoForcado = null): array
+    {
+        $raw = trim($motivoTexto);
+        if ($destinoForcado === 'lojinha' || $destinoForcado === 'descarte') {
+            return [
+                'chave' => mb_strtolower($raw, 'UTF-8'),
+                'destino' => $destinoForcado,
+                'nome_formatado' => $raw !== '' ? $raw : 'Personalizado',
+                'customizado' => true
+            ];
+        }
+
+        $limpo = mb_strtolower($raw, 'UTF-8');
+        $semAcento = (string)iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $limpo);
+        $semAcento = strtolower(trim(preg_replace('/\s+/', ' ', preg_replace('/[.\-_]+/', ' ', $semAcento))));
+
+        if (isset(self::MAPEAMENTO_MOTIVOS[$limpo])) {
+            return [
+                'chave' => $limpo,
+                'destino' => self::MAPEAMENTO_MOTIVOS[$limpo],
+                'nome_formatado' => $raw,
+                'customizado' => false
+            ];
+        }
+
+        if (isset(self::MAPEAMENTO_MOTIVOS[$semAcento])) {
+            return [
+                'chave' => $semAcento,
+                'destino' => self::MAPEAMENTO_MOTIVOS[$semAcento],
+                'nome_formatado' => $raw,
+                'customizado' => false
+            ];
+        }
+
+        // Heurística de descarte crítico
+        if (
+            strpos($semAcento, 'furo') !== false ||
+            strpos($semAcento, 'furad') !== false ||
+            strpos($semAcento, 'quebr') !== false ||
+            strpos($semAcento, 'vazam') !== false ||
+            strpos($semAcento, 'contam') !== false
+        ) {
+            return [
+                'chave' => strpos($semAcento, 'micro') !== false ? 'micro_furo' : 'furo',
+                'destino' => 'descarte',
+                'nome_formatado' => $raw,
+                'customizado' => false
+            ];
+        }
+
+        // Padrão seguro para motivos recuperáveis adicionais
+        return [
+            'chave' => $limpo !== '' ? $limpo : 'avaria_externa',
+            'destino' => 'lojinha',
+            'nome_formatado' => $raw !== '' ? $raw : 'Outros',
+            'customizado' => false
+        ];
+    }
+
+    /**
+     * Faz o parse das linhas de um CSV de relatório de B.O. corporativo
+     * @param string $conteudoCsv
+     * @return array
+     */
+    public static function parseCsvLinhas(string $conteudoCsv): array
+    {
+        $linhas = preg_split('/\r\n|\r|\n/', trim($conteudoCsv));
+        if (empty($linhas)) {
+            return [];
+        }
+
+        // Detecta o delimitador na primeira linha
+        $primeiraLinha = $linhas[0];
+        $delimitador = (substr_count($primeiraLinha, ';') > substr_count($primeiraLinha, ',')) ? ';' : ',';
+
+        $cabecalhoRaw = str_getcsv(array_shift($linhas), $delimitador);
+        $mapColunas = [
+            'codigo' => null,
+            'quantidade' => null,
+            'descricao' => null,
+            'motivo' => null,
+            'data' => null,
+            'registrado_por' => null
+        ];
+
+        foreach ($cabecalhoRaw as $idx => $nomeCol) {
+            $norm = strtolower(trim((string)$nomeCol));
+            // Remove aspas ou caracteres especiais
+            $norm = preg_replace('/[^a-z0-9_]/', '', (string)iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $norm));
+
+            if (in_array($norm, ['codigo', 'cod', 'sku', 'produto_codigo'])) {
+                $mapColunas['codigo'] = $idx;
+            } elseif (in_array($norm, ['quantidade', 'qtd', 'quant', 'unidades'])) {
+                $mapColunas['quantidade'] = $idx;
+            } elseif (in_array($norm, ['descricao', 'desc', 'produto', 'nome_produto'])) {
+                $mapColunas['descricao'] = $idx;
+            } elseif ($norm === 'motivo') {
+                $mapColunas['motivo'] = $idx;
+            } elseif ($mapColunas['motivo'] === null && in_array($norm, ['motivoquebra', 'avaria', 'tipo_avaria', 'tipo'])) {
+                $mapColunas['motivo'] = $idx;
+            } elseif (in_array($norm, ['data', 'datahora', 'created_at', 'data_registro'])) {
+                $mapColunas['data'] = $idx;
+            } elseif (in_array($norm, ['registradopor', 'usuario', 'operador', 'ajudante'])) {
+                $mapColunas['registrado_por'] = $idx;
+            }
+        }
+
+        // Se não identificou 'codigo' ou 'quantidade', aborta
+        if ($mapColunas['codigo'] === null || $mapColunas['quantidade'] === null) {
+            throw new InvalidArgumentException("O relatório CSV deve conter ao menos as colunas de 'Código' (SKU) e 'Quantidade'.");
+        }
+
+        $registros = [];
+        foreach ($linhas as $numLinha => $linhaTexto) {
+            if (trim($linhaTexto) === '') {
+                continue;
+            }
+
+            $colunas = str_getcsv($linhaTexto, $delimitador);
+            $codigo = trim((string)($colunas[$mapColunas['codigo']] ?? ''));
+            $qtd = (int)preg_replace('/[^0-9]/', '', (string)($colunas[$mapColunas['quantidade']] ?? '0'));
+            $descricao = $mapColunas['descricao'] !== null ? trim((string)($colunas[$mapColunas['descricao']] ?? '')) : '';
+            $motivo = $mapColunas['motivo'] !== null ? trim((string)($colunas[$mapColunas['motivo']] ?? '')) : 'Amassada';
+            $data = $mapColunas['data'] !== null ? trim((string)($colunas[$mapColunas['data']] ?? '')) : '';
+            $registradoPor = $mapColunas['registrado_por'] !== null ? trim((string)($colunas[$mapColunas['registrado_por']] ?? '')) : '';
+
+            // Se motivo vier com traço ou vazio, busca na coluna de apoio ou usa Amassada
+            if ($motivo === '' || $motivo === '-') {
+                $motivo = 'Amassada';
+            }
+
+            if ($codigo === '' || $qtd <= 0) {
+                continue;
+            }
+
+            $registros[] = [
+                'linha' => $numLinha + 2,
+                'codigo' => $codigo,
+                'quantidade' => $qtd,
+                'descricao' => $descricao,
+                'motivo' => $motivo,
+                'data' => $data,
+                'registrado_por' => $registradoPor
+            ];
+        }
+
+        return $registros;
+    }
+
+    /**
+     * Analisa o CSV e gera a prévia consolidada antes de efetivar no banco de dados
+     * @param string $conteudoCsv
+     * @param array $destinosCustomizados [motivo => 'lojinha'|'descarte']
+     * @return array
+     */
+    public static function analisarPreviaCsv(string $conteudoCsv, array $destinosCustomizados = []): array
+    {
+        $linhas = self::parseCsvLinhas($conteudoCsv);
+        if (empty($linhas)) {
+            throw new InvalidArgumentException("Nenhum registro de avaria válido foi encontrado no arquivo.");
+        }
+
+        $pdo = Database::getConnection();
+
+        // Mapeia todos os SKUs do arquivo
+        $skus = array_unique(array_column($linhas, 'codigo'));
+        $produtosMap = [];
+
+        if (!empty($skus)) {
+            $placeholders = implode(',', array_fill(0, count($skus), '?'));
+            $stmt = $pdo->prepare("
+                SELECT p.id, p.codigo, p.nome, p.pacote_padrao,
+                       COALESCE(el.quantidade_total, 0) AS estoque_atual
+                FROM produtos p
+                LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
+                WHERE p.codigo IN ($placeholders)
+            ");
+            $stmt->execute(array_values($skus));
+            while ($p = $stmt->fetch()) {
+                $produtosMap[(string)$p['codigo']] = $p;
+            }
+        }
+
+        $motivosResumo = [];
+        $lojinhaAgrupado = [];
+        $descarteAgrupado = [];
+        $totalLojinha = 0;
+        $totalDescarte = 0;
+        $produtosNovos = [];
+
+        foreach ($linhas as $r) {
+            $cod = $r['codigo'];
+            $qtd = $r['quantidade'];
+            $motivo = $r['motivo'];
+
+            $destinoForcado = $destinosCustomizados[$motivo] ?? null;
+            $class = self::classificarMotivoExterno($motivo, $destinoForcado);
+            $destino = $class['destino'];
+
+            // Contabiliza motivos
+            if (!isset($motivosResumo[$motivo])) {
+                $motivosResumo[$motivo] = [
+                    'motivo' => $motivo,
+                    'destino' => $destino,
+                    'total_unidades' => 0,
+                    'total_ocorrencias' => 0,
+                    'chave_normalizada' => $class['chave']
+                ];
+            }
+            $motivosResumo[$motivo]['total_unidades'] += $qtd;
+            $motivosResumo[$motivo]['total_ocorrencias']++;
+
+            $produtoInfo = $produtosMap[$cod] ?? null;
+            $nomeProd = $produtoInfo ? $produtoInfo['nome'] : ($r['descricao'] ?: "SKU {$cod}");
+
+            if (!$produtoInfo && !isset($produtosNovos[$cod])) {
+                $produtosNovos[$cod] = [
+                    'codigo' => $cod,
+                    'nome' => $nomeProd,
+                    'quantidade_total' => 0
+                ];
+            }
+            if (!$produtoInfo) {
+                $produtosNovos[$cod]['quantidade_total'] += $qtd;
+            }
+
+            if ($destino === 'lojinha') {
+                $totalLojinha += $qtd;
+                if (!isset($lojinhaAgrupado[$cod])) {
+                    $lojinhaAgrupado[$cod] = [
+                        'codigo' => $cod,
+                        'nome' => $nomeProd,
+                        'quantidade' => 0,
+                        'estoque_atual' => $produtoInfo ? (int)$produtoInfo['estoque_atual'] : 0,
+                        'novo_estoque' => $produtoInfo ? (int)$produtoInfo['estoque_atual'] : 0
+                    ];
+                }
+                $lojinhaAgrupado[$cod]['quantidade'] += $qtd;
+                $lojinhaAgrupado[$cod]['novo_estoque'] += $qtd;
+            } else {
+                $totalDescarte += $qtd;
+                if (!isset($descarteAgrupado[$cod])) {
+                    $descarteAgrupado[$cod] = [
+                        'codigo' => $cod,
+                        'nome' => $nomeProd,
+                        'quantidade' => 0
+                    ];
+                }
+                $descarteAgrupado[$cod]['quantidade'] += $qtd;
+            }
+        }
+
+        // Ordena por maior volume
+        uasort($lojinhaAgrupado, fn($a, $b) => $b['quantidade'] <=> $a['quantidade']);
+        uasort($descarteAgrupado, fn($a, $b) => $b['quantidade'] <=> $a['quantidade']);
+
+        return [
+            'status' => 'success',
+            'hash_conteudo' => hash('sha256', $conteudoCsv),
+            'total_linhas' => count($linhas),
+            'total_unidades' => $totalLojinha + $totalDescarte,
+            'unidades_lojinha' => $totalLojinha,
+            'produtos_lojinha_distintos' => count($lojinhaAgrupado),
+            'unidades_descarte' => $totalDescarte,
+            'produtos_descarte_distintos' => count($descarteAgrupado),
+            'motivos' => array_values($motivosResumo),
+            'produtos_lojinha' => array_values($lojinhaAgrupado),
+            'produtos_descarte' => array_values($descarteAgrupado),
+            'produtos_novos' => array_values($produtosNovos)
+        ];
+    }
+
+    /**
+     * Processa e efetiva a importação definitiva do CSV no banco de dados
+     * @param string $conteudoCsv
+     * @param int $usuarioGestorId
+     * @param string $nomeArquivo
+     * @param array $destinosCustomizados
+     * @param bool $forcarReimportacao
+     * @return array
+     */
+    public static function processarImportacaoCsv(
+        string $conteudoCsv,
+        int $usuarioGestorId,
+        string $nomeArquivo = 'relatorio_bo.csv',
+        array $destinosCustomizados = [],
+        bool $forcarReimportacao = false
+    ): array {
+        $linhas = self::parseCsvLinhas($conteudoCsv);
+        if (empty($linhas)) {
+            throw new InvalidArgumentException("O relatório CSV não possui registros válidos.");
+        }
+
+        $hash = hash('sha256', $conteudoCsv);
+        $pdo = Database::getConnection();
+
+        // Prevenção de duplicidade: verifica se o mesmo arquivo foi importado
+        if (!$forcarReimportacao) {
+            $stmtCheca = $pdo->prepare("
+                SELECT id, nome_arquivo, created_at 
+                FROM importacoes_csv_log 
+                WHERE hash_conteudo = :hash 
+                LIMIT 1
+            ");
+            $stmtCheca->execute(['hash' => $hash]);
+            $jaImportado = $stmtCheca->fetch();
+            if ($jaImportado) {
+                $dtFormatada = date('d/m/Y \à\s H:i', strtotime($jaImportado['created_at']));
+                throw new DomainException("Este arquivo CSV já foi importado anteriormente em {$dtFormatada} ({$jaImportado['nome_arquivo']}). Se desejar importar novamente, marque a opção 'Forçar reimportação'.");
+            }
+        }
+
+        $pdo->beginTransaction();
+
+        try {
+            // Mapeia produtos existentes
+            $skus = array_unique(array_column($linhas, 'codigo'));
+            $produtosMap = [];
+
+            if (!empty($skus)) {
+                $placeholders = implode(',', array_fill(0, count($skus), '?'));
+                $stmt = $pdo->prepare("SELECT id, codigo, nome FROM produtos WHERE codigo IN ($placeholders)");
+                $stmt->execute(array_values($skus));
+                while ($p = $stmt->fetch()) {
+                    $produtosMap[(string)$p['codigo']] = $p;
+                }
+            }
+
+            $totalLojinha = 0;
+            $totalDescarte = 0;
+            $boIds = [];
+
+            // Prepara inserts
+            $stmtInsertProd = $pdo->prepare("
+                INSERT INTO produtos (codigo, nome, pacote_padrao, ativo, created_at, updated_at)
+                VALUES (:codigo, :nome, 'Unidade', 1, NOW(), NOW())
+            ");
+
+            $stmtInsertBO = $pdo->prepare("
+                INSERT INTO apontamentos_bo (
+                    produto_id, usuario_id, tipo_avaria, motivo_original, quantidade,
+                    destino, origem_sincronizacao, motivo_correcao, arquivo_origem, created_at
+                ) VALUES (
+                    :produto_id, :usuario_id, :tipo_avaria, :motivo_original, :quantidade,
+                    :destino, 'online', :motivo_correcao, :arquivo_origem, :created_at
+                )
+            ");
+
+            foreach ($linhas as $r) {
+                $cod = $r['codigo'];
+                $qtd = $r['quantidade'];
+                $motivo = $r['motivo'];
+                $descricao = $r['descricao'] ?: "Produto SKU {$cod}";
+                $dataRegistro = !empty($r['data']) ? date('Y-m-d H:i:s', strtotime($r['data'])) : date('Y-m-d H:i:s');
+
+                // Se produto não existir, cadastra sob demanda
+                if (!isset($produtosMap[$cod])) {
+                    $stmtInsertProd->execute([
+                        'codigo' => $cod,
+                        'nome' => $descricao
+                    ]);
+                    $novoId = (int)$pdo->lastInsertId();
+                    $produtosMap[$cod] = [
+                        'id' => $novoId,
+                        'codigo' => $cod,
+                        'nome' => $descricao
+                    ];
+
+                    // Inicializa estoque lojinha zerado
+                    $pdo->prepare("INSERT IGNORE INTO estoque_lojinha (produto_id, quantidade_total, quantidade_reservada_gestao) VALUES (:pid, 0, 0)")
+                        ->execute(['pid' => $novoId]);
+                }
+
+                $produtoId = (int)$produtosMap[$cod]['id'];
+
+                $destForcado = $destinosCustomizados[$motivo] ?? null;
+                $class = self::classificarMotivoExterno($motivo, $destForcado);
+                $destino = $class['destino'];
+
+                $stmtInsertBO->execute([
+                    'produto_id' => $produtoId,
+                    'usuario_id' => $usuarioGestorId,
+                    'tipo_avaria' => $class['chave'],
+                    'motivo_original' => $motivo,
+                    'quantidade' => $qtd,
+                    'destino' => $destino,
+                    'motivo_correcao' => "Importado via CSV: " . $nomeArquivo . ($r['registrado_por'] ? " (Registrado por: {$r['registrado_por']})" : ''),
+                    'arquivo_origem' => $nomeArquivo,
+                    'created_at' => $dataRegistro
+                ]);
+                $boIds[] = (int)$pdo->lastInsertId();
+
+                if ($destino === 'lojinha') {
+                    $totalLojinha += $qtd;
+                    EstoqueLojinha::incrementarSaldo($produtoId, $qtd);
+                } else {
+                    $totalDescarte += $qtd;
+                }
+            }
+
+            // Registra no histórico de importações
+            $stmtLog = $pdo->prepare("
+                INSERT INTO importacoes_csv_log (
+                    nome_arquivo, hash_conteudo, total_linhas, unidades_lojinha,
+                    unidades_descarte, usuario_id, detalhes_json, created_at
+                ) VALUES (
+                    :nome_arquivo, :hash_conteudo, :total_linhas, :unidades_lojinha,
+                    :unidades_descarte, :usuario_id, :detalhes_json, NOW()
+                )
+            ");
+            $stmtLog->execute([
+                'nome_arquivo' => $nomeArquivo,
+                'hash_conteudo' => $hash,
+                'total_linhas' => count($linhas),
+                'unidades_lojinha' => $totalLojinha,
+                'unidades_descarte' => $totalDescarte,
+                'usuario_id' => $usuarioGestorId,
+                'detalhes_json' => json_encode([
+                    'total_bo_criados' => count($boIds),
+                    'motivos_customizados' => $destinosCustomizados
+                ], JSON_UNESCAPED_UNICODE)
+            ]);
+
+            $pdo->commit();
+
+            return [
+                'status' => 'success',
+                'total_linhas' => count($linhas),
+                'unidades_lojinha' => $totalLojinha,
+                'unidades_descarte' => $totalDescarte,
+                'bo_criados' => count($boIds),
+                'message' => "Importação concluída com sucesso! {$totalLojinha} unidades adicionadas ao estoque da Lojinha e {$totalDescarte} unidades computadas para Descarte."
+            ];
+        } catch (\Throwable $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
 }

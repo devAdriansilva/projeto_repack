@@ -315,9 +315,14 @@ $labelsTipoAvaria = [
                 </span>
                 <span class="text-muted small">unidades</span>
             </div>
-            <div class="mt-2 small text-muted">
+            <div class="mt-1 small text-muted">
                 Físico: <?= number_format($estoqueTotal, 0, ',', '.') ?> | Reservado: <?= number_format($estoqueReservado, 0, ',', '.') ?>
             </div>
+            <?php if (!empty($ultimaEntrada)): ?>
+                <div class="mt-2 pt-2 border-top small" style="font-size: 11px; color: #475569;" title="<?= sanitize_html($ultimaEntrada['descricao']) ?>">
+                    🕒 Última entrada: <strong><?= sanitize_html($ultimaEntrada['data_formatada']) ?></strong> (<?= sanitize_html($ultimaEntrada['tempo_relativo']) ?> &bull; +<?= (int)$ultimaEntrada['quantidade'] ?> un)
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

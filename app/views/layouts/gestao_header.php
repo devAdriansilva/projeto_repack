@@ -237,8 +237,14 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             </a>
         </div>
 
-        <!-- Botão de Alto Destaque: Retorno à Área de Reembalagem (Sempre visível e destacado no topo) -->
+        <!-- Botões de Acesso Rápido no Topo -->
         <div class="d-flex align-items-center gap-2">
+            <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm" style="background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); color: #FFFFFF; font-weight: 800; border-radius: 10px; padding: 7px 14px; border: 1.5px solid #5B21B6; box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Acessar Vitrine da Lojinha (com visão de colaborador / master)">
+                <span style="font-size: 15px;">🛍️</span>
+                <span class="d-none d-md-inline">Ver Lojinha</span>
+                <span class="d-inline d-md-none">Lojinha</span>
+            </a>
+
             <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: #FFFFFF; font-weight: 800; border-radius: 10px; padding: 7px 14px; border: 1.5px solid #047857; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Retornar ao Terminal do Operador">
                 <span style="font-size: 15px;">🏭</span>
                 <span class="d-none d-md-inline">Área de Reembalagem</span>
@@ -281,6 +287,11 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/relatorios') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/relatorios">
                         📈 Relatórios
+                    </a>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <a class="nav-link text-warning" href="<?= APP_URL ?>/lojinha" style="font-weight: 700;">
+                        🛍️ Vitrine da Lojinha
                     </a>
                 </li>
             </ul>

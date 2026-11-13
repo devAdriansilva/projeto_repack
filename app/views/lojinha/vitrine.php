@@ -51,6 +51,47 @@ $pageTitle = 'Vitrine da Lojinha - ' . ($lote['titulo'] ?? 'Ofertas Internas');
 require __DIR__ . '/../layouts/lojinha_header.php';
 ?>
 
+<!-- Seletor de Perspectiva para Gestão / Master -->
+<?php if (!empty($podeAlternarPerspectiva)): ?>
+    <div class="card mb-4 p-3 shadow-sm" style="border: 2px solid #8B5CF6; background: #F5F3FF; border-radius: 14px;">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #EDE9FE; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 1.5px solid #C4B5FD;">
+                    👓
+                </div>
+                <div>
+                    <div style="font-weight: 800; font-size: 15px; color: #5B21B6; display: flex; align-items: center; gap: 8px;">
+                        Controle de Perspectiva da Gestão
+                        <span class="badge" style="background: <?= !empty($simulandoColaborador) ? '#10B981' : '#6366F1' ?>; color: #FFFFFF; font-size: 11px;">
+                            <?= !empty($simulandoColaborador) ? '👤 Modo Colaborador Ativo' : '👑 Modo Master Ativo' ?>
+                        </span>
+                    </div>
+                    <div style="font-size: 13px; color: #6D28D9; margin-top: 2px;">
+                        <?php if (!empty($simulandoColaborador)): ?>
+                            Você está visualizando a vitrine exatamente como um <strong>colaborador comum</strong> enxerga (apenas produtos disponíveis, sem acesso a reservas ocultas).
+                        <?php else: ?>
+                            Você está visualizando no <strong>Modo Master</strong> (com estoque físico total e reservas ocultas visíveis para auditoria gerencial).
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <div class="btn-group" role="group" aria-label="Alternar Perspectiva">
+                    <a href="<?= APP_URL ?>/lojinha?modo=master" class="btn btn-sm <?= empty($simulandoColaborador) ? 'btn-primary active' : 'btn-outline-primary' ?>" style="border-radius: 8px 0 0 8px; font-weight: 800; padding: 7px 14px;">
+                        👑 Modo Master
+                    </a>
+                    <a href="<?= APP_URL ?>/lojinha?modo=colaborador" class="btn btn-sm <?= !empty($simulandoColaborador) ? 'btn-primary active' : 'btn-outline-primary' ?>" style="border-radius: 0 8px 8px 0; font-weight: 800; padding: 7px 14px;">
+                        👤 Modo Colaborador
+                    </a>
+                </div>
+                <a href="<?= APP_URL ?>/gestao/dashboard" class="btn btn-sm btn-outline-dark fw-bold ms-2" style="border-radius: 8px; padding: 7px 14px;">
+                    ← Voltar para Gestão
+                </a>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
 <!-- Banner do Lote Ativo e Cota do Colaborador -->
 <?php if (!empty($isMaster)): ?>
     <div class="banner-lote" style="background: linear-gradient(135deg, #1E1B4B, #312E81); border: 2px solid #818CF8;">
