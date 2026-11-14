@@ -836,6 +836,17 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.67` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-072 (14/11/2026):** Ampliação Monumental de Ícones e Tipografia dos Botões da Home do Operador no Smartphone.
+    - **Ampliação de Ícones e Imagens (`app/views/operador/home.php` e `public/assets/css/urna.css`):**
+      - Wrapper dos ícones (`.btn-operador-icone-wrapper`) ampliado para `clamp(120px, 17vh, 185px)`, preenchendo o espaço vertical dos botões com presença monumental.
+      - Padronização do 3º botão ("Baixa na Lojinha"): wrapper alterado para card branco sólido com sombra tridimensional (`background: #FFFFFF; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22)`), e emoji `🗑️` ampliado de 44px fixos para `clamp(65px, 10vh, 95px)` fluido.
+      - Inclusão de ícone vetorial SVG no rótulo de "Baixa na Lojinha" para alinhamento e consistência perfeita com os botões de B.O. e Produção.
+    - **Ampliação Tipográfica dos Rótulos de Ação:**
+      - Tipografia `.btn-operador-label` expandida de 22px para `clamp(26px, 7vw, 38px)` em peso 900 com ícones SVG de apoio ampliados para `clamp(32px, 5vw, 44px)`, garantindo leitura imediata e alto impacto ergonômico para operadores com luvas.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.68` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

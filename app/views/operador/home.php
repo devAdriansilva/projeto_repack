@@ -19,14 +19,14 @@ require_once __DIR__ . '/../layouts/header.php';
     width: 100% !important;
     max-width: 980px !important;
     margin: 0 auto !important;
-    padding: 10px 14px !important;
-    height: calc(100dvh - 58px) !important;
-    min-height: calc(100dvh - 58px) !important;
+    padding: 8px 12px !important;
+    height: calc(100dvh - 56px) !important;
+    min-height: calc(100dvh - 56px) !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
     align-items: stretch !important;
-    gap: 12px !important;
+    gap: 10px !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 }
@@ -35,7 +35,7 @@ require_once __DIR__ . '/../layouts/header.php';
     display: flex !important;
     flex-direction: column !important; /* EMPILHADO VERTICALMENTE */
     flex: 1 1 0 !important;
-    gap: 14px !important;
+    gap: 12px !important;
     min-height: 0 !important;
     width: 100% !important;
 }
@@ -49,7 +49,7 @@ require_once __DIR__ . '/../layouts/header.php';
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    padding: 10px 16px !important;
+    padding: 8px 14px !important;
     gap: 10px !important;
     border-radius: 28px !important;
     border-width: 6px !important;
@@ -58,16 +58,36 @@ require_once __DIR__ . '/../layouts/header.php';
 }
 
 .btn-operador-icone-wrapper {
-    width: clamp(100px, 15vh, 180px) !important;
-    height: clamp(100px, 15vh, 180px) !important;
-    border-radius: 22px !important;
+    width: clamp(120px, 17vh, 185px) !important;
+    height: clamp(120px, 17vh, 185px) !important;
+    border-radius: 24px !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22) !important;
     padding: 4px !important;
     flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.btn-operador-icone-wrapper.btn-operador-icone-emoji {
+    background: #FFFFFF !important;
+    border: none !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22) !important;
 }
 
 .btn-operador-icone-wrapper.btn-operador-icone-emoji span {
-    font-size: clamp(54px, 8vh, 84px) !important;
+    font-size: clamp(65px, 10vh, 95px) !important;
     line-height: 1 !important;
+    display: block !important;
+}
+
+.btn-operador-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    border-radius: 20px !important;
+    display: block !important;
 }
 
 .btn-operador-content {
@@ -76,20 +96,26 @@ require_once __DIR__ . '/../layouts/header.php';
     flex: 0 0 auto !important;
     width: 100% !important;
     gap: 4px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
 }
 
 .btn-operador-label {
-    font-size: clamp(22px, 5.8vw, 36px) !important;
+    font-size: clamp(26px, 7vw, 38px) !important;
     font-weight: 900 !important;
     justify-content: center !important;
     text-align: center !important;
     gap: 10px !important;
     line-height: 1.15 !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
 }
 
 .btn-operador-label svg {
-    width: clamp(28px, 4vw, 40px) !important;
-    height: clamp(28px, 4vw, 40px) !important;
+    width: clamp(32px, 5vw, 44px) !important;
+    height: clamp(32px, 5vw, 44px) !important;
 }
 
 /* Regra Exclusiva para Computador Desktop com Monitor Widescreen Deitado (Landscape >= 992px) */
@@ -177,10 +203,13 @@ require_once __DIR__ . '/../layouts/header.php';
         <!-- Botão 3: BAIXA NA LOJINHA (Sólido Vermelho/Coral Monumental - Perdas / Vencimento) -->
         <a href="<?= APP_URL ?>/operador/baixa" class="btn-operador-solido btn-operador-baixa">
             <div class="btn-operador-icone-wrapper btn-operador-icone-emoji">
-                <span style="font-size: 44px; line-height: 1;">🗑️</span>
+                <span>🗑️</span>
             </div>
             <div class="btn-operador-content">
                 <div class="btn-operador-label">
+                    <svg width="44" height="44" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="flex-shrink: 0;">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                    </svg>
                     <span>BAIXA NA LOJINHA</span>
                 </div>
             </div>

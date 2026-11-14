@@ -437,9 +437,9 @@ body {
 }
 
 .btn-operador-icone-wrapper.btn-operador-icone-emoji {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.35);
-    box-shadow: none;
+    background: #FFFFFF;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
 }
 
 .btn-operador-img {
@@ -517,14 +517,14 @@ body {
         border-width: 6px;
     }
     .btn-operador-icone-wrapper {
-        width: clamp(95px, 15vh, 160px);
-        height: clamp(95px, 15vh, 160px);
-        border-radius: 20px;
+        width: clamp(120px, 17vh, 185px);
+        height: clamp(120px, 17vh, 185px);
+        border-radius: 24px;
         padding: 4px;
         flex-shrink: 0;
     }
     .btn-operador-icone-wrapper.btn-operador-icone-emoji span {
-        font-size: clamp(48px, 8vh, 72px) !important;
+        font-size: clamp(65px, 10vh, 95px) !important;
     }
     .btn-operador-content {
         align-items: center;
@@ -534,16 +534,16 @@ body {
         width: 100%;
     }
     .btn-operador-label {
-        font-size: clamp(20px, 5.5vw, 30px);
+        font-size: clamp(26px, 7vw, 38px);
         font-weight: 900;
         justify-content: center;
         text-align: center;
-        gap: 8px;
+        gap: 10px;
         line-height: 1.15;
     }
     .btn-operador-label svg {
-        width: 30px;
-        height: 30px;
+        width: clamp(32px, 5vw, 44px);
+        height: clamp(32px, 5vw, 44px);
     }
     .badge-em-andamento {
         font-size: 13px;
