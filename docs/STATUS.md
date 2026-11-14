@@ -904,6 +904,17 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.73` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-078 (14/11/2026):** Simulação e Benchmark Empírico de Carga/Estresse Concorrente (100 a 200 Usuários Simultâneos).
+    - **Criação do Benchmark Automatizado (`tests/stress_test.php`):**
+      - Motor assíncrono em PHP CLI utilizando `curl_multi` para disparos concorrentes em paralelo com medição de latência milimétrica, percentis (P50, P90, P95, P99), vazão (RPS) e códigos HTTP.
+    - **Resultados Empíricos Obtidos em Produção (Alwaysdata):**
+      - **Cenário 1 (100 requisições simultâneas em `/api/health` com consulta ao MySQL):** 100% de sucesso (HTTP 200), tempo total de 2,56s, vazão de 39,12 RPS, latência mediana (P50) de 353ms.
+      - **Cenário 2 (100 requisições simultâneas na Vitrine `/lojinha` com renderização HTML e saldos):** 100% de sucesso (HTTP 200), tempo total de 3,54s, vazão de 28,22 RPS, latência mediana (P50) de 650ms.
+      - **Cenário 3 (200 requisições concorrentes em alta concorrência de 40 conexões):** 100% de sucesso (HTTP 200), tempo total de 3,14s, vazão de 63,69 RPS, latência mediana (P50) de 345ms.
+      - **Resumo Acumulado:** 400 requisições executadas com 100% de sucesso e zero erros (zero 500, zero 503, zero timeouts ou deadlocks).
+    - **Validação de Governança:**
+      - Suíte oficial de 35 testes (`tests/test_fase5.php`) 100% aprovada.
+
 ---
 
 ## Próximo Passo
