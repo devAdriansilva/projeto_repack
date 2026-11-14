@@ -915,6 +915,31 @@
     - **Validação de Governança:**
       - Suíte oficial de 35 testes (`tests/test_fase5.php`) 100% aprovada.
 
+  - [x] **MANUT-079 (14/11/2026):** Hiper-Ampliação Visual e Ergonômica dos Elementos e Textos da Gestão do Repack para Smartphones.
+    - **Diagnóstico:**
+      - O usuário apontou que, embora o layout do menu lateral e cabeçalho estivessem corretos no smartphone, os elementos visuais, textos dos cartões, controles de filtro rápido, botões de ação e números do Dashboard de Gestão permaneciam com tipografia pequena e touch targets acanhados no mobile.
+    - **Solução Implementada:**
+      - **Escala de Header e Navbar Mobile (`app/views/layouts/gestao_header.php`):**
+        - Navbar com altura ergonômica mínima de 70px e padding ampliado.
+        - Emblema da logomarca expandido para 48px × 48px com ícone de 26px e bordas reforçadas.
+        - Título do módulo ampliado para 19px em peso 900 com subtítulo em 13px negrito.
+        - Botão alternador do hambúrguer ampliado para 48px × 48px com ícone SVG encorpado (stroke 2.6).
+      - **Drawer Lateral Offcanvas:**
+        - Largura ajustada para `min(360px, 92vw)` com cabeçalho interno de 60px.
+        - Itens do menu com altura de 58px, fonte de 18px (peso 800), ícones de 26px e padding de 14px 20px.
+        - Botão "Encerrar Sessão" com altura de 54px e fonte de 16px.
+      - **Sub-barra Móvel de Identificação do Usuário:**
+        - Avatar elevado para 36px × 36px, nome da gestora em 15px (peso 800), matrícula em 11px e botão "Sair" com touch target ergonômico de 38px de altura e fonte de 13.5px.
+      - **Dashboard de Gestão (`app/views/gestao/dashboard.php`):**
+        - **Cards de Métricas:** Remoção de styles inline limitantes (`font-size: 32px`) e adoção de tipografia responsiva fluida `clamp(38px, 9vw, 48px)` com peso 900 e entrelinha 1.05.
+        - **Filtros Rápidos (Pílulas):** Aumento para 46px de altura mínima, fonte em 15px (peso 800) e padding de 10px 18px.
+        - **Filtro Granular:** Inputs e selects com altura mínima de 52px, fonte de 16px (prevenindo auto-zoom mobile) e botão `🔍 Filtrar` encorpado com 48px de altura e fonte 15.5px.
+        - **Bloco Superior:** Switch de auto-atualização, botão `🔄 Atualizar` e atalhos de `📋 Retificar B.O.` e `🏷️ Lotes` elevados para altura mínima confortável de 46px a 50px.
+        - **Cards de Feeds e Estatísticas:** Títulos `h2.headline-lg` ampliados para 21px, tabelas com `padding: 16px` e fontes de 15.5px, card de "Operador da Bancada" e "Lotes de Venda" com botões e selects de tamanho padrão 48px.
+      - **Testes & Versionamento:**
+        - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
+        - Versão da aplicação incrementada para `v1.74` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

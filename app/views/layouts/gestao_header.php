@@ -41,7 +41,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle ?? 'Gestão - ' . APP_NAME) ?></title>
     
@@ -235,7 +235,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
         /* Drawer Lateral Direito (Entrada da Direita para Esquerda sem encobrir o cabeçalho) */
         .drawer-backdrop-gestao {
             position: fixed;
-            top: 58px; /* Inicia logo abaixo da barra superior */
+            top: 70px; /* Inicia logo abaixo da barra superior */
             left: 0;
             right: 0;
             bottom: 0;
@@ -253,10 +253,10 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 
         .drawer-lateral-direita {
             position: fixed;
-            top: 58px; /* Mantém o cabeçalho 100% visível no topo! */
+            top: 70px; /* Mantém o cabeçalho 100% visível no topo! */
             right: 0;
             bottom: 0;
-            width: min(320px, 86vw);
+            width: min(360px, 92vw);
             background: #0B1120;
             border-left: 2px solid rgba(255, 255, 255, 0.15);
             box-shadow: -8px 0 32px rgba(0, 0, 0, 0.6);
@@ -273,19 +273,20 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 
         .drawer-nav-item {
             width: 100%;
-            font-size: 15.5px;
-            font-weight: 700;
-            padding: 12px 16px;
-            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 800;
+            padding: 14px 20px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             color: #CBD5E1 !important;
             text-decoration: none;
             background: rgba(255, 255, 255, 0.05);
             border: 1.5px solid rgba(255, 255, 255, 0.12);
             transition: all 0.15s ease;
             box-sizing: border-box;
+            min-height: 58px;
         }
         .drawer-nav-item:hover, .drawer-nav-item:active {
             background: rgba(255, 255, 255, 0.12);
@@ -299,9 +300,9 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
         }
         .drawer-nav-item span:first-child {
-            font-size: 20px;
+            font-size: 26px;
             line-height: 1;
-            width: 26px;
+            width: 32px;
             text-align: center;
             flex-shrink: 0;
         }
@@ -316,41 +317,112 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             color: #A7F3D0 !important;
         }
 
-        /* Ergonomia Mobile Geral para Toda a Interface de Gestão */
-        @media (max-width: 768px) {
+        /* Ergonomia Mobile Geral Ampliada para Toda a Interface de Gestão */
+        @media (max-width: 991px) {
+            body.gestao-body {
+                font-size: 16px;
+            }
             .gestao-container {
-                margin: 14px auto !important;
-                padding: 0 12px !important;
+                margin: 18px auto !important;
+                padding: 0 16px !important;
             }
             .card-gestao {
-                padding: 16px 14px !important;
-                border-radius: 14px !important;
-                margin-bottom: 16px !important;
+                padding: 22px 18px !important;
+                border-radius: 18px !important;
+                margin-bottom: 22px !important;
             }
             h1.headline-lg {
-                font-size: 21px !important;
-                font-weight: 800 !important;
-            }
-            .card-metric .headline-xl {
-                font-size: 34px !important;
+                font-size: 26px !important;
                 font-weight: 900 !important;
             }
+            h2.headline-lg {
+                font-size: 21px !important;
+                font-weight: 900 !important;
+            }
+            h3.headline-lg {
+                font-size: 18px !important;
+                font-weight: 900 !important;
+            }
+            .body-md {
+                font-size: 15.5px !important;
+                line-height: 1.45 !important;
+            }
+            .live-indicator {
+                font-size: 14px !important;
+                padding: 8px 16px !important;
+                font-weight: 800 !important;
+            }
+            .card-metric {
+                border-left-width: 6px !important;
+                padding: 22px 18px !important;
+                border-radius: 18px !important;
+            }
+            .card-metric .text-muted.small.fw-bold {
+                font-size: 14.5px !important;
+                font-weight: 800 !important;
+                letter-spacing: 0.5px !important;
+            }
+            .card-metric .headline-xl {
+                font-size: clamp(38px, 9vw, 48px) !important;
+                font-weight: 900 !important;
+                line-height: 1.05 !important;
+            }
+            .card-metric .text-muted.small {
+                font-size: 15px !important;
+                font-weight: 600 !important;
+            }
             .pill-filter {
-                padding: 8px 14px !important;
-                font-size: 13.5px !important;
-                font-weight: 700 !important;
+                padding: 10px 18px !important;
+                font-size: 15px !important;
+                font-weight: 800 !important;
+                border-radius: 25px !important;
+                margin: 4px 3px !important;
+                min-height: 46px !important;
+                display: inline-flex !important;
+                align-items: center !important;
             }
             .btn-gestao {
+                padding: 12px 20px !important;
+                font-size: 16px !important;
+                font-weight: 800 !important;
+                border-radius: 12px !important;
+                min-height: 50px !important;
+            }
+            .btn-sm {
+                padding: 8px 16px !important;
+                font-size: 14.5px !important;
+                font-weight: 700 !important;
+                min-height: 44px !important;
+                border-radius: 10px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            .form-control, .form-select, .form-control-sm, .form-select-sm {
+                min-height: 52px !important;
+                font-size: 16px !important;
+                padding: 12px 16px !important;
+                border-radius: 12px !important;
+            }
+            .form-label, .form-label.small {
+                font-size: 14.5px !important;
+                font-weight: 800 !important;
+                margin-bottom: 6px !important;
+                color: #1E293B !important;
+            }
+            .table-gestao th, .table-feed th {
+                padding: 14px 16px !important;
+                font-size: 13.5px !important;
+                font-weight: 800 !important;
+            }
+            .table-gestao td, .table-feed td {
+                padding: 16px 16px !important;
+                font-size: 15.5px !important;
+            }
+            .badge-status {
                 padding: 8px 14px !important;
-                font-size: 14px !important;
-            }
-            .table-gestao th {
-                padding: 10px 12px !important;
-                font-size: 12px !important;
-            }
-            .table-gestao td {
-                padding: 12px 12px !important;
-                font-size: 14px !important;
+                font-size: 13px !important;
+                font-weight: 800 !important;
             }
         }
     </style>
@@ -358,21 +430,21 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 <body class="gestao-body">
 
 <!-- Barra de Navegação Superior da Gestão (Fixa no topo com Z-Index soberano) -->
-<nav class="navbar navbar-expand-xl navbar-dark navbar-gestao" style="position: sticky; top: 0; z-index: 1050; min-height: 58px;">
+<nav class="navbar navbar-expand-xl navbar-dark navbar-gestao" style="position: sticky; top: 0; z-index: 1050; min-height: 70px; padding: 10px 16px;">
     <div class="container-fluid px-0 d-flex align-items-center justify-content-between">
         
         <!-- LATERAL ESQUERDA: Logomarca / Ícone da Lojinha & Repack + Título do Módulo -->
         <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-white" href="<?= APP_URL ?>/gestao/dashboard">
             <!-- Emblema da Logomarca (Preparado para inserção de imagem de marca oficial) -->
-            <div class="brand-logo-badge" style="width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #10B981 0%, #059669 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(16,185,129,0.4); flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.25);">
-                <span style="font-size: 20px; line-height: 1;">🏪</span>
+            <div class="brand-logo-badge" style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #10B981 0%, #059669 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(16,185,129,0.45); flex-shrink: 0; border: 2.5px solid rgba(255,255,255,0.3);">
+                <span style="font-size: 26px; line-height: 1;">🏪</span>
             </div>
             <div class="d-flex flex-column" style="line-height: 1.15;">
-                <div class="d-flex align-items-center gap-1">
-                    <strong style="letter-spacing: -0.2px; font-size: 16px;">Gestão do Repack</strong>
+                <div class="d-flex align-items-center gap-1.5">
+                    <strong style="letter-spacing: -0.2px; font-size: 19px; font-weight: 900;">Gestão do Repack</strong>
                     <span class="badge bg-secondary ms-1 d-none d-sm-inline" style="font-size: 10px; font-weight: 600; opacity: 0.9;"><?= APP_VERSION ?></span>
                 </div>
-                <span style="font-size: 11px; color: #94A3B8; font-weight: 600;">Lojinha & Operação</span>
+                <span style="font-size: 13px; color: #CBD5E1; font-weight: 700;">Lojinha & Operação</span>
             </div>
         </a>
 
@@ -459,13 +531,13 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 
         <!-- LATERAL DIREITA NO SMARTPHONE: Botão Hambúrguer que abre o Drawer vindo da Direita -->
         <div class="d-flex d-xl-none align-items-center">
-            <button class="btn" type="button" id="btnToggleDrawerGestao" aria-label="Abrir Menu da Gestão" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.32); border-radius: 10px; background: rgba(255,255,255,0.08); color: #FFFFFF; padding: 0;">
-                <svg id="iconDrawerHamb" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <button class="btn" type="button" id="btnToggleDrawerGestao" aria-label="Abrir Menu da Gestão" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.35); border-radius: 12px; background: rgba(255,255,255,0.1); color: #FFFFFF; padding: 0;">
+                <svg id="iconDrawerHamb" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
-                <svg id="iconDrawerClose" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                <svg id="iconDrawerClose" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
@@ -481,12 +553,12 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 <!-- Drawer Lateral da Direita (Entrada da Direita para a Esquerda sem encobrir o cabeçalho) -->
 <aside id="drawerGestaoLateral" class="drawer-lateral-direita d-xl-none">
     <!-- Cabeçalho Interno do Drawer -->
-    <div class="d-flex align-items-center justify-content-between p-3 border-bottom" style="border-color: rgba(255, 255, 255, 0.12) !important; background: #070B14;">
+    <div class="d-flex align-items-center justify-content-between p-3 border-bottom" style="border-color: rgba(255, 255, 255, 0.12) !important; background: #070B14; min-height: 60px;">
         <div class="d-flex align-items-center gap-2">
-            <span style="font-size: 18px;">📋</span>
-            <span style="color: #FFFFFF; font-weight: 800; font-size: 14px; letter-spacing: 0.5px;">MENU DE GESTÃO</span>
+            <span style="font-size: 22px;">📋</span>
+            <span style="color: #FFFFFF; font-weight: 900; font-size: 16px; letter-spacing: 0.5px;">MENU DE GESTÃO</span>
         </div>
-        <button type="button" class="btn btn-sm text-white-50 p-1" onclick="fecharDrawerGestao()" style="font-size: 18px; line-height: 1; border: none; background: transparent;">✕</button>
+        <button type="button" class="btn text-white-50 p-1" onclick="fecharDrawerGestao()" style="font-size: 22px; line-height: 1; border: none; background: transparent; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">✕</button>
     </div>
 
     <!-- Lista de Abas e Módulos com Rolagem Suave -->
@@ -527,7 +599,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 
     <!-- Rodapé do Drawer com Atalho de Sair -->
     <div class="p-3 border-top" style="border-color: rgba(255, 255, 255, 0.12) !important; background: #070B14;">
-        <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-bold" style="border-radius: 10px; padding: 11px 16px; font-size: 15px;">
+        <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-bold" style="border-radius: 12px; padding: 13px 18px; font-size: 16px; min-height: 54px;">
             <span>🚪</span> <span>Encerrar Sessão</span>
         </a>
     </div>
@@ -574,23 +646,23 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <!-- Sub-barra Móvel de Identificação do Usuário (Mobile apenas, d-xl-none) -->
-<div class="d-flex d-xl-none align-items-center justify-content-between px-3 py-2" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border-bottom: 2px solid #3B82F6;">
+<div class="d-flex d-xl-none align-items-center justify-content-between px-3 py-2" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border-bottom: 2px solid #3B82F6; min-height: 54px;">
     <div class="d-flex align-items-center gap-2">
-        <div style="width: 32px; height: 32px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-            <span style="font-size: 16px; line-height: 1;">👤</span>
+        <div style="width: 36px; height: 36px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.25);">
+            <span style="font-size: 18px; line-height: 1;">👤</span>
         </div>
         <div class="d-flex flex-column" style="line-height: 1.15;">
-            <span style="color: #FFFFFF; font-weight: 800; font-size: 14px;">
+            <span style="color: #FFFFFF; font-weight: 800; font-size: 15px;">
                 <?= sanitize_html($nomeGestor) ?>
             </span>
             <div class="d-flex align-items-center gap-1 mt-1">
-                <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 10px; font-weight: 800; border: 1px solid #F59E0B; padding: 2px 6px; border-radius: 4px;">
+                <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1px solid #F59E0B; padding: 2px 6px; border-radius: 4px;">
                     MATRÍCULA: <?= sanitize_html($matriculaGestor) ?>
                 </span>
             </div>
         </div>
     </div>
-    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-danger fw-bold d-flex align-items-center gap-1" style="background: #DC2626; border: 1px solid #B91C1C; border-radius: 16px; padding: 4px 12px; font-size: 12px; color: #FFFFFF;" title="Encerrar sessão administrativa">
+    <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-danger fw-bold d-flex align-items-center gap-1" style="background: #DC2626; border: 1px solid #B91C1C; border-radius: 20px; padding: 6px 14px; font-size: 13.5px; color: #FFFFFF; min-height: 38px;" title="Encerrar sessão administrativa">
         <span>Sair</span> ➔
     </a>
 </div>

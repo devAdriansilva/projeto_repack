@@ -116,24 +116,24 @@ $labelsTipoAvaria = [
     </div>
     
     <div class="d-flex align-items-center gap-2 flex-wrap">
-        <div class="d-flex align-items-center gap-2 bg-white px-3 py-1 rounded border shadow-sm">
+        <div class="d-flex align-items-center gap-2 bg-white px-3 py-2 rounded-3 border shadow-sm" style="min-height: 46px;">
             <div class="form-check form-switch m-0" style="min-height: auto;">
-                <input class="form-check-input" type="checkbox" role="switch" id="switchAutoRefresh" checked style="cursor: pointer;">
-                <label class="form-check-label small fw-bold text-muted" for="switchAutoRefresh" style="cursor: pointer;">
+                <input class="form-check-input" type="checkbox" role="switch" id="switchAutoRefresh" checked style="cursor: pointer; transform: scale(1.15);">
+                <label class="form-check-label fw-bold text-muted ms-1" for="switchAutoRefresh" style="cursor: pointer; font-size: 13.5px;">
                     Auto-atualizar (30s)
                 </label>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2" id="btnManualRefresh" title="Atualizar agora">
+            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2.5" id="btnManualRefresh" title="Atualizar agora" style="font-weight: 700;">
                 🔄 Atualizar
             </button>
-            <span class="text-muted small border-start ps-2" id="txtLastSync" style="font-size: 11px;">
+            <span class="text-muted small border-start ps-2" id="txtLastSync" style="font-size: 12px; font-weight: 600;">
                 <?= date('H:i:s') ?>
             </span>
         </div>
-        <a href="<?= APP_URL ?>/gestao/bo" class="btn btn-gestao btn-gestao-secondary text-nowrap" style="padding: 6px 12px; font-size: 13px;">
+        <a href="<?= APP_URL ?>/gestao/bo" class="btn btn-gestao btn-gestao-secondary text-nowrap">
             📋 Retificar B.O.
         </a>
-        <a href="<?= APP_URL ?>/gestao/lotes" class="btn btn-gestao btn-gestao-primary text-nowrap" style="padding: 6px 12px; font-size: 13px;">
+        <a href="<?= APP_URL ?>/gestao/lotes" class="btn btn-gestao btn-gestao-primary text-nowrap">
             🏷️ Lotes
         </a>
     </div>
@@ -236,7 +236,7 @@ $labelsTipoAvaria = [
 
         <!-- Botão Aplicar -->
         <div class="col-12 col-sm-6 col-md-2 d-flex gap-2">
-            <button type="submit" class="btn btn-sm btn-primary w-100 fw-bold">
+            <button type="submit" class="btn btn-primary w-100 fw-bold d-flex align-items-center justify-content-center gap-1" style="min-height: 48px; font-size: 15.5px; border-radius: 10px;">
                 🔍 Filtrar
             </button>
         </div>
@@ -253,7 +253,7 @@ $labelsTipoAvaria = [
                 <span class="badge bg-success bg-opacity-10 text-success fw-bold" id="badgeTaxaRecup"><?= $taxaRecuperacao ?>% taxa</span>
             </div>
             <div class="d-flex align-items-baseline gap-2">
-                <span class="headline-xl" id="valTotalRecuperado" style="color: var(--gestao-primary); font-size: 32px;">
+                <span class="headline-xl" id="valTotalRecuperado" style="color: var(--gestao-primary);">
                     <?= number_format($totalRecuperado, 0, ',', '.') ?>
                 </span>
                 <span class="text-muted small">unidades</span>
@@ -272,7 +272,7 @@ $labelsTipoAvaria = [
                 <span class="badge bg-danger bg-opacity-10 text-danger fw-bold">Perda Furo</span>
             </div>
             <div class="d-flex align-items-baseline gap-2">
-                <span class="headline-xl" id="valTotalDescarte" style="color: var(--gestao-danger); font-size: 32px;">
+                <span class="headline-xl" id="valTotalDescarte" style="color: var(--gestao-danger);">
                     <?= number_format($totalDescarte, 0, ',', '.') ?>
                 </span>
                 <span class="text-muted small">unidades</span>
@@ -291,7 +291,7 @@ $labelsTipoAvaria = [
                 <span class="badge bg-warning bg-opacity-10 text-dark fw-bold" id="badgeRitmoHora"><?= $pacotesPorHora ?> pct/h</span>
             </div>
             <div class="d-flex align-items-baseline gap-2">
-                <span class="headline-xl" id="valTotalPacotes" style="color: var(--gestao-text); font-size: 32px;">
+                <span class="headline-xl" id="valTotalPacotes" style="color: var(--gestao-text);">
                     <?= number_format($totalPacotes, 0, ',', '.') ?>
                 </span>
                 <span class="text-muted small">pacotes montados</span>
@@ -310,7 +310,7 @@ $labelsTipoAvaria = [
                 <span class="badge bg-primary bg-opacity-10 text-primary fw-bold">Vitrine</span>
             </div>
             <div class="d-flex align-items-baseline gap-2">
-                <span class="headline-xl" id="valEstoqueDisponivel" style="color: var(--gestao-secondary); font-size: 32px;">
+                <span class="headline-xl" id="valEstoqueDisponivel" style="color: var(--gestao-secondary);">
                     <?= number_format($estoqueDisponivel, 0, ',', '.') ?>
                 </span>
                 <span class="text-muted small">unidades</span>
@@ -334,12 +334,12 @@ $labelsTipoAvaria = [
         <div class="card-gestao h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center gap-2">
-                    <span style="font-size: 20px;">🚨</span>
-                    <h2 class="headline-lg mb-0" style="font-size: 18px;">Lançamentos de B.O. (Avarias)</h2>
+                    <span style="font-size: 22px;">🚨</span>
+                    <h2 class="headline-lg mb-0">Lançamentos de B.O. (Avarias)</h2>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-secondary" id="badgeContagemBO"><?= count($ultimosBOs) ?> registros</span>
-                    <a href="<?= APP_URL ?>/gestao/bo" class="small fw-bold text-decoration-none">Ver auditoria →</a>
+                    <span class="badge bg-secondary" id="badgeContagemBO" style="font-size: 12px; padding: 4px 8px;"><?= count($ultimosBOs) ?> registros</span>
+                    <a href="<?= APP_URL ?>/gestao/bo" class="fw-bold text-decoration-none" style="font-size: 14px;">Ver auditoria →</a>
                 </div>
             </div>
 
@@ -358,7 +358,7 @@ $labelsTipoAvaria = [
                     <tbody id="corpoTabelaBO">
                         <?php if (empty($ultimosBOs)): ?>
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-muted">
+                                <td colspan="6" class="text-center py-4 text-muted" style="font-size: 15px; font-weight: 500;">
                                     Nenhum apontamento de avaria registrado para o filtro selecionado.
                                 </td>
                             </tr>
@@ -367,25 +367,25 @@ $labelsTipoAvaria = [
                                 <tr>
                                     <td class="text-nowrap">
                                         <strong><?= date('H:i', strtotime($bo['created_at'])) ?></strong>
-                                        <div class="text-muted" style="font-size: 11px;"><?= date('d/m', strtotime($bo['created_at'])) ?></div>
+                                        <div class="text-muted" style="font-size: 11.5px;"><?= date('d/m', strtotime($bo['created_at'])) ?></div>
                                     </td>
                                     <td>
-                                        <strong class="d-block text-truncate" style="max-width: 140px;" title="<?= sanitize_html($bo['produto_nome']) ?>">
+                                        <strong class="d-block text-truncate" style="max-width: 150px; font-size: 14.5px;" title="<?= sanitize_html($bo['produto_nome']) ?>">
                                             <?= sanitize_html($bo['produto_nome']) ?>
                                         </strong>
-                                        <span class="text-muted" style="font-size: 11px;"><?= sanitize_html($bo['produto_codigo']) ?></span>
+                                        <span class="text-muted" style="font-size: 12px;"><?= sanitize_html($bo['produto_codigo']) ?></span>
                                     </td>
                                     <td>
-                                        <span class="d-block text-truncate" style="max-width: 110px;" title="<?= sanitize_html($bo['operador_nome']) ?>">
+                                        <span class="d-block text-truncate" style="max-width: 120px; font-size: 14px;" title="<?= sanitize_html($bo['operador_nome']) ?>">
                                             <?= sanitize_html($bo['operador_nome']) ?>
                                         </span>
-                                        <span class="text-muted" style="font-size: 11px;"><?= sanitize_html($bo['operador_matricula'] ?? '') ?></span>
+                                        <span class="text-muted" style="font-size: 11.5px;"><?= sanitize_html($bo['operador_matricula'] ?? '') ?></span>
                                     </td>
                                     <td>
-                                        <strong style="font-size: 15px; color: #111827;"><?= (int)$bo['quantidade'] ?></strong>
+                                        <strong style="font-size: 16px; color: #111827;"><?= (int)$bo['quantidade'] ?></strong>
                                     </td>
                                     <td>
-                                        <span class="badge bg-light text-dark border">
+                                        <span class="badge bg-light text-dark border" style="font-size: 12px; font-weight: 600;">
                                             <?= sanitize_html($labelsTipoAvaria[$bo['tipo_avaria']] ?? ucfirst(str_replace('_', ' ', $bo['tipo_avaria']))) ?>
                                         </span>
                                     </td>
@@ -408,12 +408,12 @@ $labelsTipoAvaria = [
         <div class="card-gestao h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex align-items-center gap-2">
-                    <span style="font-size: 20px;">⏱️</span>
-                    <h2 class="headline-lg mb-0" style="font-size: 18px;">Produtividade da Bancada (Cronômetro)</h2>
+                    <span style="font-size: 22px;">⏱️</span>
+                    <h2 class="headline-lg mb-0">Produtividade da Bancada (Cronômetro)</h2>
                 </div>
                 <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-secondary" id="badgeContagemProd"><?= count($ultimosProd) ?> ciclos</span>
-                    <a href="<?= APP_URL ?>/gestao/relatorios" class="small fw-bold text-decoration-none">Extrato analítico →</a>
+                    <span class="badge bg-secondary" id="badgeContagemProd" style="font-size: 12px; padding: 4px 8px;"><?= count($ultimosProd) ?> ciclos</span>
+                    <a href="<?= APP_URL ?>/gestao/relatorios" class="fw-bold text-decoration-none" style="font-size: 14px;">Extrato analítico →</a>
                 </div>
             </div>
 
@@ -494,11 +494,11 @@ $labelsTipoAvaria = [
     <!-- Distribuição das Avarias por Categoria no Período -->
     <div class="col-12 col-lg-5">
         <div class="card-gestao h-100">
-            <h2 class="headline-lg mb-2" style="font-size: 18px;">📊 Distribuição de Avarias por Categoria</h2>
-            <p class="text-muted small mb-3">Volume acumulado no filtro selecionado para análise de causa-raiz.</p>
+            <h2 class="headline-lg mb-2">📊 Distribuição de Avarias por Categoria</h2>
+            <p class="text-muted small mb-3" style="font-size: 13.5px;">Volume acumulado no filtro selecionado para análise de causa-raiz.</p>
 
             <?php if (empty($distribuicaoCategoriasBO)): ?>
-                <div class="text-center py-4 text-muted small">
+                <div class="text-center py-4 text-muted small" style="font-size: 14px;">
                     Nenhuma avaria apontada para este período.
                 </div>
             <?php else: ?>
@@ -511,17 +511,17 @@ $labelsTipoAvaria = [
                     ?>
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="small fw-bold">
+                                <span class="fw-bold" style="font-size: 14px;">
                                     <?= sanitize_html($labelsTipoAvaria[$cat['tipo_avaria']] ?? ucfirst(str_replace('_', ' ', $cat['tipo_avaria']))) ?>
                                 </span>
-                                <span class="small text-muted">
+                                <span class="small text-muted" style="font-size: 13px;">
                                     <strong><?= (int)$cat['total_qtd'] ?> un</strong> (<?= (int)$cat['total_ocorrencias'] ?> reg)
-                                    <span class="badge-status <?= $isLojinha ? 'lojinha' : 'descarte' ?> ms-1" style="font-size: 10px; padding: 2px 6px;">
+                                    <span class="badge-status <?= $isLojinha ? 'lojinha' : 'descarte' ?> ms-1" style="font-size: 11px; padding: 3px 8px;">
                                         <?= $isLojinha ? 'Lojinha' : 'Descarte' ?>
                                     </span>
                                 </span>
                             </div>
-                            <div class="progress" style="height: 10px; border-radius: 6px;">
+                            <div class="progress" style="height: 12px; border-radius: 6px;">
                                 <div class="progress-bar <?= $isLojinha ? 'bg-success' : 'bg-danger' ?>" 
                                      role="progressbar" 
                                      style="width: <?= $pctBarra ?>%;" 
@@ -540,22 +540,22 @@ $labelsTipoAvaria = [
     <div class="col-12 col-md-6 col-lg-4">
         <div class="card-gestao h-100">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <h2 class="headline-lg mb-0" style="font-size: 18px;">🏪 Maiores Saldos na Lojinha</h2>
-                <a href="<?= APP_URL ?>/gestao/estoque" class="small fw-bold text-decoration-none">Gerenciar →</a>
+                <h2 class="headline-lg mb-0">🏪 Maiores Saldos na Lojinha</h2>
+                <a href="<?= APP_URL ?>/gestao/estoque" class="small fw-bold text-decoration-none" style="font-size: 14px;">Gerenciar →</a>
             </div>
-            <p class="text-muted small mb-3">Itens aptos na vitrine dos colaboradores.</p>
+            <p class="text-muted small mb-3" style="font-size: 13.5px;">Itens aptos na vitrine dos colaboradores.</p>
 
             <?php if (empty($topEstoque)): ?>
-                <p class="text-muted small mb-0">Nenhum produto com saldo em estoque no momento.</p>
+                <p class="text-muted small mb-0" style="font-size: 14px;">Nenhum produto com saldo em estoque no momento.</p>
             <?php else: ?>
                 <ul class="list-group list-group-flush">
                     <?php foreach ($topEstoque as $prod): ?>
-                        <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                        <li class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center border-bottom">
                             <div>
-                                <strong class="small d-block text-truncate" style="max-width: 180px;"><?= sanitize_html($prod['nome']) ?></strong>
-                                <span class="text-muted" style="font-size: 11px;">Físico: <?= (int)$prod['quantidade_total'] ?> | Res: <?= (int)$prod['quantidade_reservada_gestao'] ?></span>
+                                <strong class="d-block text-truncate" style="max-width: 220px; font-size: 14.5px;"><?= sanitize_html($prod['nome']) ?></strong>
+                                <span class="text-muted" style="font-size: 12.5px;">Físico: <?= (int)$prod['quantidade_total'] ?> | Res: <?= (int)$prod['quantidade_reservada_gestao'] ?></span>
                             </div>
-                            <span class="badge bg-success rounded-pill" style="font-size: 13px;">
+                            <span class="badge bg-success rounded-pill" style="font-size: 14px; padding: 6px 14px; font-weight: 800;">
                                 <?= (int)$prod['disponivel'] ?> un
                             </span>
                         </li>
@@ -568,37 +568,37 @@ $labelsTipoAvaria = [
     <!-- Operador Padrão da Bancada & Lotes -->
     <div class="col-12 col-md-6 col-lg-3">
         <!-- Card Operador Padrão da Bancada -->
-        <div class="card-gestao mb-3" style="border-left: 4px solid var(--gestao-primary);">
+        <div class="card-gestao mb-3" style="border-left: 5px solid var(--gestao-primary);">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <h3 class="headline-lg mb-0" style="font-size: 16px;">⭐ Operador da Bancada</h3>
-                <span class="badge bg-light text-primary border" style="font-size: 10px;">Repack</span>
+                <h3 class="headline-lg mb-0">⭐ Operador da Bancada</h3>
+                <span class="badge bg-light text-primary border" style="font-size: 12px; font-weight: 700;">Repack</span>
             </div>
-            <p class="text-muted small mb-2" style="font-size: 11px;">Operador conectado automaticamente na urna física.</p>
+            <p class="text-muted small mb-2" style="font-size: 13px;">Operador conectado automaticamente na urna física.</p>
             <div class="d-flex gap-2">
-                <select id="selectOperadorPadraoGestao" class="form-select form-select-sm">
+                <select id="selectOperadorPadraoGestao" class="form-select">
                     <?php foreach ($operadoresAtivos as $op): ?>
                         <option value="<?= (int)$op['id'] ?>" <?= ((int)$op['id'] === (int)($operadorPadrao['id'] ?? 0)) ? 'selected' : '' ?>>
                             <?= sanitize_html($op['nome']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <button type="button" class="btn btn-sm btn-primary text-nowrap" onclick="salvarPadraoGestao()">
+                <button type="button" class="btn btn-primary text-nowrap px-3 fw-bold" onclick="salvarPadraoGestao()">
                     Salvar
                 </button>
             </div>
-            <div id="msgPadraoGestao" class="small fw-bold text-success mt-1" style="display: none; font-size: 11px;"></div>
+            <div id="msgPadraoGestao" class="small fw-bold text-success mt-1" style="display: none; font-size: 12px;"></div>
         </div>
 
         <!-- Card Lotes de Venda Ativos -->
         <div class="card-gestao">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <h3 class="headline-lg mb-0" style="font-size: 16px;">Lotes de Venda</h3>
-                <a href="<?= APP_URL ?>/gestao/lotes" class="small fw-bold text-decoration-none">Abrir →</a>
+                <h3 class="headline-lg mb-0">🏷️ Lotes de Venda</h3>
+                <a href="<?= APP_URL ?>/gestao/lotes" class="small fw-bold text-decoration-none" style="font-size: 14px;">Abrir →</a>
             </div>
-            <div class="d-flex align-items-center justify-content-between p-2 rounded" style="background-color: #F9FAFB; border: 1px solid var(--gestao-border);">
+            <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background-color: #F9FAFB; border: 1px solid var(--gestao-border);">
                 <div>
-                    <span class="text-muted small d-block" style="font-size: 11px;">Status da Vitrine</span>
-                    <strong style="font-size: 15px;">
+                    <span class="text-muted small d-block" style="font-size: 12.5px; font-weight: 600;">Status da Vitrine</span>
+                    <strong style="font-size: 16.5px;">
                         <?= $lotesAtivos > 0 ? "{$lotesAtivos} lote(s) ativo(s)" : 'Nenhum lote aberto' ?>
                     </strong>
                 </div>
