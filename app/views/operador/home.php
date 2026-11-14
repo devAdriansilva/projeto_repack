@@ -19,14 +19,14 @@ require_once __DIR__ . '/../layouts/header.php';
     width: 100% !important;
     max-width: 980px !important;
     margin: 0 auto !important;
-    padding: 8px 12px !important;
-    height: calc(100dvh - 56px) !important;
-    min-height: calc(100dvh - 56px) !important;
+    padding: 6px 12px !important;
+    height: calc(100dvh - 54px) !important;
+    min-height: calc(100dvh - 54px) !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
     align-items: stretch !important;
-    gap: 10px !important;
+    gap: 8px !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
 }
@@ -35,7 +35,7 @@ require_once __DIR__ . '/../layouts/header.php';
     display: flex !important;
     flex-direction: column !important; /* EMPILHADO VERTICALMENTE */
     flex: 1 1 0 !important;
-    gap: 12px !important;
+    gap: 10px !important;
     min-height: 0 !important;
     width: 100% !important;
 }
@@ -49,21 +49,21 @@ require_once __DIR__ . '/../layouts/header.php';
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    padding: 8px 14px !important;
-    gap: 10px !important;
-    border-radius: 28px !important;
+    padding: 6px 12px !important;
+    gap: 8px !important;
+    border-radius: 26px !important;
     border-width: 6px !important;
     box-sizing: border-box !important;
     text-decoration: none !important;
 }
 
 .btn-operador-icone-wrapper {
-    width: clamp(120px, 17vh, 185px) !important;
-    height: clamp(120px, 17vh, 185px) !important;
-    border-radius: 24px !important;
+    width: clamp(140px, 20vh, 195px) !important;
+    height: clamp(140px, 20vh, 195px) !important;
+    border-radius: 26px !important;
     background: #FFFFFF !important;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22) !important;
-    padding: 4px !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25) !important;
+    padding: 3px !important;
     flex-shrink: 0 !important;
     display: flex !important;
     align-items: center !important;
@@ -73,11 +73,11 @@ require_once __DIR__ . '/../layouts/header.php';
 .btn-operador-icone-wrapper.btn-operador-icone-emoji {
     background: #FFFFFF !important;
     border: none !important;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22) !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25) !important;
 }
 
 .btn-operador-icone-wrapper.btn-operador-icone-emoji span {
-    font-size: clamp(65px, 10vh, 95px) !important;
+    font-size: clamp(80px, 12vh, 115px) !important;
     line-height: 1 !important;
     display: block !important;
 }
@@ -86,7 +86,7 @@ require_once __DIR__ . '/../layouts/header.php';
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
-    border-radius: 20px !important;
+    border-radius: 22px !important;
     display: block !important;
 }
 
@@ -95,14 +95,14 @@ require_once __DIR__ . '/../layouts/header.php';
     text-align: center !important;
     flex: 0 0 auto !important;
     width: 100% !important;
-    gap: 4px !important;
+    gap: 2px !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
 }
 
 .btn-operador-label {
-    font-size: clamp(26px, 7vw, 38px) !important;
+    font-size: clamp(28px, 7.8vw, 42px) !important;
     font-weight: 900 !important;
     justify-content: center !important;
     text-align: center !important;
@@ -111,11 +111,12 @@ require_once __DIR__ . '/../layouts/header.php';
     display: flex !important;
     align-items: center !important;
     width: 100% !important;
+    letter-spacing: 0.5px !important;
 }
 
 .btn-operador-label svg {
-    width: clamp(32px, 5vw, 44px) !important;
-    height: clamp(32px, 5vw, 44px) !important;
+    width: clamp(34px, 5.5vw, 48px) !important;
+    height: clamp(34px, 5.5vw, 48px) !important;
 }
 
 /* Regra Exclusiva para Computador Desktop com Monitor Widescreen Deitado (Landscape >= 992px) */

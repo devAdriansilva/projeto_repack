@@ -847,6 +847,17 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.68` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-073 (14/11/2026):** Hiper-Ampliação de Ícones (195px) e Rótulos (42px) da Home no Smartphone sem Espaço Vazio.
+    - **Hiper-Ampliação dos Ícones (`.btn-operador-icone-wrapper`):**
+      - Dimensões ampliadas para `clamp(140px, 20vh, 195px)` com padding interno reduzido para 3px e cantos arredondados de 26px, ocupando o palco central de cada botão da Home.
+      - Emoji do botão de Baixa ampliado para `clamp(80px, 12vh, 115px)` sobre moldura branca sólida tridimensional.
+    - **Hiper-Ampliação da Tipografia e Ícones de Apoio:**
+      - Texto `.btn-operador-label` ampliado para `clamp(28px, 7.8vw, 42px)` em peso 900 com ícones SVG de apoio em `clamp(34px, 5.5vw, 48px)`.
+      - Compactação dos espaçamentos entre elementos (`gap: 2px` no content e `padding: 6px 12px`), aproveitando 100% da área útil dos botões para visualização à prova de erros.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.69` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
