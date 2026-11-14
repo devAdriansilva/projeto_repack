@@ -944,4 +944,178 @@ class Pedido
             'total_cancelados' => (int)($stats['total_cancelados'] ?? 0)
         ];
     }
+
+    /**
+     * Substitui um item do pedido por outro produto disponível em estoque (Divergência/Avaria na Separação)
+     *
+     * @param int $pedidoId ID do pedido
+     * @param int $itemId ID da linha em pedido_itens
+     * @param int $novoProdutoId ID do novo produto substituto
+     * @param string $motivo Justificativa operacional da troca
+     * @param bool $darBaixaAvaria Se true, registra o item antigo como baixa por avaria/descarte irreversível em vez de devolver ao estoque
+     * @param int $usuarioGestorId ID do usuário que realizou a operação
+     * @return array
+     * @throws \InvalidArgumentException|\RuntimeException
+     */
+    public static function substituirItem(
+        int $pedidoId, 
+        int $itemId, 
+        int $novoProdutoId, 
+        string $motivo = '', 
+        bool $darBaixaAvaria = false, 
+        int $usuarioGestorId = 1
+    ): array {
+        if ($pedidoId <= 0 || $itemId <= 0 || $novoProdutoId <= 0) {
+            throw new \InvalidArgumentException("Dados incompletos para substituição de item.");
+        }
+
+        $pdo = Database::getConnection();
+        $pdo->beginTransaction();
+
+        try {
+            // 1. Busca o item atual com trava de linha (FOR UPDATE)
+            $stmtItem = $pdo->prepare("
+                SELECT pi.id, pi.pedido_id, pi.produto_id, pi.quantidade, 
+                       p.codigo_pedido, p.status AS pedido_status,
+                       pr.nome AS antigo_produto_nome, pr.codigo AS antigo_produto_codigo
+                FROM pedido_itens pi
+                INNER JOIN pedidos p ON p.id = pi.pedido_id
+                INNER JOIN produtos pr ON pr.id = pi.produto_id
+                WHERE pi.id = :item_id AND pi.pedido_id = :pedido_id
+                FOR UPDATE
+            ");
+            $stmtItem->execute(['item_id' => $itemId, 'pedido_id' => $pedidoId]);
+            $itemAtual = $stmtItem->fetch();
+
+            if (!$itemAtual) {
+                throw new \InvalidArgumentException("Item não encontrado neste pedido.");
+            }
+
+            if ($itemAtual['pedido_status'] === 'cancelado') {
+                throw new \InvalidArgumentException("Não é possível substituir itens de um pedido cancelado.");
+            }
+
+            $antigoProdutoId = (int)$itemAtual['produto_id'];
+            $quantidadeTroca = (int)$itemAtual['quantidade'];
+
+            if ($antigoProdutoId === $novoProdutoId) {
+                throw new \InvalidArgumentException("O produto substituto deve ser diferente do produto atual.");
+            }
+
+            // 2. Busca o novo produto e seu saldo disponível (FOR UPDATE)
+            $stmtNovo = $pdo->prepare("
+                SELECT p.id, p.nome, p.codigo,
+                       COALESCE(el.quantidade_total, 0) AS quantidade_total,
+                       COALESCE(el.quantidade_reservada_gestao, 0) AS quantidade_reservada_gestao,
+                       GREATEST(0, COALESCE(el.quantidade_total, 0) - COALESCE(el.quantidade_reservada_gestao, 0)) AS saldo_disponivel
+                FROM produtos p
+                LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
+                WHERE p.id = :novo_produto_id AND p.deleted_at IS NULL AND p.ativo = 1
+                FOR UPDATE
+            ");
+            $stmtNovo->execute(['novo_produto_id' => $novoProdutoId]);
+            $novoProduto = $stmtNovo->fetch();
+
+            if (!$novoProduto) {
+                throw new \InvalidArgumentException("Novo produto selecionado não foi encontrado ou está inativo.");
+            }
+
+            if ((int)$novoProduto['saldo_disponivel'] < $quantidadeTroca) {
+                throw new \InvalidArgumentException("Saldo insuficiente para o produto substituto '{$novoProduto['nome']}' (Disponível: {$novoProduto['saldo_disponivel']} un, Necessário: {$quantidadeTroca} un).");
+            }
+
+            // 3. Trata o produto antigo:
+            if ($darBaixaAvaria) {
+                // Registra baixa administrativa por avaria física no galpão
+                $motivoBaixa = !empty($motivo) ? "Avaria na separação física (Substituição no pedido #{$itemAtual['codigo_pedido']}): " . $motivo : "Avaria/Quebra na separação do pedido #{$itemAtual['codigo_pedido']}";
+                $stmtBaixa = $pdo->prepare("
+                    INSERT INTO baixas_administrativas (produto_id, usuario_id, quantidade, motivo, created_at)
+                    VALUES (:produto_id, :usuario_id, :quantidade, :motivo, NOW())
+                ");
+                $stmtBaixa->execute([
+                    'produto_id' => $antigoProdutoId,
+                    'usuario_id' => $usuarioGestorId,
+                    'quantidade' => $quantidadeTroca,
+                    'motivo' => $motivoBaixa
+                ]);
+            } else {
+                // Estorna o saldo de volta para a lojinha
+                $stmtEstorno = $pdo->prepare("
+                    UPDATE estoque_lojinha
+                    SET quantidade_total = quantidade_total + :qtd
+                    WHERE produto_id = :antigo_produto_id
+                ");
+                $stmtEstorno->execute([
+                    'qtd' => $quantidadeTroca,
+                    'antigo_produto_id' => $antigoProdutoId
+                ]);
+            }
+
+            // 4. Abate o saldo do novo produto
+            $stmtAbate = $pdo->prepare("
+                UPDATE estoque_lojinha
+                SET quantidade_total = quantidade_total - :qtd
+                WHERE produto_id = :novo_produto_id
+            ");
+            $stmtAbate->execute([
+                'qtd' => $quantidadeTroca,
+                'novo_produto_id' => $novoProdutoId
+            ]);
+
+            // 5. Atualiza a linha do pedido
+            $stmtUpdateItem = $pdo->prepare("
+                UPDATE pedido_itens
+                SET produto_id = :novo_produto_id
+                WHERE id = :item_id
+            ");
+            $stmtUpdateItem->execute([
+                'novo_produto_id' => $novoProdutoId,
+                'item_id' => $itemId
+            ]);
+
+            // 6. Auditoria no sistema
+            $detalheMotivo = !empty($motivo) ? $motivo : 'Divergência/Avaria no momento da separação física';
+            $msgAudit = "Substituição no pedido #{$itemAtual['codigo_pedido']}: '{$itemAtual['antigo_produto_nome']}' ({$quantidadeTroca} un) trocado por '{$novoProduto['nome']}'. Motivo: {$detalheMotivo}. " . ($darBaixaAvaria ? "[Baixa por Avaria]" : "[Estornado ao Estoque]");
+
+            $stmtLog = $pdo->prepare("
+                INSERT INTO logs_sistema (nivel, mensagem, contexto_json, ip, created_at)
+                VALUES ('INFO', :msg, :ctx, :ip, NOW())
+            ");
+            $stmtLog->execute([
+                'msg' => $msgAudit,
+                'ctx' => json_encode([
+                    'pedido_id' => $pedidoId,
+                    'codigo_pedido' => $itemAtual['codigo_pedido'],
+                    'item_id' => $itemId,
+                    'antigo_produto_id' => $antigoProdutoId,
+                    'antigo_produto' => $itemAtual['antigo_produto_nome'],
+                    'novo_produto_id' => $novoProdutoId,
+                    'novo_produto' => $novoProduto['nome'],
+                    'quantidade' => $quantidadeTroca,
+                    'baixa_avaria' => $darBaixaAvaria,
+                    'motivo' => $detalheMotivo,
+                    'gestor_id' => $usuarioGestorId
+                ], JSON_UNESCAPED_UNICODE),
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
+            ]);
+
+            $pdo->commit();
+
+            return [
+                'status' => 'success',
+                'message' => "Item substituído com sucesso por '{$novoProduto['nome']}'!",
+                'novo_produto' => [
+                    'id' => $novoProdutoId,
+                    'codigo' => $novoProduto['codigo'],
+                    'nome' => $novoProduto['nome']
+                ]
+            ];
+
+        } catch (\Throwable $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $e;
+        }
+    }
 }

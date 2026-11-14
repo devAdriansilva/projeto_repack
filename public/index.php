@@ -194,6 +194,10 @@ switch ($route) {
         (new RelatorioController())->atualizarStatusSeparacao();
         break;
 
+    case '/gestao/separacao/substituir':
+        (new RelatorioController())->substituirItem();
+        break;
+
     case '/gestao/separacao/exportar':
         (new RelatorioController())->exportarSeparacaoCsv();
         break;

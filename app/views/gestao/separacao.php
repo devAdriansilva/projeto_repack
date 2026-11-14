@@ -6,6 +6,8 @@ declare(strict_types=1);
  * Baseado estritamente em docs/FSD.md (Seções 6, 8, 16 e 22.1) e docs/DESIGN.md
  */
 
+require_once __DIR__ . '/../../models/EstoqueLojinha.php';
+$produtosDisponiveisLojinha = EstoqueLojinha::listarVisaoGeral();
 require_once __DIR__ . '/../layouts/gestao_header.php';
 ?>
 
@@ -341,11 +343,12 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
                                         <th>Produto</th>
                                         <th style="width: 130px;">Embalagem</th>
                                         <th style="width: 90px;" class="text-center">Qtd.</th>
+                                        <th style="width: 110px;" class="text-end no-print">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($pedido['itens'] as $item): ?>
-                                        <tr>
+                                        <tr id="linha-item-<?= (int)$item['item_id'] ?>">
                                             <td class="text-center">
                                                 <!-- Checkbox para tablet no-print -->
                                                 <input type="checkbox" class="form-check-input check-item-separado no-print" style="width: 22px; height: 22px; cursor: pointer;">
@@ -370,6 +373,24 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
                                             </td>
                                             <td class="text-center">
                                                 <span class="fw-bold fs-6 text-primary"><?= (int)$item['quantidade'] ?></span> un.
+                                            </td>
+                                            <td class="text-end no-print">
+                                                <?php if ($pedido['status'] !== 'cancelado' && $pedido['status'] !== 'entregue'): ?>
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-outline-primary py-0 px-2 fw-bold btn-abrir-substituir" 
+                                                            data-pedido-id="<?= (int)$pedido['pedido_id'] ?>"
+                                                            data-codigo-pedido="<?= sanitize_html($pedido['codigo_pedido']) ?>"
+                                                            data-item-id="<?= (int)$item['item_id'] ?>"
+                                                            data-produto-id="<?= (int)$item['produto_id'] ?>"
+                                                            data-produto-nome="<?= sanitize_html($item['nome']) ?>"
+                                                            data-produto-codigo="<?= sanitize_html($item['codigo']) ?>"
+                                                            data-quantidade="<?= (int)$item['quantidade'] ?>"
+                                                            title="Substituir produto avariado ou em falta">
+                                                        🔄 Substituir
+                                                    </button>
+                                                <?php else: ?>
+                                                    <span class="text-muted small">—</span>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -407,10 +428,124 @@ require_once __DIR__ . '/../layouts/gestao_header.php';
     <?php endforeach; ?>
 <?php endif; ?>
 
+<!-- Modal de Substituição de Produto no Pedido -->
+<div class="modal fade no-print" id="modalSubstituirItem" tabindex="-1" aria-labelledby="modalSubstituirLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 16px;">
+            <form id="formSubstituirItem" method="POST" action="<?= APP_URL ?>/gestao/separacao/substituir">
+                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                <input type="hidden" name="lote_id" value="<?= (int)$loteId ?>">
+                <input type="hidden" name="pedido_id" id="substPedidoId">
+                <input type="hidden" name="item_id" id="substItemId">
+                <input type="hidden" name="quantidade" id="substQuantidade">
+
+                <div class="modal-header bg-primary text-white" style="border-radius: 16px 16px 0 0;">
+                    <h5 class="modal-title fw-bold" id="modalSubstituirLabel">🔄 Substituir Produto no Pedido</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                
+                <div class="modal-body p-4">
+                    <!-- Card Informativo do Produto Atual -->
+                    <div class="p-3 mb-3 rounded" style="background: #F8FAFC; border: 1.5px solid #E2E8F0;">
+                        <div class="text-muted small fw-bold text-uppercase">Item Solicitado no Pedido:</div>
+                        <div class="fw-bold fs-5 text-dark mt-1" id="substProdutoAtualNome">--</div>
+                        <div class="text-secondary small mt-1">
+                            Pedido: <span class="font-monospace fw-bold text-primary" id="substPedidoCodigoDisplay">--</span> &bull; 
+                            Código: <span class="font-monospace fw-bold" id="substProdutoAtualCodigo">--</span> &bull; 
+                            Quantidade: <strong class="text-primary fs-6" id="substQuantidadeDisplay">1 un</strong>
+                        </div>
+                    </div>
+
+                    <!-- Seleção do Novo Produto -->
+                    <div class="mb-3">
+                        <label for="substNovoProdutoId" class="form-label fw-bold">
+                            Selecione o Novo Produto Substituto <span class="text-danger">*</span>:
+                        </label>
+                        <select name="novo_produto_id" id="substNovoProdutoId" class="form-select form-select-lg" required>
+                            <option value="">-- Escolha um produto disponível em estoque --</option>
+                            <?php foreach ($produtosDisponiveisLojinha as $pDisp): ?>
+                                <option value="<?= (int)$pDisp['produto_id'] ?>" data-disponivel="<?= (int)$pDisp['saldo_disponivel'] ?>">
+                                    <?= sanitize_html($pDisp['nome']) ?> (Disponível: <?= (int)$pDisp['saldo_disponivel'] ?> un) - SKU: <?= sanitize_html($pDisp['codigo']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="form-text">Apenas produtos com saldo disponível na lojinha são exibidos.</div>
+                    </div>
+
+                    <!-- Opção de Baixa por Avaria do Item Original -->
+                    <div class="form-check p-3 mb-3 rounded" style="background: #FEF2F2; border: 1.5px solid #FCA5A5;">
+                        <input class="form-check-input" type="checkbox" name="baixa_avaria" value="1" id="substBaixaAvaria" style="width: 20px; height: 20px;">
+                        <label class="form-check-label fw-bold text-danger ms-2" for="substBaixaAvaria">
+                            💥 O item original quebrou/avariou no galpão
+                        </label>
+                        <div class="small text-danger opacity-75 mt-1 ms-4">
+                            Se marcado, dará baixa imediata como perda irreversível. Se desmarcado, o item estorna para o estoque da lojinha.
+                        </div>
+                    </div>
+
+                    <!-- Justificativa / Motivo -->
+                    <div class="mb-2">
+                        <label for="substMotivo" class="form-label fw-bold">Motivo da Substituição (Opcional):</label>
+                        <input type="text" name="motivo" id="substMotivo" class="form-control" placeholder="Ex: Quebra na separação, lata furada, etc.">
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light" style="border-radius: 0 0 16px 16px;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary fw-bold px-4" id="btnConfirmarSubstituicao">
+                        Confirmar Substituição
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const csrfToken = '<?= $csrfToken ?>';
     const loteId = '<?= (int)$loteId ?>';
+
+    // Gerenciador do Modal de Substituição de Itens
+    const modalEl = document.getElementById('modalSubstituirItem');
+    const modalInstance = modalEl ? new bootstrap.Modal(modalEl) : null;
+
+    document.querySelectorAll('.btn-abrir-substituir').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const pedidoId = this.getAttribute('data-pedido-id');
+            const codPedido = this.getAttribute('data-codigo-pedido');
+            const itemId = this.getAttribute('data-item-id');
+            const produtoId = this.getAttribute('data-produto-id');
+            const prodNome = this.getAttribute('data-produto-nome');
+            const prodCodigo = this.getAttribute('data-produto-codigo');
+            const quantidade = parseInt(this.getAttribute('data-quantidade'), 10) || 1;
+
+            document.getElementById('substPedidoId').value = pedidoId;
+            document.getElementById('substItemId').value = itemId;
+            document.getElementById('substQuantidade').value = quantidade;
+            document.getElementById('substPedidoCodigoDisplay').textContent = codPedido;
+            document.getElementById('substProdutoAtualNome').textContent = prodNome;
+            document.getElementById('substProdutoAtualCodigo').textContent = prodCodigo;
+            document.getElementById('substQuantidadeDisplay').textContent = quantidade + ' un';
+            document.getElementById('substBaixaAvaria').checked = false;
+            document.getElementById('substMotivo').value = '';
+
+            // Desabilita a opção do mesmo produto no select
+            const selectNovo = document.getElementById('substNovoProdutoId');
+            Array.from(selectNovo.options).forEach(opt => {
+                if (opt.value === produtoId) {
+                    opt.disabled = true;
+                } else {
+                    opt.disabled = false;
+                }
+            });
+            selectNovo.value = '';
+
+            if (modalInstance) {
+                modalInstance.show();
+            }
+        });
+    });
 
     // Interação de checkboxes para conferência física (marcação em tela)
     document.querySelectorAll('.check-item-separado').forEach(function(checkbox) {

@@ -122,6 +122,53 @@ class RelatorioController
     }
 
     /**
+     * Substitui um produto de um pedido por outro item em estoque (Avaria/Divergência na Separação)
+     */
+    public function substituirItem(): void
+    {
+        AuthController::exigirAutenticacao();
+        $gestorId = (int)($_SESSION['usuario_id'] ?? 1);
+
+        $pedidoId = (int)($_POST['pedido_id'] ?? 0);
+        $itemId = (int)($_POST['item_id'] ?? 0);
+        $novoProdutoId = (int)($_POST['novo_produto_id'] ?? 0);
+        $motivo = trim((string)($_POST['motivo'] ?? ''));
+        $darBaixaAvaria = !empty($_POST['baixa_avaria']);
+        $loteId = (int)($_POST['lote_id'] ?? 0);
+
+        try {
+            $resultado = Pedido::substituirItem(
+                $pedidoId, 
+                $itemId, 
+                $novoProdutoId, 
+                $motivo, 
+                $darBaixaAvaria, 
+                $gestorId
+            );
+
+            if ($this->isAjax()) {
+                header('Content-Type: application/json; charset=UTF-8');
+                echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+
+            $_SESSION['flash_sucesso'] = $resultado['message'];
+        } catch (\Throwable $e) {
+            if ($this->isAjax()) {
+                header('Content-Type: application/json; charset=UTF-8');
+                http_response_code(400);
+                echo json_encode(['status' => 'error', 'message' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            $_SESSION['flash_erro'] = "Erro ao substituir item: " . $e->getMessage();
+        }
+
+        $redirectUrl = APP_URL . '/gestao/separacao' . ($loteId > 0 ? '?lote_id=' . $loteId : '');
+        header('Location: ' . $redirectUrl);
+        exit;
+    }
+
+    /**
      * Exporta a lista de separação física em formato CSV (docs/FSD.md Seção 27.1)
      */
     public function exportarSeparacaoCsv(): void

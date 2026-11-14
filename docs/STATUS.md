@@ -797,6 +797,21 @@
       - Suíte de 35 testes automatizados (`php tests/test_fase5.php`) e testes do lote/carrinho aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.64` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-069 (14/11/2026):** Distribuição Vertical Monumental de Ícones no Smartphone e Módulo Completo de Substituição de Itens na Separação de Pedidos.
+    - **Distribuição Vertical dos Ícones no Smartphone (`public/assets/css/urna.css`):**
+      - Ajuste estrito conforme solicitação: no mobile (`@media (max-width: 768px)`), cada botão opera com `flex-direction: column`, posicionando as ilustrações/fotos no topo e os títulos em negrito embaixo.
+      - Ampliação colossal das ilustrações para `clamp(95px, 15vh, 160px)`, com emoji de descarte em até 72px e títulos em até 30px negrito, ocupando toda a extensão vertical do celular com ergonomia tátil máxima para luvas.
+      - No PC / Desktop (`@media (min-width: 769px)`), preservado o layout horizontal em Grid de 3 colunas lado a lado sem overflow.
+    - **Módulo de Substituição de Itens na Separação (`app/views/gestao/separacao.php`, `RelatorioController.php` e `Pedido.php`):**
+      - Implementado método transacional nativo `Pedido::substituirItem()` com trava pessimista (`FOR UPDATE`).
+      - Adicionado botão **`🔄 Substituir`** em cada item da tabela de separação física (no-print) para pedidos pendentes/separados.
+      - Modal interativo permitindo selecionar qualquer produto substituto com saldo disponível positivo na lojinha.
+      - Opção integrada: **`💥 O item original quebrou/avariou no galpão`** — se marcada, registra a perda automaticamente na tabela `baixas_administrativas`; se desmarcada, estorna o item original de volta ao estoque da lojinha.
+      - Abate atômico do novo produto, atualização do item na tabela `pedido_itens` e gravação de histórico completo em `logs_sistema`.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e novo teste de integração `tests/test_substituicao_item.php` validados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.65` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

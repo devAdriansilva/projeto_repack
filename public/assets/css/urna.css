@@ -488,38 +488,66 @@ body {
     font-weight: 800;
 }
 
-/* SMARTPHONE (Telas Verticais / Mobile em Pé) */
+/* SMARTPHONE (Telas Verticais / Mobile em Pé: Ícones e Títulos Distribuídos Verticalmente) */
 @media (max-width: 768px) {
     .home-operador-container {
-        padding: 8px 10px;
+        padding: 8px 12px;
         gap: 10px;
+        height: calc(100dvh - 54px);
+        min-height: calc(100dvh - 54px);
     }
     .home-cards-wrapper {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
         gap: 10px;
+        min-height: 0;
     }
     .btn-operador-solido {
-        min-height: 105px;
-        padding: 10px 16px;
-        gap: 16px;
-        border-radius: 22px;
-        border-width: 5px;
+        flex: 1 1 0;
+        min-height: 0;
+        display: flex;
+        flex-direction: column; /* Ícone no topo e texto embaixo (Vertical) */
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 8px 14px;
+        gap: 8px;
+        border-radius: 24px;
+        border-width: 6px;
     }
     .btn-operador-icone-wrapper {
-        width: clamp(80px, 13vh, 105px);
-        height: clamp(80px, 13vh, 105px);
-        border-radius: 16px;
+        width: clamp(95px, 15vh, 160px);
+        height: clamp(95px, 15vh, 160px);
+        border-radius: 20px;
+        padding: 4px;
+        flex-shrink: 0;
+    }
+    .btn-operador-icone-wrapper.btn-operador-icone-emoji span {
+        font-size: clamp(48px, 8vh, 72px) !important;
+    }
+    .btn-operador-content {
+        align-items: center;
+        text-align: center;
+        flex: 0 0 auto;
+        gap: 4px;
+        width: 100%;
     }
     .btn-operador-label {
-        font-size: clamp(19px, 5.2vw, 26px);
+        font-size: clamp(20px, 5.5vw, 30px);
+        font-weight: 900;
+        justify-content: center;
+        text-align: center;
         gap: 8px;
+        line-height: 1.15;
     }
     .btn-operador-label svg {
-        width: 32px;
-        height: 32px;
+        width: 30px;
+        height: 30px;
     }
     .badge-em-andamento {
-        font-size: 12px;
-        padding: 2px 10px;
+        font-size: 13px;
+        padding: 2px 12px;
     }
 }
 
