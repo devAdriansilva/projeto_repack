@@ -878,6 +878,19 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.71` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-076 (14/11/2026):** Redesenho Ergonômico do Menu Hambúrguer da Gestão no Smartphone e Integração Harmônica das Abas Lojinha e Repack.
+    - **Menu Hambúrguer com Touch Targets Generosos (`app/views/layouts/gestao_header.php`):**
+      - Botão alternador do menu hambúrguer (`navbar-toggler`) ampliado para 44px x 44px com ícone de 24px e borda contrastante.
+      - Itens do menu (`.nav-link`) transformados em botões de largura total (`width: 100%`), com altura ergonômica (~48px), fonte em 16px negrito 700, ícones ampliados de 20px e espaçamento vertical confortável (`gap: 8px`).
+    - **Integração das Abas Lojinha e Repack:**
+      - Eliminação do bloco deslocado/estranho no rodapé do menu: as abas "Lojinha" e "Repack" foram inseridas diretamente no fluxo contínuo da lista de navegação mobile com destaque suave cromático (lavanda para Lojinha e esmeralda para Repack).
+      - Remoção do card de usuário duplicado dentro do menu colapsado, preservando a sub-barra móvel de identificação permanente logo abaixo da navbar.
+    - **Escala e Ergonomia Geral da Gestão em Smartphones:**
+      - Calibração de padding e margens de `.gestao-container`, títulos e botões de filtro para uso móvel fluido.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.72` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
