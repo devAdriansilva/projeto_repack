@@ -891,6 +891,19 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.72` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-077 (14/11/2026):** Menu Hambúrguer Offcanvas Deslizante da Direita e Emblema de Logomarca na Lateral Esquerda da Gestão.
+    - **Lateral Esquerda da Navbar com Logomarca/Emblema (`app/views/layouts/gestao_header.php`):**
+      - Inserido emblema visual `.brand-logo-badge` em squircle esmeralda (`#10B981`) preparado para a futura logomarca da Lojinha/Repack, acompanhado do título formal e subtítulo operacional.
+    - **Menu Hambúrguer na Lateral Direita com Drawer Deslizante:**
+      - O botão acionador do menu hambúrguer foi movido para o canto superior direito do cabeçalho no mobile.
+      - Implementado menu lateral direito (Offcanvas Drawer) com movimento suave da direita para a esquerda (`transform: translateX(100%)` para `translateX(0)`).
+      - **Sem encobrir o cabeçalho:** O drawer inicia estritamente em `top: 58px`, mantendo o cabeçalho superior (logomarca, título e botão de alternância/fechamento) 100% visível e acessível durante a navegação.
+      - Backdrop suave abaixo da barra superior para fechamento ao toque externo ou tecla ESC.
+      - Abas "Lojinha" e "Repack" integradas com harmonia no menu com botões táteis de 48px e cores temáticas.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.73` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

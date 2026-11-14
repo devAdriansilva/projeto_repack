@@ -232,70 +232,88 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             color: #FFFFFF;
         }
 
-        /* Adaptação e Ergonomia Monumental para Smartphone (Menu Hambúrguer e Gestão Touch) */
-        @media (max-width: 1199.98px) {
-            .navbar-gestao {
-                padding: 10px 16px;
-            }
-            .navbar-gestao .navbar-toggler {
-                width: 44px;
-                height: 44px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                border: 2px solid rgba(255, 255, 255, 0.35) !important;
-                border-radius: 10px;
-                background: rgba(255, 255, 255, 0.08);
-                padding: 0;
-            }
-            .navbar-gestao .navbar-collapse {
-                background: #0B1120;
-                border-radius: 16px;
-                padding: 16px 14px;
-                margin-top: 12px;
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
-            }
-            .navbar-gestao .navbar-nav {
-                gap: 8px !important;
-                width: 100%;
-            }
-            .navbar-gestao .nav-link {
-                width: 100% !important;
-                font-size: 16px !important;
-                font-weight: 700 !important;
-                padding: 12px 16px !important;
-                border-radius: 12px !important;
-                display: flex !important;
-                align-items: center !important;
-                gap: 12px !important;
-                border: 1.5px solid rgba(255, 255, 255, 0.18) !important;
-                background-color: rgba(255, 255, 255, 0.05) !important;
-                box-sizing: border-box !important;
-            }
-            .navbar-gestao .nav-link span:first-child {
-                font-size: 20px;
-                line-height: 1;
-                width: 28px;
-                text-align: center;
-                flex-shrink: 0;
-            }
-            .navbar-gestao .nav-link.active {
-                background-color: #2563EB !important;
-                border-color: #60A5FA !important;
-                color: #FFFFFF !important;
-                box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45) !important;
-            }
-            .navbar-gestao .nav-link.nav-link-lojinha {
-                background-color: rgba(139, 92, 246, 0.16) !important;
-                border-color: rgba(139, 92, 246, 0.45) !important;
-                color: #DDD6FE !important;
-            }
-            .navbar-gestao .nav-link.nav-link-repack {
-                background-color: rgba(16, 185, 129, 0.16) !important;
-                border-color: rgba(16, 185, 129, 0.45) !important;
-                color: #A7F3D0 !important;
-            }
+        /* Drawer Lateral Direito (Entrada da Direita para Esquerda sem encobrir o cabeçalho) */
+        .drawer-backdrop-gestao {
+            position: fixed;
+            top: 58px; /* Inicia logo abaixo da barra superior */
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(3px);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .drawer-backdrop-gestao.ativo {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .drawer-lateral-direita {
+            position: fixed;
+            top: 58px; /* Mantém o cabeçalho 100% visível no topo! */
+            right: 0;
+            bottom: 0;
+            width: min(320px, 86vw);
+            background: #0B1120;
+            border-left: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: -8px 0 32px rgba(0, 0, 0, 0.6);
+            z-index: 1045;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%); /* Escondido à direita */
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            box-sizing: border-box;
+        }
+        .drawer-lateral-direita.aberto {
+            transform: translateX(0); /* Desliza da direita para a esquerda */
+        }
+
+        .drawer-nav-item {
+            width: 100%;
+            font-size: 15.5px;
+            font-weight: 700;
+            padding: 12px 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #CBD5E1 !important;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.15s ease;
+            box-sizing: border-box;
+        }
+        .drawer-nav-item:hover, .drawer-nav-item:active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #FFFFFF !important;
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+        .drawer-nav-item.active {
+            background: #2563EB !important;
+            border-color: #60A5FA !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+        }
+        .drawer-nav-item span:first-child {
+            font-size: 20px;
+            line-height: 1;
+            width: 26px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .drawer-nav-lojinha {
+            background: rgba(139, 92, 246, 0.15) !important;
+            border-color: rgba(139, 92, 246, 0.45) !important;
+            color: #DDD6FE !important;
+        }
+        .drawer-nav-repack {
+            background: rgba(16, 185, 129, 0.15) !important;
+            border-color: rgba(16, 185, 129, 0.45) !important;
+            color: #A7F3D0 !important;
         }
 
         /* Ergonomia Mobile Geral para Toda a Interface de Gestão */
@@ -339,26 +357,29 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 </head>
 <body class="gestao-body">
 
-<!-- Barra de Navegação Superior da Gestão -->
-<nav class="navbar navbar-expand-xl navbar-dark navbar-gestao">
+<!-- Barra de Navegação Superior da Gestão (Fixa no topo com Z-Index soberano) -->
+<nav class="navbar navbar-expand-xl navbar-dark navbar-gestao" style="position: sticky; top: 0; z-index: 1050; min-height: 58px;">
     <div class="container-fluid px-0 d-flex align-items-center justify-content-between">
-        <!-- Lado Esquerdo: Menu Hambúrguer (Mobile) e Marca do Sistema -->
-        <div class="d-flex align-items-center gap-2 flex-shrink-0">
-            <button class="navbar-toggler d-xl-none" type="button" data-bs-toggle="collapse" data-bs-target="#navGestao" aria-controls="navGestao" aria-expanded="false" aria-label="Alternar navegação" style="border: 2px solid rgba(255,255,255,0.35); padding: 7px 11px; border-radius: 10px; background: rgba(255,255,255,0.08);">
-                <span class="navbar-toggler-icon" style="width: 24px; height: 24px;"></span>
-            </button>
+        
+        <!-- LATERAL ESQUERDA: Logomarca / Ícone da Lojinha & Repack + Título do Módulo -->
+        <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-white" href="<?= APP_URL ?>/gestao/dashboard">
+            <!-- Emblema da Logomarca (Preparado para inserção de imagem de marca oficial) -->
+            <div class="brand-logo-badge" style="width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #10B981 0%, #059669 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(16,185,129,0.4); flex-shrink: 0; border: 1.5px solid rgba(255,255,255,0.25);">
+                <span style="font-size: 20px; line-height: 1;">🏪</span>
+            </div>
+            <div class="d-flex flex-column" style="line-height: 1.15;">
+                <div class="d-flex align-items-center gap-1">
+                    <strong style="letter-spacing: -0.2px; font-size: 16px;">Gestão do Repack</strong>
+                    <span class="badge bg-secondary ms-1 d-none d-sm-inline" style="font-size: 10px; font-weight: 600; opacity: 0.9;"><?= APP_VERSION ?></span>
+                </div>
+                <span style="font-size: 11px; color: #94A3B8; font-weight: 600;">Lojinha & Operação</span>
+            </div>
+        </a>
 
-            <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-white" href="<?= APP_URL ?>/gestao/dashboard" style="font-size: 17px; font-weight: 800;">
-                <span style="display: inline-block; width: 12px; height: 12px; background: #10B981; border-radius: 3px; box-shadow: 0 0 8px rgba(16,185,129,0.6);"></span>
-                <strong style="letter-spacing: -0.2px;">Gestão do Repack</strong>
-                <span class="badge bg-secondary ms-1 d-none d-sm-inline" style="font-size: 11px; font-weight: 600; opacity: 0.9;"><?= APP_VERSION ?></span>
-            </a>
-        </div>
-
-        <!-- Conteúdo do Menu (Links Centrais + Atalhos + Usuário) -->
-        <div class="collapse navbar-collapse mt-3 mt-xl-0" id="navGestao">
-            <!-- Módulos de Gestão Centrais (inclui Lojinha e Repack no mobile como itens nativos do menu) -->
-            <ul class="navbar-nav mx-auto mb-2 mb-xl-0 gap-1 ps-xl-2 align-items-xl-center">
+        <!-- DESKTOP (>= 1200px): Links Horizontais Centrais + Atalhos Rápidos + Usuário -->
+        <div class="d-none d-xl-flex align-items-center gap-3">
+            <!-- Módulos de Gestão Centrais -->
+            <ul class="navbar-nav d-flex flex-row align-items-center gap-1 mb-0">
                 <li class="nav-item">
                     <a class="nav-link <?= ($rotaAtual === '/gestao/dashboard' || $rotaAtual === '/gestao') ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/dashboard">
                         <span>📊</span><span>Dashboard</span>
@@ -394,64 +415,163 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                         <span>📈</span><span>Relatórios</span>
                     </a>
                 </li>
-
-                <!-- Abas Lojinha e Repack integradas harmonicamente ao menu mobile -->
-                <li class="nav-item d-xl-none">
-                    <a class="nav-link nav-link-lojinha <?= strpos($rotaAtual, '/lojinha') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/lojinha">
-                        <span>🛒</span><span>Lojinha (Vitrine)</span>
-                    </a>
-                </li>
-                <li class="nav-item d-xl-none">
-                    <a class="nav-link nav-link-repack" href="<?= APP_URL ?: '/' ?>">
-                        <span>🏭</span><span>Repack (Bancada)</span>
-                    </a>
-                </li>
             </ul>
 
-            <!-- Lado Direito Desktop: Atalhos Externos + Crachá do Usuário + Sair -->
-            <div class="d-none d-xl-flex align-items-center gap-2 pt-2 pt-xl-0">
-                <!-- Atalhos Rápidos da Gestão no Desktop -->
-                <div class="d-flex align-items-center gap-2">
-                    <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm text-nowrap" style="background: rgba(139, 92, 246, 0.12); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.35); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 11px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" title="Acessar Vitrine da Lojinha (com perspectiva Master / Colaborador)">
-                        <span style="font-size: 14px;">🛍️</span>
-                        <span>Lojinha</span>
-                    </a>
+            <!-- Atalhos Rápidos da Gestão no Desktop -->
+            <div class="d-flex align-items-center gap-2">
+                <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm text-nowrap" style="background: rgba(139, 92, 246, 0.12); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.35); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 11px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" title="Acessar Vitrine da Lojinha">
+                    <span style="font-size: 14px;">🛍️</span>
+                    <span>Lojinha</span>
+                </a>
 
-                    <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm text-nowrap" style="background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1.5px solid rgba(16, 185, 129, 0.45); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 12px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.2s;" title="Retornar à Bancada de Repack">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
-                            <path d="M2 10h4v4H2z" fill="currentColor" fill-opacity="0.3"/>
-                            <path d="M6 8h10a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6"/>
-                            <path d="M12 16v4a2 2 0 0 1-2 2H9a1 1 0 0 1-1-1v-5"/>
-                            <path d="M1 9c-.5.5-.5 1.5 0 2" stroke="#F59E0B" stroke-width="2"/>
-                            <path d="M1 13c-.5.5-.5 1.5 0 2" stroke="#EF4444" stroke-width="2"/>
-                        </svg>
-                        <span>Repack</span>
-                    </a>
-                </div>
-
-                <div class="vr bg-secondary mx-1" style="height: 20px; opacity: 0.25;"></div>
-
-                <!-- Crachá Desktop do Usuário -->
-                <div class="d-inline-flex align-items-center gap-2 px-2.5 py-1 rounded-pill flex-shrink-0" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);">
-                    <div style="width: 22px; height: 22px; background: #3B82F6; color: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;">
-                        👤
-                    </div>
-                    <span style="color: #F1F5F9; font-weight: 700; font-size: 13px; white-space: nowrap;">
-                        <?= sanitize_html($nomeGestor) ?>
-                    </span>
-                    <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1px solid #F59E0B; padding: 2px 6px; border-radius: 4px;">
-                        <?= sanitize_html($matriculaGestor) ?>
-                    </span>
-                </div>
-
-                <!-- Botão Sair Desktop -->
-                <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-outline-danger fw-bold px-2.5 py-1 d-inline-flex align-items-center gap-1 flex-shrink-0" style="border-radius: 7px; font-size: 12.5px; border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5; text-decoration: none;" title="Encerrar sessão administrativa">
-                    <span>Sair</span>
+                <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm text-nowrap" style="background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1.5px solid rgba(16, 185, 129, 0.45); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 12px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.2s;" title="Retornar à Bancada de Repack">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                        <path d="M2 10h4v4H2z" fill="currentColor" fill-opacity="0.3"/>
+                        <path d="M6 8h10a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6"/>
+                        <path d="M12 16v4a2 2 0 0 1-2 2H9a1 1 0 0 1-1-1v-5"/>
+                        <path d="M1 9c-.5.5-.5 1.5 0 2" stroke="#F59E0B" stroke-width="2"/>
+                        <path d="M1 13c-.5.5-.5 1.5 0 2" stroke="#EF4444" stroke-width="2"/>
+                    </svg>
+                    <span>Repack</span>
                 </a>
             </div>
+
+            <div class="vr bg-secondary mx-1" style="height: 20px; opacity: 0.25;"></div>
+
+            <!-- Crachá Desktop do Usuário -->
+            <div class="d-inline-flex align-items-center gap-2 px-2.5 py-1 rounded-pill flex-shrink-0" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);">
+                <div style="width: 22px; height: 22px; background: #3B82F6; color: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;">
+                    👤
+                </div>
+                <span style="color: #F1F5F9; font-weight: 700; font-size: 13px; white-space: nowrap;">
+                    <?= sanitize_html($nomeGestor) ?>
+                </span>
+                <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1px solid #F59E0B; padding: 2px 6px; border-radius: 4px;">
+                    <?= sanitize_html($matriculaGestor) ?>
+                </span>
+            </div>
+
+            <!-- Botão Sair Desktop -->
+            <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-outline-danger fw-bold px-2.5 py-1 d-inline-flex align-items-center gap-1 flex-shrink-0" style="border-radius: 7px; font-size: 12.5px; border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5; text-decoration: none;" title="Encerrar sessão administrativa">
+                <span>Sair</span>
+            </a>
         </div>
+
+        <!-- LATERAL DIREITA NO SMARTPHONE: Botão Hambúrguer que abre o Drawer vindo da Direita -->
+        <div class="d-flex d-xl-none align-items-center">
+            <button class="btn" type="button" id="btnToggleDrawerGestao" aria-label="Abrir Menu da Gestão" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.32); border-radius: 10px; background: rgba(255,255,255,0.08); color: #FFFFFF; padding: 0;">
+                <svg id="iconDrawerHamb" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+                <svg id="iconDrawerClose" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
     </div>
 </nav>
+
+<!-- Backdrop Suave abaixo do cabeçalho (Fecha a gaveta ao tocar fora) -->
+<div id="drawerBackdropGestao" class="drawer-backdrop-gestao d-xl-none" onclick="fecharDrawerGestao()"></div>
+
+<!-- Drawer Lateral da Direita (Entrada da Direita para a Esquerda sem encobrir o cabeçalho) -->
+<aside id="drawerGestaoLateral" class="drawer-lateral-direita d-xl-none">
+    <!-- Cabeçalho Interno do Drawer -->
+    <div class="d-flex align-items-center justify-content-between p-3 border-bottom" style="border-color: rgba(255, 255, 255, 0.12) !important; background: #070B14;">
+        <div class="d-flex align-items-center gap-2">
+            <span style="font-size: 18px;">📋</span>
+            <span style="color: #FFFFFF; font-weight: 800; font-size: 14px; letter-spacing: 0.5px;">MENU DE GESTÃO</span>
+        </div>
+        <button type="button" class="btn btn-sm text-white-50 p-1" onclick="fecharDrawerGestao()" style="font-size: 18px; line-height: 1; border: none; background: transparent;">✕</button>
+    </div>
+
+    <!-- Lista de Abas e Módulos com Rolagem Suave -->
+    <div class="p-3 d-flex flex-column gap-2" style="overflow-y: auto; flex: 1;">
+        <!-- 7 Módulos de Gestão -->
+        <a class="drawer-nav-item <?= ($rotaAtual === '/gestao/dashboard' || $rotaAtual === '/gestao') ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/dashboard">
+            <span>📊</span><span>Dashboard</span>
+        </a>
+        <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/produtos') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/produtos">
+            <span>📦</span><span>Produtos</span>
+        </a>
+        <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/lotes') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/lotes">
+            <span>🏷️</span><span>Lotes de Vendas</span>
+        </a>
+        <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/estoque') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/estoque">
+            <span>🏪</span><span>Estoque Lojinha</span>
+        </a>
+        <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/bo') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/bo">
+            <span>📋</span><span>Ajuste B.O.</span>
+        </a>
+        <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/separacao') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/separacao">
+            <span>📝</span><span>Pedidos</span>
+        </a>
+        <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/relatorios') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/relatorios">
+            <span>📈</span><span>Relatórios</span>
+        </a>
+
+        <div class="my-2 border-top" style="border-color: rgba(255, 255, 255, 0.12) !important;"></div>
+
+        <!-- Abas Integradas Lojinha e Repack -->
+        <a class="drawer-nav-item drawer-nav-lojinha <?= strpos($rotaAtual, '/lojinha') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/lojinha">
+            <span>🛒</span><span>Lojinha (Vitrine)</span>
+        </a>
+        <a class="drawer-nav-item drawer-nav-repack" href="<?= APP_URL ?: '/' ?>">
+            <span>🏭</span><span>Repack (Bancada)</span>
+        </a>
+    </div>
+
+    <!-- Rodapé do Drawer com Atalho de Sair -->
+    <div class="p-3 border-top" style="border-color: rgba(255, 255, 255, 0.12) !important; background: #070B14;">
+        <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-bold" style="border-radius: 10px; padding: 11px 16px; font-size: 15px;">
+            <span>🚪</span> <span>Encerrar Sessão</span>
+        </a>
+    </div>
+</aside>
+
+<script>
+// Gerenciador do Menu Lateral Offcanvas da Gestão (Mobile)
+function abrirDrawerGestao() {
+    document.getElementById('drawerGestaoLateral')?.classList.add('aberto');
+    document.getElementById('drawerBackdropGestao')?.classList.add('ativo');
+    const iconHamb = document.getElementById('iconDrawerHamb');
+    const iconClose = document.getElementById('iconDrawerClose');
+    if (iconHamb) iconHamb.style.display = 'none';
+    if (iconClose) iconClose.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function fecharDrawerGestao() {
+    document.getElementById('drawerGestaoLateral')?.classList.remove('aberto');
+    document.getElementById('drawerBackdropGestao')?.classList.remove('ativo');
+    const iconHamb = document.getElementById('iconDrawerHamb');
+    const iconClose = document.getElementById('iconDrawerClose');
+    if (iconHamb) iconHamb.style.display = 'block';
+    if (iconClose) iconClose.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+function toggleDrawerGestao() {
+    const drawer = document.getElementById('drawerGestaoLateral');
+    if (drawer && drawer.classList.contains('aberto')) {
+        fecharDrawerGestao();
+    } else {
+        abrirDrawerGestao();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btnToggleDrawerGestao')?.addEventListener('click', toggleDrawerGestao);
+    // Fecha gaveta com tecla ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') fecharDrawerGestao();
+    });
+});
+</script>
 
 <!-- Sub-barra Móvel de Identificação do Usuário (Mobile apenas, d-xl-none) -->
 <div class="d-flex d-xl-none align-items-center justify-content-between px-3 py-2" style="background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%); border-bottom: 2px solid #3B82F6;">
