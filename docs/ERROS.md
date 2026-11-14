@@ -37,3 +37,11 @@ Este documento é o arquivo vivo para catalogação de incidentes, falhas técni
 - **Causa-Raiz:** `APP_URL` estava fixado estaticamente como `'/projeto_repack'`, forçando chamadas a `/projeto_repack/assets/css/urna.css` mesmo em servidores configurados na raiz do domínio (como Alwaysdata ou servidores locais). Sem carregar o CSS, os modais perdiam o `display: none` e o layout desmoronava.
 - **Solução Aplicada:** Implementada detecção dinâmica inteligente de `APP_URL` em `app/config/config.php` que se adapta à raiz (`""`), Alwaysdata ou subdiretórios; adicionada proteção anti-FOUC em `app/views/layouts/header.php`; padronizados links em views e layouts; e inserido menu de navegação rápida na Home para alternar com 1 clique entre Urna, Lojinha e Gestão.
 - **Como Evitar:** Nunca fixar prefixos de URL de forma estática; utilizar auto-detecção desacoplada com suporte tanto para raiz de domínio quanto subpastas.
+
+### ERR-005: Erro Fatal `Call to undefined method AuthController::exigirAutenticacao()` na Separação
+- **Data/Hora:** 2026-11-14 05:15
+- **Fase de Ocorrência:** Modo Manutenção (Substituição de Itens na Separação)
+- **Sintoma:** Ao tentar aplicar a substituição de item de um pedido na aba Pedidos/Separação em produção, o sistema gerava erro fatal: `Fatal error: Uncaught Error: Call to undefined method AuthController::exigirAutenticacao() in RelatorioController.php on line 129`.
+- **Causa-Raiz:** O controller `AuthController` possui o método guard `exigirGestao()`. Ao implementar o endpoint de substituição em `RelatorioController.php`, foi chamada a assinatura inexistente `AuthController::exigirAutenticacao()`.
+- **Solução Aplicada:** Corrigida a chamada em `RelatorioController.php` para `AuthController::exigirGestao()`, adicionada validação de token CSRF, e implementado o método estático `public static function exigirAutenticacao(): void { self::exigirGestao(); }` em `AuthController.php` como blindagem retrocompatível.
+- **Como Evitar:** Sempre conferir os métodos da classe `AuthController` ou criar aliases defensivos quando mais de um nome de método guard for comum entre desenvolvedores.

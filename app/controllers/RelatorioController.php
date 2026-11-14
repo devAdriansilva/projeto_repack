@@ -126,8 +126,21 @@ class RelatorioController
      */
     public function substituirItem(): void
     {
-        AuthController::exigirAutenticacao();
+        AuthController::exigirGestao();
         $gestorId = (int)($_SESSION['usuario_id'] ?? 1);
+
+        $token = $_POST['csrf_token'] ?? '';
+        if (!AuthController::validarCsrfToken($token)) {
+            if ($this->isAjax()) {
+                header('Content-Type: application/json; charset=UTF-8');
+                http_response_code(403);
+                echo json_encode(['status' => 'error', 'message' => 'Token CSRF inválido ou expirado.'], JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            $_SESSION['flash_erro'] = "Token CSRF inválido.";
+            header('Location: ' . APP_URL . '/gestao/separacao');
+            exit;
+        }
 
         $pedidoId = (int)($_POST['pedido_id'] ?? 0);
         $itemId = (int)($_POST['item_id'] ?? 0);

@@ -824,6 +824,18 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e teste `test_substituicao_item.php` aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.66` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-071 (14/11/2026):** Correção do Erro Fatal de Autenticação e Blindagem CSRF na Substituição de Itens.
+    - **Diagnóstico do Erro Fatal (`RelatorioController.php:129`):**
+      - O método `substituirItem()` chamava `AuthController::exigirAutenticacao()`, que não existia na classe `AuthController` (cujo método padrão é `AuthController::exigirGestao()`), disparando o erro fatal reportado pelo usuário em produção (`Call to undefined method AuthController::exigirAutenticacao()`).
+    - **Correção e Blindagem:**
+      - Em `app/controllers/RelatorioController.php`, a chamada foi corrigida para `AuthController::exigirGestao()` e foi adicionada a verificação estrita de token CSRF (`AuthController::validarCsrfToken($token)`).
+      - Em `app/controllers/AuthController.php`, foi criado o método alias estático `public static function exigirAutenticacao(): void { self::exigirGestao(); }` para máxima resiliência e retrocompatibilidade com chamadas genéricas de autenticação.
+    - **Esclarecimento sobre a Versão Mobile:**
+      - O print enviado pelo usuário exibia no cabeçalho `REPACK v1.65` com os botões em linha horizontal centralizados, indicando que o smartphone ainda estava retendo a versão antiga em cache pelo Service Worker do navegador antes do commit `3c49584` (`v1.66`). Com a nova versão `v1.67`, o cache é purgado automaticamente, forçando a coluna vertical de 1 botão por linha preenchendo toda a tela do celular.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.67` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

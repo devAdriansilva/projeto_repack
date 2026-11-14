@@ -146,6 +146,14 @@ class AuthController
     }
 
     /**
+     * Alias de proteção para chamadas genéricas de autenticação
+     */
+    public static function exigirAutenticacao(): void
+    {
+        self::exigirGestao();
+    }
+
+    /**
      * Gera ou recupera o token CSRF atual da sessão
      * @return string
      */
