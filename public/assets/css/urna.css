@@ -551,18 +551,18 @@ body {
     }
 }
 
-/* DESKTOP / PC / MONITOR WIDESCREEN (> 768px): 3 Colunas Lado a Lado sem Overflow */
-@media (min-width: 769px) {
+/* DESKTOP / PC / MONITOR WIDESCREEN (Landscape >= 992px): 3 Colunas Lado a Lado sem Overflow */
+@media (min-width: 992px) and (orientation: landscape) {
     .home-operador-container {
-        padding: 18px 24px;
+        padding: 20px 24px;
         justify-content: center;
-        gap: 20px;
+        gap: 22px;
     }
     .home-cards-wrapper {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 22px;
-        max-width: 1080px;
+        max-width: 1100px;
         margin: 0 auto;
         align-items: stretch;
         flex: 0 1 auto;
@@ -575,9 +575,31 @@ body {
         text-align: center;
         padding: 24px 18px;
         border-radius: 28px;
-        min-height: 270px;
-        max-height: 340px;
+        min-height: 280px;
+        max-height: 350px;
         gap: 16px;
+    }
+    .btn-operador-icone-wrapper {
+        width: 135px;
+        height: 135px;
+        border-radius: 22px;
+    }
+    .btn-operador-content {
+        align-items: center;
+        text-align: center;
+    }
+    .btn-operador-label {
+        font-size: 24px;
+        justify-content: center;
+        text-align: center;
+        white-space: normal;
+        line-height: 1.2;
+    }
+    .btn-operador-label svg {
+        width: 32px;
+        height: 32px;
+    }
+}
     }
     .btn-operador-icone-wrapper {
         width: 135px;

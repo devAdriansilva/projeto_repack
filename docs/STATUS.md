@@ -812,6 +812,18 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e novo teste de integração `tests/test_substituicao_item.php` validados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.65` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-070 (14/11/2026):** Blindagem Soberana da Home em Coluna Vertical no Smartphone (Eliminação Definitiva do Grid de 3 Colunas no Mobile).
+    - **Diagnóstico do Print Enviado pelo Usuário:**
+      - Em dispositivos móveis de alta resolução ou com escala DPI elevada, a media query `@media (min-width: 769px)` vinha disparando indevidamente o Grid de 3 colunas horizontais do desktop, espremendo os 3 botões em uma única linha no centro da tela vertical e deixando enormes espaços vazios no topo e no rodapé.
+    - **Contramedida e Correção Definitiva:**
+      - Injeção de estilos diretos prioritários (`!important`) em `app/views/operador/home.php` e calibração de `public/assets/css/urna.css`:
+        - O layout padrão (Mobile-First / Portrait) passa a ser **estritamente em coluna vertical (`flex-direction: column`)**, onde os 3 botões ocupam cada um 1/3 da altura total visível da tela (`100dvh`).
+        - Dentro de cada botão, o ícone/foto fica centralizado no topo com escala colossal (`clamp(100px, 15vh, 180px)`), e o título em negrito monumental (até 36px) fica posicionado embaixo.
+        - A regra de 3 colunas horizontais foi restrita e amarrada com exclusividade a computadores desktop e monitores widescreen deitados: `@media (min-width: 992px) and (orientation: landscape)`.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e teste `test_substituicao_item.php` aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.66` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

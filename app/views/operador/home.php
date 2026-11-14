@@ -13,6 +13,116 @@ $pageTitle = "Repack - Início";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
+<style>
+/* Regra Soberana: Smartphone e Telas Verticais (Portrait) - Botões e Ícones Verticais Monumentais */
+.home-operador-container {
+    width: 100% !important;
+    max-width: 980px !important;
+    margin: 0 auto !important;
+    padding: 10px 14px !important;
+    height: calc(100dvh - 58px) !important;
+    min-height: calc(100dvh - 58px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+.home-cards-wrapper {
+    display: flex !important;
+    flex-direction: column !important; /* EMPILHADO VERTICALMENTE */
+    flex: 1 1 0 !important;
+    gap: 14px !important;
+    min-height: 0 !important;
+    width: 100% !important;
+}
+
+.btn-operador-solido {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important; /* Ícone no topo, texto embaixo */
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 10px 16px !important;
+    gap: 10px !important;
+    border-radius: 28px !important;
+    border-width: 6px !important;
+    box-sizing: border-box !important;
+    text-decoration: none !important;
+}
+
+.btn-operador-icone-wrapper {
+    width: clamp(100px, 15vh, 180px) !important;
+    height: clamp(100px, 15vh, 180px) !important;
+    border-radius: 22px !important;
+    padding: 4px !important;
+    flex-shrink: 0 !important;
+}
+
+.btn-operador-icone-wrapper.btn-operador-icone-emoji span {
+    font-size: clamp(54px, 8vh, 84px) !important;
+    line-height: 1 !important;
+}
+
+.btn-operador-content {
+    align-items: center !important;
+    text-align: center !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    gap: 4px !important;
+}
+
+.btn-operador-label {
+    font-size: clamp(22px, 5.8vw, 36px) !important;
+    font-weight: 900 !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 10px !important;
+    line-height: 1.15 !important;
+}
+
+.btn-operador-label svg {
+    width: clamp(28px, 4vw, 40px) !important;
+    height: clamp(28px, 4vw, 40px) !important;
+}
+
+/* Regra Exclusiva para Computador Desktop com Monitor Widescreen Deitado (Landscape >= 992px) */
+@media (min-width: 992px) and (orientation: landscape) {
+    .home-operador-container {
+        padding: 20px 24px !important;
+        justify-content: center !important;
+        gap: 22px !important;
+    }
+    .home-cards-wrapper {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 22px !important;
+        max-width: 1100px !important;
+        margin: 0 auto !important;
+        align-items: stretch !important;
+        flex: 0 1 auto !important;
+    }
+    .btn-operador-solido {
+        min-height: 280px !important;
+        max-height: 350px !important;
+        padding: 24px 18px !important;
+    }
+    .btn-operador-icone-wrapper {
+        width: 135px !important;
+        height: 135px !important;
+    }
+    .btn-operador-label {
+        font-size: 24px !important;
+    }
+}
+</style>
+
 <div class="home-operador-container">
     
     <!-- Título Principal com Fundo Contrastante Monumental -->
