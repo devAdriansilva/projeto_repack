@@ -858,6 +858,17 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.69` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-074 (14/11/2026):** Escala Colossal e Zoom Direto de Imagens (215px) e Rótulos Heroicos (44px) na Home do Operador.
+    - **Escala Colossal dos Ícones e Eliminação de Bordas Mortas:**
+      - Wrapper dos ícones (`.btn-operador-icone-wrapper`) expandido para `clamp(160px, 22vh, 215px)` de largura e `clamp(150px, 20vh, 195px)` de altura, com cantos de 28px e sombra 3D intensa (`0 12px 30px rgba(0,0,0,0.3)`).
+      - Remoção de paddings mortos e aplicação de `object-fit: cover` com `transform: scale(1.12)` nas imagens de lata amassada e soprador térmico, eliminando bordas vazias e ampliando o produto/gráfico em 100% do cartão.
+      - Emoji do botão Baixa ampliado para `clamp(95px, 14vh, 130px)` com `transform: scale(1.08)`.
+    - **Tipografia Heroica e Ícones de Apoio:**
+      - Tipografia `.btn-operador-label` ampliada para `clamp(30px, 8.2vw, 44px)` em peso 900 com sombra de texto (`text-shadow`), e ícones SVG ampliados para `clamp(36px, 6vw, 50px)`, dominando a tela do smartphone sem qualquer timidez.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.70` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

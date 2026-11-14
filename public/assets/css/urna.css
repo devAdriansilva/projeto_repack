@@ -517,14 +517,16 @@ body {
         border-width: 6px;
     }
     .btn-operador-icone-wrapper {
-        width: clamp(140px, 20vh, 195px);
-        height: clamp(140px, 20vh, 195px);
-        border-radius: 26px;
-        padding: 3px;
+        width: clamp(160px, 22vh, 215px);
+        height: clamp(150px, 20vh, 195px);
+        border-radius: 28px;
+        padding: 0;
+        overflow: hidden;
         flex-shrink: 0;
     }
     .btn-operador-icone-wrapper.btn-operador-icone-emoji span {
-        font-size: clamp(80px, 12vh, 115px) !important;
+        font-size: clamp(95px, 14vh, 130px) !important;
+        transform: scale(1.08);
     }
     .btn-operador-content {
         align-items: center;
@@ -534,16 +536,17 @@ body {
         width: 100%;
     }
     .btn-operador-label {
-        font-size: clamp(28px, 7.8vw, 42px);
+        font-size: clamp(30px, 8.2vw, 44px);
         font-weight: 900;
         justify-content: center;
         text-align: center;
-        gap: 10px;
+        gap: 12px;
         line-height: 1.15;
+        letter-spacing: 0.8px;
     }
     .btn-operador-label svg {
-        width: clamp(34px, 5.5vw, 48px);
-        height: clamp(34px, 5.5vw, 48px);
+        width: clamp(36px, 6vw, 50px);
+        height: clamp(36px, 6vw, 50px);
     }
     .badge-em-andamento {
         font-size: 13px;
