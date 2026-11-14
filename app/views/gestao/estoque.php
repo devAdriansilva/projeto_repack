@@ -70,9 +70,6 @@ require __DIR__ . '/../layouts/gestao_header.php';
 <div class="card-gestao">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="headline-lg mb-0" style="font-size: 20px;">Visão Geral de Saldos Físicos</h2>
-        <span class="badge bg-light text-dark border p-2">
-            Fórmula: <strong>Disponível = Total Físico - Reserva Gestão</strong> (Sempre em Unidades)
-        </span>
     </div>
 
     <div class="table-responsive">

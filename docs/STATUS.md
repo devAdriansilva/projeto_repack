@@ -773,6 +773,30 @@
       - Validação de 35/35 testes na suíte oficial (`php tests/test_fase5.php`) e testes dedicados de expiração.
       - Versão da aplicação incrementada para `v1.63` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-068 (14/11/2026):** Refinamento da Gestão, Responsividade PC x Mobile, Fluxo Linear de Produtividade em 4 Passos e Marca do Desenvolvedor.
+    - **Sub-abas e Botões da Gestão (`app/views/layouts/gestao_header.php`):**
+      - Contorno das sub-abas acentuado com `border: 1.5px solid rgba(255, 255, 255, 0.22)`, background translúcido e foco ativo em `#60A5FA` com glow azul.
+      - Renomeação das sub-abas: "Lotes" -> **"Lotes de Vendas"**, "Estoque" -> **"Estoque Lojinha"**, "Correção B.O." -> **"Ajuste B.O."**, "Separação" -> **"Pedidos"**, e "Bancada" -> **"Repack"**.
+      - Inclusão de ícone vetorial SVG estilizado de **soprador térmico** (heat gun) com bocal de ar quente e resistência no atalho do Repack.
+    - **Ajustes na Lojinha e Gestão de Estoque:**
+      - **Vitrine (`app/views/lojinha/vitrine.php`):** Remoção do ícone de óculos do card de controle de perspectiva gerencial.
+      - **Footer da Lojinha (`app/views/layouts/lojinha_footer.php`):** Atualização do texto institucional: *"Lojinha do Repack — Produtos com avarias leves, destinados à compra exclusiva por colaboradores. Poderá haver divergência nos itens pedidos, dependendo da disponibilidade dos produtos."*
+      - **Gestão de Estoque (`app/views/gestao/estoque.php`):** Remoção do badge explicativo da fórmula de cálculo de saldo disponível do topo da tabela.
+      - **Crédito de Desenvolvedor:** Inclusão da marca *"Desenvolvido por AdrianSilvaDev"* nos rodapés da Lojinha, da Gestão e no modal de configurações do Quiosque.
+    - **Responsividade Real da Home do Operador (PC x Smartphone):**
+      - Resolução definitiva do conflito dimensional PC vs Mobile:
+        - **Smartphone / Telas Verticais (`@media (max-width: 768px)`):** botões monumentais empilhados verticalmente com `flex: 1 1 0` ocupando 100% da viewport vertical, imagens grandes (100px a 115px), fontes em 24px-28px negrito e alvos de toque superiores a 110px para luvas anti-corte.
+        - **PC / Monitores Widescreen (`@media (min-width: 769px)`):** container em Grid de 3 colunas horizontais lado a lado (`display: grid; grid-template-columns: repeat(3, 1fr)`), altura contida (270px-340px), imagens no topo e títulos centralizados, eliminando completamente qualquer estouro ou rolagem de tela no PC.
+    - **Fluxo Linear de Produtividade em 4 Passos (`app/views/operador/cronometro.php`):**
+      - Adequação estrita da sequência da bancada:
+        1. **Digitar o código (SKU):** produto identificado em tempo real com foto heroica e botão monumental `INICIAR PRODUÇÃO ➔`.
+        2. **Iniciar produção:** início físico do lote de trabalho, marcador de horário capturado, foto em tela e botão de pausa/retomada.
+        3. **Digitar quantidade:** ao clicar em `FINALIZAR PRODUÇÃO ➔`, o operador cai imediatamente na tela dedicada para digitar o número de pacotes feitos, com display numérico monumental (84px), botões `[-]` e `[+]` e digitação direta.
+        4. **Confirmar:** avança para a conferência dupla com horário inicial/final, pacotes refeitos e botão `CONFIRMAR PRODUÇÃO`.
+    - **Testes & Versionamento:**
+      - Suíte de 35 testes automatizados (`php tests/test_fase5.php`) e testes do lote/carrinho aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.64` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

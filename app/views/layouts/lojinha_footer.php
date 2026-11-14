@@ -10,8 +10,13 @@ declare(strict_types=1);
 
 <footer class="text-center py-4 text-muted" style="font-size: 14px; border-top: 1px solid #E5E7EB; margin-top: 40px;">
     <div class="container">
-        <p class="mb-1"><strong><?= sanitize_html(APP_NAME) ?></strong> — Lojinha Interna da Reembalagem</p>
-        <p class="mb-0 text-secondary">Avarias leves destinadas à compra exclusiva por colaboradores. Retirada física no galpão logístico.</p>
+        <p class="mb-1" style="font-weight: 700; color: #374151;">Lojinha do Repack</p>
+        <p class="mb-2 text-secondary" style="max-width: 720px; margin: 0 auto; line-height: 1.45;">
+            Produtos com avarias leves, destinados à compra exclusiva por colaboradores. Poderá haver divergência nos itens pedidos, dependendo da disponibilidade dos produtos.
+        </p>
+        <div class="mt-3 pt-2" style="border-top: 1px dashed #E5E7EB; font-size: 12.5px; color: #9CA3AF;">
+            Desenvolvido por <strong style="color: #4B5563;">AdrianSilvaDev</strong> &bull; <?= sanitize_html(APP_NAME) ?> <?= APP_VERSION ?>
+        </div>
     </div>
 </footer>
 

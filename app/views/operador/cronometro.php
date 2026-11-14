@@ -134,19 +134,19 @@ require_once __DIR__ . '/../layouts/header.php';
         ⚠️ DIGITE O CÓDIGO DO PRODUTO!
     </div>
 
-    <!-- Rodapé Etapa 1: PRÓXIMO ou CANCELAR -->
+    <!-- Rodapé Etapa 1: INICIAR PRODUÇÃO ou CANCELAR -->
     <div style="width: 100%; margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
         <button type="button" 
                 class="btn-urna btn-urna-primary" 
-                id="btnAvancarParaQuantidade" 
-                onclick="avancarParaEtapaQuantidade()" 
-                style="width: 100%; max-width: 650px; min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; box-shadow: 0 14px 32px rgba(16, 185, 129, 0.4);">
-            <span>PRÓXIMO ➔</span>
+                id="btnIniciarProducaoDireto" 
+                onclick="iniciarProducaoDireto()" 
+                style="width: 100%; max-width: 650px; min-height: 140px; font-size: 44px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; box-shadow: 0 14px 32px rgba(16, 185, 129, 0.4);">
+            <span>INICIAR PRODUÇÃO ➔</span>
         </button>
 
         <a href="<?= APP_URL ?>/operador" 
            class="btn-urna btn-urna-warning" 
-           style="width: 100%; max-width: 650px; min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; text-decoration: none;">
+           style="width: 100%; max-width: 650px; min-height: 130px; font-size: 42px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; text-decoration: none;">
             <span style="font-size: 38px; font-weight: 900; line-height: 1;">✕</span>
             <span>CANCELAR</span>
         </a>
@@ -154,71 +154,7 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <!-- ============================================================= -->
-<!-- ETAPA 2: DEFINIÇÃO DE QUANTIDADE (TELA DEDICADA E ISOLADA)    -->
-<!-- ============================================================= -->
-<div id="secaoMomentoQuantidade" style="display: none;">
-    <div style="text-align: center; margin-bottom: 20px;">
-        <h1 class="headline-lg" style="margin: 0; font-size: 44px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
-            DEFINIR QUANTIDADE
-        </h1>
-    </div>
-
-    <!-- Card de Confirmação do Produto Selecionado -->
-    <div class="urna-card" style="width: 100%; text-align: center; padding: 24px 20px; border-radius: 28px; border: 5px solid #059669; background: #FFFFFF; margin-bottom: 24px;">
-        <div id="qtdWrapperFoto" style="text-align: center; margin-bottom: 12px;">
-            <img id="qtdFotoProduto" src="" alt="Foto" style="width: 100%; max-width: 280px; height: 240px; object-fit: contain; border-radius: 20px; background: #FFFFFF; display: none; padding: 6px;">
-        </div>
-        <div class="headline-lg" id="qtdNomeProduto" style="color: #0F172A; font-size: 38px; font-weight: 900; line-height: 1.2;"></div>
-        <div style="margin-top: 8px;">
-            <span class="badge-sku" id="qtdSkuBadge" style="font-size: 22px; padding: 6px 18px;"></span>
-        </div>
-    </div>
-
-    <!-- Seletor Monumental de Quantidade (80px e Botões -/+) -->
-    <div class="sku-entry-container" style="margin-top: 10px;">
-        <label for="displayPacotesEtapa2" style="display: block; font-size: 36px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
-            PACOTES A REFAZER:
-        </label>
-        <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 26px; margin: 0;">
-            <button type="button" class="btn-counter" onclick="alterarPacotesEtapa2(-1)" aria-label="Diminuir pacotes">−</button>
-            <input type="number" 
-                   id="displayPacotesEtapa2" 
-                   class="counter-display" 
-                   inputmode="numeric" 
-                   pattern="[0-9]*" 
-                   min="1" 
-                   autocomplete="off" 
-                   value="<?= $pacotesIniciais ?>" 
-                   onfocus="this.select()" 
-                   oninput="atualizarPacotesEtapa2Digitados(this.value)" 
-                   onblur="validarPacotesEtapa2Blur()" 
-                   aria-label="Pacotes a refazer"
-                   style="font-size: 72px; font-weight: 900; width: 180px; text-align: center; height: 110px; border-radius: 24px; border: 4px solid #CBD5E1;">
-            <button type="button" class="btn-counter" onclick="alterarPacotesEtapa2(1)" aria-label="Aumentar pacotes">+</button>
-        </div>
-    </div>
-
-    <!-- Rodapé Etapa 2: Ações Empilhadas Verticalmente (Escala Monumental) -->
-    <div style="width: 100%; margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-        <button type="button" 
-                class="btn-urna btn-urna-primary" 
-                id="btnIniciarComQuantidade" 
-                onclick="iniciarProducaoComQuantidade()" 
-                style="width: 100%; max-width: 650px; min-height: 140px; font-size: 44px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; box-shadow: 0 14px 32px rgba(16, 185, 129, 0.4);">
-            <span>INICIAR PRODUÇÃO ➔</span>
-        </button>
-
-        <button type="button" 
-                class="btn-urna btn-urna-secondary" 
-                onclick="voltarParaEtapaProduto()" 
-                style="width: 100%; max-width: 650px; min-height: 130px; font-size: 40px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto;">
-            <span>⬅ VOLTAR AO PRODUTO</span>
-        </button>
-    </div>
-</div>
-
-<!-- ============================================================= -->
-<!-- ETAPA 3: PRODUÇÃO EM ANDAMENTO (CRONÔMETRO ATIVO)             -->
+<!-- ETAPA 2: PRODUÇÃO EM ANDAMENTO (CRONÔMETRO ATIVO)             -->
 <!-- ============================================================= -->
 <div id="secaoMomento2" style="<?= $producaoAtiva ? 'display: block;' : 'display: none;' ?>">
     <!-- Cartão Central com Produto, Início e Status de Pausa -->
@@ -253,30 +189,6 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-    <!-- Bloco de Pacotes Fixados (com possibilidade de ajuste fino durante a contagem) -->
-    <div class="sku-entry-container" style="margin-top: 26px;">
-        <label for="displayPacotes" style="display: block; font-size: 34px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
-            PACOTES EM ANDAMENTO:
-        </label>
-        <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 26px; margin: 0;">
-            <button type="button" class="btn-counter" onclick="alterarPacotes(-1)" aria-label="Diminuir pacotes">−</button>
-            <input type="number" 
-                   id="displayPacotes" 
-                   class="counter-display" 
-                   inputmode="numeric" 
-                   pattern="[0-9]*" 
-                   min="1" 
-                   autocomplete="off" 
-                   value="<?= $pacotesIniciais ?>" 
-                   onfocus="this.select()" 
-                   oninput="atualizarPacotesDigitados(this.value)" 
-                   onblur="validarPacotesBlur()" 
-                   aria-label="Pacotes refeitos"
-                   style="font-size: 72px; font-weight: 900; width: 180px; text-align: center; height: 110px; border-radius: 24px; border: 4px solid #CBD5E1;">
-            <button type="button" class="btn-counter" onclick="alterarPacotes(1)" aria-label="Aumentar pacotes">+</button>
-        </div>
-    </div>
-
     <!-- Botão de Pausar / Retomar Produção -->
     <div style="margin-top: 26px; width: 100%;">
         <button type="button" 
@@ -288,13 +200,82 @@ require_once __DIR__ . '/../layouts/header.php';
         </button>
     </div>
 
-    <!-- Rodapé: CANCELAR ou FINALIZAR PRODUÇÃO -->
+    <!-- Rodapé: CANCELAR CICLO ou FINALIZAR PRODUÇÃO (Avança para Quantidade) -->
     <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
-        <button type="button" class="btn-urna btn-urna-warning" onclick="descartarProducaoAtiva()" style="min-height: 135px; font-size: 38px; font-weight: 900; border-radius: 36px;">
-            CANCELAR
+        <button type="button" class="btn-urna btn-urna-warning" onclick="descartarProducaoAtiva()" style="min-height: 135px; font-size: 36px; font-weight: 900; border-radius: 36px;">
+            ✕ DESCARTAR
         </button>
-        <button type="button" class="btn-urna btn-urna-primary" id="btnFinalizarProducao" onclick="finalizarProducao()" style="min-height: 135px; font-size: 40px; font-weight: 900; border-radius: 36px;">
+        <button type="button" class="btn-urna btn-urna-primary" id="btnFinalizarProducao" onclick="avancarParaDefinirQuantidade()" style="min-height: 135px; font-size: 40px; font-weight: 900; border-radius: 36px; box-shadow: 0 12px 28px rgba(16, 185, 129, 0.4);">
             FINALIZAR ➔
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================= -->
+<!-- ETAPA 3: DEFINIÇÃO DE QUANTIDADE (TELA DEDICADA E ISOLADA)    -->
+<!-- ============================================================= -->
+<div id="secaoMomentoQuantidade" style="display: none;">
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h1 class="headline-lg" style="margin: 0; font-size: 46px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
+            PACOTES REFEITOS
+        </h1>
+    </div>
+
+    <!-- Card com Resumo do Produto e Horários Marcados -->
+    <div class="urna-card" style="width: 100%; text-align: center; padding: 26px 20px; border-radius: 32px; border: 6px solid #059669; background: #FFFFFF; margin-bottom: 24px; box-shadow: 0 10px 28px rgba(0,0,0,0.08);">
+        <div id="qtdWrapperFoto" style="text-align: center; margin-bottom: 12px;">
+            <img id="qtdFotoProduto" src="" alt="Foto" style="width: 100%; max-width: 260px; height: 220px; object-fit: contain; border-radius: 20px; background: #FFFFFF; display: none; padding: 6px;">
+        </div>
+        <div class="headline-lg" id="qtdNomeProduto" style="color: #0F172A; font-size: 42px; font-weight: 900; line-height: 1.2;"></div>
+        <div style="margin-top: 8px;">
+            <span class="badge-sku" id="qtdSkuBadge" style="font-size: 22px; padding: 6px 18px;"></span>
+        </div>
+
+        <div style="border-top: 4px solid #E2E8F0; margin-top: 18px; padding-top: 14px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 22px; font-weight: 800; color: #334155;">
+            <div>🟢 INÍCIO: <span id="qtdHoraInicio" style="color: #059669; font-weight: 900;">--:--</span></div>
+            <div>🏁 FIM: <span id="qtdHoraFim" style="color: #DC2626; font-weight: 900;">--:--</span></div>
+        </div>
+    </div>
+
+    <!-- Seletor Monumental de Quantidade (80px e Botões -/+) -->
+    <div class="sku-entry-container" style="margin-top: 10px;">
+        <label for="displayPacotesEtapa2" style="display: block; font-size: 38px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
+            DIGITE A QUANTIDADE FEITA:
+        </label>
+        <div class="seletor-numerico-wrapper" style="justify-content: center; gap: 26px; margin: 0;">
+            <button type="button" class="btn-counter" onclick="alterarPacotesEtapa2(-1)" aria-label="Diminuir pacotes">−</button>
+            <input type="number" 
+                   id="displayPacotesEtapa2" 
+                   class="counter-display" 
+                   inputmode="numeric" 
+                   pattern="[0-9]*" 
+                   min="1" 
+                   autocomplete="off" 
+                   value="<?= $pacotesIniciais ?>" 
+                   onfocus="this.select()" 
+                   oninput="atualizarPacotesEtapa2Digitados(this.value)" 
+                   onblur="validarPacotesEtapa2Blur()" 
+                   aria-label="Pacotes a refazer"
+                   style="font-size: 84px; font-weight: 900; width: 200px; text-align: center; height: 130px; border-radius: 26px; border: 5px solid #CBD5E1;">
+            <button type="button" class="btn-counter" onclick="alterarPacotesEtapa2(1)" aria-label="Aumentar pacotes">+</button>
+        </div>
+    </div>
+
+    <!-- Rodapé Etapa 3: CONFIRMAR QUANTIDADE e AVANÇAR PARA CONFERÊNCIA -->
+    <div style="width: 100%; margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+        <button type="button" 
+                class="btn-urna btn-urna-primary" 
+                id="btnAvancarParaConferencia" 
+                onclick="submeterParaConferencia()" 
+                style="width: 100%; max-width: 650px; min-height: 140px; font-size: 42px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto; box-shadow: 0 14px 32px rgba(16, 185, 129, 0.4);">
+            <span>CONFIRMAR ➔</span>
+        </button>
+
+        <button type="button" 
+                class="btn-urna btn-urna-secondary" 
+                onclick="voltarParaTrabalhoEmAndamento()" 
+                style="width: 100%; max-width: 650px; min-height: 125px; font-size: 38px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto;">
+            <span>⬅ VOLTAR AO TRABALHO</span>
         </button>
     </div>
 </div>
@@ -338,6 +319,11 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     } else {
         atualizarVisualPausa();
+    }
+
+    // Se estiver retornando da tela de conferência (?origem=voltar), abre direto a etapa de quantidade
+    if (window.location.search.includes('origem=voltar') && producaoAtiva) {
+        avancarParaDefinirQuantidade();
     }
 
     // Heartbeat automático a cada 2 minutos para manter a sessão PHP viva em turnos longos
@@ -510,85 +496,18 @@ function formatarDataHoraLocal(d = new Date()) {
 }
 
 /* ==========================================================================
-   TRANSIÇÃO: ETAPA 1 -> ETAPA 2 (DEFINIR QUANTIDADE)
+   ETAPA 1 -> ETAPA 2: INICIAR PRODUÇÃO DIRETO APÓS DIGITAR O CÓDIGO
    ========================================================================== */
-function avancarParaEtapaQuantidade() {
+function iniciarProducaoDireto() {
     const alerta = document.getElementById('alertaSemProduto');
     if (!produtoSelecionadoMomento1) {
-        alerta.style.display = 'block';
+        if (alerta) alerta.style.display = 'block';
         document.getElementById('inputCodigoSku').focus();
         if (navigator.vibrate) navigator.vibrate(150);
         return;
     }
 
-    alerta.style.display = 'none';
-    document.getElementById('secaoMomento1').style.display = 'none';
-    document.getElementById('secaoMomentoQuantidade').style.display = 'block';
-
-    // Preenche os dados do produto na Etapa 2
-    document.getElementById('qtdNomeProduto').innerText = produtoSelecionadoMomento1.nome;
-    document.getElementById('qtdSkuBadge').innerText = 'SKU ' + produtoSelecionadoMomento1.codigo;
-
-    const imgQtd = document.getElementById('qtdFotoProduto');
-    if (imgQtd) {
-        if (produtoSelecionadoMomento1.foto_url) {
-            imgQtd.src = produtoSelecionadoMomento1.foto_url;
-            imgQtd.style.display = 'inline-block';
-        } else {
-            imgQtd.src = '';
-            imgQtd.style.display = 'none';
-        }
-    }
-
-    const inputQtd = document.getElementById('displayPacotesEtapa2');
-    inputQtd.value = pacotesContador || 1;
-    inputQtd.focus();
-    inputQtd.select();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function voltarParaEtapaProduto() {
-    document.getElementById('secaoMomentoQuantidade').style.display = 'none';
-    document.getElementById('secaoMomento1').style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-/* ==========================================================================
-   ETAPA 2: CONTROLE NUMÉRICO DA QUANTIDADE
-   ========================================================================== */
-function alterarPacotesEtapa2(delta) {
-    const input = document.getElementById('displayPacotesEtapa2');
-    let atual = parseInt(input.value, 10) || 1;
-    let nova = Math.max(1, atual + delta);
-    input.value = nova;
-    pacotesContador = nova;
-    if (navigator.vibrate) navigator.vibrate(25);
-}
-
-function atualizarPacotesEtapa2Digitados(val) {
-    const parsed = parseInt(val, 10);
-    if (!isNaN(parsed) && parsed >= 1) {
-        pacotesContador = parsed;
-    }
-}
-
-function validarPacotesEtapa2Blur() {
-    const input = document.getElementById('displayPacotesEtapa2');
-    const parsed = parseInt(input.value, 10);
-    if (isNaN(parsed) || parsed < 1) {
-        pacotesContador = 1;
-        input.value = 1;
-    } else {
-        pacotesContador = parsed;
-        input.value = parsed;
-    }
-}
-
-/* ==========================================================================
-   TRANSIÇÃO: ETAPA 2 -> ETAPA 3 (INICIAR CRONÔMETRO)
-   ========================================================================== */
-function iniciarProducaoComQuantidade() {
-    validarPacotesEtapa2Blur();
+    if (alerta) alerta.style.display = 'none';
 
     const agora = new Date();
     const timestampInicio = formatarDataHoraLocal(agora);
@@ -600,7 +519,6 @@ function iniciarProducaoComQuantidade() {
         produto_embalagem: produtoSelecionadoMomento1.embalagem,
         produto_foto_url: produtoSelecionadoMomento1.foto_url,
         data_hora_inicio: timestampInicio,
-        pacotes_refeitos: pacotesContador,
         pausado: false,
         segundos_pausa: 0
     };
@@ -641,55 +559,13 @@ function restaurarMomento2(prod) {
     const mins = String(dataObj.getMinutes()).padStart(2, '0');
     document.getElementById('ativoHoraInicioDisplay').innerText = `${horas}:${mins}`;
 
-    // Restaura a contagem de pacotes refeitos
-    if (prod.pacotes_refeitos) {
-        pacotesContador = Math.max(1, parseInt(prod.pacotes_refeitos, 10));
-    }
-    const disp = document.getElementById('displayPacotes');
-    if (disp) disp.value = pacotesContador;
-
     atualizarVisualPausa();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ==========================================================================
-   ETAPA 3: EXECUÇÃO, PAUSA, RETOMADA E FINALIZAÇÃO
+   ETAPA 2: PRODUÇÃO EM ANDAMENTO (PAUSA / RETOMADA / DESCARTAR)
    ========================================================================== */
-function alterarPacotes(delta) {
-    pacotesContador = Math.max(1, pacotesContador + delta);
-    document.getElementById('displayPacotes').value = pacotesContador;
-    if (navigator.vibrate) navigator.vibrate(25);
-    persistirPacotesLocalStorage();
-}
-
-function atualizarPacotesDigitados(val) {
-    const parsed = parseInt(val, 10);
-    if (!isNaN(parsed) && parsed >= 1) {
-        pacotesContador = parsed;
-        persistirPacotesLocalStorage();
-    }
-}
-
-function validarPacotesBlur() {
-    const display = document.getElementById('displayPacotes');
-    const parsed = parseInt(display.value, 10);
-    if (isNaN(parsed) || parsed < 1) {
-        pacotesContador = 1;
-        display.value = 1;
-    } else {
-        pacotesContador = parsed;
-        display.value = parsed;
-    }
-    persistirPacotesLocalStorage();
-}
-
-function persistirPacotesLocalStorage() {
-    if (producaoAtiva) {
-        producaoAtiva.pacotes_refeitos = pacotesContador;
-        localStorage.setItem('repack_producao_ativa', JSON.stringify(producaoAtiva));
-    }
-}
-
 function togglePausaProducao() {
     if (!producaoAtiva) return;
 
@@ -758,7 +634,10 @@ function descartarProducaoAtiva() {
     }
 }
 
-function finalizarProducao() {
+/* ==========================================================================
+   ETAPA 2 -> ETAPA 3: FINALIZAR PRODUÇÃO FÍSICA E ABRIR TELA DE QUANTIDADE
+   ========================================================================== */
+function avancarParaDefinirQuantidade() {
     if (!producaoAtiva) return;
 
     const agora = new Date();
@@ -768,10 +647,102 @@ function finalizarProducao() {
         const inicioPausaMs = new Date(producaoAtiva.pausa_inicio.replace(' ', 'T')).getTime();
         const diffPausaSeg = Math.max(0, Math.round((agora.getTime() - inicioPausaMs) / 1000));
         producaoAtiva.segundos_pausa = (producaoAtiva.segundos_pausa || 0) + diffPausaSeg;
+        producaoAtiva.pausado = false;
+        delete producaoAtiva.pausa_inicio;
     }
 
+    producaoAtiva.data_hora_fim = timestampFim;
+    localStorage.setItem('repack_producao_ativa', JSON.stringify(producaoAtiva));
+
+    if (navigator.vibrate) navigator.vibrate(60);
+
+    // Oculta Momento 2 e abre a tela dedicada para Digitar Quantidade
+    document.getElementById('secaoMomento1').style.display = 'none';
+    document.getElementById('secaoMomento2').style.display = 'none';
+    document.getElementById('secaoMomentoQuantidade').style.display = 'block';
+
+    // Preenche dados do produto na Etapa 3
+    document.getElementById('qtdNomeProduto').innerText = producaoAtiva.produto_nome;
+    document.getElementById('qtdSkuBadge').innerText = 'SKU ' + (producaoAtiva.produto_codigo || '');
+
+    const imgQtd = document.getElementById('qtdFotoProduto');
+    if (imgQtd) {
+        if (producaoAtiva.produto_foto_url) {
+            imgQtd.src = producaoAtiva.produto_foto_url;
+            imgQtd.style.display = 'inline-block';
+        } else {
+            imgQtd.src = '';
+            imgQtd.style.display = 'none';
+        }
+    }
+
+    // Horários de Início e Término
+    const dataObjInicio = new Date(producaoAtiva.data_hora_inicio.replace(' ', 'T'));
+    const horasIni = String(dataObjInicio.getHours()).padStart(2, '0');
+    const minsIni = String(dataObjInicio.getMinutes()).padStart(2, '0');
+    document.getElementById('qtdHoraInicio').innerText = `${horasIni}:${minsIni}`;
+
+    const dataObjFim = new Date(timestampFim.replace(' ', 'T'));
+    const horasFim = String(dataObjFim.getHours()).padStart(2, '0');
+    const minsFim = String(dataObjFim.getMinutes()).padStart(2, '0');
+    document.getElementById('qtdHoraFim').innerText = `${horasFim}:${minsFim}`;
+
+    const inputQtd = document.getElementById('displayPacotesEtapa2');
+    inputQtd.value = pacotesContador || 1;
+    inputQtd.focus();
+    inputQtd.select();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function voltarParaTrabalhoEmAndamento() {
+    document.getElementById('secaoMomentoQuantidade').style.display = 'none';
+    document.getElementById('secaoMomento2').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ==========================================================================
+   ETAPA 3: CONTROLE NUMÉRICO DA QUANTIDADE
+   ========================================================================== */
+function alterarPacotesEtapa2(delta) {
+    const input = document.getElementById('displayPacotesEtapa2');
+    let atual = parseInt(input.value, 10) || 1;
+    let nova = Math.max(1, atual + delta);
+    input.value = nova;
+    pacotesContador = nova;
+    if (navigator.vibrate) navigator.vibrate(25);
+}
+
+function atualizarPacotesEtapa2Digitados(val) {
+    const parsed = parseInt(val, 10);
+    if (!isNaN(parsed) && parsed >= 1) {
+        pacotesContador = parsed;
+    }
+}
+
+function validarPacotesEtapa2Blur() {
+    const input = document.getElementById('displayPacotesEtapa2');
+    const parsed = parseInt(input.value, 10);
+    if (isNaN(parsed) || parsed < 1) {
+        pacotesContador = 1;
+        input.value = 1;
+    } else {
+        pacotesContador = parsed;
+        input.value = parsed;
+    }
+}
+
+/* ==========================================================================
+   ETAPA 3 -> ETAPA 4: AVANÇAR PARA CONFERÊNCIA E CONFIRMAÇÃO
+   ========================================================================== */
+function submeterParaConferencia() {
+    if (!producaoAtiva) return;
+
+    validarPacotesEtapa2Blur();
+
+    const timestampFim = producaoAtiva.data_hora_fim || formatarDataHoraLocal(new Date());
+
     const inicioMs = new Date(producaoAtiva.data_hora_inicio.replace(' ', 'T')).getTime();
-    const fimMs = agora.getTime();
+    const fimMs = new Date(timestampFim.replace(' ', 'T')).getTime();
     const duracaoBruta = Math.max(0, Math.round((fimMs - inicioMs) / 1000));
     const duracaoLiquida = Math.max(0, duracaoBruta - (producaoAtiva.segundos_pausa || 0));
 

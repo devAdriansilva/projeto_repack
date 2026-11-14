@@ -56,9 +56,6 @@ require __DIR__ . '/../layouts/lojinha_header.php';
     <div class="card mb-4 p-3 shadow-sm" style="border: 2px solid #8B5CF6; background: #F5F3FF; border-radius: 14px;">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div class="d-flex align-items-center gap-3">
-                <div style="width: 44px; height: 44px; border-radius: 12px; background: #EDE9FE; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 1.5px solid #C4B5FD;">
-                    👓
-                </div>
                 <div>
                     <div style="font-weight: 800; font-size: 15px; color: #5B21B6; display: flex; align-items: center; gap: 8px;">
                         Controle de Perspectiva da Gestão

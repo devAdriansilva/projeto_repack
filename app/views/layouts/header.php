@@ -171,7 +171,7 @@ if ($operadorAtivoId) {
             </button>
         </div>
         <div style="text-align: center; margin-top: 14px; font-size: 12px; font-weight: 600; color: #94A3B8;">
-            Projeto Repack • <?= APP_VERSION ?>
+            Projeto Repack • <?= APP_VERSION ?> • Desenvolvido por <strong style="color: #64748B;">AdrianSilvaDev</strong>
         </div>
     </div>
 </div>

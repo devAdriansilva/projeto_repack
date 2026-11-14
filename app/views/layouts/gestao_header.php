@@ -84,11 +84,11 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
         }
 
         .navbar-gestao .nav-link {
-            color: #94A3B8 !important;
+            color: #CBD5E1 !important;
             font-weight: 600;
             font-size: 13.5px;
-            padding: 6px 12px;
-            border-radius: 7px;
+            padding: 6px 13px;
+            border-radius: 8px;
             white-space: nowrap;
             display: inline-flex;
             align-items: center;
@@ -96,17 +96,21 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             transition: all 0.15s ease;
             text-decoration: none;
             line-height: 1.4;
+            border: 1.5px solid rgba(255, 255, 255, 0.22);
+            background-color: rgba(255, 255, 255, 0.04);
         }
 
         .navbar-gestao .nav-link:hover {
             color: #FFFFFF !important;
-            background-color: rgba(255, 255, 255, 0.08);
+            background-color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.45);
         }
 
         .navbar-gestao .nav-link.active {
             color: #FFFFFF !important;
             background-color: #2563EB;
-            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.4);
+            border-color: #60A5FA;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.5);
         }
 
         .gestao-container {
@@ -263,22 +267,22 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/lotes') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/lotes">
-                        <span>🏷️</span><span>Lotes</span>
+                        <span>🏷️</span><span>Lotes de Vendas</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/estoque') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/estoque">
-                        <span>🏪</span><span>Estoque</span>
+                        <span>🏪</span><span>Estoque Lojinha</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/bo') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/bo">
-                        <span>📋</span><span>Correção B.O.</span>
+                        <span>📋</span><span>Ajuste B.O.</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/separacao') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/separacao">
-                        <span>📝</span><span>Separação</span>
+                        <span>📝</span><span>Pedidos</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -297,9 +301,15 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                         <span>Lojinha</span>
                     </a>
 
-                    <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm text-nowrap flex-grow-1 flex-xl-grow-0" style="background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.35); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 11px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" title="Retornar ao Terminal do Operador">
-                        <span style="font-size: 14px;">🏭</span>
-                        <span>Bancada</span>
+                    <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm text-nowrap flex-grow-1 flex-xl-grow-0" style="background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1.5px solid rgba(16, 185, 129, 0.45); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 12px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.2s;" title="Retornar à Bancada de Repack">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                            <path d="M2 10h4v4H2z" fill="currentColor" fill-opacity="0.3"/>
+                            <path d="M6 8h10a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6"/>
+                            <path d="M12 16v4a2 2 0 0 1-2 2H9a1 1 0 0 1-1-1v-5"/>
+                            <path d="M1 9c-.5.5-.5 1.5 0 2" stroke="#F59E0B" stroke-width="2"/>
+                            <path d="M1 13c-.5.5-.5 1.5 0 2" stroke="#EF4444" stroke-width="2"/>
+                        </svg>
+                        <span>Repack</span>
                     </a>
                 </div>
 
