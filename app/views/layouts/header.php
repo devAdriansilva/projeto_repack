@@ -68,9 +68,13 @@ if ($operadorAtivoId) {
 
 <!-- Barra Superior Minimalista do Quiosque -->
 <header class="quiosque-header" style="justify-content: space-between; align-items: center; padding: 6px 16px; min-height: 52px; background-color: var(--surface); border-bottom: 2px solid var(--border);">
-    <!-- Identificador Discreto de Versão -->
-    <div style="font-size: 13px; font-weight: 700; color: #94A3B8; letter-spacing: 0.5px; user-select: none;">
-        REPACK <span style="font-weight: 600; font-size: 11px; color: #64748B; background: #F1F5F9; padding: 2px 6px; border-radius: 6px; margin-left: 4px; border: 1px solid #E2E8F0;"><?= APP_VERSION ?></span>
+    <!-- Identificador Discreto de Versão e Marca do Desenvolvedor -->
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #94A3B8; letter-spacing: 0.5px; user-select: none;">
+        <span>REPACK <span style="font-weight: 600; font-size: 11px; color: #64748B; background: #F1F5F9; padding: 2px 6px; border-radius: 6px; margin-left: 2px; border: 1px solid #E2E8F0;"><?= APP_VERSION ?></span></span>
+        <span style="color: #CBD5E1;">•</span>
+        <span style="font-size: 12px; font-weight: 600; color: #64748B;">
+            Dev: <strong style="color: #2563EB; font-weight: 800;">AdrianSilvaDev</strong>
+        </span>
     </div>
 
     <!-- Botão de Configurações / Gestão com Ícone Azul de Alta Visibilidade -->

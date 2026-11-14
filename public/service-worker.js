@@ -3,7 +3,7 @@
  * Baseado estritamente em docs/FSD.md e AGENTS.md
  */
 
-const CACHE_NAME = 'repack-pwa-v1.70';
+const CACHE_NAME = 'repack-pwa-v1.71';
 
 // Determina dinamicamente o caminho base a partir do escopo registrado do Repack
 const SCOPE_URL = new URL(self.registration.scope);

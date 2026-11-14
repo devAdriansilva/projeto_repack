@@ -869,6 +869,15 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.70` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-075 (14/11/2026):** Inclusão da Marca Digital do Desenvolvedor na Interface Inicial (Quiosque/Home do Operador).
+    - **Header Superior do Quiosque (`app/views/layouts/header.php`):**
+      - Adicionada a assinatura de desenvolvedor diretamente na barra superior ao lado do identificador de versão: `REPACK [v1.71] • Dev: AdrianSilvaDev`, com destaque azul institucional `#2563EB` em peso 800.
+    - **Rodapé da Home do Operador (`app/views/operador/home.php`):**
+      - Inserida linha de assinatura no rodapé inferior da tela inicial: `Projeto Repack • Desenvolvido por AdrianSilvaDev`, visível imediatamente tanto em smartphones quanto em desktops sem interferir no dimensionamento vertical dos botões.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.71` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

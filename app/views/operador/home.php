@@ -222,6 +222,11 @@ require_once __DIR__ . '/../layouts/header.php';
         </a>
     </div>
 
+    <!-- Assinatura da Marca Digital do Desenvolvedor -->
+    <div style="text-align: center; font-size: 11px; font-weight: 700; color: #94A3B8; letter-spacing: 0.5px; padding-top: 4px; padding-bottom: 2px; flex-shrink: 0; user-select: none;">
+        Projeto Repack • Desenvolvido por <strong style="color: #475569; font-weight: 800;">AdrianSilvaDev</strong>
+    </div>
+
 </div>
 
 <script>
