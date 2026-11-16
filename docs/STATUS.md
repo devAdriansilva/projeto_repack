@@ -993,6 +993,16 @@
     - **Versionamento:**
       - Versão da aplicação incrementada para `v1.78` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-082 (16/11/2026):** Eliminação de Auto-Preenchimento Intrusivo por Prefixo de SKU em Telas Operacionais.
+    - **Diagnóstico da Falha:**
+      - Quando o operador digitava os primeiros dígitos de um código (ex: `89` com intuito de digitar `8977`), se existisse apenas um SKU no catálogo iniciando com aquele prefixo (ex: `899599`), o script executava auto-seleção antecipada (`matchesSku.length === 1`) e sobrescrevia forçadamente o input com o código completo, sequestrando o campo e impedindo a digitação do código real desejado.
+    - **Correção Implementada (`cronometro.php` e `avaria_passo1.php`):**
+      - **Validação de Código Exato Obrigatória:** O produto agora só é auto-selecionado diretamente se o código digitado for 100% idêntico e completo (`p.codigo.toLowerCase() === termo`).
+      - **Sugestões Não Intrusivas:** Quando o operador digita um prefixo parcial numérico, o sistema nunca mais altera o valor do campo de texto; as correspondências parciais aparecem estritamente na lista de sugestões logo abaixo.
+      - **Preenchimento por Toque Consciente:** O campo de código só recebe o valor do SKU se o operador clicar expressamente em um item da lista de sugestões com o dedo, garantindo digitação fluida e desimpedida no teclado numérico.
+    - **Versionamento:**
+      - Versão da aplicação incrementada para `v1.79` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

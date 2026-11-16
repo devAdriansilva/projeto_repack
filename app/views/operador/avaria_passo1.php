@@ -247,58 +247,55 @@ function processarEntradaSku(valor) {
         return;
     }
 
-    // 1. Busca exata por código SKU
+    // 1. Busca exata por código SKU (só auto-seleciona se o código for 100% completo e idêntico)
     const matchExato = PRODUTOS.find(p => p.codigo.toLowerCase() === termo);
     if (matchExato) {
-        selecionarProdutoConfirmado(matchExato);
+        selecionarProdutoConfirmado(matchExato, false);
         cardErro.style.display = 'none';
         wrapperSugestoes.style.display = 'none';
         return;
     }
 
-    // Se é puramente numérico e tem 3+ dígitos, tenta prefixo de SKU
+    // 2. Busca parcial por prefixo de SKU (JAMAIS auto-completa o input para não sequestrar a digitação)
     const apenasNumeros = /^\d+$/.test(termo);
     if (apenasNumeros) {
+        desmarcarProduto();
+        cardOk.style.display = 'none';
+        input.classList.remove('sucesso-encontrado');
+
         const matchesSku = PRODUTOS.filter(p => p.codigo.startsWith(termo));
-        if (matchesSku.length === 1) {
-            selecionarProdutoConfirmado(matchesSku[0]);
-            cardErro.style.display = 'none';
-            wrapperSugestoes.style.display = 'none';
-            return;
-        } else if (matchesSku.length > 1 && matchesSku.length <= 5) {
-            desmarcarProduto();
-            cardOk.style.display = 'none';
+        if (matchesSku.length > 0 && matchesSku.length <= 6) {
             cardErro.style.display = 'none';
             exibirSugestoes(matchesSku);
             return;
-        } else if (termo.length >= 4) {
-            // Digitou 4+ números e não bateu com nenhum SKU
-            desmarcarProduto();
-            cardOk.style.display = 'none';
+        } else if (matchesSku.length === 0 && termo.length >= 4) {
+            // Digitou 4+ números e não bate com nenhum SKU nem prefixo
             wrapperSugestoes.style.display = 'none';
             document.getElementById('codigoNaoEncontrado').innerText = valor;
             cardErro.style.display = 'block';
-            input.classList.remove('sucesso-encontrado');
+            return;
+        } else {
+            wrapperSugestoes.style.display = 'none';
+            cardErro.style.display = 'none';
             return;
         }
     }
 
-    // 2. Busca por texto (Nome do produto)
+    // 3. Busca por texto (Nome do produto)
     if (!apenasNumeros && termo.length >= 2) {
+        desmarcarProduto();
+        cardOk.style.display = 'none';
+        input.classList.remove('sucesso-encontrado');
+
         const matchesNome = PRODUTOS.filter(p => p.nome.toLowerCase().includes(termo)).slice(0, 6);
         if (matchesNome.length > 0) {
-            desmarcarProduto();
-            cardOk.style.display = 'none';
             cardErro.style.display = 'none';
             exibirSugestoes(matchesNome);
             return;
         } else {
-            desmarcarProduto();
-            cardOk.style.display = 'none';
             wrapperSugestoes.style.display = 'none';
             document.getElementById('codigoNaoEncontrado').innerText = valor;
             cardErro.style.display = 'block';
-            input.classList.remove('sucesso-encontrado');
             return;
         }
     }
@@ -311,7 +308,7 @@ function processarEntradaSku(valor) {
     input.classList.remove('sucesso-encontrado');
 }
 
-function selecionarProdutoConfirmado(p) {
+function selecionarProdutoConfirmado(p, atualizarInput = true) {
     produtoAtivo = p;
     document.getElementById('inputProdutoId').value = p.id;
     document.getElementById('displayNomeProduto').innerText = p.nome;
@@ -334,7 +331,9 @@ function selecionarProdutoConfirmado(p) {
 
     const input = document.getElementById('inputCodigoSku');
     input.classList.add('sucesso-encontrado');
-    input.value = p.codigo;
+    if (atualizarInput) {
+        input.value = p.codigo;
+    }
     document.getElementById('btnLimparSku').style.display = 'flex';
     persistirBoLocalStorage();
 }
@@ -360,7 +359,7 @@ function exibirSugestoes(lista) {
         btn.type = 'button';
         btn.className = 'item-sugestao-sku';
         btn.onclick = () => {
-            selecionarProdutoConfirmado(p);
+            selecionarProdutoConfirmado(p, true);
             wrapper.style.display = 'none';
         };
 
