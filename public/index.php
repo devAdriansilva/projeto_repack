@@ -293,6 +293,8 @@ switch ($route) {
 
     case '/api/produtividade/salvar':
     case '/api/produtividade/salvar.php':
+    case '/api/produtividade/salvar-lote':
+    case '/api/produtividade/salvar-lote.php':
         (new ProdutividadeController())->salvar();
         break;
 

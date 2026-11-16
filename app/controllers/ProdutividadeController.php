@@ -117,6 +117,14 @@ class ProdutividadeController
                 $dados['usuario_id'] = (int)$_SESSION['operador_id'];
             }
 
+            // Se for envio em lote com múltiplos itens
+            if (!empty($dados['itens']) && is_array($dados['itens'])) {
+                $resultado = ApontamentoProdutividade::salvarLote($dados);
+                unset($_SESSION['lote_producao_temp'], $_SESSION['cronometro_temp'], $_SESSION['producao_ativa']);
+                echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
             $resultado = ApontamentoProdutividade::salvar($dados);
             unset($_SESSION['cronometro_temp'], $_SESSION['producao_ativa']);
             echo json_encode($resultado, JSON_UNESCAPED_UNICODE);
@@ -137,6 +145,14 @@ class ProdutividadeController
                 'error' => (defined('APP_ENV') && APP_ENV === 'development') ? $e->getMessage() : 'Erro interno.'
             ], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    /**
+     * Endpoint API: /api/produtividade/salvar-lote
+     */
+    public function salvarLote(): void
+    {
+        $this->salvar();
     }
 
     /**

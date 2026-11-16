@@ -966,6 +966,24 @@
       - Suítes regressivas `tests/test_ultima_entrada_e_espelho.php` (10/10) e `tests/test_importacao_csv_bo.php` (19/19) validadas com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.75` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-081 (16/11/2026):** Reformulação da Produtividade para Lançamento Consolidado por Lote/Turno Multi-Itens com Rateio Proporcional Automático.
+    - **Contexto Operacional e Justificativa de Chão de Fábrica:**
+      - Testes práticos no dia a dia da bancada evidenciaram que interromper o trabalho manual para iniciar e parar o cronômetro produto a produto consumia tempo desnecessário e gerava fadiga cognitiva de troca de contexto constante.
+    - **Nova Interface de Lote/Turno (`app/views/operador/cronometro.php`):**
+      - **Bloco de Período/Turno:** Seletores rápidos de turno (`☀️ MANHÃ (08:00 - 12:00)`, `⛅ TARDE (13:00 - 17:00)` e `⚙️ OUTRO HORÁRIO`) com cálculo automático e dinâmico da duração total do lote.
+      - **Comanda Digital Multi-Itens:** Campo de código SKU gigante com reconhecimento instantâneo por código/nome, contador de quantidade de pacotes e botão `➕ ADICIONAR AO LOTE`.
+      - **Lista Dinâmica de Itens Reembalados:** Exibição dos produtos incluídos, botão de exclusão individual `✕`, somatório total de pacotes e cálculo do tempo médio por pacote em tempo real (ex: `6 min 15 s / pct`).
+      - **Persistência de Rascunho:** Salvamento contínuo em `localStorage` (`repack_lote_ativo`) com auto-restauração imediata se a tela for fechada e badge `⏸ EM ANDAMENTO` na Home.
+    - **Conferência de Dupla Confirmação (`app/views/operador/cronometro_resumo.php`):**
+      - Cartão de resumo consolidado com período trabalhado, duração total, volume total reembalado, tempo médio por pacote e relação completa dos itens com seus pacotes.
+      - Botões monumentais de 140px: `CORRIGIR` (retorna para ajustar o lote) e `CONFIRMAR` (gravação com feedback).
+    - **Rateio Matemático Proporcional no Backend (`app/models/ApontamentoProdutividade.php` e `ProdutividadeController.php`):**
+      - Método `ApontamentoProdutividade::salvarLote()` executado sob transação atômica (`PDO::beginTransaction`), calculando o rateio exato da duração total proporcionalmente à quantidade de pacotes de cada item.
+      - Preservação integral das métricas de `duracao_segundos`, `data_hora_inicio` e `data_hora_fim` em `apontamentos_produtividade`, mantendo 100% de compatibilidade retroativa com relatórios e dashboards da gestão.
+      - Nova rota de API `/api/produtividade/salvar-lote` com compatibilização no endpoint `/api/produtividade/salvar`.
+    - **Versionamento:**
+      - Versão da aplicação incrementada para `v1.76` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

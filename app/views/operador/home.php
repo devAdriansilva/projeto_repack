@@ -231,16 +231,26 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-    // 1. Monitora rascunho de Produção Ativa
+    // 1. Monitora rascunho de Produção (Lote ou Unitária)
+    const localLote = localStorage.getItem('repack_lote_ativo');
     const localProd = localStorage.getItem('repack_producao_ativa');
     const badgeProd = document.getElementById('badgeHomeProducaoAtiva');
-    if (localProd && badgeProd) {
-        try {
-            const dataProd = JSON.parse(localProd);
-            if (dataProd && dataProd.produto_id) {
-                badgeProd.style.display = 'inline-flex';
-            }
-        } catch(e) {}
+    if (badgeProd) {
+        if (localLote) {
+            try {
+                const dataLote = JSON.parse(localLote);
+                if (dataLote && Array.isArray(dataLote.itens) && dataLote.itens.length > 0) {
+                    badgeProd.style.display = 'inline-flex';
+                }
+            } catch(e) {}
+        } else if (localProd) {
+            try {
+                const dataProd = JSON.parse(localProd);
+                if (dataProd && dataProd.produto_id) {
+                    badgeProd.style.display = 'inline-flex';
+                }
+            } catch(e) {}
+        }
     }
 
     // 2. Monitora rascunho de B.O. Ativo (persistência paralela em espera)

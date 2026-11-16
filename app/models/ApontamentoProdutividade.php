@@ -95,6 +95,146 @@ class ApontamentoProdutividade
     }
 
     /**
+     * Salva um lote consolidado de múltiplos produtos em um período/turno,
+     * calculando o rateio proporcional de duração entre os itens.
+     * @param array $dadosLote
+     * @return array
+     */
+    public static function salvarLote(array $dadosLote): array
+    {
+        $usuarioId = (int)($dadosLote['usuario_id'] ?? 0);
+        $dataInicio = (string)($dadosLote['data_hora_inicio'] ?? '');
+        $dataFim = (string)($dadosLote['data_hora_fim'] ?? '');
+        $itens = (array)($dadosLote['itens'] ?? []);
+        $origem = ($dadosLote['origem_sincronizacao'] ?? 'online') === 'offline' ? 'offline' : 'online';
+
+        if ($usuarioId <= 0) {
+            throw new InvalidArgumentException("Operador inválido.");
+        }
+        if (empty($dataInicio) || empty($dataFim)) {
+            throw new InvalidArgumentException("Horários de início e término são obrigatórios.");
+        }
+        if (empty($itens)) {
+            throw new InvalidArgumentException("Nenhum item informado para o lote.");
+        }
+
+        $inicioTs = strtotime($dataInicio);
+        $fimTs = strtotime($dataFim);
+
+        if ($inicioTs === false || $fimTs === false || $fimTs <= $inicioTs) {
+            throw new InvalidArgumentException("Intervalo de tempo inválido para o lote.");
+        }
+
+        $duracaoTotalSegundos = (int)($fimTs - $inicioTs);
+
+        // Valida e calcula soma total de pacotes do lote
+        $totalPacotes = 0;
+        foreach ($itens as $item) {
+            $qtd = (int)($item['pacotes_refeitos'] ?? 0);
+            if ($qtd <= 0) {
+                continue;
+            }
+            $totalPacotes += $qtd;
+        }
+
+        if ($totalPacotes <= 0) {
+            throw new InvalidArgumentException("O lote deve conter pelo menos 1 pacote reembalado.");
+        }
+
+        $tempoMedioPorPacote = (float)($duracaoTotalSegundos / $totalPacotes);
+
+        $pdo = Database::getConnection();
+        $pdo->beginTransaction();
+
+        try {
+            $idsCriados = [];
+            $tempoAcumulado = $inicioTs;
+            $segundosAlocados = 0;
+            $totalItens = count($itens);
+            $contador = 0;
+
+            foreach ($itens as $item) {
+                $contador++;
+                $produtoId = (int)($item['produto_id'] ?? 0);
+                $pacotes = (int)($item['pacotes_refeitos'] ?? 0);
+
+                if ($produtoId <= 0 || $pacotes <= 0) {
+                    continue;
+                }
+
+                // Ajusta arredondamento no último item para fechar a duração total precisa
+                if ($contador === $totalItens) {
+                    $duracaoItem = $duracaoTotalSegundos - $segundosAlocados;
+                } else {
+                    $duracaoItem = (int)round(($pacotes / $totalPacotes) * $duracaoTotalSegundos);
+                    $segundosAlocados += $duracaoItem;
+                }
+
+                if ($duracaoItem < 1) {
+                    $duracaoItem = 1;
+                }
+
+                $itemInicioTs = $tempoAcumulado;
+                $itemFimTs = $itemInicioTs + $duracaoItem;
+                $tempoAcumulado = $itemFimTs;
+
+                $stmt = $pdo->prepare("
+                    INSERT INTO apontamentos_produtividade (
+                        produto_id,
+                        usuario_id,
+                        data_hora_inicio,
+                        data_hora_fim,
+                        pacotes_refeitos,
+                        duracao_segundos,
+                        origem_sincronizacao,
+                        created_at
+                    ) VALUES (
+                        :produto_id,
+                        :usuario_id,
+                        :data_hora_inicio,
+                        :data_hora_fim,
+                        :pacotes_refeitos,
+                        :duracao_segundos,
+                        :origem_sincronizacao,
+                        :created_at
+                    )
+                ");
+
+                $createdAt = !empty($dadosLote['created_at']) 
+                    ? date('Y-m-d H:i:s', strtotime($dadosLote['created_at'])) 
+                    : date('Y-m-d H:i:s');
+
+                $stmt->execute([
+                    'produto_id' => $produtoId,
+                    'usuario_id' => $usuarioId,
+                    'data_hora_inicio' => date('Y-m-d H:i:s', $itemInicioTs),
+                    'data_hora_fim' => date('Y-m-d H:i:s', $itemFimTs),
+                    'pacotes_refeitos' => $pacotes,
+                    'duracao_segundos' => $duracaoItem,
+                    'origem_sincronizacao' => $origem,
+                    'created_at' => $createdAt
+                ]);
+
+                $idsCriados[] = (int)$pdo->lastInsertId();
+            }
+
+            $pdo->commit();
+
+            return [
+                'status' => 'success',
+                'ids' => $idsCriados,
+                'total_pacotes' => $totalPacotes,
+                'duracao_total_segundos' => $duracaoTotalSegundos,
+                'tempo_medio_segundos' => $tempoMedioPorPacote,
+                'message' => 'Lote de produtividade registrado com sucesso.'
+            ];
+        } catch (\Throwable $e) {
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
      * Sincronização em lote de produtividade offline
      * @param array $apontamentos
      * @return array
