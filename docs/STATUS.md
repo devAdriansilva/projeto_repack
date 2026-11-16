@@ -1041,6 +1041,18 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.81` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-085 (16/11/2026):** Geração de ICO Binário Nativo para Windows Explorer e Calibração Estrita do PWA Manifest sem Query Strings.
+    - **Diagnóstico da Persistência do Ícone Antigo:**
+      - No Windows: o arquivo `favicon.ico` anterior era um PNG renomeado, o que impedia o Windows Explorer de carregá-lo na caixa de diálogo nativa "Alterar Ícone" de atalhos `.lnk`.
+      - No Android: a presença de query strings (`?v=1.75`) no campo `src` do `manifest.json` e a chave composta `purpose: "any maskable"` levavam motores PWA do Chromium a rejeitar o ícone atualizado e recorrer ao cache em disco anterior do WebAPK.
+    - **Solução Implementada:**
+      - Geração de binário `.ico` 100% legítimo com cabeçalho ICONDIR padrão Windows em `public/favicon.ico` e `public/assets/img/favicon.ico`.
+      - Reestruturação de `public/manifest.json` com rotas limpas e entradas dedicadas e separadas para `purpose: "any"` e `purpose: "maskable"`.
+      - Elevação do Service Worker para `repack-pwa-v1.82` forçando o descarte (`caches.delete`) de caches residuais de ícones antigos.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) aprovada com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.82` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
