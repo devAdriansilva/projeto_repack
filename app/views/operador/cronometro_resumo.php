@@ -56,9 +56,9 @@ foreach ($itens as $it) {
 }
 
 // Formatação amigável de duração
-$horas = Math.floor($duracaoTotalSegundos / 3600);
-$minutos = Math.floor(($duracaoTotalSegundos % 3600) / 60);
-$duracaoFormatada = sprintf('%dh %02dmin', (int)($duracaoTotalSegundos / 3600), (int)(($duracaoTotalSegundos % 3600) / 60));
+$horas = (int)floor($duracaoTotalSegundos / 3600);
+$minutos = (int)floor(($duracaoTotalSegundos % 3600) / 60);
+$duracaoFormatada = sprintf('%dh %02dmin', $horas, $minutos);
 
 $segPorPacote = ($totalPacotes > 0) ? (int)round($duracaoTotalSegundos / $totalPacotes) : 0;
 $minMedio = (int)($segPorPacote / 60);
@@ -121,19 +121,31 @@ require_once __DIR__ . '/../layouts/header.php';
             PRODUTOS DO LOTE (<?= count($itens) ?> ITENS):
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 10px; max-height: 380px; overflow-y: auto;">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-height: 420px; overflow-y: auto;">
             <?php foreach ($itens as $item): ?>
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; border: 2.5px solid #CBD5E1; border-radius: 16px; padding: 12px 18px;">
-                    <div style="flex: 1; min-width: 0; text-align: left;">
-                        <span style="background: #0F172A; color: #FFFFFF; font-size: 14px; font-weight: 900; padding: 2px 6px; border-radius: 6px;">
-                            SKU <?= sanitize_html((string)$item['codigo']) ?>
-                        </span>
-                        <div style="font-size: 19px; font-weight: 900; color: #0F172A; line-height: 1.2; margin-top: 4px; word-break: break-word;">
-                            <?= sanitize_html((string)$item['nome']) ?>
+                <div style="display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; border: 2.5px solid #CBD5E1; border-radius: 18px; padding: 12px 18px; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; text-align: left;">
+                        <?php if (!empty($item['foto_url'])): ?>
+                            <img src="<?= sanitize_html($item['foto_url']) ?>" style="width: 58px; height: 58px; object-fit: contain; border-radius: 12px; border: 2px solid #CBD5E1; background: #FFF; padding: 2px; flex-shrink: 0;" alt="Foto">
+                        <?php else: ?>
+                            <div style="width: 58px; height: 58px; border-radius: 12px; background: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0;">📦</div>
+                        <?php endif; ?>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                                <span style="background: #0F172A; color: #FFFFFF; font-size: 14px; font-weight: 900; padding: 2px 8px; border-radius: 6px;">
+                                    SKU <?= sanitize_html((string)$item['codigo']) ?>
+                                </span>
+                                <span style="font-size: 13px; color: #64748B; font-weight: 700;">
+                                    <?= sanitize_html((string)($item['embalagem'] ?? '')) ?>
+                                </span>
+                            </div>
+                            <div style="font-size: 20px; font-weight: 900; color: #0F172A; line-height: 1.2; word-break: break-word;">
+                                <?= sanitize_html((string)$item['nome']) ?>
+                            </div>
                         </div>
                     </div>
-                    <div style="background: #ECFDF5; border: 2px solid #10B981; border-radius: 12px; padding: 4px 14px; text-align: center; margin-left: 12px;">
-                        <span style="font-size: 24px; font-weight: 900; color: #065F46;"><?= (int)$item['pacotes'] ?></span>
+                    <div style="background: #ECFDF5; border: 2.5px solid #10B981; border-radius: 14px; padding: 6px 16px; text-align: center; flex-shrink: 0;">
+                        <span style="font-size: 26px; font-weight: 900; color: #065F46;"><?= (int)$item['pacotes'] ?></span>
                         <span style="font-size: 13px; font-weight: 800; color: #059669; display: block; margin-top: -3px;">pcts</span>
                     </div>
                 </div>

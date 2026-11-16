@@ -981,8 +981,13 @@
       - Método `ApontamentoProdutividade::salvarLote()` executado sob transação atômica (`PDO::beginTransaction`), calculando o rateio exato da duração total proporcionalmente à quantidade de pacotes de cada item.
       - Preservação integral das métricas de `duracao_segundos`, `data_hora_inicio` e `data_hora_fim` em `apontamentos_produtividade`, mantendo 100% de compatibilidade retroativa com relatórios e dashboards da gestão.
       - Nova rota de API `/api/produtividade/salvar-lote` com compatibilização no endpoint `/api/produtividade/salvar`.
+    - **Harmonização Visual e Correções Ergonômicas / Runtime:**
+      - **Resolução do Erro Fatal de Resumo:** Correção da chamada de arredondamento em `cronometro_resumo.php`, substituindo o identificador Javascript `Math.floor()` pela função nativa do PHP `(int)floor()`.
+      - **Alinhamento Horizontal Inquebrável (`[-] [ 1 ] [+]`):** O seletor de pacotes agora utiliza container com `flex-direction: row !important; flex-wrap: nowrap !important;` e botões com `clamp(85px, 24vw, 115px)` perfeitamente proporcionais, impedindo que quebrem verticalmente em smartphones Android de qualquer resolução.
+      - **Exibição Monumental da Foto do Produto:** Inclusão de elemento `<img>` dinâmico (`#imgFotoProduto`) de 320px de altura no cartão de produto identificado (`#cardConfirmacaoSku`), renderizando a garrafa/lata no momento em que o código SKU é bipado/digitado e também na lista consolidada do lote e tela de conferência.
+      - **Harmonia do Seletor de Turno:** Substituição dos 3 botões espremidos por 2 grandes botões de alto impacto (`☀️ MANHÃ (08:00 às 12:00)` e `⛅ TARDE (13:00 às 17:00)`) com fontes nítidas de 30px, além de gaveta expansível para `⚙️ OUTRO HORÁRIO / PERSONALIZAR`.
     - **Versionamento:**
-      - Versão da aplicação incrementada para `v1.76` em `app/config/config.php` e `public/service-worker.js`.
+      - Versão da aplicação incrementada para `v1.77` em `app/config/config.php` e `public/service-worker.js`.
 
 ---
 
