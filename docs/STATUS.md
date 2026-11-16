@@ -940,6 +940,32 @@
         - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
         - Versão da aplicação incrementada para `v1.74` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-080 (16/11/2026):** Unificação de Estoque na Lojinha via SKU Acumulador / Canonical para Embalagens Promocionais e Multipack.
+    - **Contexto e Regra de Negócio:**
+      - Produtos idênticos vendidos em embalagens normais e promocionais (ex: Cerveja Skol Lata 350ml com SKU `9068` vs Multipack com SKU `34608`) precisavam ter o registro de quebra preservado por SKU de origem (para auditoria contábil e fiscal precisa de perdas), mas na Lojinha não deveriam fragmentar o estoque nem gerar redundâncias na vitrine para o colaborador.
+    - **Banco de Dados (Migration 009 - `database/migrations/009_sku_acumulador_lojinha.sql`):**
+      - Adição da coluna `produto_pai_id INT NULL DEFAULT NULL` na tabela `produtos`, com foreign key auto-referencial (`fk_produtos_produto_pai`).
+      - Vinculação inicial dos pares clássicos:
+        - `34608` (Skol Lata Multipack) -> `9068` (Skol Lata 350ml)
+        - `33820` (Brahma Chopp Multipack) -> `9069` (Brahma Chopp Lata 350ml)
+        - `34027` (Guaraná Antarctica M. Pack) -> `9084` (Guaraná Antarctica Lata 350ml)
+        - `34320` (Guaraná Zero M. Pack) -> `9085` (Guaraná Diet Lata 350ml)
+      - Consolidação de saldos residuais preexistentes de produtos filhos para seus respectivos pais em `estoque_lojinha`.
+    - **Backend e Models (`app/models/Produto.php`, `ApontamentoBO.php` e `EstoqueLojinha.php`):**
+      - `Produto::obterIdAcumulador(int $produtoId)`: resolve dinamicamente se o produto possui produto pai/acumulador, retornando o ID do pai ou o próprio ID caso seja um item principal.
+      - `Produto::listarFilhosAcumulados(int $produtoPaiId)` e `Produto::vincularProdutoPai(int $filhoId, ?int $paiId)`: suporta gerenciamento e migração atômica de saldos residuais.
+      - `ApontamentoBO::salvar()` e `processarImportacaoCsv()`: preservam o SKU original no registro contábil de B.O. (`apontamentos_bo`), mas creditam o saldo da Lojinha no SKU acumulador (`Produto::obterIdAcumulador($produtoId)`).
+      - `ApontamentoBO::corrigir()`: retificações de B.O. ajustam o saldo no SKU acumulador correspondente.
+      - `ApontamentoBO::analisarPreviaCsv()`: a prévia analítica da planilha agrega automaticamente os SKUs multipack sob o SKU principal.
+      - `EstoqueLojinha::listarProdutosVitrine()` e `listarVisaoGeral()`: filtrados estritamente com `WHERE p.produto_pai_id IS NULL`, ocultando variações multipack da vitrine de compra e exibindo o saldo consolidado no item principal.
+    - **Interface da Gestão (`app/views/gestao/`):**
+      - **Catálogo de Produtos (`produtos.php`):** Adicionado seletor de "SKU Acumulador na Lojinha (Produto Principal)" no modal de cadastro/edição, badges visuais na tabela indicando relações pai/filho e novo botão de filtro rápido `🔗 Multipacks / Variações`.
+      - **Gestão de Estoque (`estoque.php`):** Exibição de badge informativo na tabela de saldos (`📦 Centraliza: [SKUs multipack]`) e tag informativa na prévia da importação de B.O. via Excel/CSV.
+    - **Testes & Versionamento:**
+      - Suíte dedicada `tests/test_sku_acumulador.php` com 15/15 asserções aprovadas.
+      - Suítes regressivas `tests/test_ultima_entrada_e_espelho.php` (10/10) e `tests/test_importacao_csv_bo.php` (19/19) validadas com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.75` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

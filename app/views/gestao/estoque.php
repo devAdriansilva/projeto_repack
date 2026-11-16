@@ -106,6 +106,13 @@ require __DIR__ . '/../layouts/gestao_header.php';
                             <td>
                                 <strong><?= sanitize_html($item['nome']) ?></strong>
                                 <div class="text-muted small"><?= sanitize_html($item['codigo']) ?> &bull; <?= sanitize_html($item['pacote_padrao']) ?></div>
+                                <?php if (!empty($item['skus_acumulados'])): ?>
+                                    <div class="mt-1">
+                                        <span class="badge bg-light text-primary border" style="font-size: 11px; font-weight: 700;" title="Este produto centraliza o saldo de embalagens promocionais">
+                                            📦 Centraliza: <?= sanitize_html(str_replace(';;;', ', ', $item['skus_acumulados'])) ?>
+                                        </span>
+                                    </div>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <strong style="font-size: 17px;"><?= (int)$item['quantidade_total'] ?></strong> un
@@ -1027,9 +1034,16 @@ function renderizarPreviaCsv(dados) {
     } else {
         dados.produtos_lojinha.forEach(p => {
             const tr = document.createElement('tr');
+            const tagAcumulado = (p.skus_acumulados && p.skus_acumulados.length > 0)
+                ? `<div class="small text-primary fw-bold">📦 Centraliza Multipack: ${escapeHtml(p.skus_acumulados.join(', '))}</div>`
+                : '';
+
             tr.innerHTML = `
                 <td><code>${escapeHtml(p.codigo)}</code></td>
-                <td><strong>${escapeHtml(p.nome)}</strong></td>
+                <td>
+                    <strong>${escapeHtml(p.nome)}</strong>
+                    ${tagAcumulado}
+                </td>
                 <td class="text-center">${p.estoque_atual} un</td>
                 <td class="text-center text-success"><strong style="font-size: 16px;">+${p.quantidade}</strong></td>
                 <td class="text-center"><span class="badge bg-success" style="font-size: 14px;">${p.novo_estoque} un</span></td>

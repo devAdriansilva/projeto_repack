@@ -302,6 +302,7 @@ class GestaoController
         $nome = trim((string)($_POST['nome'] ?? ''));
         $pacotePadrao = trim((string)($_POST['pacote_padrao'] ?? 'Unidade'));
         $ativo = isset($_POST['ativo']) ? 1 : 0;
+        $produtoPaiId = !empty($_POST['produto_pai_id']) ? (int)$_POST['produto_pai_id'] : null;
 
         // Tratamento de upload de foto (docs/FSD.md Seção 21)
         $fotoUrl = null;
@@ -315,6 +316,7 @@ class GestaoController
                 'codigo' => $codigo,
                 'nome' => $nome,
                 'pacote_padrao' => $pacotePadrao,
+                'produto_pai_id' => $produtoPaiId,
                 'ativo' => $ativo
             ];
             if ($fotoUrl !== null) {
@@ -325,12 +327,38 @@ class GestaoController
 
             LogSistema::registrar('INFO', "Produto {$codigo} - {$nome} salvo com sucesso", [
                 'produto_id' => $produtoId,
+                'produto_pai_id' => $produtoPaiId,
                 'gestor_id' => $_SESSION['usuario_id']
             ]);
 
             $_SESSION['flash_sucesso'] = "Produto '{$nome}' salvo com sucesso!";
         } catch (\Throwable $e) {
             $_SESSION['flash_erro'] = "Erro ao salvar produto: " . $e->getMessage();
+        }
+
+        header('Location: ' . APP_URL . '/gestao/produtos');
+        exit;
+    }
+
+    /**
+     * Vincula ou desvincula rapidamente um produto multipack/filho a um produto acumulador
+     */
+    public function vincularAcumulador(): void
+    {
+        $this->validarCsrfOuAbortar();
+        $filhoId = (int)($_POST['filho_id'] ?? 0);
+        $paiId = !empty($_POST['pai_id']) ? (int)$_POST['pai_id'] : null;
+
+        try {
+            Produto::vincularProdutoPai($filhoId, $paiId);
+            LogSistema::registrar('INFO', "SKU #{$filhoId} vinculado ao acumulador #" . ($paiId ?: 'nenhum'), [
+                'filho_id' => $filhoId,
+                'pai_id' => $paiId,
+                'gestor_id' => $_SESSION['usuario_id']
+            ]);
+            $_SESSION['flash_sucesso'] = "Vínculo de SKU acumulador atualizado com sucesso!";
+        } catch (\Throwable $e) {
+            $_SESSION['flash_erro'] = "Erro ao vincular SKU: " . $e->getMessage();
         }
 
         header('Location: ' . APP_URL . '/gestao/produtos');

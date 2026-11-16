@@ -54,6 +54,9 @@ foreach ($produtos as $p) {
             <button type="button" class="btn btn-sm btn-outline-warning btn-filtro-prod" data-filtro="inativos" onclick="definirFiltro('inativos', this)">
                 Inativos
             </button>
+            <button type="button" class="btn btn-sm btn-outline-info btn-filtro-prod" data-filtro="multipacks" onclick="definirFiltro('multipacks', this)">
+                🔗 Multipacks / Variações
+            </button>
         </div>
     </div>
 </div>
@@ -86,7 +89,8 @@ foreach ($produtos as $p) {
                         <tr class="linha-produto" 
                             data-ativo="<?= $p['ativo'] ? '1' : '0' ?>"
                             data-saldo="<?= $disp ?>"
-                            data-termo="<?= mb_strtolower($p['nome'] . ' ' . $p['codigo'], 'UTF-8') ?>"
+                            data-multipack="<?= !empty($p['produto_pai_id']) ? '1' : '0' ?>"
+                            data-termo="<?= mb_strtolower($p['nome'] . ' ' . $p['codigo'] . ' ' . ($p['produto_pai_codigo'] ?? ''), 'UTF-8') ?>"
                             style="<?= $p['ativo'] ? '' : 'opacity: 0.6; background-color: #F9FAFB;' ?>">
                             <td>
                                 <?php if (!empty($p['foto_url'])): ?>
@@ -100,6 +104,19 @@ foreach ($produtos as $p) {
                             <td><span class="badge bg-light text-dark border"><?= sanitize_html($p['codigo']) ?></span></td>
                             <td>
                                 <strong><?= sanitize_html($p['nome']) ?></strong>
+                                <?php if (!empty($p['produto_pai_id'])): ?>
+                                    <div class="mt-1">
+                                        <span class="badge" style="background: #E0E7FF; color: #3730A3; font-size: 11px; font-weight: 700; border: 1px solid #C7D2FE;">
+                                            🔗 Multipack &bull; Acumula no SKU: <strong><?= sanitize_html($p['produto_pai_codigo']) ?></strong>
+                                        </span>
+                                    </div>
+                                <?php elseif (!empty($p['total_filhos_acumulados']) && (int)$p['total_filhos_acumulados'] > 0): ?>
+                                    <div class="mt-1">
+                                        <span class="badge" style="background: #ECFDF5; color: #065F46; font-size: 11px; font-weight: 700; border: 1px solid #A7F3D0;">
+                                            📦 SKU Acumulador (<?= (int)$p['total_filhos_acumulados'] ?> multipacks vinculados)
+                                        </span>
+                                    </div>
+                                <?php endif; ?>
                             </td>
                             <td><?= sanitize_html($p['pacote_padrao']) ?></td>
                             <td>
@@ -177,6 +194,21 @@ foreach ($produtos as $p) {
                     </div>
 
                     <div class="mb-3">
+                        <label for="prod_produto_pai_id" class="form-label fw-bold small text-uppercase">SKU Acumulador na Lojinha (Produto Principal)</label>
+                        <select class="form-select" id="prod_produto_pai_id" name="produto_pai_id" style="height: 48px;">
+                            <option value="">Nenhum (Este é o Produto Principal / Acumulador)</option>
+                            <?php foreach ($produtos as $pOpcao): ?>
+                                <option value="<?= (int)$pOpcao['id'] ?>">
+                                    <?= sanitize_html($pOpcao['codigo']) ?> - <?= sanitize_html($pOpcao['nome']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="form-text text-muted" style="font-size: 12px;">
+                            Se este item for um Multipack ou embalagem promocional, selecione o produto principal que centralizará o saldo na Lojinha.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="prod_foto" class="form-label fw-bold small text-uppercase">Foto do Produto (PNG ou JPG, máx 2MB)</label>
                         <input type="file" class="form-control" id="prod_foto" name="foto" accept="image/png,image/jpeg,image/webp">
                         <div id="previewFotoAtual" class="mt-2" style="display: none;">
@@ -230,6 +262,8 @@ function filtrarTabelaProdutos() {
             bateFiltro = trAtivo;
         } else if (filtroAtual === 'inativos') {
             bateFiltro = !trAtivo;
+        } else if (filtroAtual === 'multipacks') {
+            bateFiltro = tr.getAttribute('data-multipack') === '1';
         }
 
         if (bateTexto && bateFiltro) {
@@ -246,6 +280,7 @@ function abrirModalProduto() {
     document.getElementById('prod_codigo').value = '';
     document.getElementById('prod_nome').value = '';
     document.getElementById('prod_pacote').value = 'Unidade';
+    document.getElementById('prod_produto_pai_id').value = '';
     document.getElementById('prod_ativo').checked = true;
     document.getElementById('prod_foto').value = '';
     document.getElementById('previewFotoAtual').style.display = 'none';
@@ -260,6 +295,7 @@ function editarProduto(prod) {
     document.getElementById('prod_codigo').value = prod.codigo;
     document.getElementById('prod_nome').value = prod.nome;
     document.getElementById('prod_pacote').value = prod.pacote_padrao || 'Unidade';
+    document.getElementById('prod_produto_pai_id').value = prod.produto_pai_id || '';
     document.getElementById('prod_ativo').checked = Boolean(Number(prod.ativo));
     document.getElementById('prod_foto').value = '';
 

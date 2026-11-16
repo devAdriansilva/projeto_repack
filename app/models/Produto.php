@@ -19,7 +19,7 @@ class Produto
     {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("
-            SELECT id, codigo, nome, foto_url, pacote_padrao 
+            SELECT id, codigo, nome, foto_url, pacote_padrao, produto_pai_id 
             FROM produtos 
             WHERE ativo = 1 
               AND deleted_at IS NULL 
@@ -38,10 +38,13 @@ class Produto
     {
         $pdo = Database::getConnection();
         $sql = "
-            SELECT p.id, p.codigo, p.nome, p.foto_url, p.pacote_padrao, p.ativo, p.created_at, p.updated_at,
+            SELECT p.id, p.codigo, p.nome, p.foto_url, p.pacote_padrao, p.ativo, p.produto_pai_id, p.created_at, p.updated_at,
+                   p_pai.codigo AS produto_pai_codigo, p_pai.nome AS produto_pai_nome,
+                   (SELECT COUNT(*) FROM produtos p_filhos WHERE p_filhos.produto_pai_id = p.id AND p_filhos.deleted_at IS NULL) AS total_filhos_acumulados,
                    COALESCE(el.quantidade_total, 0) AS quantidade_total,
                    COALESCE(el.quantidade_reservada_gestao, 0) AS quantidade_reservada_gestao
             FROM produtos p
+            LEFT JOIN produtos p_pai ON p_pai.id = p.produto_pai_id
             LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
             WHERE p.deleted_at IS NULL
         ";
@@ -64,7 +67,7 @@ class Produto
     {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("
-            SELECT id, codigo, nome, foto_url, pacote_padrao, ativo, created_at, updated_at
+            SELECT id, codigo, nome, foto_url, pacote_padrao, ativo, produto_pai_id, created_at, updated_at
             FROM produtos 
             WHERE id = :id 
               AND deleted_at IS NULL 
@@ -84,7 +87,7 @@ class Produto
     public static function buscarPorCodigo(string $codigo, ?int $ignorarId = null): ?array
     {
         $pdo = Database::getConnection();
-        $sql = "SELECT id, codigo, nome FROM produtos WHERE codigo = :codigo AND deleted_at IS NULL";
+        $sql = "SELECT id, codigo, nome, produto_pai_id FROM produtos WHERE codigo = :codigo AND deleted_at IS NULL";
         $params = ['codigo' => trim($codigo)];
 
         if ($ignorarId !== null) {
@@ -97,6 +100,85 @@ class Produto
         $stmt->execute($params);
         $res = $stmt->fetch();
         return $res ?: null;
+    }
+
+    /**
+     * Retorna o ID do produto acumulador de estoque na Lojinha
+     * Se o produto for uma variação/multipack com produto_pai_id, retorna o ID do produto pai
+     * Caso contrário, retorna o próprio ID do produto
+     * @param int $produtoId
+     * @return int
+     */
+    public static function obterIdAcumulador(int $produtoId): int
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT id, produto_pai_id FROM produtos WHERE id = :id LIMIT 1");
+        $stmt->execute(['id' => $produtoId]);
+        $row = $stmt->fetch();
+        if ($row && !empty($row['produto_pai_id'])) {
+            return (int)$row['produto_pai_id'];
+        }
+        return $produtoId;
+    }
+
+    /**
+     * Retorna a lista de SKUs/produtos que acumulam neste produto pai
+     * @param int $produtoPaiId
+     * @return array
+     */
+    public static function listarFilhosAcumulados(int $produtoPaiId): array
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            SELECT id, codigo, nome, pacote_padrao
+            FROM produtos
+            WHERE produto_pai_id = :pai_id AND deleted_at IS NULL
+            ORDER BY nome ASC
+        ");
+        $stmt->execute(['pai_id' => $produtoPaiId]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Vincula ou desvincula um produto pai/acumulador
+     * @param int $produtoFilhoId
+     * @param int|null $produtoPaiId
+     * @return bool
+     */
+    public static function vincularProdutoPai(int $produtoFilhoId, ?int $produtoPaiId): bool
+    {
+        if ($produtoPaiId !== null && $produtoFilhoId === $produtoPaiId) {
+            throw new InvalidArgumentException("Um produto não pode ser acumulador dele mesmo.");
+        }
+
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("
+            UPDATE produtos 
+            SET produto_pai_id = :pai_id,
+                updated_at = NOW()
+            WHERE id = :filho_id AND deleted_at IS NULL
+        ");
+        $ok = $stmt->execute([
+            'pai_id' => ($produtoPaiId !== null && $produtoPaiId > 0) ? $produtoPaiId : null,
+            'filho_id' => $produtoFilhoId
+        ]);
+
+        if ($ok && $produtoPaiId !== null && $produtoPaiId > 0) {
+            // Migra qualquer saldo que esteja na lojinha do filho para o pai
+            $stmtMigra = $pdo->prepare("
+                UPDATE estoque_lojinha el_pai
+                JOIN estoque_lojinha el_filho ON el_filho.produto_id = :filho_id
+                SET el_pai.quantidade_total = el_pai.quantidade_total + el_filho.quantidade_total,
+                    el_filho.quantidade_total = 0
+                WHERE el_pai.produto_id = :pai_id AND el_filho.quantidade_total > 0
+            ");
+            $stmtMigra->execute([
+                'filho_id' => $produtoFilhoId,
+                'pai_id' => $produtoPaiId
+            ]);
+        }
+
+        return $ok;
     }
 
     /**
@@ -113,6 +195,11 @@ class Produto
         $pacotePadrao = trim((string)($dados['pacote_padrao'] ?? 'Unidade'));
         $fotoUrl = !empty($dados['foto_url']) ? trim((string)$dados['foto_url']) : null;
         $ativo = isset($dados['ativo']) ? (int)$dados['ativo'] : 1;
+        $produtoPaiId = !empty($dados['produto_pai_id']) ? (int)$dados['produto_pai_id'] : null;
+
+        if ($id !== null && $produtoPaiId === $id) {
+            $produtoPaiId = null; // Impede auto-referência
+        }
 
         if ($codigo === '') {
             throw new InvalidArgumentException("O código do produto é obrigatório.");
@@ -140,6 +227,7 @@ class Produto
                     SET codigo = :codigo,
                         nome = :nome,
                         pacote_padrao = :pacote_padrao,
+                        produto_pai_id = :produto_pai_id,
                         foto_url = :foto_url,
                         ativo = :ativo,
                         updated_at = NOW()
@@ -149,6 +237,7 @@ class Produto
                     'codigo' => $codigo,
                     'nome' => $nome,
                     'pacote_padrao' => $pacotePadrao,
+                    'produto_pai_id' => $produtoPaiId,
                     'foto_url' => $fotoUrl,
                     'ativo' => $ativo,
                     'id' => $id
@@ -159,6 +248,7 @@ class Produto
                     SET codigo = :codigo,
                         nome = :nome,
                         pacote_padrao = :pacote_padrao,
+                        produto_pai_id = :produto_pai_id,
                         ativo = :ativo,
                         updated_at = NOW()
                     WHERE id = :id AND deleted_at IS NULL
@@ -167,6 +257,7 @@ class Produto
                     'codigo' => $codigo,
                     'nome' => $nome,
                     'pacote_padrao' => $pacotePadrao,
+                    'produto_pai_id' => $produtoPaiId,
                     'ativo' => $ativo,
                     'id' => $id
                 ]);
@@ -176,13 +267,14 @@ class Produto
 
         // Novo cadastro
         $stmt = $pdo->prepare("
-            INSERT INTO produtos (codigo, nome, pacote_padrao, foto_url, ativo, created_at, updated_at)
-            VALUES (:codigo, :nome, :pacote_padrao, :foto_url, :ativo, NOW(), NOW())
+            INSERT INTO produtos (codigo, nome, pacote_padrao, produto_pai_id, foto_url, ativo, created_at, updated_at)
+            VALUES (:codigo, :nome, :pacote_padrao, :produto_pai_id, :foto_url, :ativo, NOW(), NOW())
         ");
         $stmt->execute([
             'codigo' => $codigo,
             'nome' => $nome,
             'pacote_padrao' => $pacotePadrao,
+            'produto_pai_id' => $produtoPaiId,
             'foto_url' => $fotoUrl,
             'ativo' => $ativo
         ]);

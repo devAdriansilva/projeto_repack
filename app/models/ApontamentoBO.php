@@ -96,9 +96,10 @@ class ApontamentoBO
 
             $boId = (int)$pdo->lastInsertId();
 
-            // Se for destinado à lojinha, incrementa o saldo disponível
+            // Se for destinado à lojinha, incrementa o saldo disponível no produto acumulador
             if ($destino === 'lojinha') {
-                EstoqueLojinha::incrementarSaldo($produtoId, $quantidade);
+                $idAcumulador = Produto::obterIdAcumulador($produtoId);
+                EstoqueLojinha::incrementarSaldo($idAcumulador, $quantidade);
             }
 
             $pdo->commit();
@@ -268,10 +269,11 @@ class ApontamentoBO
             }
 
             $produtoId = (int)$boOriginal['produto_id'];
+            $idAcumulador = Produto::obterIdAcumulador($produtoId);
             $antigoDestino = (string)$boOriginal['destino'];
             $antigaQtd = (int)$boOriginal['quantidade'];
 
-            // Ajuste reflexo no estoque da lojinha
+            // Ajuste reflexo no estoque da lojinha (sempre no SKU acumulador)
             if ($antigoDestino === 'lojinha' && $novoDestino === 'lojinha') {
                 $dif = $novaQtd - $antigaQtd;
                 if ($dif !== 0) {
@@ -281,7 +283,7 @@ class ApontamentoBO
                             updated_at = NOW()
                         WHERE produto_id = :produto_id
                     ");
-                    $stmtEstoque->execute(['dif' => $dif, 'produto_id' => $produtoId]);
+                    $stmtEstoque->execute(['dif' => $dif, 'produto_id' => $idAcumulador]);
                 }
             } elseif ($antigoDestino === 'lojinha' && $novoDestino === 'descarte') {
                 // Remove o que havia sido creditado na lojinha
@@ -291,10 +293,10 @@ class ApontamentoBO
                         updated_at = NOW()
                     WHERE produto_id = :produto_id
                 ");
-                $stmtEstoque->execute(['antiga_qtd' => $antigaQtd, 'produto_id' => $produtoId]);
+                $stmtEstoque->execute(['antiga_qtd' => $antigaQtd, 'produto_id' => $idAcumulador]);
             } elseif ($antigoDestino === 'descarte' && $novoDestino === 'lojinha') {
                 // Credita o novo valor na lojinha
-                EstoqueLojinha::incrementarSaldo($produtoId, $novaQtd);
+                EstoqueLojinha::incrementarSaldo($idAcumulador, $novaQtd);
             }
 
             // Atualiza o apontamento de B.O. com autoria e justificativa
@@ -659,10 +661,12 @@ class ApontamentoBO
         if (!empty($skus)) {
             $placeholders = implode(',', array_fill(0, count($skus), '?'));
             $stmt = $pdo->prepare("
-                SELECT p.id, p.codigo, p.nome, p.pacote_padrao,
+                SELECT p.id, p.codigo, p.nome, p.pacote_padrao, p.produto_pai_id,
+                       p_pai.codigo AS pai_codigo, p_pai.nome AS pai_nome,
                        COALESCE(el.quantidade_total, 0) AS estoque_atual
                 FROM produtos p
-                LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
+                LEFT JOIN produtos p_pai ON p_pai.id = p.produto_pai_id
+                LEFT JOIN estoque_lojinha el ON el.produto_id = COALESCE(p.produto_pai_id, p.id)
                 WHERE p.codigo IN ($placeholders)
             ");
             $stmt->execute(array_values($skus));
@@ -716,17 +720,25 @@ class ApontamentoBO
 
             if ($destino === 'lojinha') {
                 $totalLojinha += $qtd;
-                if (!isset($lojinhaAgrupado[$cod])) {
-                    $lojinhaAgrupado[$cod] = [
-                        'codigo' => $cod,
-                        'nome' => $nomeProd,
+                // Se o produto tiver SKU acumulador/pai, consolida no SKU principal
+                $codLojinha = ($produtoInfo && !empty($produtoInfo['pai_codigo'])) ? (string)$produtoInfo['pai_codigo'] : $cod;
+                $nomeLojinha = ($produtoInfo && !empty($produtoInfo['pai_nome'])) ? (string)$produtoInfo['pai_nome'] : $nomeProd;
+
+                if (!isset($lojinhaAgrupado[$codLojinha])) {
+                    $lojinhaAgrupado[$codLojinha] = [
+                        'codigo' => $codLojinha,
+                        'nome' => $nomeLojinha,
                         'quantidade' => 0,
                         'estoque_atual' => $produtoInfo ? (int)$produtoInfo['estoque_atual'] : 0,
-                        'novo_estoque' => $produtoInfo ? (int)$produtoInfo['estoque_atual'] : 0
+                        'novo_estoque' => $produtoInfo ? (int)$produtoInfo['estoque_atual'] : 0,
+                        'skus_acumulados' => []
                     ];
                 }
-                $lojinhaAgrupado[$cod]['quantidade'] += $qtd;
-                $lojinhaAgrupado[$cod]['novo_estoque'] += $qtd;
+                $lojinhaAgrupado[$codLojinha]['quantidade'] += $qtd;
+                $lojinhaAgrupado[$codLojinha]['novo_estoque'] += $qtd;
+                if ($cod !== $codLojinha && !in_array($cod, $lojinhaAgrupado[$codLojinha]['skus_acumulados'])) {
+                    $lojinhaAgrupado[$codLojinha]['skus_acumulados'][] = $cod;
+                }
             } else {
                 $totalDescarte += $qtd;
                 if (!isset($descarteAgrupado[$cod])) {
@@ -882,7 +894,9 @@ class ApontamentoBO
 
                 if ($destino === 'lojinha') {
                     $totalLojinha += $qtd;
-                    EstoqueLojinha::incrementarSaldo($produtoId, $qtd);
+                    // Credita saldo sempre no SKU acumulador / principal da lojinha
+                    $idAcumulador = Produto::obterIdAcumulador($produtoId);
+                    EstoqueLojinha::incrementarSaldo($idAcumulador, $qtd);
                 } else {
                     $totalDescarte += $qtd;
                 }

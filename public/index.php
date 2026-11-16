@@ -133,6 +133,10 @@ switch ($route) {
         (new GestaoController())->toggleStatusProduto();
         break;
 
+    case '/gestao/produtos/vincular-acumulador':
+        (new GestaoController())->vincularAcumulador();
+        break;
+
     // Lotes de Venda
     case '/gestao/lotes':
         (new GestaoController())->lotes();

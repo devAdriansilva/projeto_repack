@@ -66,12 +66,16 @@ class EstoqueLojinha
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("
             SELECT p.id AS produto_id, p.codigo, p.nome, p.foto_url, p.pacote_padrao, p.ativo,
+                   (SELECT GROUP_CONCAT(CONCAT(fil.codigo, ' - ', fil.nome) SEPARATOR ';;;') 
+                    FROM produtos fil 
+                    WHERE fil.produto_pai_id = p.id AND fil.deleted_at IS NULL) AS skus_acumulados,
                    COALESCE(el.quantidade_total, 0) AS quantidade_total,
                    COALESCE(el.quantidade_reservada_gestao, 0) AS quantidade_reservada_gestao,
                    GREATEST(0, COALESCE(el.quantidade_total, 0) - COALESCE(el.quantidade_reservada_gestao, 0)) AS saldo_disponivel
             FROM produtos p
             LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
             WHERE p.deleted_at IS NULL
+              AND p.produto_pai_id IS NULL
               AND COALESCE(el.quantidade_total, 0) > 0
             ORDER BY p.nome ASC
         ");
@@ -450,6 +454,7 @@ class EstoqueLojinha
                 LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
                 WHERE p.ativo = 1 
                   AND p.deleted_at IS NULL
+                  AND p.produto_pai_id IS NULL
                   AND COALESCE(el.quantidade_total, 0) > 0
             ) AS vitrine
             {$sqlWhere}
