@@ -43,46 +43,46 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <!-- 2 Botões Grandes e Proporcionais de Turno (Manhã e Tarde) -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
-        <button type="button" id="btnTurnoManha" class="btn-urna" onclick="selecionarTurno('manha')" style="min-height: 95px; padding: 12px 8px; border-radius: 22px; background: #FEF3C7; color: #92400E; border: 5px solid #F59E0B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 4px 12px rgba(245,158,11,0.25);">
-            <span style="font-size: 30px; font-weight: 900; line-height: 1;">☀️ MANHÃ</span>
-            <span style="font-size: 22px; font-weight: 800; color: #B45309;">08:00 às 12:00</span>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+        <button type="button" id="btnTurnoManha" class="btn-urna" onclick="selecionarTurno('manha')" style="min-height: 110px; padding: 14px 10px; border-radius: 24px; background: #FEF3C7; color: #92400E; border: 6px solid #F59E0B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(245,158,11,0.25);">
+            <span style="font-size: 34px; font-weight: 900; line-height: 1;">☀️ MANHÃ</span>
+            <span style="font-size: 26px; font-weight: 900; color: #B45309;">07:00 às 12:00</span>
         </button>
 
-        <button type="button" id="btnTurnoTarde" class="btn-urna" onclick="selecionarTurno('tarde')" style="min-height: 95px; padding: 12px 8px; border-radius: 22px; background: #E0E7FF; color: #3730A3; border: 5px solid #6366F1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; opacity: 0.6;">
-            <span style="font-size: 30px; font-weight: 900; line-height: 1;">⛅ TARDE</span>
-            <span style="font-size: 22px; font-weight: 800; color: #4338CA;">13:00 às 17:00</span>
+        <button type="button" id="btnTurnoTarde" class="btn-urna" onclick="selecionarTurno('tarde')" style="min-height: 110px; padding: 14px 10px; border-radius: 24px; background: #E0E7FF; color: #3730A3; border: 6px solid #6366F1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; opacity: 0.6;">
+            <span style="font-size: 34px; font-weight: 900; line-height: 1;">⛅ TARDE</span>
+            <span style="font-size: 26px; font-weight: 900; color: #4338CA;">13:00 às 17:00</span>
         </button>
     </div>
 
     <!-- Botão de Turno Personalizado / Outro Horário -->
     <div style="text-align: center; margin-bottom: 14px;">
-        <button type="button" id="btnTurnoOutro" onclick="alternarHorarioPersonalizado()" style="background: #F1F5F9; border: 3px solid #94A3B8; color: #334155; font-size: 20px; font-weight: 900; border-radius: 16px; padding: 10px 24px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+        <button type="button" id="btnTurnoOutro" onclick="alternarHorarioPersonalizado()" style="background: #F1F5F9; border: 3.5px solid #94A3B8; color: #1E293B; font-size: 24px; font-weight: 900; border-radius: 18px; padding: 12px 28px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;">
             <span>⚙️ OUTRO HORÁRIO / PERSONALIZAR</span>
         </button>
     </div>
 
     <!-- Campos de Ajuste Fino de Horário (Escondido por padrão, abre ao personalizar) -->
-    <div id="wrapperHorariosPersonalizados" style="display: none; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; background: #F8FAFC; padding: 18px; border-radius: 20px; border: 3px dashed #94A3B8;">
+    <div id="wrapperHorariosPersonalizados" style="display: none; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; background: #F8FAFC; padding: 18px; border-radius: 20px; border: 3px dashed #94A3B8;">
         <div>
-            <label for="inputHoraInicio" style="display: block; font-size: 22px; font-weight: 900; color: #1E293B; margin-bottom: 8px; text-align: center;">
+            <label for="inputHoraInicio" style="display: block; font-size: 26px; font-weight: 900; color: #1E293B; margin-bottom: 8px; text-align: center;">
                 HORA INÍCIO:
             </label>
-            <input type="time" id="inputHoraInicio" class="input-sku-gigante" style="min-height: 70px; font-size: 34px; font-weight: 900; text-align: center; border-radius: 18px; border: 4px solid #0F172A; width: 100%;" value="08:00" onchange="atualizarDuracaoLote()">
+            <input type="time" id="inputHoraInicio" class="input-sku-gigante" style="min-height: 70px; font-size: 36px; font-weight: 900; text-align: center; border-radius: 18px; border: 4px solid #0F172A; width: 100%;" value="07:00" onchange="atualizarDuracaoLote()">
         </div>
         <div>
-            <label for="inputHoraFim" style="display: block; font-size: 22px; font-weight: 900; color: #1E293B; margin-bottom: 8px; text-align: center;">
+            <label for="inputHoraFim" style="display: block; font-size: 26px; font-weight: 900; color: #1E293B; margin-bottom: 8px; text-align: center;">
                 HORA TÉRMINO:
             </label>
-            <input type="time" id="inputHoraFim" class="input-sku-gigante" style="min-height: 70px; font-size: 34px; font-weight: 900; text-align: center; border-radius: 18px; border: 4px solid #0F172A; width: 100%;" value="12:00" onchange="atualizarDuracaoLote()">
+            <input type="time" id="inputHoraFim" class="input-sku-gigante" style="min-height: 70px; font-size: 36px; font-weight: 900; text-align: center; border-radius: 18px; border: 4px solid #0F172A; width: 100%;" value="12:00" onchange="atualizarDuracaoLote()">
         </div>
     </div>
 
     <!-- Faixa Destaque de Duração Total Calculada -->
-    <div style="text-align: center; margin-top: 14px; background: #F0FDF4; border: 2.5px solid #86EFAC; border-radius: 16px; padding: 10px;">
-        <span style="font-size: 24px; font-weight: 900; color: #14532D;">
+    <div style="text-align: center; margin-top: 16px; background: #F0FDF4; border: 3px solid #86EFAC; border-radius: 18px; padding: 12px;">
+        <span style="font-size: 26px; font-weight: 900; color: #14532D;">
             DURAÇÃO DO BLOCO: 
-            <span id="displayDuracaoTotal" style="color: #059669; font-size: 30px; font-weight: 900;">4h 00min</span>
+            <span id="displayDuracaoTotal" style="color: #059669; font-size: 34px; font-weight: 900;">5h 00min</span>
         </span>
     </div>
 </div>
@@ -301,11 +301,11 @@ function selecionarTurno(tipo) {
 
     if (tipo === 'manha') {
         btnM.style.opacity = '1';
-        btnM.style.borderWidth = '5px';
+        btnM.style.borderWidth = '6px';
         btnT.style.opacity = '0.55';
         btnT.style.borderWidth = '3px';
         wrapper.style.display = 'none';
-        document.getElementById('inputHoraInicio').value = '08:00';
+        document.getElementById('inputHoraInicio').value = '07:00';
         document.getElementById('inputHoraFim').value = '12:00';
     } else if (tipo === 'tarde') {
         btnM.style.opacity = '0.55';

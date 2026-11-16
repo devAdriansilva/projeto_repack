@@ -986,8 +986,12 @@
       - **Alinhamento Horizontal Inquebrável (`[-] [ 1 ] [+]`):** O seletor de pacotes agora utiliza container com `flex-direction: row !important; flex-wrap: nowrap !important;` e botões com `clamp(85px, 24vw, 115px)` perfeitamente proporcionais, impedindo que quebrem verticalmente em smartphones Android de qualquer resolução.
       - **Exibição Monumental da Foto do Produto:** Inclusão de elemento `<img>` dinâmico (`#imgFotoProduto`) de 320px de altura no cartão de produto identificado (`#cardConfirmacaoSku`), renderizando a garrafa/lata no momento em que o código SKU é bipado/digitado e também na lista consolidada do lote e tela de conferência.
       - **Harmonia do Seletor de Turno:** Substituição dos 3 botões espremidos por 2 grandes botões de alto impacto (`☀️ MANHÃ (08:00 às 12:00)` e `⛅ TARDE (13:00 às 17:00)`) com fontes nítidas de 30px, além de gaveta expansível para `⚙️ OUTRO HORÁRIO / PERSONALIZAR`.
+    - **Ajustes de Turno, Hiper-Visibilidade de Fontes e Interatividade na Conferência:**
+      - **Turno Manhã (07:00 às 12:00):** Ajuste do horário padrão do turno matutino para 07:00 às 12:00 (5h = 18.000s), com cálculo imediato da duração do bloco em 5h 00min.
+      - **Ampliação de Tipografia:** Fontes de títulos de turno elevadas para 34px negrito e horários para 26px com alto contraste e legibilidade imediata na bancada.
+      - **Controles Interativos na Tela de Confirmação (`cronometro_resumo.php`):** O resumo de produção agora conta com botões táteis para cada produto (`[−]` decrementa, `[+]` incrementa e `[✕]` exclui o item), recalculando o Total Geral de Pacotes e o Tempo Médio em tempo real e sincronizando o rascunho com o `localStorage`.
     - **Versionamento:**
-      - Versão da aplicação incrementada para `v1.77` em `app/config/config.php` e `public/service-worker.js`.
+      - Versão da aplicação incrementada para `v1.78` em `app/config/config.php` e `public/service-worker.js`.
 
 ---
 

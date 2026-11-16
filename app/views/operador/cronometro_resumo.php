@@ -39,6 +39,7 @@ if (!$dadosLote && !empty($_POST['produto_id'])) {
                 'codigo' => $prod['codigo'] ?? '',
                 'nome' => $prod['nome'] ?? 'Produto',
                 'embalagem' => $prod['pacote_padrao'] ?? '',
+                'foto_url' => !empty($prod['foto_url']) ? (APP_URL . $prod['foto_url']) : null,
                 'pacotes' => $pacotes
             ]
         ]
@@ -46,16 +47,16 @@ if (!$dadosLote && !empty($_POST['produto_id'])) {
 }
 
 $itens = $dadosLote['itens'] ?? [];
-$horaInicio = $dadosLote['hora_inicio'] ?? '08:00';
+$horaInicio = $dadosLote['hora_inicio'] ?? '07:00';
 $horaFim = $dadosLote['hora_fim'] ?? '12:00';
-$duracaoTotalSegundos = (int)($dadosLote['duracao_total_segundos'] ?? 14400);
+$duracaoTotalSegundos = (int)($dadosLote['duracao_total_segundos'] ?? 18000);
 
 $totalPacotes = 0;
 foreach ($itens as $it) {
     $totalPacotes += (int)($it['pacotes'] ?? 0);
 }
 
-// Formatação amigável de duração
+// Formatação amigável de duração nativa PHP
 $horas = (int)floor($duracaoTotalSegundos / 3600);
 $minutos = (int)floor(($duracaoTotalSegundos % 3600) / 60);
 $duracaoFormatada = sprintf('%dh %02dmin', $horas, $minutos);
@@ -69,11 +70,11 @@ $pageTitle = "Produção - Conferência do Lote";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 22px;">
+<div style="text-align: center; margin-bottom: 20px;">
     <h1 class="headline-xl" style="margin: 0; font-size: 50px; font-weight: 900; color: #0F172A;">
         CONFIRMAR PRODUÇÃO
     </h1>
-    <span style="display: inline-block; font-size: 20px; font-weight: 800; color: #059669; background: #ECFDF5; border: 2px solid #10B981; padding: 4px 18px; border-radius: 9999px; margin-top: 6px;">
+    <span style="display: inline-block; font-size: 22px; font-weight: 900; color: #059669; background: #ECFDF5; border: 2.5px solid #10B981; padding: 6px 22px; border-radius: 9999px; margin-top: 8px;">
         CONFERÊNCIA DO LOTE / TURNO
     </span>
 </div>
@@ -81,75 +82,62 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- ============================================================= -->
 <!-- CARTÃO DE RESUMO CONSOLIDADO DO LOTE                          -->
 <!-- ============================================================= -->
-<div class="urna-card" style="width: 100%; padding: 32px 24px; border-radius: 34px; border: 7px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18); background: #FFFFFF; margin-bottom: 24px;">
+<div class="urna-card" style="width: 100%; padding: 28px 20px; border-radius: 34px; border: 7px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18); background: #FFFFFF; margin-bottom: 24px;">
     
-    <!-- Linha 1: Período e Duração Total -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-bottom: 4px solid #E2E8F0; padding-bottom: 20px; text-align: center;">
+    <!-- Linha 1: Período e Duração Total com Fontes Monumentais -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-bottom: 4px solid #E2E8F0; padding-bottom: 18px; text-align: center;">
         <div>
-            <span style="font-size: 18px; font-weight: 900; color: #64748B; text-transform: uppercase;">HORÁRIO DO LOTE:</span>
-            <div style="color: #1E40AF; font-size: 34px; font-weight: 900; margin-top: 4px;">
+            <span style="font-size: 22px; font-weight: 900; color: #64748B; text-transform: uppercase;">HORÁRIO DO LOTE:</span>
+            <div style="color: #1E40AF; font-size: 38px; font-weight: 900; margin-top: 4px;">
                 <?= sanitize_html($horaInicio) ?> ➔ <?= sanitize_html($horaFim) ?>
             </div>
         </div>
         <div>
-            <span style="font-size: 18px; font-weight: 900; color: #64748B; text-transform: uppercase;">DURAÇÃO TOTAL:</span>
-            <div style="color: #0F172A; font-size: 34px; font-weight: 900; margin-top: 4px;">
+            <span style="font-size: 22px; font-weight: 900; color: #64748B; text-transform: uppercase;">DURAÇÃO TOTAL:</span>
+            <div style="color: #0F172A; font-size: 38px; font-weight: 900; margin-top: 4px;">
                 <?= $duracaoFormatada ?>
             </div>
         </div>
     </div>
 
-    <!-- Linha 2: Volume Total e Tempo Médio -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 22px 0; border-bottom: 4px solid #E2E8F0; text-align: center;">
-        <div style="border-right: 3px solid #E2E8F0;">
-            <span style="font-size: 18px; font-weight: 900; color: #64748B; text-transform: uppercase;">TOTAL REEMBALADO:</span>
-            <div style="font-size: 64px; font-weight: 900; color: #0F172A; line-height: 1.05; margin-top: 6px;">
-                <?= $totalPacotes ?> <span style="font-size: 26px; color: #64748B; font-weight: 800;">pcts</span>
+    <!-- Linha 2: Volume Total e Tempo Médio Recalculados em Tempo Real -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px 0; border-bottom: 4px solid #E2E8F0; text-align: center;">
+        <div style="border-right: 3px solid #E2E8F0; padding-right: 8px;">
+            <span style="font-size: 20px; font-weight: 900; color: #64748B; text-transform: uppercase;">TOTAL REEMBALADO:</span>
+            <div style="font-size: 64px; font-weight: 900; color: #0F172A; line-height: 1.05; margin-top: 4px;">
+                <span id="displayTotalReembaladoResumo"><?= $totalPacotes ?></span> <span style="font-size: 24px; color: #64748B; font-weight: 800;">pcts</span>
             </div>
         </div>
         <div>
-            <span style="font-size: 18px; font-weight: 900; color: #64748B; text-transform: uppercase;">TEMPO MÉDIO:</span>
-            <div style="font-size: 38px; font-weight: 900; color: #059669; line-height: 1.15; margin-top: 14px;">
-                <?= $tempoMedioTexto ?>
+            <span style="font-size: 20px; font-weight: 900; color: #64748B; text-transform: uppercase;">TEMPO MÉDIO:</span>
+            <div style="font-size: 38px; font-weight: 900; color: #059669; line-height: 1.15; margin-top: 10px;">
+                <span id="displayTempoMedioResumo"><?= $tempoMedioTexto ?></span>
             </div>
         </div>
     </div>
 
-    <!-- Linha 3: Relação dos Produtos Reembalados no Lote -->
-    <div style="padding-top: 22px;">
-        <div style="font-size: 22px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 14px; text-align: center;">
-            PRODUTOS DO LOTE (<?= count($itens) ?> ITENS):
+    <!-- Linha 3: Relação Interativa dos Itens (Com Botões +, - e Excluir) -->
+    <div style="padding-top: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div style="font-size: 24px; font-weight: 900; color: #0F172A; text-transform: uppercase;">
+                ITENS DO LOTE (<span id="displayContadorItens"><?= count($itens) ?></span>):
+            </div>
+            <span style="font-size: 16px; font-weight: 800; color: #64748B;">
+                Ajuste as quantidades se necessário:
+            </span>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 12px; max-height: 420px; overflow-y: auto;">
-            <?php foreach ($itens as $item): ?>
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; border: 2.5px solid #CBD5E1; border-radius: 18px; padding: 12px 18px; gap: 12px;">
-                    <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; text-align: left;">
-                        <?php if (!empty($item['foto_url'])): ?>
-                            <img src="<?= sanitize_html($item['foto_url']) ?>" style="width: 58px; height: 58px; object-fit: contain; border-radius: 12px; border: 2px solid #CBD5E1; background: #FFF; padding: 2px; flex-shrink: 0;" alt="Foto">
-                        <?php else: ?>
-                            <div style="width: 58px; height: 58px; border-radius: 12px; background: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0;">📦</div>
-                        <?php endif; ?>
-                        <div style="flex: 1; min-width: 0;">
-                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
-                                <span style="background: #0F172A; color: #FFFFFF; font-size: 14px; font-weight: 900; padding: 2px 8px; border-radius: 6px;">
-                                    SKU <?= sanitize_html((string)$item['codigo']) ?>
-                                </span>
-                                <span style="font-size: 13px; color: #64748B; font-weight: 700;">
-                                    <?= sanitize_html((string)($item['embalagem'] ?? '')) ?>
-                                </span>
-                            </div>
-                            <div style="font-size: 20px; font-weight: 900; color: #0F172A; line-height: 1.2; word-break: break-word;">
-                                <?= sanitize_html((string)$item['nome']) ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="background: #ECFDF5; border: 2.5px solid #10B981; border-radius: 14px; padding: 6px 16px; text-align: center; flex-shrink: 0;">
-                        <span style="font-size: 26px; font-weight: 900; color: #065F46;"><?= (int)$item['pacotes'] ?></span>
-                        <span style="font-size: 13px; font-weight: 800; color: #059669; display: block; margin-top: -3px;">pcts</span>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+        <div id="containerItensResumo" style="display: flex; flex-direction: column; gap: 14px; max-height: 480px; overflow-y: auto; padding-right: 2px;">
+            <!-- Renderizado dinamicamente via JS com controles interativos -->
+        </div>
+
+        <div id="avisoLoteVazioResumo" style="display: none; text-align: center; padding: 28px 16px; background: #FEF2F2; border: 3px dashed #EF4444; border-radius: 20px; margin-top: 10px;">
+            <div style="font-size: 24px; font-weight: 900; color: #991B1B;">
+                ⚠️ Todos os itens foram removidos do lote!
+            </div>
+            <div style="font-size: 18px; font-weight: 700; color: #DC2626; margin-top: 4px;">
+                Clique em "CORRIGIR" abaixo para adicionar novos produtos.
+            </div>
         </div>
     </div>
 </div>
@@ -171,12 +159,160 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <script>
-function formatarDataHora(dataStr, horaStr) {
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${dataStr} ${horaStr}:00`;
+// Array mutável e reativo de itens na tela de resumo
+let itensLoteResumo = <?= json_encode($itens, JSON_UNESCAPED_UNICODE) ?>;
+const duracaoTotalSegundos = <?= $duracaoTotalSegundos ?>;
+const turnoLote = '<?= sanitize_html($dadosLote['turno'] ?? 'manha') ?>';
+const horaInicioLote = '<?= sanitize_html($horaInicio) ?>';
+const horaFimLote = '<?= sanitize_html($horaFim) ?>';
+
+window.addEventListener('DOMContentLoaded', () => {
+    renderizarItensResumo();
+});
+
+function renderizarItensResumo() {
+    const container = document.getElementById('containerItensResumo');
+    const avisoVazio = document.getElementById('avisoLoteVazioResumo');
+    const btnConfirmar = document.getElementById('btnConfirmarLote');
+    const displayContador = document.getElementById('displayContadorItens');
+
+    displayContador.innerText = itensLoteResumo.length;
+
+    if (itensLoteResumo.length === 0) {
+        container.innerHTML = '';
+        avisoVazio.style.display = 'block';
+        btnConfirmar.disabled = true;
+        btnConfirmar.style.opacity = '0.5';
+        atualizarTotaisResumo();
+        return;
+    }
+
+    avisoVazio.style.display = 'none';
+    btnConfirmar.disabled = false;
+    btnConfirmar.style.opacity = '1';
+
+    let html = '';
+    itensLoteResumo.forEach((item, index) => {
+        const fotoThumb = item.foto_url 
+            ? `<img src="${escapeHtml(item.foto_url)}" style="width: 58px; height: 58px; object-fit: contain; border-radius: 12px; border: 2px solid #CBD5E1; background: #FFF; padding: 2px; flex-shrink: 0;" alt="Foto">`
+            : `<div style="width: 58px; height: 58px; border-radius: 12px; background: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0;">📦</div>`;
+
+        html += `
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; border: 3px solid #CBD5E1; border-radius: 20px; padding: 12px 16px; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; text-align: left;">
+                    ${fotoThumb}
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                            <span style="background: #0F172A; color: #FFFFFF; font-size: 15px; font-weight: 900; padding: 2px 8px; border-radius: 6px;">
+                                SKU ${escapeHtml(item.codigo)}
+                            </span>
+                            <span style="font-size: 13px; color: #64748B; font-weight: 700;">
+                                ${escapeHtml(item.embalagem || '')}
+                            </span>
+                        </div>
+                        <div style="font-size: 20px; font-weight: 900; color: #0F172A; line-height: 1.2; word-break: break-word;">
+                            ${escapeHtml(item.nome)}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controles Interativos de Quantidade e Exclusão (+, -, ✕) -->
+                <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                    <!-- Botão Menos -->
+                    <button type="button" 
+                            onclick="alterarPacotesResumo(${index}, -1)" 
+                            style="width: 48px; height: 48px; border-radius: 14px; font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 3px solid #0F172A; background: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation;" 
+                            aria-label="Diminuir pacotes">
+                        −
+                    </button>
+
+                    <!-- Quantidade em Destaque -->
+                    <div style="min-width: 65px; height: 48px; background: #ECFDF5; border: 2.5px solid #10B981; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 6px;">
+                        <span style="font-size: 22px; font-weight: 900; color: #065F46; line-height: 1;">${item.pacotes}</span>
+                        <span style="font-size: 11px; font-weight: 800; color: #059669; line-height: 1; margin-top: 1px;">pcts</span>
+                    </div>
+
+                    <!-- Botão Mais -->
+                    <button type="button" 
+                            onclick="alterarPacotesResumo(${index}, 1)" 
+                            style="width: 48px; height: 48px; border-radius: 14px; font-size: 26px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 3px solid #0F172A; background: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation;" 
+                            aria-label="Aumentar pacotes">
+                        +
+                    </button>
+
+                    <!-- Botão Excluir -->
+                    <button type="button" 
+                            onclick="removerItemResumo(${index})" 
+                            style="width: 48px; height: 48px; border-radius: 14px; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 2.5px solid #EF4444; background: #FEF2F2; color: #DC2626; cursor: pointer; margin-left: 4px;" 
+                            aria-label="Excluir item do lote">
+                        ✕
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+    atualizarTotaisResumo();
+}
+
+function alterarPacotesResumo(index, delta) {
+    if (!itensLoteResumo[index]) return;
+    const atual = parseInt(itensLoteResumo[index].pacotes, 10) || 1;
+    const novo = Math.max(1, atual + delta);
+    itensLoteResumo[index].pacotes = novo;
+
+    renderizarItensResumo();
+    sincronizarLoteLocalStorage();
+}
+
+function removerItemResumo(index) {
+    if (!itensLoteResumo[index]) return;
+    const nome = itensLoteResumo[index].nome;
+    if (confirm(`Remover "${nome}" do lote?`)) {
+        itensLoteResumo.splice(index, 1);
+        renderizarItensResumo();
+        sincronizarLoteLocalStorage();
+    }
+}
+
+function atualizarTotaisResumo() {
+    const totalPacotes = itensLoteResumo.reduce((acc, it) => acc + parseInt(it.pacotes, 10), 0);
+    document.getElementById('displayTotalReembaladoResumo').innerText = totalPacotes;
+
+    if (totalPacotes > 0 && duracaoTotalSegundos > 0) {
+        const segPorPacote = Math.round(duracaoTotalSegundos / totalPacotes);
+        const min = Math.floor(segPorPacote / 60);
+        const s = segPorPacote % 60;
+        let texto = '';
+        if (min > 0) {
+            texto += `${min} min `;
+        }
+        texto += `${s} s / pct`;
+        document.getElementById('displayTempoMedioResumo').innerText = texto;
+    } else {
+        document.getElementById('displayTempoMedioResumo').innerText = '--';
+    }
+}
+
+function sincronizarLoteLocalStorage() {
+    try {
+        const rascunho = {
+            turno: turnoLote,
+            hora_inicio: horaInicioLote,
+            hora_fim: horaFimLote,
+            itens: itensLoteResumo
+        };
+        localStorage.setItem('repack_lote_ativo', JSON.stringify(rascunho));
+    } catch(e) {}
 }
 
 async function confirmarLoteProducao() {
+    if (itensLoteResumo.length === 0) {
+        alert('O lote está vazio. Adicione pelo menos um produto antes de confirmar.');
+        return;
+    }
+
     const btn = document.getElementById('btnConfirmarLote');
     btn.disabled = true;
     btn.innerText = 'GRAVANDO...';
@@ -184,24 +320,21 @@ async function confirmarLoteProducao() {
     const operadorId = <?= (int)($_SESSION['operador_id'] ?? 1) ?>;
     const hoje = new Date().toISOString().split('T')[0];
 
-    const horaIni = '<?= sanitize_html($horaInicio) ?>';
-    const horaFim = '<?= sanitize_html($horaFim) ?>';
+    const horaIni = horaInicioLote;
+    const horaFim = horaFimLote;
 
     const dataHoraInicio = `${hoje} ${horaIni}:00`;
     let dataHoraFim = `${hoje} ${horaFim}:00`;
 
-    // Se término for menor que início (ex: virou o dia)
     if (horaFim <= horaIni) {
         const dFim = new Date(new Date(`${hoje}T${horaFim}:00`).getTime() + 24 * 3600 * 1000);
         dataHoraFim = `${dFim.getFullYear()}-${String(dFim.getMonth()+1).padStart(2,'0')}-${String(dFim.getDate()).padStart(2,'0')} ${horaFim}:00`;
     }
 
-    const payloadItens = <?= json_encode(array_map(function($it) {
-        return [
-            'produto_id' => (int)$it['produto_id'],
-            'pacotes_refeitos' => (int)$it['pacotes']
-        ];
-    }, $itens)) ?>;
+    const payloadItens = itensLoteResumo.map(it => ({
+        produto_id: parseInt(it.produto_id, 10),
+        pacotes_refeitos: parseInt(it.pacotes, 10)
+    }));
 
     const payload = {
         usuario_id: operadorId,
@@ -232,7 +365,6 @@ async function confirmarLoteProducao() {
         }
     } catch (err) {
         console.warn('Falha na gravação online do lote:', err);
-        // Fallback IndexedDB offline se disponível
         if (window.RepackOffline) {
             try {
                 for (const item of payloadItens) {
@@ -242,7 +374,7 @@ async function confirmarLoteProducao() {
                         data_hora_inicio: dataHoraInicio,
                         data_hora_fim: dataHoraFim,
                         pacotes_refeitos: item.pacotes_refeitos,
-                        duracao_segundos: Math.max(1, Math.round(<?= $duracaoTotalSegundos ?> / payloadItens.length)),
+                        duracao_segundos: Math.max(1, Math.round(duracaoTotalSegundos / payloadItens.length)),
                         created_at: payload.created_at
                     });
                 }
@@ -253,7 +385,7 @@ async function confirmarLoteProducao() {
                 });
                 return;
             } catch(eOffline) {
-                console.error('Falha também no fallback offline:', eOffline);
+                console.error('Falha no fallback offline:', eOffline);
             }
         }
 
@@ -261,6 +393,12 @@ async function confirmarLoteProducao() {
         btn.disabled = false;
         btn.innerText = 'CONFIRMAR';
     }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = text || '';
+    return div.innerHTML;
 }
 </script>
 
