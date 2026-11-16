@@ -1,0 +1,41 @@
+<svg viewBox="0 0 128 128" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradientes Oficiais do Repack -->
+    <linearGradient id="rpEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="rpBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#93C5FD"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="rpBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <filter id="rpGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#10B981" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Fundo Squircle / App Icon Base -->
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#rpBg)" stroke="#1E293B" stroke-width="2"/>
+
+  <!-- Monograma R Dinâmico -->
+  <g transform="translate(64, 64)" filter="url(#rpGlow)">
+    <!-- Haste Vertical Esquerda (Cilindro / Lata Estilizada) -->
+    <rect x="-30" y="-36" width="15" height="72" rx="7.5" fill="url(#rpEmerald)"/>
+    <ellipse cx="-22.5" cy="-36" rx="5" ry="2" fill="#A7F3D0"/>
+    <circle cx="-22.5" cy="-36" r="1.5" fill="#065F46"/>
+
+    <!-- Arco Superior do R (Fita Termoencolhível de Repack) -->
+    <path d="M-18,-36 C14,-36 28,-28 28,-11 C28,5 14,13 -18,13" fill="none" stroke="url(#rpEmerald)" stroke-width="14" stroke-linecap="round"/>
+    <path d="M-16,-36 C8,-36 17,-30 17,-11 C17,6 8,13 -16,13" fill="none" stroke="#0B1120" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Perna Dinâmica do R (Seta de Avanço / Logística em Azul) -->
+    <path d="M-2,8 L24,34" stroke="url(#rpBlue)" stroke-width="14" stroke-linecap="round"/>
+    <polygon points="32,40 18,22 36,24" fill="#60A5FA"/>
+  </g>
+</svg>

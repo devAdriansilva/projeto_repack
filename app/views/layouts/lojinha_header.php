@@ -19,6 +19,7 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
     <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle ?? 'Lojinha dos Colaboradores - Repack') ?></title>
     
+    <link rel="icon" type="image/svg+xml" href="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>">
     <link rel="icon" type="image/png" sizes="64x64" href="<?= APP_URL ?>/assets/img/favicon.png?v=<?= APP_VERSION ?>">
     <link rel="apple-touch-icon" sizes="180x180" href="<?= APP_URL ?>/assets/img/apple-touch-icon.png?v=<?= APP_VERSION ?>">
     <link rel="shortcut icon" href="<?= APP_URL ?>/assets/img/favicon.png?v=<?= APP_VERSION ?>">
@@ -217,9 +218,9 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
 <?php if (!empty($nomeColab)): ?>
 <!-- Barra de Navegação Superior da Lojinha -->
 <nav class="lojinha-navbar">
-    <a href="<?= APP_URL ?>/lojinha" class="lojinha-brand">
-        <span class="lojinha-brand-badge">Repack</span>
-        <h1 class="lojinha-brand-title">Lojinha dos Colaboradores</h1>
+    <a href="<?= APP_URL ?>/lojinha" class="lojinha-brand" style="display: flex; align-items: center; gap: 10px;">
+        <img src="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" width="38" height="38" style="border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+        <h1 class="lojinha-brand-title" style="margin: 0; font-size: 20px; font-weight: 800;">Lojinha dos Colaboradores</h1>
     </a>
 
     <div class="lojinha-user-info">

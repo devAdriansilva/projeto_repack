@@ -45,6 +45,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
     <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle ?? 'Gestão - ' . APP_NAME) ?></title>
     
+    <link rel="icon" type="image/svg+xml" href="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>">
     <link rel="icon" type="image/png" sizes="64x64" href="<?= APP_URL ?>/assets/img/favicon.png?v=<?= APP_VERSION ?>">
     <link rel="apple-touch-icon" sizes="180x180" href="<?= APP_URL ?>/assets/img/apple-touch-icon.png?v=<?= APP_VERSION ?>">
     <link rel="shortcut icon" href="<?= APP_URL ?>/assets/img/favicon.png?v=<?= APP_VERSION ?>">
@@ -434,11 +435,9 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
     <div class="container-fluid px-0 d-flex align-items-center justify-content-between">
         
         <!-- LATERAL ESQUERDA: Logomarca / Ícone da Lojinha & Repack + Título do Módulo -->
-        <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-white" href="<?= APP_URL ?>/gestao/dashboard">
-            <!-- Emblema da Logomarca (Preparado para inserção de imagem de marca oficial) -->
-            <div class="brand-logo-badge" style="width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #10B981 0%, #059669 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(16,185,129,0.45); flex-shrink: 0; border: 2.5px solid rgba(255,255,255,0.3);">
-                <span style="font-size: 26px; line-height: 1;">🏪</span>
-            </div>
+        <a class="navbar-brand d-flex align-items-center gap-2.5 m-0 text-white" href="<?= APP_URL ?>/gestao/dashboard">
+            <!-- Emblema da Logomarca Oficial (Monograma R Dinâmico) -->
+            <img src="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" width="48" height="48" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(16,185,129,0.35); flex-shrink: 0; border: 2px solid rgba(255,255,255,0.22); background: #0F172A;">
             <div class="d-flex flex-column" style="line-height: 1.15;">
                 <div class="d-flex align-items-center gap-1.5">
                     <strong style="letter-spacing: -0.2px; font-size: 19px; font-weight: 900;">Gestão do Repack</strong>
@@ -554,8 +553,8 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 <aside id="drawerGestaoLateral" class="drawer-lateral-direita d-xl-none">
     <!-- Cabeçalho Interno do Drawer -->
     <div class="d-flex align-items-center justify-content-between p-3 border-bottom" style="border-color: rgba(255, 255, 255, 0.12) !important; background: #070B14; min-height: 60px;">
-        <div class="d-flex align-items-center gap-2">
-            <span style="font-size: 22px;">📋</span>
+        <div class="d-flex align-items-center gap-2.5">
+            <img src="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>" alt="Logo" width="30" height="30" style="border-radius: 8px;">
             <span style="color: #FFFFFF; font-weight: 900; font-size: 16px; letter-spacing: 0.5px;">MENU DE GESTÃO</span>
         </div>
         <button type="button" class="btn text-white-50 p-1" onclick="fecharDrawerGestao()" style="font-size: 22px; line-height: 1; border: none; background: transparent; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">✕</button>

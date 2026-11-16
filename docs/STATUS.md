@@ -1020,6 +1020,27 @@
     - **Versionamento:**
       - Versão da aplicação incrementada para `v1.80` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-084 (16/11/2026):** Implementação da Identidade Visual Oficial com o Monograma "R" Dinâmico em Todo o Sistema.
+    - **Contexto e Justificativa de Design:**
+      - Substituição do emoji genérico anterior (`🏪`) pela identidade visual oficial aprovada pelo usuário: **Opção 2 - Monograma "R" Dinâmico**.
+      - A marca une o contorno de uma lata de alumínio na haste vertical esquerda a uma fita de repack com perna em seta de avanço/esteira contínua em gradiente Esmeralda (`#10B981` ao `#059669`) e Azul Cobalto (`#2563EB` ao `#60A5FA`).
+    - **Arquivos Vetoriais Mestres Criados (`public/assets/img/`):**
+      - `logo-icon.svg`: Ícone vetorial puro em formato squircle (Dark Slate `#0F172A`) com o Monograma "R" Dinâmico, otimizado para favicons e cabeçalhos em qualquer resolução de tela (retina, 4K, mobile).
+      - `logo-repack.svg`: Versão horizontal completa com o símbolo do Monograma "R", a tipografia bold "REPACK" e o subtítulo "SMART LOGISTICS".
+    - **Geração de Ícones PNG de Alta Resolução:**
+      - `icon-512.png`: 512x512 pixels para PWA e splash screens.
+      - `icon-192.png`: 192x192 pixels para atalho de tela inicial no Android/iOS.
+      - `apple-touch-icon.png`: 180x180 pixels para dispositivos Apple.
+      - `favicon.png` e `favicon.ico`: 64x64 pixels para abas de navegadores.
+    - **Aplicação nos Layouts do Sistema:**
+      - **Gestão (`app/views/layouts/gestao_header.php`):** Logomarca oficial inserida na navbar superior (`48px x 48px`), no cabeçalho interno do Drawer Lateral (`30px x 30px`) e suporte a favicon SVG vetorial no `<head>`.
+      - **Quiosque da Urna (`app/views/layouts/header.php`):** Logomarca oficial (`28px x 28px`) inserida na barra superior ao lado de `REPACK` e no cabeçalho do Modal de Configurações Operacionais.
+      - **Lojinha Virtual (`app/views/layouts/lojinha_header.php`):** Logomarca oficial (`38px x 38px`) aplicada no cabeçalho ao lado do título "Lojinha dos Colaboradores".
+      - **PWA Manifest (`public/manifest.json`):** Adicionado suporte ao `logo-icon.svg` e atualizados os caminhos com cache-busting.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.81` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

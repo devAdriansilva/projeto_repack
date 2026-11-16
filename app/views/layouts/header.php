@@ -50,6 +50,7 @@ if ($operadorAtivoId) {
     <meta name="theme-color" content="#10B981">
     <title><?= sanitize_html($pageTitle ?? APP_NAME) ?></title>
     
+    <link rel="icon" type="image/svg+xml" href="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>">
     <link rel="icon" type="image/png" sizes="64x64" href="<?= APP_URL ?>/assets/img/favicon.png?v=<?= APP_VERSION ?>">
     <link rel="apple-touch-icon" sizes="180x180" href="<?= APP_URL ?>/assets/img/apple-touch-icon.png?v=<?= APP_VERSION ?>">
     <link rel="shortcut icon" href="<?= APP_URL ?>/assets/img/favicon.png?v=<?= APP_VERSION ?>">
@@ -68,9 +69,10 @@ if ($operadorAtivoId) {
 
 <!-- Barra Superior Minimalista do Quiosque -->
 <header class="quiosque-header" style="justify-content: space-between; align-items: center; padding: 6px 16px; min-height: 52px; background-color: var(--surface); border-bottom: 2px solid var(--border);">
-    <!-- Identificador Discreto de Versão e Marca do Desenvolvedor -->
+    <!-- Identificador com Logomarca Oficial (Monograma R), Versão e Marca do Desenvolvedor -->
     <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #94A3B8; letter-spacing: 0.5px; user-select: none;">
-        <span>REPACK <span style="font-weight: 600; font-size: 11px; color: #64748B; background: #F1F5F9; padding: 2px 6px; border-radius: 6px; margin-left: 2px; border: 1px solid #E2E8F0;"><?= APP_VERSION ?></span></span>
+        <img src="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" width="28" height="28" style="border-radius: 7px; box-shadow: 0 2px 6px rgba(0,0,0,0.18);">
+        <span style="color: #0F172A; font-weight: 900;">REPACK <span style="font-weight: 600; font-size: 11px; color: #64748B; background: #F1F5F9; padding: 2px 6px; border-radius: 6px; margin-left: 2px; border: 1px solid #E2E8F0;"><?= APP_VERSION ?></span></span>
         <span style="color: #CBD5E1;">•</span>
         <span style="font-size: 12px; font-weight: 600; color: #64748B;">
             Dev: <strong style="color: #2563EB; font-weight: 800;">AdrianSilvaDev</strong>
@@ -104,7 +106,10 @@ if ($operadorAtivoId) {
 <div class="urna-modal-backdrop" id="modalConfiguracoesBackdrop">
     <div class="urna-modal-content" style="max-width: 520px; text-align: left;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-            <h2 class="headline-lg" style="margin: 0; font-size: 22px;">⚙️ Painel Operacional</h2>
+            <h2 class="headline-lg" style="margin: 0; font-size: 22px; display: flex; align-items: center; gap: 8px;">
+                <img src="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>" alt="Logo" width="28" height="28" style="border-radius: 7px;">
+                <span>Painel Operacional</span>
+            </h2>
             <button type="button" onclick="fecharModalConfiguracoes()" style="background: none; border: none; font-size: 26px; cursor: pointer; color: var(--on-surface-muted); line-height: 1;" aria-label="Fechar">✕</button>
         </div>
 

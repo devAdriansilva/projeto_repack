@@ -3,7 +3,7 @@
  * Baseado estritamente em docs/FSD.md e AGENTS.md
  */
 
-const CACHE_NAME = 'repack-pwa-v1.80';
+const CACHE_NAME = 'repack-pwa-v1.81';
 
 // Determina dinamicamente o caminho base a partir do escopo registrado do Repack
 const SCOPE_URL = new URL(self.registration.scope);
@@ -29,6 +29,8 @@ const STATIC_ASSETS = [
     getAssetUrl('/assets/img/icon-512.png'),
     getAssetUrl('/assets/img/apple-touch-icon.png'),
     getAssetUrl('/assets/img/favicon.png'),
+    getAssetUrl('/assets/img/logo-icon.svg'),
+    getAssetUrl('/assets/img/logo-repack.svg'),
     getAssetUrl('/manifest.json')
 ];
 
