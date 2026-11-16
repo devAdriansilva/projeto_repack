@@ -38,8 +38,40 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- BLOCO 1: PERÍODO DO LOTE / TURNO TRABALHADO                   -->
 <!-- ============================================================= -->
 <div class="urna-card" style="width: 100%; padding: 26px 20px; border-radius: 30px; border: 6px solid #0F172A; background: #FFFFFF; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08);">
-    <div style="font-size: 26px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 18px; text-align: center; letter-spacing: 0.5px;">
-        1. SELECIONE O TURNO DO LOTE:
+    
+    <!-- Seção 1A: DATA DA PRODUÇÃO (Hoje, Ontem ou Outra) -->
+    <div style="font-size: 26px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 14px; text-align: center; letter-spacing: 0.5px;">
+        1. DATA DA REEMBALAGEM:
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+        <button type="button" id="btnDataHoje" class="btn-urna" onclick="selecionarDataProducao('hoje')" style="min-height: 85px; padding: 8px 4px; border-radius: 20px; background: #ECFDF5; color: #065F46; border: 5px solid #10B981; font-size: 24px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; box-shadow: 0 4px 12px rgba(16,185,129,0.25);">
+            <span>📅 HOJE</span>
+            <span id="labelDataHoje" style="font-size: 17px; font-weight: 800; color: #047857;">--/--</span>
+        </button>
+
+        <button type="button" id="btnDataOntem" class="btn-urna" onclick="selecionarDataProducao('ontem')" style="min-height: 85px; padding: 8px 4px; border-radius: 20px; background: #F1F5F9; color: #334155; border: 3px solid #94A3B8; font-size: 24px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; opacity: 0.65;">
+            <span>📅 ONTEM</span>
+            <span id="labelDataOntem" style="font-size: 17px; font-weight: 800; color: #64748B;">--/--</span>
+        </button>
+
+        <button type="button" id="btnDataOutra" class="btn-urna" onclick="selecionarDataProducao('outra')" style="min-height: 85px; padding: 8px 4px; border-radius: 20px; background: #F1F5F9; color: #334155; border: 3px solid #94A3B8; font-size: 22px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; opacity: 0.65;">
+            <span>🗓️ OUTRA</span>
+            <span style="font-size: 16px; font-weight: 800; color: #64748B;">DATA</span>
+        </button>
+    </div>
+
+    <!-- Campo Seletor de Data Customizada (Escondido por padrão) -->
+    <div id="wrapperDataPersonalizada" style="display: none; margin-bottom: 18px; background: #F8FAFC; padding: 16px; border-radius: 20px; border: 3px dashed #94A3B8; text-align: center;">
+        <label for="inputDataProducao" style="font-size: 22px; font-weight: 900; color: #1E293B; display: block; margin-bottom: 8px;">
+            SELECIONE A DATA ESPECÍFICA:
+        </label>
+        <input type="date" id="inputDataProducao" class="input-sku-gigante" style="min-height: 65px; font-size: 32px; font-weight: 900; text-align: center; border-radius: 18px; border: 4px solid #0F172A; width: 100%; max-width: 340px; margin: 0 auto; display: block;" onchange="aplicarDataPersonalizada(this.value)">
+    </div>
+
+    <!-- Seção 1B: TURNO DO LOTE -->
+    <div style="font-size: 26px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin: 18px 0 14px 0; text-align: center; letter-spacing: 0.5px; border-top: 3.5px solid #E2E8F0; padding-top: 18px;">
+        2. TURNO DO LOTE:
     </div>
 
     <!-- 2 Botões Grandes e Proporcionais de Turno (Manhã e Tarde) -->
@@ -78,8 +110,11 @@ require_once __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 
-    <!-- Faixa Destaque de Duração Total Calculada -->
-    <div style="text-align: center; margin-top: 16px; background: #F0FDF4; border: 3px solid #86EFAC; border-radius: 18px; padding: 12px;">
+    <!-- Faixa Destaque Consolidada com Data e Duração -->
+    <div style="text-align: center; margin-top: 16px; background: #F0FDF4; border: 3px solid #86EFAC; border-radius: 18px; padding: 14px;">
+        <div style="font-size: 22px; font-weight: 800; color: #166534; margin-bottom: 4px;">
+            DATA DA PRODUÇÃO: <strong id="displayDataProducaoResumo" style="color: #0F172A; font-size: 26px;">--/--/----</strong>
+        </div>
         <span style="font-size: 26px; font-weight: 900; color: #14532D;">
             DURAÇÃO DO BLOCO: 
             <span id="displayDuracaoTotal" style="color: #059669; font-size: 34px; font-weight: 900;">5h 00min</span>
@@ -92,7 +127,7 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- ============================================================= -->
 <div class="urna-card" style="width: 100%; padding: 26px 20px; border-radius: 30px; border: 6px solid #0F172A; background: #FFFFFF; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08);">
     <div style="font-size: 26px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
-        2. INCLUIR ITEM REEMBALADO:
+        3. INCLUIR ITEM REEMBALADO:
     </div>
 
     <div class="sku-entry-container" style="margin-bottom: 0;">
@@ -164,11 +199,11 @@ require_once __DIR__ . '/../layouts/header.php';
             </label>
 
             <!-- Container Horizontal Flexível Travado em Linha Única sem Quebra -->
-            <div style="display: flex; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center; justify-content: center; gap: 14px; width: 100%; margin: 0 auto; max-width: 520px;">
+            <div style="display: flex; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center; justify-content: center; gap: clamp(8px, 2.5vw, 16px); width: 100%; margin: 0 auto; max-width: 480px; box-sizing: border-box;">
                 <!-- Botão Menos -->
                 <button type="button" 
                         onclick="alterarQuantidade(-1)" 
-                        style="flex: 0 0 auto; width: clamp(85px, 24vw, 115px); height: clamp(85px, 24vw, 115px); border-radius: 28px; font-size: clamp(52px, 14vw, 76px); font-weight: 900; display: flex; align-items: center; justify-content: center; border: 6px solid #0F172A; background-color: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation; box-shadow: 0 6px 16px rgba(0,0,0,0.12);" 
+                        style="flex: 0 0 auto; width: clamp(75px, 20vw, 105px); height: clamp(75px, 20vw, 105px); border-radius: 24px; font-size: clamp(46px, 12vw, 68px); font-weight: 900; display: flex; align-items: center; justify-content: center; border: 5px solid #0F172A; background-color: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 14px rgba(0,0,0,0.12); padding: 0;" 
                         aria-label="Diminuir">
                     −
                 </button>
@@ -184,13 +219,13 @@ require_once __DIR__ . '/../layouts/header.php';
                        onfocus="this.select()" 
                        oninput="atualizarQuantidadeDigitada(this.value)" 
                        onblur="validarQuantidadeBlur()" 
-                       style="flex: 1 1 auto; min-width: 100px; max-width: 220px; height: clamp(85px, 24vw, 115px); background-color: #FFFFFF; border: 6px solid #0F172A; border-radius: 28px; font-size: clamp(52px, 14vw, 76px); font-weight: 900; color: #0F172A; text-align: center; box-sizing: border-box; padding: 0 8px; outline: none; touch-action: manipulation; box-shadow: 0 6px 16px rgba(0,0,0,0.12);" 
+                       style="flex: 1 1 auto; min-width: 75px; max-width: 190px; height: clamp(75px, 20vw, 105px); background-color: #FFFFFF; border: 5px solid #0F172A; border-radius: 24px; font-size: clamp(46px, 12vw, 68px); font-weight: 900; color: #0F172A; text-align: center; box-sizing: border-box; padding: 0 8px; outline: none; touch-action: manipulation; box-shadow: 0 4px 14px rgba(0,0,0,0.12);" 
                        aria-label="Quantidade de pacotes">
 
                 <!-- Botão Mais -->
                 <button type="button" 
                         onclick="alterarQuantidade(1)" 
-                        style="flex: 0 0 auto; width: clamp(85px, 24vw, 115px); height: clamp(85px, 24vw, 115px); border-radius: 28px; font-size: clamp(52px, 14vw, 76px); font-weight: 900; display: flex; align-items: center; justify-content: center; border: 6px solid #0F172A; background-color: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation; box-shadow: 0 6px 16px rgba(0,0,0,0.12);" 
+                        style="flex: 0 0 auto; width: clamp(75px, 20vw, 105px); height: clamp(75px, 20vw, 105px); border-radius: 24px; font-size: clamp(46px, 12vw, 68px); font-weight: 900; display: flex; align-items: center; justify-content: center; border: 5px solid #0F172A; background-color: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 14px rgba(0,0,0,0.12); padding: 0;" 
                         aria-label="Aumentar">
                     +
                 </button>
@@ -285,13 +320,109 @@ const PRODUTOS = <?= json_encode($produtosJson, JSON_UNESCAPED_UNICODE) ?>;
 let produtoAtivo = null;
 let quantidadeAtual = 1;
 let turnoAtual = 'manha'; // 'manha', 'tarde', 'outro'
+let dataProducaoAtual = ''; // YYYY-MM-DD
+let tipoDataAtual = 'hoje'; // 'hoje', 'ontem', 'outra'
 let itensLote = [];
 
 // 1. Inicialização e Restauração de Rascunho
 window.addEventListener('DOMContentLoaded', () => {
+    inicializarDatas();
     restaurarRascunhoLote();
     atualizarDuracaoLote();
 });
+
+function formatarDataIso(d) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function formatarDataBr(d) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+function inicializarDatas() {
+    const agora = new Date();
+    const ontem = new Date(agora.getTime() - 24 * 3600 * 1000);
+
+    const pad = (n) => String(n).padStart(2, '0');
+    const labelHoje = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}`;
+    const labelOntem = `${pad(ontem.getDate())}/${pad(ontem.getMonth() + 1)}`;
+
+    document.getElementById('labelDataHoje').innerText = labelHoje;
+    document.getElementById('labelDataOntem').innerText = labelOntem;
+    document.getElementById('inputDataProducao').value = formatarDataIso(agora);
+    document.getElementById('inputDataProducao').max = formatarDataIso(agora);
+
+    if (!dataProducaoAtual) {
+        selecionarDataProducao('hoje');
+    }
+}
+
+function selecionarDataProducao(tipo) {
+    tipoDataAtual = tipo;
+    const agora = new Date();
+    const btnHoje = document.getElementById('btnDataHoje');
+    const btnOntem = document.getElementById('btnDataOntem');
+    const btnOutra = document.getElementById('btnDataOutra');
+    const wrapper = document.getElementById('wrapperDataPersonalizada');
+    const displayDataTexto = document.getElementById('displayDataProducaoResumo');
+
+    btnHoje.style.borderWidth = '3px';
+    btnHoje.style.opacity = '0.65';
+    btnHoje.style.background = '#F1F5F9';
+    btnHoje.style.color = '#334155';
+
+    btnOntem.style.borderWidth = '3px';
+    btnOntem.style.opacity = '0.65';
+    btnOntem.style.background = '#F1F5F9';
+    btnOntem.style.color = '#334155';
+
+    btnOutra.style.borderWidth = '3px';
+    btnOutra.style.opacity = '0.65';
+    btnOutra.style.background = '#F1F5F9';
+    btnOutra.style.color = '#334155';
+
+    if (tipo === 'hoje') {
+        dataProducaoAtual = formatarDataIso(agora);
+        btnHoje.style.borderWidth = '5px';
+        btnHoje.style.opacity = '1';
+        btnHoje.style.background = '#ECFDF5';
+        btnHoje.style.color = '#065F46';
+        wrapper.style.display = 'none';
+        displayDataTexto.innerText = `${formatarDataBr(agora)} (Hoje)`;
+    } else if (tipo === 'ontem') {
+        const dOntem = new Date(agora.getTime() - 24 * 3600 * 1000);
+        dataProducaoAtual = formatarDataIso(dOntem);
+        btnOntem.style.borderWidth = '5px';
+        btnOntem.style.opacity = '1';
+        btnOntem.style.background = '#ECFDF5';
+        btnOntem.style.color = '#065F46';
+        wrapper.style.display = 'none';
+        displayDataTexto.innerText = `${formatarDataBr(dOntem)} (Ontem)`;
+    } else {
+        btnOutra.style.borderWidth = '5px';
+        btnOutra.style.opacity = '1';
+        btnOutra.style.background = '#ECFDF5';
+        btnOutra.style.color = '#065F46';
+        wrapper.style.display = 'block';
+        const dVal = document.getElementById('inputDataProducao').value || formatarDataIso(agora);
+        dataProducaoAtual = dVal;
+        const partes = dVal.split('-');
+        displayDataTexto.innerText = `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    salvarRascunhoLote();
+}
+
+function aplicarDataPersonalizada(val) {
+    if (!val) return;
+    dataProducaoAtual = val;
+    const partes = val.split('-');
+    const displayDataTexto = document.getElementById('displayDataProducaoResumo');
+    displayDataTexto.innerText = `${partes[2]}/${partes[1]}/${partes[0]}`;
+    salvarRascunhoLote();
+}
 
 function selecionarTurno(tipo) {
     turnoAtual = tipo;
@@ -661,7 +792,7 @@ function recalcularTotaisLote() {
     const totalPacotes = itensLote.reduce((acc, item) => acc + item.pacotes, 0);
     document.getElementById('displayTotalPacotesLote').innerText = totalPacotes;
 
-    const hInicio = document.getElementById('inputHoraInicio').value || '08:00';
+    const hInicio = document.getElementById('inputHoraInicio').value || '07:00';
     const hFim = document.getElementById('inputHoraFim').value || '12:00';
     const duracaoSeg = calcularSegundosEntreHorarios(hInicio, hFim);
 
@@ -682,10 +813,12 @@ function recalcularTotaisLote() {
 
 // 4. Persistência de Rascunho do Lote
 function salvarRascunhoLote() {
-    const hInicio = document.getElementById('inputHoraInicio').value || '08:00';
+    const hInicio = document.getElementById('inputHoraInicio').value || '07:00';
     const hFim = document.getElementById('inputHoraFim').value || '12:00';
 
     const rascunho = {
+        data_producao: dataProducaoAtual,
+        tipo_data: tipoDataAtual,
         turno: turnoAtual,
         hora_inicio: hInicio,
         hora_fim: hFim,
@@ -705,6 +838,12 @@ function restaurarRascunhoLote() {
         const salvo = JSON.parse(salvoStr);
         if (salvo && Array.isArray(salvo.itens)) {
             itensLote = salvo.itens;
+            if (salvo.data_producao) {
+                dataProducaoAtual = salvo.data_producao;
+            }
+            if (salvo.tipo_data) {
+                selecionarDataProducao(salvo.tipo_data);
+            }
             if (salvo.hora_inicio) document.getElementById('inputHoraInicio').value = salvo.hora_inicio;
             if (salvo.hora_fim) document.getElementById('inputHoraFim').value = salvo.hora_fim;
             if (salvo.turno) selecionarTurno(salvo.turno);
@@ -728,11 +867,13 @@ function validarAvancoLote(e) {
         return false;
     }
 
-    const hInicio = document.getElementById('inputHoraInicio').value || '08:00';
+    const hInicio = document.getElementById('inputHoraInicio').value || '07:00';
     const hFim = document.getElementById('inputHoraFim').value || '12:00';
     const duracaoSeg = calcularSegundosEntreHorarios(hInicio, hFim);
 
     const payload = {
+        data_producao: dataProducaoAtual || formatarDataIso(new Date()),
+        tipo_data: tipoDataAtual,
         turno: turnoAtual,
         hora_inicio: hInicio,
         hora_fim: hFim,

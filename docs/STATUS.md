@@ -1003,6 +1003,23 @@
     - **Versionamento:**
       - Versão da aplicação incrementada para `v1.79` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-083 (16/11/2026):** Seletor de Data da Produção (Hoje, Ontem e Data Específica) e Blindagem de Alinhamento Mobile.
+    - **Contexto Operacional e Justificativa de Chão de Fábrica:**
+      - Atendimento à rotina operacional onde um lote de reembalagem produzido no turno anterior (ex: ontem à tarde) não pôde ser lançado no mesmo dia por imprevistos de rotina, sendo apontado no início do expediente seguinte para reintegração contábil e de estoque.
+    - **Seletor Rápido de Data da Produção (`app/views/operador/cronometro.php`):**
+      - Adição da seção "1. DATA DA REEMBALAGEM" no topo da tela de produtividade.
+      - Botões de seleção em 1 toque: `📅 HOJE` (com data atual pré-selecionada), `📅 ONTEM` (com a data de ontem calculada automaticamente) e `🗓️ OUTRA DATA` (com seletor nativo `input[type="date"]`).
+      - Faixa consolidada no Bloco 1 destacando visualmente a data do lote escolhida (ex: `DATA DA PRODUÇÃO: 15/11/2026 (Ontem)`).
+      - Persistência contínua da data selecionada no rascunho `localStorage` (`repack_lote_ativo`).
+    - **Exibição e Registro Contábil da Data no Resumo (`app/views/operador/cronometro_resumo.php`):**
+      - Cartão de conferência exibe a data da produção em destaque com tipografia de 40px negrito.
+      - Envio e gravação dos timestamps de início e término (`data_hora_inicio` e `data_hora_fim`) atrelados rigorosamente à data real da reembalagem informada, garantindo precisão cronológica e contábil nos relatórios.
+    - **Blindagem de Alinhamento e Proporção Mobile dos Controles de Quantidade:**
+      - Ajuste da escala de botões e input numérico (`[-] [ 1 ] [+]`) com `clamp(75px, 20vw, 105px)` e espaçamento responsivo, eliminando qualquer risco de empilhamento vertical ou estouro lateral em telas de smartphones de 360px a 412px de largura.
+      - Eliminação de linhas duplicadas de fechamento no script de validação de envio.
+    - **Versionamento:**
+      - Versão da aplicação incrementada para `v1.80` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

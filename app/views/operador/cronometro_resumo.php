@@ -47,6 +47,12 @@ if (!$dadosLote && !empty($_POST['produto_id'])) {
 }
 
 $itens = $dadosLote['itens'] ?? [];
+$dataProducao = (string)($dadosLote['data_producao'] ?? date('Y-m-d'));
+$dataProducaoFormatada = date('d/m/Y', strtotime($dataProducao));
+$hojeStr = date('Y-m-d');
+$ontemStr = date('Y-m-d', strtotime('-1 day'));
+$sufixoData = ($dataProducao === $hojeStr) ? ' (Hoje)' : (($dataProducao === $ontemStr) ? ' (Ontem)' : '');
+
 $horaInicio = $dadosLote['hora_inicio'] ?? '07:00';
 $horaFim = $dadosLote['hora_fim'] ?? '12:00';
 $duracaoTotalSegundos = (int)($dadosLote['duracao_total_segundos'] ?? 18000);
@@ -84,6 +90,14 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- ============================================================= -->
 <div class="urna-card" style="width: 100%; padding: 28px 20px; border-radius: 34px; border: 7px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18); background: #FFFFFF; margin-bottom: 24px;">
     
+    <!-- Linha 0: Data da Produção em Destaque -->
+    <div style="border-bottom: 4px solid #E2E8F0; padding-bottom: 16px; margin-bottom: 16px; text-align: center;">
+        <span style="font-size: 20px; font-weight: 900; color: #64748B; text-transform: uppercase;">DATA DA PRODUÇÃO:</span>
+        <div style="font-size: 40px; font-weight: 900; color: #0F172A; margin-top: 4px;">
+            📅 <?= $dataProducaoFormatada ?> <span style="color: #059669; font-size: 26px; font-weight: 900;"><?= $sufixoData ?></span>
+        </div>
+    </div>
+
     <!-- Linha 1: Período e Duração Total com Fontes Monumentais -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-bottom: 4px solid #E2E8F0; padding-bottom: 18px; text-align: center;">
         <div>
@@ -162,6 +176,7 @@ require_once __DIR__ . '/../layouts/header.php';
 // Array mutável e reativo de itens na tela de resumo
 let itensLoteResumo = <?= json_encode($itens, JSON_UNESCAPED_UNICODE) ?>;
 const duracaoTotalSegundos = <?= $duracaoTotalSegundos ?>;
+const dataProducaoLote = '<?= sanitize_html($dataProducao) ?>';
 const turnoLote = '<?= sanitize_html($dadosLote['turno'] ?? 'manha') ?>';
 const horaInicioLote = '<?= sanitize_html($horaInicio) ?>';
 const horaFimLote = '<?= sanitize_html($horaFim) ?>';
@@ -298,6 +313,7 @@ function atualizarTotaisResumo() {
 function sincronizarLoteLocalStorage() {
     try {
         const rascunho = {
+            data_producao: dataProducaoLote,
             turno: turnoLote,
             hora_inicio: horaInicioLote,
             hora_fim: horaFimLote,
@@ -318,17 +334,18 @@ async function confirmarLoteProducao() {
     btn.innerText = 'GRAVANDO...';
 
     const operadorId = <?= (int)($_SESSION['operador_id'] ?? 1) ?>;
-    const hoje = new Date().toISOString().split('T')[0];
+    const dataRef = dataProducaoLote || (new Date().toISOString().split('T')[0]);
 
     const horaIni = horaInicioLote;
     const horaFim = horaFimLote;
 
-    const dataHoraInicio = `${hoje} ${horaIni}:00`;
-    let dataHoraFim = `${hoje} ${horaFim}:00`;
+    const dataHoraInicio = `${dataRef} ${horaIni}:00`;
+    let dataHoraFim = `${dataRef} ${horaFim}:00`;
 
     if (horaFim <= horaIni) {
-        const dFim = new Date(new Date(`${hoje}T${horaFim}:00`).getTime() + 24 * 3600 * 1000);
-        dataHoraFim = `${dFim.getFullYear()}-${String(dFim.getMonth()+1).padStart(2,'0')}-${String(dFim.getDate()).padStart(2,'0')} ${horaFim}:00`;
+        const dFim = new Date(new Date(`${dataRef}T${horaFim}:00`).getTime() + 24 * 3600 * 1000);
+        const pad = (n) => String(n).padStart(2, '0');
+        dataHoraFim = `${dFim.getFullYear()}-${pad(dFim.getMonth()+1)}-${pad(dFim.getDate())} ${horaFim}:00`;
     }
 
     const payloadItens = itensLoteResumo.map(it => ({
