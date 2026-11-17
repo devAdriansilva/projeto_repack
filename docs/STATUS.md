@@ -1069,6 +1069,18 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) aprovada com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.83` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-087 (17/11/2026):** Remoção de Atalhos Redundantes no Dashboard e Enxugamento dos Setores de Lotes de Venda.
+    - **Demanda Operacional:**
+      - Remoção dos botões de atalho `"📋 Retificar B.O."` e `"🏷️ Lotes"` do topo do Painel Consolidado da Gestão (`app/views/gestao/dashboard.php`), despoluindo o cabeçalho e mantendo o foco exclusivo nos controles de telemetria em tempo real (Auto-atualizar 30s, botão manual e timestamp).
+      - Enxugamento da parametrização de setores elegíveis nos lotes de venda da lojinha (`app/views/gestao/lotes.php`), restringindo a lista estritamente aos 5 setores operacionais requeridos: `Administrativo`, `Armazém`, `Distribuição`, `Puxada` e `Vendas`.
+    - **Solução Implementada:**
+      - Ajuste cirúrgico em `app/views/gestao/dashboard.php` removendo os links diretos para B.O. e Lotes no topo do painel.
+      - Definição da constante `Usuario::SETORES_LOTES_DISPONIVEIS` em `app/models/Usuario.php` contendo estritamente os 5 setores, retornada por `Usuario::listarSetores()`.
+      - Aprimoramento resiliente em `LoteVenda::buscarLoteAtivoParaSetor()` com normalização de acentuação e comparação flexível para garantir compatibilidade perfeita (ex: Armazém / Armazem, Distribuição / Distribuicao, Vendas / Sala de Vendas).
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` executadas e aprovadas com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.84` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

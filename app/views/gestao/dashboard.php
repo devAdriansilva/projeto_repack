@@ -130,12 +130,6 @@ $labelsTipoAvaria = [
                 <?= date('H:i:s') ?>
             </span>
         </div>
-        <a href="<?= APP_URL ?>/gestao/bo" class="btn btn-gestao btn-gestao-secondary text-nowrap">
-            📋 Retificar B.O.
-        </a>
-        <a href="<?= APP_URL ?>/gestao/lotes" class="btn btn-gestao btn-gestao-primary text-nowrap">
-            🏷️ Lotes
-        </a>
     </div>
 </div>
 

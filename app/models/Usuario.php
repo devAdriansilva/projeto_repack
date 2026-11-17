@@ -87,24 +87,22 @@ class Usuario
     }
 
     /**
-     * Retorna lista única de setores cadastrados na base para parametrização de lotes
+     * Setores autorizados enxutos para parametrização de lotes de venda da lojinha
+     */
+    public const SETORES_LOTES_DISPONIVEIS = [
+        'Administrativo',
+        'Armazém',
+        'Distribuição',
+        'Puxada',
+        'Vendas'
+    ];
+
+    /**
+     * Retorna lista oficial e enxuta de setores autorizados para parametrização de lotes de venda
      * @return array
      */
     public static function listarSetores(): array
     {
-        $pdo = Database::getConnection();
-        $stmt = $pdo->query("
-            SELECT DISTINCT setor 
-            FROM usuarios 
-            WHERE setor IS NOT NULL AND setor != '' AND deleted_at IS NULL 
-            ORDER BY setor ASC
-        ");
-        $setores = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-        // Garante setores padrão se a base estiver enxuta
-        $padroes = ['Logística', 'Operações', 'Envase', 'Comercial', 'Financeiro', 'Recursos Humanos', 'Qualidade'];
-        $todos = array_unique(array_merge($setores, $padroes));
-        sort($todos);
-        return $todos;
+        return self::SETORES_LOTES_DISPONIVEIS;
     }
 }

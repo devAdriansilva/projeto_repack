@@ -216,7 +216,21 @@ class LoteVenda
      */
     public static function buscarLoteAtivoParaSetor(string $setor): ?array
     {
+        $removerAcentos = static function(string $string): string {
+            $map = [
+                'á'=>'a', 'à'=>'a', 'ã'=>'a', 'â'=>'a', 'ä'=>'a',
+                'é'=>'e', 'è'=>'e', 'ê'=>'e', 'ë'=>'e',
+                'í'=>'i', 'ì'=>'i', 'î'=>'i', 'ï'=>'i',
+                'ó'=>'o', 'ò'=>'o', 'õ'=>'o', 'ô'=>'o', 'ö'=>'o',
+                'ú'=>'u', 'ù'=>'u', 'û'=>'u', 'ü'=>'u',
+                'ç'=>'c', 'ñ'=>'n'
+            ];
+            return strtr(mb_strtolower(trim($string)), $map);
+        };
+
         $setorAlvo = mb_strtolower(trim($setor));
+        $setorAlvoNorm = $removerAcentos($setorAlvo);
+
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("
             SELECT lv.*, u.nome AS criado_por_nome
@@ -238,7 +252,14 @@ class LoteVenda
 
             foreach ($setoresLista as $s) {
                 $sFormat = mb_strtolower(trim((string)$s));
-                if ($sFormat === '*' || $sFormat === 'todos' || $sFormat === $setorAlvo) {
+                $sNorm = $removerAcentos($sFormat);
+                if (
+                    $sFormat === '*' || 
+                    $sFormat === 'todos' || 
+                    $sFormat === $setorAlvo || 
+                    ($sNorm !== '' && $sNorm === $setorAlvoNorm) ||
+                    ($sNorm !== '' && (str_contains($setorAlvoNorm, $sNorm) || str_contains($sNorm, $setorAlvoNorm)))
+                ) {
                     $lote['setores_lista'] = $setoresLista;
                     return $lote;
                 }
