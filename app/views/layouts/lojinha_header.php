@@ -139,23 +139,18 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             padding-top: 8px;
             padding-bottom: 2px;
             border-top: 1px dashed #E2E8F0;
-            font-size: 14.5px;
+            font-size: 15px;
             color: #334155;
             width: 100%;
         }
         .btn-link-pin {
-            font-size: 13.5px;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: 800;
             color: #2563EB;
             text-decoration: none;
-            padding: 4px 10px;
+            padding: 5px 12px;
             background: #EFF6FF;
-            border-radius: 6px;
-            border: 1px solid #BFDBFE;
-            white-space: nowrap;
-        }
-            background: #EFF6FF;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #BFDBFE;
             white-space: nowrap;
         }
@@ -226,8 +221,8 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             background: #10B981;
             color: #FFFFFF;
             font-weight: 800;
-            font-size: 13.5px;
-            padding: 4px 10px;
+            font-size: 14px;
+            padding: 4px 12px;
             border-radius: 9999px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             z-index: 2;
@@ -242,11 +237,11 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             background: #1E1B4B;
             color: #FDE68A;
             border: 1.5px solid #818CF8;
-            font-size: 12px;
+            font-size: 12.5px;
             padding: 3px 8px;
         }
         .card-produto-titulo {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
             color: #0F172A;
             margin-bottom: 6px;
@@ -258,7 +253,7 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             overflow: hidden;
         }
         .badge-no-carrinho {
-            font-size: 12.5px;
+            font-size: 13.5px;
             font-weight: 700;
             padding: 3px 8px;
             border-radius: 6px;
@@ -329,34 +324,35 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             .card-badge-estoque {
                 top: 6px !important;
                 right: 6px !important;
-                font-size: 12.5px !important;
+                font-size: 13.5px !important;
                 font-weight: 800 !important;
-                padding: 3.5px 8px !important;
+                padding: 3.5px 9px !important;
             }
             .badge-master {
-                font-size: 11.5px !important;
+                font-size: 12.5px !important;
                 padding: 2.5px 6px !important;
             }
             .badge-no-carrinho {
-                font-size: 13px !important;
+                font-size: 14px !important;
                 font-weight: 800 !important;
+                padding: 4px 8px !important;
             }
             .card-produto-titulo {
-                font-size: 15.5px !important;
+                font-size: 18px !important;
                 font-weight: 800 !important;
-                line-height: 1.25 !important;
-                min-height: 38px !important;
+                line-height: 1.22 !important;
+                min-height: 44px !important;
                 margin-bottom: 6px !important;
             }
             .btn-urna {
-                height: 54px !important;
-                font-size: 17px !important;
-                font-weight: 800 !important;
+                height: 56px !important;
+                font-size: 18.5px !important;
+                font-weight: 900 !important;
                 border-radius: 10px !important;
                 padding: 0 4px !important;
             }
             .btn-urna-disabled {
-                font-size: 16px !important;
+                font-size: 17.5px !important;
                 font-weight: 800 !important;
             }
             .banner-lote {
@@ -365,30 +361,30 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
                 margin-bottom: 12px !important;
             }
             .banner-lote h2 {
-                font-size: 20px !important;
+                font-size: 22px !important;
                 font-weight: 800 !important;
             }
             .banner-cota {
                 width: 100% !important;
                 text-align: center;
-                font-size: 15px !important;
+                font-size: 16px !important;
                 font-weight: 700 !important;
-                padding: 8px 12px !important;
+                padding: 10px 14px !important;
             }
             .alert-pedido-confirmado {
-                padding: 16px !important;
+                padding: 18px !important;
                 border-radius: 14px !important;
             }
             .btn-ver-comprovante {
                 width: 100% !important;
                 text-align: center;
-                padding: 12px 16px !important;
-                font-size: 16.5px !important;
+                padding: 14px 18px !important;
+                font-size: 17.5px !important;
                 font-weight: 800 !important;
             }
             .timer-trava-box {
-                padding: 12px 16px !important;
-                font-size: 15.5px !important;
+                padding: 14px 18px !important;
+                font-size: 16.5px !important;
                 border-radius: 10px !important;
                 margin-bottom: 12px !important;
             }

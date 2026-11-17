@@ -1261,6 +1261,20 @@
       - Testes automatizados executados e 100% validados (`tests/test_fase5.php`).
       - Versão da aplicação incrementada para `v1.96` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-101 (17/11/2026):** Reforço de Escala Tipográfica de Alto Impacto e Correção de Sintaxe CSS no Cabeçalho.
+    - **Demanda do Usuário:**
+      - Aumentar ainda mais as fontes da Lojinha após constatação de que continuavam pequenas em telas móveis de alta densidade de pixels.
+    - **Diagnóstico & Solução:**
+      - Identificado e removido snippet CSS órfão em `app/views/layouts/lojinha_header.php` que continha chaves extras e podia causar descarte de regras em alguns parsers de navegadores móveis.
+      - **Títulos dos Produtos:** Elevados para `18px` (`font-weight: 800`, entrelinha `1.22`), oferecendo visibilidade marcante no smartphone sem cortar palavras.
+      - **Botões de Ação na Grade:** Elevados para `18.5px` (`font-weight: 900`, altura `56px`), padrão robusto de leitura e toque operacional.
+      - **Selos de Saldo de Estoque:** Elevados para `13.5px` no mobile e `14px` no desktop com negrito extra (`800`) e preenchimento `4px 9px`.
+      - **Campo de Busca e Pílulas de Categoria:** Input de busca com altura de `56px` e fonte de `18px`; botões de categoria com `16.5px` e padding de `9px 20px`.
+      - **Banners Informativos & Cotas:** Título do lote com `26px`, número de itens com `24px` e aviso de pedido concluído em `22px`/`16.5px`.
+    - **Testes & Versionamento:**
+      - Testes automatizados oficiais (`tests/test_fase5.php`) e testes de concorrência (`tests/test_concorrencia_saldos_vitrine.php`) executados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.97` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
