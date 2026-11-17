@@ -1192,6 +1192,16 @@
       - Suíte integrada `tests/test_fase5.php` (35/35) e de PIN `tests/test_pin_comprador.php` (19/19) validadas com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.91` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-096 (17/11/2026):** Centralização e Alinhamento Vertical Unificado das Informações do Rodapé no PC.
+    - **Demanda do Usuário:**
+      - No PC, as informações do rodapé da Gestão (`Projeto Repack...` e `Desenvolvido por...`) ficavam distribuídas nos extremos opostos (uma na esquerda e outra na direita). Centralizar ambos em coluna vertical (um abaixo do outro).
+    - **Solução Implementada (`app/views/layouts/gestao_footer.php`):**
+      - Substituição das classes `flex-sm-row justify-content-between` por `d-flex flex-column align-items-center justify-content-center gap-1`.
+      - Centralização consistente em todas as resoluções de tela (PC, notebook, tablet e mobile), com tipografia calibrada (`13px` e `12px`) em contraste suave com o tema Dark.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) executada com sucesso.
+      - Versão da aplicação incrementada para `v1.92` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
