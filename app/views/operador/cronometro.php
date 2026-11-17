@@ -83,7 +83,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
         <button type="button" id="btnTurnoTarde" class="btn-urna" onclick="selecionarTurno('tarde')" style="min-height: 110px; padding: 14px 10px; border-radius: 24px; background: #E0E7FF; color: #3730A3; border: 6px solid #6366F1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; opacity: 0.6;">
             <span style="font-size: 34px; font-weight: 900; line-height: 1;">⛅ TARDE</span>
-            <span style="font-size: 26px; font-weight: 900; color: #4338CA;">13:00 às 17:00</span>
+            <span style="font-size: 26px; font-weight: 900; color: #4338CA;">14:00 às 17:00</span>
         </button>
     </div>
 
@@ -341,7 +341,10 @@ let itensLote = [];
 // 1. Inicialização e Restauração de Rascunho
 window.addEventListener('DOMContentLoaded', () => {
     inicializarDatas();
-    restaurarRascunhoLote();
+    const rascunhoAtivo = restaurarRascunhoLote();
+    if (!rascunhoAtivo) {
+        detectarTurnoAutomatico();
+    }
     atualizarDuracaoLote();
     inicializarLongPressBusca();
 });
@@ -521,27 +524,46 @@ function selecionarTurno(tipo) {
     if (tipo === 'manha') {
         btnM.style.opacity = '1';
         btnM.style.borderWidth = '6px';
+        btnM.style.boxShadow = '0 4px 14px rgba(245,158,11,0.25)';
         btnT.style.opacity = '0.55';
         btnT.style.borderWidth = '3px';
+        btnT.style.boxShadow = 'none';
         wrapper.style.display = 'none';
         document.getElementById('inputHoraInicio').value = '07:00';
         document.getElementById('inputHoraFim').value = '12:00';
     } else if (tipo === 'tarde') {
         btnM.style.opacity = '0.55';
         btnM.style.borderWidth = '3px';
+        btnM.style.boxShadow = 'none';
         btnT.style.opacity = '1';
-        btnT.style.borderWidth = '5px';
+        btnT.style.borderWidth = '6px';
+        btnT.style.boxShadow = '0 4px 14px rgba(99,102,241,0.25)';
         wrapper.style.display = 'none';
-        document.getElementById('inputHoraInicio').value = '13:00';
+        document.getElementById('inputHoraInicio').value = '14:00';
         document.getElementById('inputHoraFim').value = '17:00';
     } else {
         btnM.style.opacity = '0.55';
+        btnM.style.borderWidth = '3px';
+        btnM.style.boxShadow = 'none';
         btnT.style.opacity = '0.55';
+        btnT.style.borderWidth = '3px';
+        btnT.style.boxShadow = 'none';
         wrapper.style.display = 'grid';
     }
 
     atualizarDuracaoLote();
     salvarRascunhoLote();
+}
+
+function detectarTurnoAutomatico() {
+    const horaAtual = new Date().getHours();
+    // A partir das 13:00 seleciona automaticamente o turno da TARDE (14:00 às 17:00).
+    // Antes das 13:00 seleciona automaticamente o turno da MANHÃ (07:00 às 12:00).
+    if (horaAtual >= 13) {
+        selecionarTurno('tarde');
+    } else {
+        selecionarTurno('manha');
+    }
 }
 
 function alternarHorarioPersonalizado() {
@@ -921,7 +943,7 @@ function salvarRascunhoLote() {
 
 function restaurarRascunhoLote() {
     const salvoStr = localStorage.getItem('repack_lote_ativo');
-    if (!salvoStr) return;
+    if (!salvoStr) return false;
 
     try {
         const salvo = JSON.parse(salvoStr);
@@ -937,8 +959,10 @@ function restaurarRascunhoLote() {
             if (salvo.hora_fim) document.getElementById('inputHoraFim').value = salvo.hora_fim;
             if (salvo.turno) selecionarTurno(salvo.turno);
             renderizarListaLote();
+            return true;
         }
     } catch(e) {}
+    return false;
 }
 
 function cancelarRascunhoLote() {

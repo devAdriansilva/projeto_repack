@@ -1202,6 +1202,21 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) executada com sucesso.
       - Versão da aplicação incrementada para `v1.92` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-097 (17/11/2026):** Ajuste do Turno da Tarde (14:00 às 17:00) e Detecção Automática de Turno por Horário na Produtividade.
+    - **Demanda do Usuário:**
+      - Corrigir o horário padrão do turno da tarde de 13:00 às 17:00 para 14:00 às 17:00 na tela de apontamento de lote/turno de produtividade.
+      - Implementar detecção inteligente do turno com base no horário real em que o lançamento for iniciado para agilizar o processo e eliminar cliques desnecessários.
+    - **Solução Implementada (`app/views/operador/cronometro.php`):**
+      - Atualização do botão visual do turno da tarde para `14:00 às 17:00` (duração padrão de 3h 00min).
+      - Atualização dos valores atribuídos aos campos `inputHoraInicio` (`14:00`) e `inputHoraFim` (`17:00`) na função `selecionarTurno('tarde')`.
+      - Implementação da função `detectarTurnoAutomatico()`: caso o operador não tenha um rascunho de lote em andamento, o sistema analisa `new Date().getHours()` no carregamento da tela:
+        - Se for a partir das 13:00 (13:00 às 23:59), ativa automaticamente o turno da **Tarde (14:00 às 17:00)**;
+        - Se for antes das 13:00 (00:00 às 12:59), ativa automaticamente o turno da **Manhã (07:00 às 12:00)**.
+      - Preservação integral do rascunho ativo: caso o operador já tenha selecionado um turno anteriormente e o lote esteja salvo no `localStorage`, o turno do rascunho é restaurado sem sobrescrever.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_produtividade_lote.php` (11/11) aprovada com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.93` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
