@@ -135,18 +135,18 @@ require __DIR__ . '/../layouts/lojinha_header.php';
         <!-- Aviso de Pedido Já Concluído no Lote (Regra 1B) -->
         <div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-3 p-3 p-md-4 mb-3 mb-md-4 shadow-sm alert-pedido-confirmado" style="border-radius: 16px; border: 2px solid #10B981; background: #ECFDF5;">
             <div>
-                <div style="font-size: 19px; font-weight: 800; color: #065F46;">
+                <div style="font-size: 20px; font-weight: 800; color: #065F46;">
                     ✅ Seu pedido para este lote já foi confirmado!
                 </div>
-                <div style="font-size: 14.5px; color: #047857; margin-top: 4px;">
+                <div class="alert-msg" style="font-size: 15.5px; color: #047857; margin-top: 4px;">
                     <?php if (!empty($ultimoPedido)): ?>
-                        Código de Retirada: <strong style="font-size: 16px; letter-spacing: 0.5px;"><?= sanitize_html($ultimoPedido['codigo_pedido']) ?></strong> (<?= (int)$ultimoPedido['quantidade_total'] ?> itens).
+                        Código de Retirada: <strong style="font-size: 17px; letter-spacing: 0.5px;"><?= sanitize_html($ultimoPedido['codigo_pedido']) ?></strong> (<?= (int)$ultimoPedido['quantidade_total'] ?> itens).
                     <?php endif; ?>
                     Cada colaborador tem direito a 1 pedido por lote de vendas. Aguarde a abertura do próximo ciclo para novas compras.
                 </div>
             </div>
             <?php if (!empty($ultimoPedido)): ?>
-                <a href="<?= APP_URL ?>/lojinha/sucesso?codigo=<?= urlencode($ultimoPedido['codigo_pedido']) ?>" class="btn btn-success btn-ver-comprovante" style="font-weight: 700; border-radius: 12px; padding: 12px 22px; font-size: 15.5px;">
+                <a href="<?= APP_URL ?>/lojinha/sucesso?codigo=<?= urlencode($ultimoPedido['codigo_pedido']) ?>" class="btn btn-success btn-ver-comprovante" style="font-weight: 700; border-radius: 12px; padding: 12px 22px; font-size: 16px;">
                     📄 Ver Comprovante do Pedido →
                 </a>
             <?php endif; ?>
@@ -155,13 +155,13 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 
     <div class="banner-lote">
         <div>
-            <div style="font-size: 13px; text-transform: uppercase; color: #10B981; font-weight: 800; letter-spacing: 0.5px;">
+            <div style="font-size: 13.5px; text-transform: uppercase; color: #10B981; font-weight: 800; letter-spacing: 0.5px;">
                 ● Lote Ativo Aberto para o Setor: <?= sanitize_html($usuario['setor']) ?>
             </div>
             <h2 style="font-size: 24px; font-weight: 800; margin: 4px 0 2px 0;">
                 <?= sanitize_html($lote['titulo']) ?>
             </h2>
-            <div style="font-size: 14px; color: #94A3B8;">
+            <div class="banner-subtitulo" style="font-size: 15px; color: #94A3B8;">
                 Vigência: <?= date('d/m/Y H:i', strtotime($lote['data_inicio'])) ?> até <?= date('d/m/Y H:i', strtotime($lote['data_fim'])) ?>
             </div>
         </div>
@@ -171,7 +171,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                 Limite por pessoa: <strong><?= (int)$resumo['limite_lote'] ?> itens (1 pedido)</strong>
             </div>
             <div class="banner-cota" style="background: rgba(16, 185, 129, 0.2); border-color: #10B981; color: #A7F3D0;">
-                Você ainda pode escolher: <strong id="cotaLimiteRestante" style="font-size: 18px; color: #FFFFFF;"><?= (int)$resumo['limite_restante'] ?></strong> itens
+                Você ainda pode escolher: <strong id="cotaLimiteRestante" style="font-size: 20px; color: #FFFFFF;"><?= (int)$resumo['limite_restante'] ?></strong> itens
             </div>
         </div>
     </div>
@@ -212,19 +212,19 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 <div class="card p-2 p-md-3 mb-3 mb-md-4 shadow-sm border-0" style="border-radius: 16px; background: #FFFFFF;">
     <!-- Campo de Busca em Tempo Real -->
     <div class="position-relative mb-2 mb-md-3">
-        <span class="position-absolute top-50 translate-middle-y ps-3 text-muted" style="pointer-events: none; font-size: 18px;">
+        <span class="position-absolute top-50 translate-middle-y ps-3 text-muted" style="pointer-events: none; font-size: 20px;">
             🔍
         </span>
         <input type="text" 
                id="inputBuscaVitrine" 
                class="form-control" 
                placeholder="Buscar bebida por nome ou formato (Brahma, Lata, 600ml...)" 
-               style="height: 48px; font-size: 15.5px; font-weight: 600; padding-left: 44px; border-radius: 12px; border: 2px solid #E2E8F0;"
+               style="height: 52px; font-size: 16.5px; font-weight: 600; padding-left: 48px; border-radius: 12px; border: 2px solid #E2E8F0;"
                oninput="filtrarVitrine()">
         <button type="button" 
                 id="btnLimparBusca" 
                 class="btn position-absolute top-50 end-0 translate-middle-y me-2 text-muted" 
-                style="display: none; background: transparent; border: none; font-size: 18px;"
+                style="display: none; background: transparent; border: none; font-size: 20px;"
                 onclick="limparBusca()">
             ✕
         </button>
@@ -284,8 +284,8 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 }
 .btn-categoria-filtro {
     border-radius: 9999px;
-    padding: 7px 16px;
-    font-size: 14.5px;
+    padding: 8px 18px;
+    font-size: 15.5px;
     font-weight: 700;
     border: 2px solid #E2E8F0;
     background: #F8FAFC;

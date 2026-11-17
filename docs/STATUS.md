@@ -1247,6 +1247,20 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e teste de concorrência aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.95` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-100 (17/11/2026):** Aumento da Escala Tipográfica e Legibilidade na Vitrine e Interface Móvel.
+    - **Demanda do Usuário:**
+      - Aumentar o tamanho das fontes da Lojinha dos Colaboradores para proporcionar leitura confortável e rápida no celular.
+    - **Ajustes Implementados:**
+      - **Títulos dos Produtos:** Aumentados para `15.5px` (mobile, `font-weight: 800`) e `17px` (desktop), garantindo leitura imediata da descrição do produto sem esforço visual.
+      - **Selos de Saldo Disponível:** Aumentados de 11px para `12.5px` (mobile) e `13.5px` (desktop), com padding ajustado para destaque claro do estoque restante.
+      - **Botões de Ação na Grade:** Fontes de `btn-urna` e `btn-urna-disabled` aumentadas para `17px` (mobile, `font-weight: 800`, altura de 54px) e `18px` (desktop).
+      - **Identificação do Colaborador (Sub-barra):** Fonte ampliada de 12.5px para `14.5px`, com atalho de PIN em `13.5px` e padding ampliado.
+      - **Barra de Pesquisa & Filtros de Categoria:** Input de busca com fonte `16.5px` (altura 52px) e pílulas de categoria com `15.5px` e padding de `8px 18px`.
+      - **Banners de Lote e Pedido Concluído:** Mensagens e comprovantes redimensionados proporcionalmente para títulos em `20px` e textos explicativos em `15.5px`.
+    - **Testes & Versionamento:**
+      - Testes automatizados executados e 100% validados (`tests/test_fase5.php`).
+      - Versão da aplicação incrementada para `v1.96` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
