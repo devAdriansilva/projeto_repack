@@ -212,19 +212,19 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 <div class="card p-2 p-md-3 mb-3 mb-md-4 shadow-sm border-0" style="border-radius: 16px; background: #FFFFFF;">
     <!-- Campo de Busca em Tempo Real -->
     <div class="position-relative mb-2 mb-md-3">
-        <span class="position-absolute top-50 translate-middle-y ps-3 text-muted" style="pointer-events: none; font-size: 24px;">
+        <span class="position-absolute top-50 translate-middle-y ps-3 text-muted" style="pointer-events: none; font-size: 22px;">
             🔍
         </span>
         <input type="text" 
                id="inputBuscaVitrine" 
                class="form-control" 
                placeholder="Buscar bebida por nome ou formato (Brahma, Lata, 600ml...)" 
-               style="height: 60px; font-size: 19.5px; font-weight: 600; padding-left: 56px; border-radius: 14px; border: 2px solid #E2E8F0;"
+               style="height: 56px; font-size: 18px; font-weight: 600; padding-left: 52px; border-radius: 14px; border: 2px solid #E2E8F0;"
                oninput="filtrarVitrine()">
         <button type="button" 
                 id="btnLimparBusca" 
                 class="btn position-absolute top-50 end-0 translate-middle-y me-2 text-muted" 
-                style="display: none; background: transparent; border: none; font-size: 24px;"
+                style="display: none; background: transparent; border: none; font-size: 22px;"
                 onclick="limparBusca()">
             ✕
         </button>
@@ -276,7 +276,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
     overflow-x: auto;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 6px;
+    padding-bottom: 4px;
     scrollbar-width: none;
 }
 .carousel-categorias-wrapper::-webkit-scrollbar {
@@ -284,8 +284,8 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 }
 .btn-categoria-filtro {
     border-radius: 9999px;
-    padding: 10px 22px;
-    font-size: 18px;
+    padding: 9px 20px;
+    font-size: 16.5px;
     font-weight: 700;
     border: 2px solid #E2E8F0;
     background: #F8FAFC;

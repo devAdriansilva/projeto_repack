@@ -1275,19 +1275,23 @@
       - Testes automatizados oficiais (`tests/test_fase5.php`) e testes de concorrência (`tests/test_concorrencia_saldos_vitrine.php`) executados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.97` em `app/config/config.php` e `public/service-worker.js`.
 
-  - [x] **MANUT-102 (17/11/2026):** Expansão Tipográfica Ultra-Legível (21px nos Produtos e Botões de 60px) com Breakpoint Ampliado (992px).
+  - [x] **MANUT-102 (17/11/2026):** Expansão Tipográfica Ultra-Legível (21px nos Produtos e Botões de 60px).
     - **Demanda do Usuário:**
-      - Aumentar ainda mais o tamanho das fontes da Lojinha Virtual para visualização confortável e sem esforço no smartphone.
+      - Aumentar ainda mais o tamanho das fontes da Lojinha Virtual para visualização no smartphone.
     - **Aprimoramentos de Design:**
-      - **Títulos dos Produtos:** Elevados para **`21px`** (`font-weight: 800`, entrelinha `1.25` e altura mínima de `52px`), proporcionando leitura imediata e de grande destaque visual em qualquer tela.
-      - **Botões Operacionais na Grade:** Altura aumentada para **`60px`** e tipografia para **`20.5px`** / **`21px`** (`font-weight: 900`).
-      - **Selos de Saldo de Estoque:** Elevados para **`14.5px`** / **`15px`** com preenchimento generoso (`4px 10px`).
-      - **Barra de Busca e Filtros de Categoria:** Input de busca com altura de **`60px`**, ícone de `24px` e texto em **`19.5px`**; botões de categoria elevados para **`18px`** com padding de `10px 22px`.
-      - **Sub-barra do Usuário & Cabeçalho:** Identificação do colaborador elevada para **`16px`** / **`17px`**, botão da sacola para **`17px`** e atalho de PIN para **`15px`**.
-      - **Abrangência do Breakpoint Responsivo:** Mídia de mobile estendida para `@media (max-width: 991.98px)` para garantir que qualquer resolução de smartphone (mesmo com alta densidade ou zoom ativo) receba as fontes ampliadas.
+      - Títulos dos produtos elevados para 21px, botões para 20.5px (60px de altura), e busca para 19.5px.
     - **Testes & Versionamento:**
-      - Testes automatizados integrados aprovados com 100% de sucesso (`tests/test_fase5.php` - 35/35).
-      - Versão da aplicação incrementada para `v1.98` em `app/config/config.php` e `public/service-worker.js`.
+      - Testes automatizados integrados aprovados (35/35). Versão v1.98.
+
+  - [x] **MANUT-103 (17/11/2026):** Reversão Operacional para a Versão Anterior Sob Demanda do Usuário.
+    - **Demanda do Usuário:**
+      - "volte à versão anterior" (desfazer a expansão excessiva para 21px e restaurar a versão anterior estável).
+    - **Ajustes Implementados:**
+      - Reversão dos arquivos `app/views/layouts/lojinha_header.php` e `app/views/lojinha/vitrine.php` para o estado anterior consolidado (fontes de 18px nos produtos, botões de 56px, busca de 18px e CSS sanitizado sem chaves órfãs).
+      - Versionamento incrementado para `v1.99` para garantir que o Service Worker force a limpeza de cache e recarga imediata nos navegadores dos colaboradores.
+    - **Testes & Versionamento:**
+      - Testes automatizados oficiais (`tests/test_fase5.php`) e testes de concorrência executados com 100% de aprovação.
+      - Versão da aplicação definida como `v1.99` em `app/config/config.php` e `public/service-worker.js`.
 
 ---
 
