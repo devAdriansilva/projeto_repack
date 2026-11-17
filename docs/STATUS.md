@@ -1234,6 +1234,19 @@
       - Suíte integrada `tests/test_fase5.php` (35/35), teste de concorrência (`tests/test_concorrencia_saldos_vitrine.php`) e `tests/test_sku_acumulador.php` (15/15) validados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.94` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-099 (17/11/2026):** Aproveitamento Total da Largura de Tela (Full-Bleed / Edge-to-Edge) nos Dispositivos Móveis.
+    - **Demanda do Usuário:**
+      - Eliminar as margens laterais cinzas residuais na tela dos smartphones, aproveitando 100% da largura do visor para os produtos e elementos.
+    - **Diagnóstico da Inconsistência:**
+      - A classe padrão `.container` do Bootstrap 5 aplicava uma trava rígida de largura (`max-width: 540px`) sempre que a resolução lógica do smartphone ultrapassava 576px. Em aparelhos modernos (Galaxy, Xiaomi, Pixel, Motorola), essa trava criava faixas cinzas vazias de 30px a 80px nas laterais esquerda e direita.
+    - **Solução Implementada:**
+      - Criação da classe `.lojinha-main-container` em `app/views/layouts/lojinha_header.php`, substituindo o `.container` fixo por uma estrutura fluida de aproveitamento integral (`width: 100%; max-width: 1440px; margin: auto;`).
+      - Redução do padding lateral para `6px` no mobile (`@media (max-width: 768px)`), permitindo que os cards se expandam até a borda útil da tela, ganhando +30px a +45px de largura por produto.
+      - Redimensionamento proporcional da foto do produto para `145px` e ajuste fino do padding interno do card para `8px 8px 12px 8px`, eliminando qualquer sensação de compressão.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e teste de concorrência aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.95` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

@@ -280,20 +280,43 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
         }
 
         /* ========================================================= */
+        /* CONTAINER PRINCIPAL ADAPTATIVO (APROVEITAMENTO TOTAL)     */
+        /* ========================================================= */
+        .lojinha-main-container {
+            width: 100%;
+            max-width: 1440px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 6px;
+            padding-right: 6px;
+            margin-top: 10px;
+            margin-bottom: 24px;
+        }
+        @media (min-width: 768px) {
+            .lojinha-main-container {
+                padding-left: 20px;
+                padding-right: 20px;
+                margin-top: 24px;
+                margin-bottom: 32px;
+            }
+        }
+        @media (min-width: 1200px) {
+            .lojinha-main-container {
+                padding-left: 32px;
+                padding-right: 32px;
+            }
+        }
+
+        /* ========================================================= */
         /* OTIMIZAÇÃO ESPECIAL PARA TELAS MÓVEIS (MOBILE 2 COLUNAS)  */
         /* ========================================================= */
         @media (max-width: 768px) {
-            main.container {
-                padding-left: 10px !important;
-                padding-right: 10px !important;
-                margin-top: 14px !important;
-            }
             .card-produto-lojinha {
-                padding: 10px 10px 12px 10px !important;
+                padding: 8px 8px 12px 8px !important;
                 border-radius: 14px !important;
             }
             .card-img-container {
-                height: 135px !important;
+                height: 145px !important;
                 margin-bottom: 8px !important;
                 border-radius: 10px !important;
             }
@@ -324,7 +347,7 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             .banner-lote {
                 padding: 14px !important;
                 border-radius: 14px !important;
-                margin-bottom: 14px !important;
+                margin-bottom: 12px !important;
             }
             .banner-lote h2 {
                 font-size: 18px !important;
@@ -349,7 +372,7 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
                 padding: 10px 14px !important;
                 font-size: 14.5px !important;
                 border-radius: 10px !important;
-                margin-bottom: 14px !important;
+                margin-bottom: 12px !important;
             }
         }
     </style>
@@ -430,4 +453,4 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
 </nav>
 <?php endif; ?>
 
-<main class="container my-4">
+<main class="lojinha-main-container">
