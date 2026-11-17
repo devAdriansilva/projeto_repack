@@ -1115,6 +1115,20 @@
       - Suítes de regressão `tests/test_fase5.php` (35/35), `tests/test_sku_acumulador.php` (15/15), `tests/test_importacao_csv_bo.php` (19/19), `tests/test_ultima_entrada_e_espelho.php` (9/9) e `tests/test_acesso_lojinha.php` (15/15) validadas com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.86` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-090 (17/11/2026):** Refinamento da Identidade Visual Integrada: Remoção do Fundo Preto do "R", Fechamento de Kerning e Limpeza do Cabeçalho Quiosque.
+    - **Demanda do Usuário:**
+      - Remover o fundo preto (squircle escuro) ao redor do monograma "R" 3D para que a lata com a fita esmeralda flutue de forma transparente e integrada na interface.
+      - Aproximar o "R" ao restante da palavra "EPACK", eliminando o espaçamento morto para dar a impressão de uma única palavra contínua e harmônica (`REPACK`).
+      - Remover a identificação `Dev: AdrianSilvaDev` do cabeçalho superior do quiosque do operador, mantendo o número da versão (`v1.87`) e preservando a marca do desenvolvedor nos rodapés institucionais das páginas conforme diretriz.
+    - **Solução Implementada:**
+      - Processamento do "R" 3D isolado com transparência alfa real e recorte estrito da caixa delimitadora (288x312px) em `public/assets/img/logo-r-isolated.png`.
+      - Recriação vetorial de `public/assets/img/logo-repack.svg` (para fundos escuros) e `public/assets/img/logo-repack-dark.svg` (para fundos claros), posicionando a tipografia `EPACK` colada e alinhada ao "R" com kerning ajustado (`x="70"`).
+      - Remoção cirúrgica da menção ao desenvolvedor no cabeçalho do quiosque em `app/views/layouts/header.php`, mantendo apenas o logotipo integrado e o badge de versão.
+      - Preservação da autoria do desenvolvedor nos rodapés de gestão (`app/views/layouts/gestao_footer.php`) e lojinha (`app/views/layouts/lojinha_footer.php`).
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e teste de concorrência aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.87` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
