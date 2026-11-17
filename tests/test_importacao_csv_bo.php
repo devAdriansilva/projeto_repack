@@ -119,13 +119,13 @@ echo "\n[4] Testando Prevenção contra Importação Acidental Duplicada...\n";
 $bloqueouDuplicado = false;
 try {
     ApontamentoBO::processarImportacaoCsv(
-        $csvAmostra,
+        $csvAmostraExecucao,
         $gestorId,
         $nomeArquivoTeste,
         [],
         false // sem forçar
     );
-} catch (DomainException $e) {
+} catch (\DomainException $e) {
     $bloqueouDuplicado = true;
     assertTest(strpos($e->getMessage(), 'já foi importado') !== false, "Tentativa de reimportar mesmo CSV bloqueada com sucesso: " . $e->getMessage());
 }
@@ -135,7 +135,7 @@ assertTest($bloqueouDuplicado, "Bloqueio estrito de reimportação duplicada val
 $reimportouForcado = false;
 try {
     $resForcado = ApontamentoBO::processarImportacaoCsv(
-        $csvAmostra,
+        $csvAmostraExecucao,
         $gestorId,
         $nomeArquivoTeste,
         [],

@@ -1098,6 +1098,23 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` validados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.85` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-089 (17/11/2026):** Correção do Decremento de Saldo Dinâmico na Vitrine da Lojinha e Sincronização em Tempo Real (Smart Polling).
+    - **Diagnóstico da Inconsistência:**
+      - A consulta SQL de `EstoqueLojinha::listarProdutosVitrine()` excluía deliberadamente o carrinho do próprio comprador (`ct.usuario_id != :uid_outros_2`) do cômputo de reservas ativas.
+      - Com isso, quando o Comprador 1 adicionava um item ao seu carrinho, a gôndola para ele continuava exibindo o estoque anterior, e o decremento só era percebido quando outro usuário adicionava o item.
+    - **Solução Implementada:**
+      - Ajuste na regra de cálculo (`sqlCalculoSaldo`) em `app/models/EstoqueLojinha.php` para subtrair **todas** as reservas ativas em carrinho (`expiracao_em > NOW()`), tornando o saldo da gôndola universal e consistente para todos os usuários.
+      - O que o usuário já reservou permanece evidenciado com precisão pelo crachá `🛒 X no seu carrinho` e no contador da sacola no cabeçalho.
+      - Atualização imediata no DOM via AJAX (`app/views/layouts/lojinha_footer.php`): o clique em adicionar decrementa o mostrador na hora, altera o botão para "Adicionado (+1)" e depois "Adicionar mais (+)", desabilita com "Esgotado" caso o estoque zere ou "Quantidade Máxima Atingida" caso o teto da cota seja atingido, sem exigir recarregamento da página (preservando posição de rolagem e busca).
+      - Implementação de sincronização em tempo real via **Smart Polling Adaptativo**:
+        - Método `EstoqueLojinha::listarSaldosCompactos()` e endpoint `/api/estoque/saldos` em `app/controllers/LojinhaController.php` e `public/index.php`.
+        - Consulta leve em segundo plano a cada 7 segundos na vitrine com interrupção automática pela *Page Visibility API* (`document.hidden`) quando a aba do navegador estiver inativa ou minimizada.
+        - Se outro usuário esgotar ou liberar itens, a tela atualiza dinamicamente.
+    - **Testes & Versionamento:**
+      - Novo teste automatizado de concorrência com 2 compradores simultâneos em `tests/test_concorrencia_saldos_vitrine.php` aprovado com 100% de sucesso.
+      - Suítes de regressão `tests/test_fase5.php` (35/35), `tests/test_sku_acumulador.php` (15/15), `tests/test_importacao_csv_bo.php` (19/19), `tests/test_ultima_entrada_e_espelho.php` (9/9) e `tests/test_acesso_lojinha.php` (15/15) validadas com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.86` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
