@@ -1293,6 +1293,16 @@
       - Testes automatizados oficiais (`tests/test_fase5.php`) e testes de concorrência executados com 100% de aprovação.
       - Versão da aplicação definida como `v1.99` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-104 (17/11/2026):** Aumento Focado e Exclusivo na Tipografia dos Nomes dos Produtos.
+    - **Demanda do Usuário:**
+      - "agora aumente apenas as fontes dos produtos" (manter o restante da interface, banners, pesquisa, botões e cabeçalho nos tamanhos equilibrados e aumentar unicamente os títulos das bebidas).
+    - **Ajustes Implementados:**
+      - **Títulos dos Produtos (`.card-produto-titulo`):** Elevados para **`20px`** no mobile (`@media (max-width: 768px)`, `font-weight: 800`, entrelinha `1.25` e altura mínima de `50px`) e **`20.5px`** no desktop (`min-height: 52px`).
+      - Preservação estrita de todos os demais componentes nos seus tamanhos ideais, garantindo equilíbrio visual e destaque cirúrgico no nome e formato do produto.
+    - **Testes & Versionamento:**
+      - Testes automatizados executados com 100% de sucesso (`tests/test_fase5.php` - 35/35).
+      - Versão da aplicação incrementada para `v2.00` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

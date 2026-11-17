@@ -241,12 +241,12 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             padding: 3px 8px;
         }
         .card-produto-titulo {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 20.5px;
+            font-weight: 800;
             color: #0F172A;
             margin-bottom: 6px;
-            line-height: 1.3;
-            min-height: 44px;
+            line-height: 1.25;
+            min-height: 52px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -338,10 +338,10 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
                 padding: 4px 8px !important;
             }
             .card-produto-titulo {
-                font-size: 18px !important;
+                font-size: 20px !important;
                 font-weight: 800 !important;
-                line-height: 1.22 !important;
-                min-height: 44px !important;
+                line-height: 1.25 !important;
+                min-height: 50px !important;
                 margin-bottom: 6px !important;
             }
             .btn-urna {
