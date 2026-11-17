@@ -1141,6 +1141,19 @@
       - Testes automatizados `tests/test_fase5.php` (35/35) e concorrência executados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.88` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-092 (17/11/2026):** Criação da Tela Dedicada de Login da Gestão Administrativa (/gestao/login).
+    - **Demanda do Usuário:**
+      - Disponibilizar um link direto de acesso à autenticação da Gestão, permitindo que a coordenação faça login sem passar pela interface do quiosque operacional da bancada de Repack.
+    - **Diagnóstico da Inconsistência:**
+      - A rota `/gestao/login` atendia apenas requisições POST originadas do modal administrativo do quiosque. Requisições GET no navegador acionavam o tratamento de erro padrão e redirecionavam para a raiz operacional (`/`), impedindo o acesso direto por URL externa ou favoritos.
+    - **Solução Implementada:**
+      - Criação da view dedicada `app/views/gestao/login.php` com tema Dark Slate (`#0F172A`), alinhado ao padrão estético do Painel de Gestão, com logotipo oficial integrado, formulário com proteção CSRF e mensagens contextuais de erro/sessão.
+      - Atualização de `AuthController::login()`: tratamento de requisições GET para exibir a tela dedicada de login (ou redirecionar automaticamente para `/gestao/dashboard` caso a sessão já esteja autenticada).
+      - Atualização do fluxo de erro no POST tradicional: mantém o gestor na tela de login exibindo o feedback de erro sem expulsá-lo para a tela do operador.
+      - Atualização de `AuthController::exigirGestao()` e `AuthController::logout()`: redirecionamentos agora apontam estritamente para `/gestao/login`.
+    - **Testes & Versionamento:**
+      - Testes integrados `tests/test_fase5.php` (35/35) e teste de rota GET /gestao/login validados com 100% de sucesso.
+
 ---
 
 ## Próximo Passo

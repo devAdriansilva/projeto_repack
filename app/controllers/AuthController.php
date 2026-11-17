@@ -14,11 +14,27 @@ class AuthController
 {
     /**
      * Processa a autenticação restrita da Gestão (via JSON ou formulário POST)
+     * e renderiza a tela dedicada de login em requisições GET
      */
     public function login(): void
     {
         if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
             session_start();
+        }
+
+        // Requisições GET exibem a página dedicada de login da Gestão
+        if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
+            if (!empty($_SESSION['perfil']) && $_SESSION['perfil'] === 'gestao') {
+                header('Location: ' . APP_URL . '/gestao/dashboard');
+                exit;
+            }
+
+            $erro = $_SESSION['flash_erro'] ?? null;
+            $aviso = $_SESSION['flash_aviso'] ?? null;
+            unset($_SESSION['flash_erro'], $_SESSION['flash_aviso']);
+
+            require __DIR__ . '/../views/gestao/login.php';
+            return;
         }
 
         $isJson = (strpos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== false);
@@ -31,10 +47,16 @@ class AuthController
         } else {
             $matricula = trim((string)($_POST['matricula'] ?? ''));
             $senha = (string)($_POST['senha'] ?? '');
+
+            // Validação de CSRF para formulários HTML tradicionais
+            if (!self::validarCsrfToken($_POST['csrf_token'] ?? null)) {
+                $this->responderErro("Sessão expirada ou requisição inválida. Tente novamente.", false, $matricula);
+                return;
+            }
         }
 
         if ($matricula === '' || $senha === '') {
-            $this->responderErro("Matrícula e senha são obrigatórias.", $isJson);
+            $this->responderErro("Matrícula e senha são obrigatórias.", $isJson, $matricula);
             return;
         }
 
@@ -53,7 +75,7 @@ class AuthController
                 'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
             ]);
 
-            $this->responderErro("Credenciais administrativas incorretas ou sem permissão.", $isJson);
+            $this->responderErro("Credenciais administrativas incorretas ou sem permissão.", $isJson, $matricula);
             return;
         }
 
@@ -86,7 +108,7 @@ class AuthController
     }
 
     /**
-     * Encerra a sessão administrativa e redireciona ao quiosque operacional
+     * Encerra a sessão administrativa e redireciona à tela de login da Gestão
      */
     public function logout(): void
     {
@@ -99,7 +121,8 @@ class AuthController
 
         unset($_SESSION['usuario_id'], $_SESSION['perfil'], $_SESSION['nome'], $_SESSION['matricula'], $_SESSION['ultimo_acesso']);
 
-        header('Location: ' . APP_URL . '/');
+        $_SESSION['flash_aviso'] = "Sessão administrativa encerrada com sucesso.";
+        header('Location: ' . APP_URL . '/gestao/login');
         exit;
     }
 
@@ -117,7 +140,7 @@ class AuthController
         if ($ultimoAcesso && (time() - $ultimoAcesso > GESTAO_SESSION_TIMEOUT_MINUTOS * 60)) {
             unset($_SESSION['usuario_id'], $_SESSION['perfil'], $_SESSION['nome'], $_SESSION['matricula'], $_SESSION['ultimo_acesso']);
             $_SESSION['flash_erro'] = "Sua sessão expirou por inatividade. Faça login novamente.";
-            header('Location: ' . APP_URL . '/');
+            header('Location: ' . APP_URL . '/gestao/login');
             exit;
         }
         $_SESSION['ultimo_acesso'] = time();
@@ -139,8 +162,8 @@ class AuthController
                 exit;
             }
 
-            $_SESSION['flash_erro'] = "Acesso restrito à Coordenadora de Gestão.";
-            header('Location: ' . APP_URL . '/');
+            $_SESSION['flash_aviso'] = "Identifique-se com as credenciais de Gestão para acessar o Painel.";
+            header('Location: ' . APP_URL . '/gestao/login');
             exit;
         }
     }
@@ -188,7 +211,7 @@ class AuthController
     /**
      * Retorna erro de autenticação apropriado ao formato de requisição
      */
-    private function responderErro(string $mensagem, bool $isJson): void
+    private function responderErro(string $mensagem, bool $isJson, string $matricula = ''): void
     {
         if ($isJson) {
             http_response_code(401);
@@ -197,8 +220,8 @@ class AuthController
             exit;
         }
 
-        $_SESSION['flash_erro'] = $mensagem;
-        header('Location: ' . APP_URL . '/');
+        $erro = $mensagem;
+        require __DIR__ . '/../views/gestao/login.php';
         exit;
     }
 }
