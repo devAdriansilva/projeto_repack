@@ -458,7 +458,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/lotes') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/lotes">
-                        <span>🏷️</span><span>Lotes</span>
+                        <span>🏷️</span><span>Lotes de Venda</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -483,19 +483,19 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                 </li>
             </ul>
 
-            <!-- Atalhos Rápidos da Gestão no Desktop -->
-            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
-                <a href="<?= APP_URL ?>/gestao/colaboradores" class="btn btn-sm text-nowrap" style="background: rgba(59, 130, 246, 0.12); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.35); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 8px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;" title="Gestão de Colaboradores e Reset de PIN">
+            <!-- Atalhos Rápidos da Gestão no Desktop (Com respiro visual e espaçamento calibrado) -->
+            <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-1">
+                <a href="<?= APP_URL ?>/gestao/colaboradores" class="btn btn-sm text-nowrap" style="background: rgba(59, 130, 246, 0.15); color: #93C5FD; border: 1.5px solid rgba(59, 130, 246, 0.4); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 5px 10px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" title="Gestão de Colaboradores e Reset de PIN">
                     <span style="font-size: 13px;">👥</span>
                     <span>Equipe</span>
                 </a>
 
-                <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm text-nowrap" style="background: rgba(139, 92, 246, 0.12); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.35); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 8px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;" title="Acessar Vitrine da Lojinha">
+                <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm text-nowrap" style="background: rgba(139, 92, 246, 0.15); color: #C4B5FD; border: 1.5px solid rgba(139, 92, 246, 0.4); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 5px 10px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" title="Acessar Vitrine da Lojinha">
                     <span style="font-size: 13px;">🛍️</span>
                     <span>Lojinha</span>
                 </a>
 
-                <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm text-nowrap" style="background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1.5px solid rgba(16, 185, 129, 0.45); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 8px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;" title="Retornar à Bancada de Repack">
+                <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm text-nowrap" style="background: rgba(16, 185, 129, 0.15); color: #6EE7B7; border: 1.5px solid rgba(16, 185, 129, 0.45); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 5px 10px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" title="Retornar à Bancada de Repack">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
                         <path d="M2 10h4v4H2z" fill="currentColor" fill-opacity="0.3"/>
                         <path d="M6 8h10a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6"/>
@@ -507,7 +507,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                 </a>
             </div>
 
-            <div class="vr bg-secondary mx-0.5" style="height: 18px; opacity: 0.25;"></div>
+            <div class="vr bg-secondary mx-1" style="height: 20px; opacity: 0.3;"></div>
 
             <!-- Crachá Desktop do Usuário -->
             <div class="d-inline-flex align-items-center gap-1.5 px-2 py-1 rounded-pill flex-shrink-0" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);">
@@ -570,7 +570,7 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             <span>📦</span><span>Produtos</span>
         </a>
         <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/lotes') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/lotes">
-            <span>🏷️</span><span>Lotes de Vendas</span>
+            <span>🏷️</span><span>Lotes de Venda</span>
         </a>
         <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/estoque') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/estoque">
             <span>🏪</span><span>Estoque Lojinha</span>

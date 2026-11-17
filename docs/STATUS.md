@@ -1180,6 +1180,18 @@
       - Nova suíte de testes `tests/test_pin_comprador.php` (19/19) e regressão `tests/test_fase5.php` (35/35) e de concorrência aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.90` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-095 (17/11/2026):** Restauração do Rótulo "Lotes de Venda" e Calibração de Espaçamento dos Atalhos Rápidos da Gestão.
+    - **Demanda do Usuário:**
+      - Restaurar a nomenclatura da sub-aba no Painel de Gestão para "Lotes de Venda" (estava simplificada como "Lotes").
+      - Corrigir a aproximação excessiva entre os 3 botões de atalho da barra superior da gestão (`Equipe`, `Lojinha` e `Repack`), conferindo um respiro visual adequado.
+    - **Solução Implementada (`app/views/layouts/gestao_header.php`):**
+      - **Nomenclatura Padronizada:** Atualização do link do módulo de gestão no desktop e no drawer móvel para `<span>Lotes de Venda</span>`.
+      - **Descompressão dos Atalhos:** Elevação do gap entre os botões de atalho para `gap-2` (8px), aplicação de padding `5px 10px`, bordas translúcidas reforçadas (`1.5px`) e margem sutil à esquerda (`ms-1`).
+      - **Harmonização Visual:** Divisor vertical `vr` com margem dedicada `mx-1` e altura proporcional (20px), garantindo nitidez e ergonomia entre o bloco de navegação principal, os atalhos rápidos e o crachá do usuário.
+    - **Testes & Versionamento:**
+      - Suíte integrada `tests/test_fase5.php` (35/35) e de PIN `tests/test_pin_comprador.php` (19/19) validadas com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.91` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
