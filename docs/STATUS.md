@@ -1217,6 +1217,23 @@
       - Suíte oficial `tests/test_produtividade_lote.php` (11/11) aprovada com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.93` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-098 (17/11/2026):** Otimização Responsiva da Lojinha para Dispositivos Móveis com Grade Estrita de 2 Colunas.
+    - **Demanda do Usuário:**
+      - Corrigir a proporção reduzida de textos e elementos em smartphones, mantendo estritamente a grade de 2 colunas solicitada pelo usuário.
+    - **Diagnóstico da Compressão em Telas Móveis:**
+      - Em telas de smartphones (360px a 412px de largura), o excesso de calhas (`g-4` = 24px) e espaçamentos internos (`padding: 20px` nos cards e margens de container) consumiam mais da metade da largura útil da tela, deixando apenas ~112px de área real para cada card. Isso provocava quebra excessiva de títulos em até 4 linhas, compressão das imagens e deformação vertical dos botões.
+      - A barra superior tentava exibir simultaneamente logotipo, subtítulo institucional, nome do colaborador, setor, matrícula, botão do carrinho, atalho de PIN e botão sair em uma única linha, comprimindo todo o cabeçalho.
+      - Os botões de filtro de categoria quebravam em 3 linhas de chips minúsculos, empurrando os produtos para baixo.
+    - **Solução Implementada:**
+      - **Grade de 2 Colunas Otimizada (`col-6 col-md-6 col-lg-4 col-xl-3`):** Calha calibrada para `g-2` (8px no mobile) e padding interno dos cards reduzido para `10px`, gerando +31% de área útil horizontal livre para exibição do conteúdo.
+      - **Cards Proporcionais e Ergonômicos:** Área de imagem com altura de 135px em fundo suave (`#F8FAFC`), título do produto padronizado em 2 linhas com `-webkit-line-clamp: 2` (sem quebras irregulares), crachá de estoque compacto no topo (`font-size: 11px`) e botões táteis de 52px de altura com tipografia legível (`15px`) e rótulos concisos e diretos ("Adicionar", "+1 Mais", "Já Pedido", "Esgotado").
+      - **Cabeçalho Adaptativo em 2 Níveis:** No mobile, Linha 1 dedicada ao Logotipo oficial `REPACK`, Botão azul destacado da Sacola com contador chamativo e botão Sair; Linha 2 em sub-barra limpa exibindo `👤 Nome • Setor (Matrícula)` e atalho estilizado `[🔒 Alterar PIN]`.
+      - **Carrossel Horizontal de Categorias (Swipe Tátil):** Substituição das 3 linhas de tags por uma barra deslizável com toque suave (`overflow-x: auto`), permitindo navegação rápida entre categorias sem empurrar os produtos para baixo.
+      - **Banners Responsivos:** Alerta de pedido confirmado e banner de cota do lote adaptados com botões de largura total (`w-100`) para toque confortável com o polegar.
+    - **Testes & Versionamento:**
+      - Suíte integrada `tests/test_fase5.php` (35/35), teste de concorrência (`tests/test_concorrencia_saldos_vitrine.php`) e `tests/test_sku_acumulador.php` (15/15) validados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.94` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

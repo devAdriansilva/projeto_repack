@@ -133,12 +133,12 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 <?php else: ?>
     <?php if (!empty($resumo['ja_comprou_no_lote'])): ?>
         <!-- Aviso de Pedido Já Concluído no Lote (Regra 1B) -->
-        <div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-3 p-4 mb-4 shadow-sm" style="border-radius: 16px; border: 2px solid #10B981; background: #ECFDF5;">
+        <div class="alert alert-success d-flex justify-content-between align-items-center flex-wrap gap-3 p-3 p-md-4 mb-3 mb-md-4 shadow-sm alert-pedido-confirmado" style="border-radius: 16px; border: 2px solid #10B981; background: #ECFDF5;">
             <div>
-                <div style="font-size: 20px; font-weight: 800; color: #065F46;">
+                <div style="font-size: 19px; font-weight: 800; color: #065F46;">
                     ✅ Seu pedido para este lote já foi confirmado!
                 </div>
-                <div style="font-size: 15px; color: #047857; margin-top: 4px;">
+                <div style="font-size: 14.5px; color: #047857; margin-top: 4px;">
                     <?php if (!empty($ultimoPedido)): ?>
                         Código de Retirada: <strong style="font-size: 16px; letter-spacing: 0.5px;"><?= sanitize_html($ultimoPedido['codigo_pedido']) ?></strong> (<?= (int)$ultimoPedido['quantidade_total'] ?> itens).
                     <?php endif; ?>
@@ -146,7 +146,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                 </div>
             </div>
             <?php if (!empty($ultimoPedido)): ?>
-                <a href="<?= APP_URL ?>/lojinha/sucesso?codigo=<?= urlencode($ultimoPedido['codigo_pedido']) ?>" class="btn btn-success" style="font-weight: 700; border-radius: 12px; padding: 12px 22px; font-size: 16px;">
+                <a href="<?= APP_URL ?>/lojinha/sucesso?codigo=<?= urlencode($ultimoPedido['codigo_pedido']) ?>" class="btn btn-success btn-ver-comprovante" style="font-weight: 700; border-radius: 12px; padding: 12px 22px; font-size: 15.5px;">
                     📄 Ver Comprovante do Pedido →
                 </a>
             <?php endif; ?>
@@ -209,17 +209,17 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 <!-- ============================================================= -->
 <!-- BARRA DE PESQUISA E FILTROS DE CATEGORIA                      -->
 <!-- ============================================================= -->
-<div class="card p-3 mb-4 shadow-sm border-0" style="border-radius: 16px; background: #FFFFFF;">
+<div class="card p-2 p-md-3 mb-3 mb-md-4 shadow-sm border-0" style="border-radius: 16px; background: #FFFFFF;">
     <!-- Campo de Busca em Tempo Real -->
-    <div class="position-relative mb-3">
-        <span class="position-absolute top-50 translate-middle-y ps-3 text-muted" style="pointer-events: none;">
+    <div class="position-relative mb-2 mb-md-3">
+        <span class="position-absolute top-50 translate-middle-y ps-3 text-muted" style="pointer-events: none; font-size: 18px;">
             🔍
         </span>
         <input type="text" 
                id="inputBuscaVitrine" 
                class="form-control" 
-               placeholder="Buscar bebida por nome ou formato (ex: Brahma, Lata, 600ml...)" 
-               style="height: 52px; font-size: 17px; font-weight: 600; padding-left: 44px; border-radius: 12px; border: 2px solid #E2E8F0;"
+               placeholder="Buscar bebida por nome ou formato (Brahma, Lata, 600ml...)" 
+               style="height: 48px; font-size: 15.5px; font-weight: 600; padding-left: 44px; border-radius: 12px; border: 2px solid #E2E8F0;"
                oninput="filtrarVitrine()">
         <button type="button" 
                 id="btnLimparBusca" 
@@ -230,8 +230,8 @@ require __DIR__ . '/../layouts/lojinha_header.php';
         </button>
     </div>
 
-    <!-- Pílulas de Categoria (Tags de 1 Clique) -->
-    <div class="d-flex align-items-center gap-2 flex-wrap" id="containerCategorias">
+    <!-- Pílulas de Categoria (Carrossel Horizontal com Rolagem por Toque no Mobile) -->
+    <div class="carousel-categorias-wrapper" id="containerCategorias">
         <button type="button" class="btn-categoria-filtro active" data-categoria="todos" onclick="selecionarCategoria('todos', this)">
             🏷️ Todos (<?= $contagemCategorias['todos'] ?>)
         </button>
@@ -252,7 +252,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
         <?php endif; ?>
         <?php if ($contagemCategorias['energeticos'] > 0): ?>
             <button type="button" class="btn-categoria-filtro" data-categoria="energeticos" onclick="selecionarCategoria('energeticos', this)">
-                ⚡ Energéticos & Isotônicos (<?= $contagemCategorias['energeticos'] ?>)
+                ⚡ Energéticos (<?= $contagemCategorias['energeticos'] ?>)
             </button>
         <?php endif; ?>
         <?php if ($contagemCategorias['sucos'] > 0): ?>
@@ -269,10 +269,23 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 </div>
 
 <style>
+.carousel-categorias-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+}
+.carousel-categorias-wrapper::-webkit-scrollbar {
+    display: none;
+}
 .btn-categoria-filtro {
     border-radius: 9999px;
-    padding: 8px 18px;
-    font-size: 15px;
+    padding: 7px 16px;
+    font-size: 14.5px;
     font-weight: 700;
     border: 2px solid #E2E8F0;
     background: #F8FAFC;
@@ -280,6 +293,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
     cursor: pointer;
     transition: all 0.15s ease-in-out;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 .btn-categoria-filtro:hover {
     border-color: #3B82F6;
@@ -294,8 +308,8 @@ require __DIR__ . '/../layouts/lojinha_header.php';
 }
 </style>
 
-<!-- Grade de Produtos em Oferta -->
-<div class="row g-4" id="gradeProdutosVitrine">
+<!-- Grade de Produtos em Oferta (2 colunas em mobile e 3-4 em desktop) -->
+<div class="row g-2 g-sm-3 g-md-4" id="gradeProdutosVitrine">
     <?php if (empty($produtos)): ?>
         <div class="col-12 text-center py-5">
             <div style="background: #FFFFFF; border-radius: 16px; padding: 48px; border: 2px dashed #D1D5DB;">
@@ -319,7 +333,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
             $limiteAtingido = (empty($isMaster) && empty($isSetorial) && (int)$resumo['limite_restante'] <= 0 && $saldoDisp > 0);
             $cat = $p['categoria'];
         ?>
-            <div class="col-12 col-md-6 col-lg-4 col-xl-3 card-produto-wrapper" 
+            <div class="col-6 col-md-6 col-lg-4 col-xl-3 card-produto-wrapper" 
                  id="card-wrapper-<?= (int)$p['produto_id'] ?>"
                  data-produto-id="<?= (int)$p['produto_id'] ?>"
                  data-categoria="<?= $cat ?>" 
@@ -331,13 +345,13 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                         <!-- Badge de Saldo Real em Vitrine -->
                         <div id="badge-container-<?= (int)$p['produto_id'] ?>">
                         <?php if (!empty($isMaster)): ?>
-                            <span class="card-badge-estoque" style="background: #1E1B4B; color: #FDE68A; border: 1.5px solid #818CF8; font-size: 12px; padding: 4px 10px;">
-                                Físico: <?= $totalFisico ?> un | Res: <?= $reservaGestao ?> un
+                            <span class="card-badge-estoque badge-master">
+                                Fís: <?= $totalFisico ?> | Res: <?= $reservaGestao ?>
                             </span>
                         <?php elseif ($esgotado): ?>
                             <span class="card-badge-estoque esgotado">Esgotado</span>
                         <?php elseif ($saldoDisp <= 5): ?>
-                            <span class="card-badge-estoque baixo">Últimas <?= $saldoDisp ?> un!</span>
+                            <span class="card-badge-estoque baixo">Últimas <?= $saldoDisp ?>!</span>
                         <?php else: ?>
                             <span class="card-badge-estoque"><?= $saldoDisp ?> disponíveis</span>
                         <?php endif; ?>
@@ -346,48 +360,47 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                         <!-- Imagem do Produto -->
                         <div class="card-img-container">
                             <?php if (!empty($p['foto_url'])): ?>
-                                <img src="<?= APP_URL . sanitize_html($p['foto_url']) ?>" alt="<?= sanitize_html($p['nome']) ?>">
+                                <img src="<?= APP_URL . sanitize_html($p['foto_url']) ?>" alt="<?= sanitize_html($p['nome']) ?>" loading="lazy">
                             <?php else: ?>
-                                <svg width="72" height="72" fill="#9CA3AF" viewBox="0 0 24 24">
+                                <svg width="56" height="56" fill="#9CA3AF" viewBox="0 0 24 24">
                                     <path d="M7 2v2h1v4.54c-.6.28-1 .88-1 1.46v9c0 1.66 1.34 3 3 3h4c1.66 0 3-1.34 3-3v-9c0-.58-.4-1.18-1-1.46V4h1V2H7zm8 15c0 .55-.45 1-1 1h-4c-.55 0-1-.45-1-1v-7h6v7zm-1-9h-4V4h4v4z"/>
                                 </svg>
                             <?php endif; ?>
                         </div>
 
                         <!-- Indicador se já está no carrinho -->
-                        <div id="no-carrinho-container-<?= (int)$p['produto_id'] ?>" class="mb-2" style="<?= $noCarrinho > 0 ? '' : 'display: none;' ?>">
-                            <span class="badge bg-warning text-dark" style="font-size: 12px; font-weight: 700;">
-                                🛒 <span id="no-carrinho-qtd-<?= (int)$p['produto_id'] ?>"><?= $noCarrinho ?></span> no seu carrinho
+                        <div id="no-carrinho-container-<?= (int)$p['produto_id'] ?>" class="mb-1" style="<?= $noCarrinho > 0 ? '' : 'display: none;' ?>">
+                            <span class="badge bg-warning text-dark badge-no-carrinho">
+                                🛒 <span id="no-carrinho-qtd-<?= (int)$p['produto_id'] ?>"><?= $noCarrinho ?></span> no carrinho
                             </span>
                         </div>
 
-                        <h3 class="body-lg" style="font-weight: 700; color: #111827; margin-bottom: 8px; min-height: 54px;">
+                        <h3 class="card-produto-titulo" title="<?= sanitize_html($p['nome']) ?>">
                             <?= sanitize_html($p['nome']) ?>
                         </h3>
                     </div>
 
-                    <!-- Botão de Ação Gigante (80px - Filosofia Urna Eletrônica) -->
-                    <div class="mt-3" id="btn-container-<?= (int)$p['produto_id'] ?>">
+                    <!-- Botão de Ação -->
+                    <div class="mt-2 mt-md-3" id="btn-container-<?= (int)$p['produto_id'] ?>">
                         <?php if ($jaComprouNoLote): ?>
-                            <button type="button" class="btn-urna w-100" disabled style="height: 80px; font-size: 18px; background: #E2E8F0; color: #64748B; border: 2px solid #CBD5E1; cursor: not-allowed;">
-                                <span>Pedido Já Realizado</span>
+                            <button type="button" class="btn-urna btn-urna-disabled w-100" disabled>
+                                <span>Já Pedido</span>
                             </button>
                         <?php elseif ($esgotado): ?>
-                            <button type="button" class="btn-urna btn-urna-secondary w-100" disabled style="height: 80px; opacity: 0.5;">
+                            <button type="button" class="btn-urna btn-urna-secondary w-100" disabled style="opacity: 0.5;">
                                 <span>Esgotado</span>
                             </button>
                         <?php elseif ($limiteAtingido): ?>
-                            <button type="button" class="btn-urna btn-urna-warning w-100" disabled style="height: 80px; font-size: 17px; padding: 0 8px;">
-                                <span>Quantidade Máxima de Itens Atingida</span>
+                            <button type="button" class="btn-urna btn-urna-warning w-100" disabled>
+                                <span>Limite Atingido</span>
                             </button>
                         <?php else: ?>
                             <button type="button" 
                                     id="btn-adicionar-<?= (int)$p['produto_id'] ?>"
                                     class="btn-urna btn-urna-secondary w-100" 
-                                    style="height: 80px; font-size: 20px;"
                                     onclick="adicionarAoCarrinho(<?= (int)$p['produto_id'] ?>, this)">
-                                <span style="font-size: 22px;">🛒</span>
-                                <span><?= $noCarrinho > 0 ? 'Adicionar mais (+)' : 'Adicionar ao Carrinho' ?></span>
+                                <span>🛒</span>
+                                <span><?= $noCarrinho > 0 ? '+1 Mais' : 'Adicionar' ?></span>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -511,14 +524,14 @@ function aplicarSaldosVitrine(saldos) {
             badgeContainer.innerHTML = '<span class="card-badge-estoque esgotado">Esgotado</span>';
             cardInner.classList.add('esgotado');
             btnContainer.innerHTML = `
-                <button type="button" class="btn-urna btn-urna-secondary w-100" disabled style="height: 80px; opacity: 0.5;">
+                <button type="button" class="btn-urna btn-urna-secondary w-100" disabled style="opacity: 0.5;">
                     <span>Esgotado</span>
                 </button>
             `;
         } else {
             cardInner.classList.remove('esgotado');
             if (saldo <= 5) {
-                badgeContainer.innerHTML = `<span class="card-badge-estoque baixo">Últimas ${saldo} un!</span>`;
+                badgeContainer.innerHTML = `<span class="card-badge-estoque baixo">Últimas ${saldo}!</span>`;
             } else {
                 badgeContainer.innerHTML = `<span class="card-badge-estoque">${saldo} disponíveis</span>`;
             }
@@ -528,15 +541,14 @@ function aplicarSaldosVitrine(saldos) {
             if (!btnAdicionar) {
                 const elQtdNoCarrinho = document.getElementById('no-carrinho-qtd-' + prodId);
                 const temNoCarrinho = elQtdNoCarrinho && parseInt(elQtdNoCarrinho.innerText, 10) > 0;
-                const textoBtn = temNoCarrinho ? 'Adicionar mais (+)' : 'Adicionar ao Carrinho';
+                const textoBtn = temNoCarrinho ? '+1 Mais' : 'Adicionar';
 
                 btnContainer.innerHTML = `
                     <button type="button" 
                             id="btn-adicionar-${prodId}"
                             class="btn-urna btn-urna-secondary w-100" 
-                            style="height: 80px; font-size: 20px;"
                             onclick="adicionarAoCarrinho(${prodId}, this)">
-                        <span style="font-size: 22px;">🛒</span>
+                        <span>🛒</span>
                         <span>${textoBtn}</span>
                     </button>
                 `;

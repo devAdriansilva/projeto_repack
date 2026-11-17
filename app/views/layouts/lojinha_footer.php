@@ -83,14 +83,14 @@ function adicionarAoCarrinho(produtoId, btnElement) {
                 if (cardInner) cardInner.classList.add('esgotado');
                 if (btnContainer) {
                     btnContainer.innerHTML = `
-                        <button type="button" class="btn-urna btn-urna-secondary w-100" disabled style="height: 80px; opacity: 0.5;">
+                        <button type="button" class="btn-urna btn-urna-secondary w-100" disabled style="opacity: 0.5;">
                             <span>Esgotado</span>
                         </button>
                     `;
                 }
                 return; // Produto esgotou
             } else if (saldoRestante <= 5) {
-                badgeContainer.innerHTML = `<span class="card-badge-estoque baixo">Últimas ${saldoRestante} un!</span>`;
+                badgeContainer.innerHTML = `<span class="card-badge-estoque baixo">Últimas ${saldoRestante}!</span>`;
             } else {
                 badgeContainer.innerHTML = `<span class="card-badge-estoque">${saldoRestante} disponíveis</span>`;
             }
@@ -103,8 +103,8 @@ function adicionarAoCarrinho(produtoId, btnElement) {
                 const parent = btn.parentElement;
                 if (parent) {
                     parent.innerHTML = `
-                        <button type="button" class="btn-urna btn-urna-warning w-100" disabled style="height: 80px; font-size: 17px; padding: 0 8px;">
-                            <span>Quantidade Máxima de Itens Atingida</span>
+                        <button type="button" class="btn-urna btn-urna-warning w-100" disabled>
+                            <span>Limite Atingido</span>
                         </button>
                     `;
                 }
@@ -116,10 +116,10 @@ function adicionarAoCarrinho(produtoId, btnElement) {
         btnElement.classList.remove('btn-urna-secondary');
         btnElement.classList.add('btn-urna-primary');
         btnElement.innerHTML = `
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
             </svg>
-            <span style="font-size: 18px;">Reservado (5 min)!</span>
+            <span>Reservado!</span>
         `;
 
         setTimeout(() => {
@@ -128,8 +128,8 @@ function adicionarAoCarrinho(produtoId, btnElement) {
                 btnElement.classList.remove('btn-urna-primary');
                 btnElement.classList.add('btn-urna-secondary');
                 btnElement.innerHTML = `
-                    <span style="font-size: 22px;">🛒</span>
-                    <span>Adicionar mais (+)</span>
+                    <span>🛒</span>
+                    <span>+1 Mais</span>
                 `;
             }
         }, 1200);
