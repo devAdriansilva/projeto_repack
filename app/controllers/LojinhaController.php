@@ -89,7 +89,7 @@ class LojinhaController
     }
 
     /**
-     * Tela de Identificação rápida do Colaborador (por Matrícula e validação de Setor)
+     * Tela de Identificação rápida do Colaborador com suporte a PIN de 4 dígitos
      * Conforme docs/FSD.md Seções 12.2, 13.3 e 15
      */
     public function login(): void
@@ -100,7 +100,8 @@ class LojinhaController
 
         $erro = '';
         $aviso = $_SESSION['flash_aviso'] ?? '';
-        unset($_SESSION['flash_aviso']);
+        $sucesso = $_SESSION['flash_sucesso'] ?? '';
+        unset($_SESSION['flash_aviso'], $_SESSION['flash_sucesso']);
 
         // Se já autenticado e com lote ativo, redireciona para a vitrine
         if (!empty($_SESSION['colaborador_id']) && !empty($_SESSION['colaborador_setor'])) {
@@ -115,8 +116,14 @@ class LojinhaController
             }
         }
 
+        $etapa = 'identificar'; // 'identificar', 'criar_pin', 'digitar_pin'
+        $matricula = '';
+        $nomeColaborador = '';
+        $setorColaborador = '';
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $matricula = trim((string)($_POST['matricula'] ?? ''));
+            $acao = trim((string)($_POST['acao'] ?? 'identificar'));
+            $matricula = strtoupper(trim((string)($_POST['matricula'] ?? '')));
 
             if ($matricula === '') {
                 $erro = 'Por favor, digite sua matrícula corporativa.';
@@ -127,11 +134,8 @@ class LojinhaController
                     $erro = 'Matrícula não encontrada ou cadastro inativo no sistema.';
                 } else {
                     $tipoAcesso = $usuario['tipo_acesso_lojinha'] ?? 'comum';
-
-                    // Valida se há lote de venda aberto no momento para o setor deste colaborador
                     $lote = LoteVenda::buscarLoteAtivoParaSetor($usuario['setor']);
 
-                    // Se a loja estiver fechada e for Master ou Setorial, conecta ao Lote Corporativo permanente
                     if (!$lote && ($tipoAcesso === 'master' || $tipoAcesso === 'setorial')) {
                         $lote = LoteVenda::obterLoteCorporativo();
                     }
@@ -143,25 +147,108 @@ class LojinhaController
                             $dtInicio = date('d/m/Y \à\s H:i', strtotime($proximoLote['data_inicio']));
                             $previsao = " Previsão do próximo lote: {$dtInicio}.";
                         }
-
                         $erro = "Olá, {$usuario['nome']}! Não há lote de vendas aberto no momento para o seu setor ({$usuario['setor']}).{$previsao} Aguarde os comunicados da Gestão.";
                     } else {
-                        // Identificação bem-sucedida: vincula sessão do colaborador
-                        $_SESSION['colaborador_id'] = (int)$usuario['id'];
-                        $_SESSION['colaborador_nome'] = $usuario['nome'];
-                        $_SESSION['colaborador_matricula'] = $usuario['matricula'];
-                        $_SESSION['colaborador_setor'] = $usuario['setor'];
-                        $_SESSION['colaborador_tipo_acesso'] = $tipoAcesso;
-                        $_SESSION['lojinha_lote_id'] = (int)$lote['id'];
+                        $nomeColaborador = $usuario['nome'];
+                        $setorColaborador = $usuario['setor'];
+                        $temPin = !empty($usuario['pin_hash']);
 
-                        header('Location: ' . APP_URL . '/lojinha');
-                        exit;
+                        if ($acao === 'identificar') {
+                            if (!$temPin) {
+                                $etapa = 'criar_pin';
+                            } else {
+                                $etapa = 'digitar_pin';
+                            }
+                        } elseif ($acao === 'salvar_pin') {
+                            $pin = trim((string)($_POST['pin'] ?? ''));
+                            $pinConf = trim((string)($_POST['pin_confirmacao'] ?? ''));
+
+                            if (!preg_match('/^\d{4}$/', $pin)) {
+                                $erro = 'O PIN deve conter exatamente 4 dígitos numéricos (apenas números de 0 a 9).';
+                                $etapa = 'criar_pin';
+                            } elseif ($pin !== $pinConf) {
+                                $erro = 'Os PINs digitados não são idênticos. Digite o mesmo PIN nos dois campos.';
+                                $etapa = 'criar_pin';
+                            } else {
+                                Usuario::definirPin((int)$usuario['id'], $pin);
+                                LogSistema::registrar('INFO', "Colaborador {$usuario['nome']} cadastrou novo PIN de 4 dígitos.");
+
+                                $_SESSION['colaborador_id'] = (int)$usuario['id'];
+                                $_SESSION['colaborador_nome'] = $usuario['nome'];
+                                $_SESSION['colaborador_matricula'] = $usuario['matricula'];
+                                $_SESSION['colaborador_setor'] = $usuario['setor'];
+                                $_SESSION['colaborador_tipo_acesso'] = $tipoAcesso;
+                                $_SESSION['lojinha_lote_id'] = (int)$lote['id'];
+
+                                header('Location: ' . APP_URL . '/lojinha');
+                                exit;
+                            }
+                        } elseif ($acao === 'autenticar') {
+                            $pin = trim((string)($_POST['pin'] ?? ''));
+
+                            if (!preg_match('/^\d{4}$/', $pin)) {
+                                $erro = 'Digite o seu PIN de 4 dígitos numéricos.';
+                                $etapa = 'digitar_pin';
+                            } elseif (!Usuario::verificarPin((int)$usuario['id'], $pin)) {
+                                LogSistema::registrar('SECURITY', "Tentativa de acesso à Lojinha com PIN incorreto para o colaborador {$usuario['nome']} ({$usuario['matricula']})");
+                                $erro = 'PIN de 4 dígitos incorreto. Tente novamente ou solicite o reset à Coordenação de Gestão.';
+                                $etapa = 'digitar_pin';
+                            } else {
+                                $_SESSION['colaborador_id'] = (int)$usuario['id'];
+                                $_SESSION['colaborador_nome'] = $usuario['nome'];
+                                $_SESSION['colaborador_matricula'] = $usuario['matricula'];
+                                $_SESSION['colaborador_setor'] = $usuario['setor'];
+                                $_SESSION['colaborador_tipo_acesso'] = $tipoAcesso;
+                                $_SESSION['lojinha_lote_id'] = (int)$lote['id'];
+
+                                header('Location: ' . APP_URL . '/lojinha');
+                                exit;
+                            }
+                        }
                     }
                 }
             }
         }
 
         require __DIR__ . '/../views/lojinha/login.php';
+    }
+
+    /**
+     * Permite ao colaborador autenticado alterar voluntariamente seu PIN de 4 dígitos
+     */
+    public function alterarPin(): void
+    {
+        $dadosAuth = $this->exigirColaborador();
+        $usuario = $dadosAuth['usuario'];
+
+        $erro = '';
+        $sucesso = '';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!AuthController::validarCsrfToken($_POST['csrf_token'] ?? null)) {
+                $erro = 'Sessão expirada. Tente novamente.';
+            } else {
+                $pinAtual = trim((string)($_POST['pin_atual'] ?? ''));
+                $novoPin = trim((string)($_POST['novo_pin'] ?? ''));
+                $novoPinConf = trim((string)($_POST['novo_pin_confirmacao'] ?? ''));
+
+                if (!empty($usuario['pin_hash']) && !Usuario::verificarPin((int)$usuario['id'], $pinAtual)) {
+                    $erro = 'O PIN atual informado está incorreto.';
+                } elseif (!preg_match('/^\d{4}$/', $novoPin)) {
+                    $erro = 'O novo PIN deve conter exatamente 4 dígitos numéricos.';
+                } elseif ($novoPin !== $novoPinConf) {
+                    $erro = 'A confirmação do novo PIN não confere.';
+                } else {
+                    Usuario::definirPin((int)$usuario['id'], $novoPin);
+                    LogSistema::registrar('INFO', "Colaborador {$usuario['nome']} alterou voluntariamente seu PIN de compras.");
+                    $_SESSION['flash_sucesso'] = 'Seu PIN de 4 dígitos foi alterado com sucesso!';
+                    header('Location: ' . APP_URL . '/lojinha');
+                    exit;
+                }
+            }
+        }
+
+        require __DIR__ . '/../views/lojinha/alterar_pin.php';
     }
 
     /**

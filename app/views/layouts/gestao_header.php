@@ -485,6 +485,11 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 
             <!-- Atalhos Rápidos da Gestão no Desktop -->
             <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                <a href="<?= APP_URL ?>/gestao/colaboradores" class="btn btn-sm text-nowrap" style="background: rgba(59, 130, 246, 0.12); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.35); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 8px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;" title="Gestão de Colaboradores e Reset de PIN">
+                    <span style="font-size: 13px;">👥</span>
+                    <span>Equipe</span>
+                </a>
+
                 <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm text-nowrap" style="background: rgba(139, 92, 246, 0.12); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.35); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 8px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;" title="Acessar Vitrine da Lojinha">
                     <span style="font-size: 13px;">🛍️</span>
                     <span>Lojinha</span>
@@ -578,6 +583,9 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
         </a>
         <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/relatorios') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/relatorios">
             <span>📈</span><span>Relatórios</span>
+        </a>
+        <a class="drawer-nav-item <?= strpos($rotaAtual, '/gestao/colaboradores') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/colaboradores">
+            <span>👥</span><span>Colaboradores & PINs</span>
         </a>
 
         <div class="my-2 border-top" style="border-color: rgba(255, 255, 255, 0.12) !important;"></div>

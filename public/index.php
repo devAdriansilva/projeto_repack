@@ -215,6 +215,15 @@ switch ($route) {
         (new RelatorioController())->exportarRelatoriosCsv();
         break;
 
+    // Gestão de Colaboradores e Controle de PINs
+    case '/gestao/colaboradores':
+        (new GestaoController())->colaboradores();
+        break;
+
+    case '/gestao/colaboradores/reset-pin':
+        (new GestaoController())->resetPinColaborador();
+        break;
+
     // -------------------------------------------------------------
     // Rotas da Vitrine e Carrinho da Lojinha (Colaborador)
     // -------------------------------------------------------------
@@ -227,6 +236,10 @@ switch ($route) {
     case '/lojinha/login':
     case '/login':
         (new LojinhaController())->login();
+        break;
+
+    case '/lojinha/alterar-pin':
+        (new LojinhaController())->alterarPin();
         break;
 
     case '/lojinha/logout':

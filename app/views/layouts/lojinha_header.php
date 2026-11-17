@@ -253,6 +253,11 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             </a>
         <?php endif; ?>
 
+        <a href="<?= APP_URL ?>/lojinha/alterar-pin" class="btn-sair-header d-none d-sm-inline-flex align-items-center gap-1" title="Alterar meu PIN de compras" style="border-color: rgba(0,0,0,0.15);">
+            <span>🔒</span>
+            <span>Alterar PIN</span>
+        </a>
+
         <a href="<?= APP_URL ?>/lojinha/logout" class="btn-sair-header" title="Sair da Lojinha">
             Sair
         </a>

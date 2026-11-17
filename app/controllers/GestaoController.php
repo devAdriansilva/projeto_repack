@@ -854,4 +854,55 @@ class GestaoController
 
         return '/uploads/produtos/' . $novoNome;
     }
+
+    /**
+     * Tela de Gestão de Colaboradores e Controle de PIN de Acesso
+     */
+    public function colaboradores(): void
+    {
+        $colaboradores = Usuario::listarColaboradoresParaGestao();
+        $mensagemSucesso = $_SESSION['flash_sucesso'] ?? '';
+        $mensagemErro = $_SESSION['flash_erro'] ?? '';
+        unset($_SESSION['flash_sucesso'], $_SESSION['flash_erro']);
+
+        require __DIR__ . '/../views/gestao/colaboradores.php';
+    }
+
+    /**
+     * Ação de Reset de PIN de um Colaborador pela Coordenação
+     */
+    public function resetPinColaborador(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . APP_URL . '/gestao/colaboradores');
+            exit;
+        }
+
+        if (!AuthController::validarCsrfToken($_POST['csrf_token'] ?? null)) {
+            $_SESSION['flash_erro'] = 'Sessão expirada ou requisição inválida. Tente novamente.';
+            header('Location: ' . APP_URL . '/gestao/colaboradores');
+            exit;
+        }
+
+        $usuarioId = (int)($_POST['usuario_id'] ?? 0);
+        $usuario = Usuario::buscarPorId($usuarioId);
+
+        if (!$usuario) {
+            $_SESSION['flash_erro'] = 'Colaborador não localizado.';
+            header('Location: ' . APP_URL . '/gestao/colaboradores');
+            exit;
+        }
+
+        Usuario::resetarPin($usuarioId);
+
+        $nomeGestora = $_SESSION['nome'] ?? 'Gestora';
+        LogSistema::registrar('SECURITY', "PIN do colaborador {$usuario['nome']} ({$usuario['matricula']}) foi resetado pela coordenação ({$nomeGestora}).", [
+            'usuario_id' => $usuarioId,
+            'resetado_por' => $_SESSION['usuario_id'] ?? null
+        ]);
+
+        $_SESSION['flash_sucesso'] = "PIN do colaborador {$usuario['nome']} resetado com sucesso! Ele cadastrará um novo PIN de 4 dígitos no próximo acesso à Lojinha.";
+        header('Location: ' . APP_URL . '/gestao/colaboradores');
+        exit;
+    }
 }

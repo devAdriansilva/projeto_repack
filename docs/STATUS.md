@@ -1165,6 +1165,21 @@
       - Suíte oficial `tests/test_produtividade_lote.php` (11/11) aprovada com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.89` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-094 (17/11/2026):** Implementação de Proteção por PIN de 4 Dígitos para Compradores da Lojinha com Autocadastro e Reset pela Gestão.
+    - **Demanda do Usuário:**
+      - Estruturar o controle de acesso de compradores da Lojinha com PIN numérico de 4 dígitos para resguardar a cota e privacidade de cada colaborador, mantendo a bancada de Repack sem senhas para preservar agilidade.
+      - Definir fluxo prático de gestão, controle e possíveis alterações/reset desse PIN para a equipe não-gerencial.
+    - **Solução Implementada:**
+      - **Banco de Dados:** Migration `database/migrations/012_adicionar_pin_comprador.sql` adicionando a coluna `pin_hash VARCHAR(255) NULL` na tabela `usuarios`.
+      - **Modelo de Dados (`app/models/Usuario.php`):** Métodos `definirPin()`, `verificarPin()`, `resetarPin()` e `listarColaboradoresParaGestao()`. Criptografia com algoritmo nativo `password_hash` / `password_verify`.
+      - **Autocadastro no Primeiro Acesso (`app/views/lojinha/login.php`):** Colaborador sem PIN cadastrado é guiado amigavelmente para criar seu código de 4 dígitos com confirmação dupla no primeiro login.
+      - **Acesso Protegido:** Colaboradores com PIN já cadastrado informam Matrícula + PIN de 4 dígitos via teclado numérico (`inputmode="numeric"`).
+      - **Autoatendimento:** Rota e tela `/lojinha/alterar-pin` (`app/views/lojinha/alterar_pin.php`) com link no cabeçalho da lojinha para alteração voluntária com validação de PIN atual e CSRF.
+      - **Painel de Gestão (`/gestao/colaboradores`):** Tela administrativa em `app/views/gestao/colaboradores.php` com busca em tempo real, status do PIN (*Ativo* vs *Pendente de Cadastro*) e botão de 1 clique `[🔄 Resetar PIN]` com modal de confirmação, auditoria em `LogSistema` e feedback instantâneo.
+    - **Testes & Versionamento:**
+      - Nova suíte de testes `tests/test_pin_comprador.php` (19/19) e regressão `tests/test_fase5.php` (35/35) e de concorrência aprovados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.90` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
