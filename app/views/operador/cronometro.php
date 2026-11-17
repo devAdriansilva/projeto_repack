@@ -131,9 +131,20 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 
     <div class="sku-entry-container" style="margin-bottom: 0;">
-        <label for="inputCodigoSku" style="display: block; font-size: 38px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 14px; text-align: center; letter-spacing: 0.5px;">
-            CÓDIGO DO PRODUTO:
-        </label>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <label for="inputCodigoSku" id="labelModoBusca" style="font-size: 34px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">
+                CÓDIGO (SKU):
+            </label>
+            <!-- Seletor Rápido de Teclado (Código 123 vs Nome ABC) -->
+            <div style="display: inline-flex; background: #F1F5F9; border: 3px solid #CBD5E1; border-radius: 18px; padding: 4px; gap: 4px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);">
+                <button type="button" id="btnModoCodigo" onclick="alternarModoBusca('codigo')" style="min-height: 46px; padding: 6px 16px; border-radius: 14px; font-size: 19px; font-weight: 900; border: none; cursor: pointer; background: #0F172A; color: #FFFFFF; transition: all 0.15s ease; touch-action: manipulation;" title="Teclado Numérico (Código SKU)">
+                    🔢 123
+                </button>
+                <button type="button" id="btnModoNome" onclick="alternarModoBusca('nome')" style="min-height: 46px; padding: 6px 16px; border-radius: 14px; font-size: 19px; font-weight: 900; border: none; cursor: pointer; background: transparent; color: #64748B; transition: all 0.15s ease; touch-action: manipulation;" title="Teclado Alfanumérico (Busca por Nome)">
+                    🔤 ABC
+                </button>
+            </div>
+        </div>
         
         <div class="sku-input-wrapper">
             <input type="text" 
@@ -151,6 +162,9 @@ require_once __DIR__ . '/../layouts/header.php';
                     style="display: none;" 
                     onclick="limparSku()" 
                     aria-label="Limpar código">✕</button>
+        </div>
+        <div style="font-size: 14px; font-weight: 700; color: #64748B; text-align: center; margin-top: 8px;">
+            💡 Dica: Toque em <strong>🔤 ABC</strong> ou <strong>segure o campo</strong> para buscar pelo nome.
         </div>
 
         <!-- Card de Confirmação Imediata do SKU (Com Foto Monumental e Alto Contraste) -->
@@ -329,7 +343,81 @@ window.addEventListener('DOMContentLoaded', () => {
     inicializarDatas();
     restaurarRascunhoLote();
     atualizarDuracaoLote();
+    inicializarLongPressBusca();
 });
+
+// Controle de Modo de Teclado e Busca (Código 123 vs Nome ABC)
+let modoBuscaAtual = 'codigo'; // 'codigo' ou 'nome'
+let timerLongPress = null;
+
+function alternarModoBusca(novoModo, viaLongPress = false) {
+    modoBuscaAtual = novoModo;
+    const input = document.getElementById('inputCodigoSku');
+    const label = document.getElementById('labelModoBusca');
+    const btnCod = document.getElementById('btnModoCodigo');
+    const btnNom = document.getElementById('btnModoNome');
+
+    if (novoModo === 'nome') {
+        input.setAttribute('inputmode', 'text');
+        input.removeAttribute('pattern');
+        input.placeholder = 'Ex: Skol, Guaraná...';
+        label.innerText = 'BUSCA POR NOME:';
+        
+        btnNom.style.background = '#0F172A';
+        btnNom.style.color = '#FFFFFF';
+        btnCod.style.background = 'transparent';
+        btnCod.style.color = '#64748B';
+    } else {
+        input.setAttribute('inputmode', 'numeric');
+        input.setAttribute('pattern', '[0-9]*');
+        input.placeholder = '9068';
+        label.innerText = 'CÓDIGO (SKU):';
+        
+        btnCod.style.background = '#0F172A';
+        btnCod.style.color = '#FFFFFF';
+        btnNom.style.background = 'transparent';
+        btnNom.style.color = '#64748B';
+    }
+
+    if (navigator.vibrate) {
+        navigator.vibrate(60);
+    }
+
+    input.focus();
+}
+
+function inicializarLongPressBusca() {
+    const input = document.getElementById('inputCodigoSku');
+    if (!input) return;
+
+    const iniciarTimer = () => {
+        timerLongPress = setTimeout(() => {
+            const proximoModo = (modoBuscaAtual === 'codigo') ? 'nome' : 'codigo';
+            alternarModoBusca(proximoModo, true);
+        }, 500);
+    };
+
+    const cancelarTimer = () => {
+        if (timerLongPress) {
+            clearTimeout(timerLongPress);
+            timerLongPress = null;
+        }
+    };
+
+    input.addEventListener('touchstart', iniciarTimer, { passive: true });
+    input.addEventListener('touchend', cancelarTimer, { passive: true });
+    input.addEventListener('touchcancel', cancelarTimer, { passive: true });
+    input.addEventListener('touchmove', cancelarTimer, { passive: true });
+
+    // Suporte também para mouse no computador
+    input.addEventListener('mousedown', iniciarTimer);
+    input.addEventListener('mouseup', cancelarTimer);
+    input.addEventListener('mouseleave', cancelarTimer);
+}
+
+function normalizarTexto(txt) {
+    return (txt || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
 
 function formatarDataIso(d) {
     const pad = (n) => String(n).padStart(2, '0');
@@ -553,7 +641,8 @@ function processarEntradaSku(valor) {
         cardOk.style.display = 'none';
         input.classList.remove('sucesso-encontrado');
 
-        const matchesNome = PRODUTOS.filter(p => p.nome.toLowerCase().includes(termo)).slice(0, 6);
+        const termoNorm = normalizarTexto(termo);
+        const matchesNome = PRODUTOS.filter(p => normalizarTexto(p.nome).includes(termoNorm)).slice(0, 8);
         if (matchesNome.length > 0) {
             cardErro.style.display = 'none';
             exibirSugestoes(matchesNome);

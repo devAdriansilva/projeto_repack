@@ -1154,6 +1154,17 @@
     - **Testes & Versionamento:**
       - Testes integrados `tests/test_fase5.php` (35/35) e teste de rota GET /gestao/login validados com 100% de sucesso.
 
+  - [x] **MANUT-093 (17/11/2026):** Inclusão de Alternador de Teclado Numérico/Alfanumérico e Busca por Nome com Suporte a Toque Longo na Produtividade.
+    - **Demanda do Usuário:**
+      - Permitir a busca de produtos por nome na tela de produtividade da bancada, alternando o teclado virtual do celular de estritamente numérico (`123`) para alfanumérico (`ABC`) ao manter o campo de busca pressionado.
+    - **Solução Implementada (`app/views/operador/cronometro.php`):**
+      - **Seletor Rápido de Teclado:** Inclusão dos botões de alternância `[ 🔢 123 ]` e `[ 🔤 ABC ]` ao lado do título do campo, permitindo troca imediata em 1 toque consciente para operação ágil mesmo com luvas.
+      - **Suporte a Toque Longo (Long-Press):** Listeners de eventos táteis (`touchstart`, `touchend`, `touchcancel`, `touchmove`) e mouse com temporizador de 500ms no campo de busca. Ao segurar o campo, o sistema dispara vibração háptica (`navigator.vibrate(60)`), altera o `inputmode` de `numeric` para `text`, remove a restrição de padrão numérico e atualiza o placeholder para "Ex: Skol, Guaraná...".
+      - **Busca Tolerante a Acentos:** Implementação da função `normalizarTexto()` com decomposição Unicode NFD para busca por nome insensível a acentuação e maiúsculas/minúsculas.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_produtividade_lote.php` (11/11) aprovada com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.89` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
