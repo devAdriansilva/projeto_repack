@@ -1081,6 +1081,23 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` executadas e aprovadas com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.84` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-088 (17/11/2026):** Implementação da Identidade Oficial com Monograma Integrado ([R] + EPACK = REPACK).
+    - **Demanda de Marca:**
+      - Aplicação da Opção 1 aprovada pelo usuário: Monograma Integrado onde o símbolo 3D da lata metálica com fita esmeralda atua fisicamente como a letra "R" inicial e se conecta diretamente com a tipografia "EPACK", formando o nome completo da marca "REPACK".
+    - **Solução Implementada:**
+      - Geração dos arquivos vetoriais de alta fidelidade:
+        - `public/assets/img/logo-repack.svg` calibrado para fundos escuros (Painel da Gestão), com o "R" 3D e "EPACK" em gradiente prata/branco e esmeralda.
+        - `public/assets/img/logo-repack-dark.svg` calibrado para fundos claros (Quiosque do Operador, Vitrine e Login da Lojinha), com o "R" 3D e "EPACK" em grafite escuro e esmeralda.
+      - Aplicação integrada da nova marca nos layouts centrais do sistema:
+        - `app/views/layouts/header.php` (cabeçalho quiosque do operador);
+        - `app/views/layouts/gestao_header.php` (navbar principal e cabeçalho da gestão);
+        - `app/views/layouts/lojinha_header.php` (barra superior da lojinha virtual);
+        - `app/views/lojinha/login.php` (tela de identificação por matrícula, substituindo a sacola genérica).
+      - Preservação de `public/assets/img/logo-icon.svg`, `public/assets/img/icon-512.png`, `icon-192.png` e `public/favicon.ico` como o ícone de app quadrado oficial para PWA, webmanifest e atalho do Windows Explorer.
+    - **Testes & Versionamento:**
+      - Suíte oficial `tests/test_fase5.php` (35/35) e `tests/test_substituicao_item.php` validados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.85` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

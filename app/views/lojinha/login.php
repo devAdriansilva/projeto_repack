@@ -22,12 +22,10 @@ $pageTitle = 'Acesso à Lojinha dos Colaboradores - Repack';
 <body style="background-color: #F3F4F6; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
 
 <div style="width: 100%; max-width: 480px;">
-    <!-- Logotipo / Cabeçalho da Lojinha -->
+    <!-- Logotipo / Cabeçalho da Lojinha com Monograma Integrado -->
     <div class="text-center mb-4">
-        <div style="display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; background: #10B981; border-radius: 20px; color: #FFFFFF; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4);">
-            <svg width="40" height="40" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12zm-7-8c-1.66 0-3-1.34-3-3H7c0 2.76 2.24 5 5 5s5-2.24 5-5h-2c0 1.66-1.34 3-3 3z"/>
-            </svg>
+        <div style="display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <img src="<?= APP_URL ?>/assets/img/logo-repack-dark.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" height="68" style="filter: drop-shadow(0 4px 12px rgba(16,185,129,0.3));">
         </div>
         <h1 class="headline-lg" style="margin-bottom: 6px;">Lojinha dos Colaboradores</h1>
         <p class="body-md text-muted">Acesso exclusivo para compra interna de avarias leves</p>

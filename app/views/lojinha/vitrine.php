@@ -320,13 +320,16 @@ require __DIR__ . '/../layouts/lojinha_header.php';
             $cat = $p['categoria'];
         ?>
             <div class="col-12 col-md-6 col-lg-4 col-xl-3 card-produto-wrapper" 
+                 id="card-wrapper-<?= (int)$p['produto_id'] ?>"
+                 data-produto-id="<?= (int)$p['produto_id'] ?>"
                  data-categoria="<?= $cat ?>" 
                  data-nome="<?= mb_strtolower($p['nome'], 'UTF-8') ?>"
                  data-codigo="<?= mb_strtolower($p['codigo'], 'UTF-8') ?>"
                  data-pacote="<?= mb_strtolower($p['pacote_padrao'] ?? '', 'UTF-8') ?>">
-                <div class="card-produto-lojinha <?= $esgotado ? 'esgotado' : '' ?>">
+                <div class="card-produto-lojinha <?= $esgotado ? 'esgotado' : '' ?>" id="card-inner-<?= (int)$p['produto_id'] ?>">
                     <div>
                         <!-- Badge de Saldo Real em Vitrine -->
+                        <div id="badge-container-<?= (int)$p['produto_id'] ?>">
                         <?php if (!empty($isMaster)): ?>
                             <span class="card-badge-estoque" style="background: #1E1B4B; color: #FDE68A; border: 1.5px solid #818CF8; font-size: 12px; padding: 4px 10px;">
                                 Físico: <?= $totalFisico ?> un | Res: <?= $reservaGestao ?> un
@@ -338,6 +341,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                         <?php else: ?>
                             <span class="card-badge-estoque"><?= $saldoDisp ?> disponíveis</span>
                         <?php endif; ?>
+                        </div>
 
                         <!-- Imagem do Produto -->
                         <div class="card-img-container">
@@ -351,13 +355,11 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                         </div>
 
                         <!-- Indicador se já está no carrinho -->
-                        <?php if ($noCarrinho > 0): ?>
-                            <div class="mb-2">
-                                <span class="badge bg-warning text-dark" style="font-size: 12px; font-weight: 700;">
-                                    🛒 <?= $noCarrinho ?> no seu carrinho
-                                </span>
-                            </div>
-                        <?php endif; ?>
+                        <div id="no-carrinho-container-<?= (int)$p['produto_id'] ?>" class="mb-2" style="<?= $noCarrinho > 0 ? '' : 'display: none;' ?>">
+                            <span class="badge bg-warning text-dark" style="font-size: 12px; font-weight: 700;">
+                                🛒 <span id="no-carrinho-qtd-<?= (int)$p['produto_id'] ?>"><?= $noCarrinho ?></span> no seu carrinho
+                            </span>
+                        </div>
 
                         <h3 class="body-lg" style="font-weight: 700; color: #111827; margin-bottom: 8px; min-height: 54px;">
                             <?= sanitize_html($p['nome']) ?>
@@ -365,7 +367,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                     </div>
 
                     <!-- Botão de Ação Gigante (80px - Filosofia Urna Eletrônica) -->
-                    <div class="mt-3">
+                    <div class="mt-3" id="btn-container-<?= (int)$p['produto_id'] ?>">
                         <?php if ($jaComprouNoLote): ?>
                             <button type="button" class="btn-urna w-100" disabled style="height: 80px; font-size: 18px; background: #E2E8F0; color: #64748B; border: 2px solid #CBD5E1; cursor: not-allowed;">
                                 <span>Pedido Já Realizado</span>
@@ -380,11 +382,12 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                             </button>
                         <?php else: ?>
                             <button type="button" 
+                                    id="btn-adicionar-<?= (int)$p['produto_id'] ?>"
                                     class="btn-urna btn-urna-secondary w-100" 
                                     style="height: 80px; font-size: 20px;"
                                     onclick="adicionarAoCarrinho(<?= (int)$p['produto_id'] ?>, this)">
                                 <span style="font-size: 22px;">🛒</span>
-                                <span>Adicionar ao Carrinho</span>
+                                <span><?= $noCarrinho > 0 ? 'Adicionar mais (+)' : 'Adicionar ao Carrinho' ?></span>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -463,6 +466,95 @@ function limparFiltros() {
     const btnTodos = document.querySelector('.btn-categoria-filtro[data-categoria="todos"]');
     selecionarCategoria('todos', btnTodos);
 }
+
+// =========================================================================
+// Sincronização em Tempo Real (Smart Polling Adaptativo)
+// =========================================================================
+const POLLING_INTERVALO_MS = 7000;
+let pollingTimer = null;
+const IS_MASTER = <?= !empty($isMaster) ? 'true' : 'false' ?>;
+const JA_COMPROU_LOTE = <?= !empty($resumo['ja_comprou_no_lote']) ? 'true' : 'false' ?>;
+
+function sincronizarSaldosVitrine() {
+    // Pausa inteligente: se a aba estiver oculta ou minimizada, economiza banda e CPU
+    if (document.hidden) return;
+
+    fetch(BASE_APP_URL + '/api/estoque/saldos')
+        .then(res => {
+            if (!res.ok) throw new Error('Status ' + res.status);
+            return res.json();
+        })
+        .then(data => {
+            if (data && data.status === 'success' && data.saldos) {
+                aplicarSaldosVitrine(data.saldos);
+            }
+        })
+        .catch(err => {
+            // Falha silenciosa para não incomodar a operação
+            console.debug('Polling de saldos em espera:', err);
+        });
+}
+
+function aplicarSaldosVitrine(saldos) {
+    if (IS_MASTER) return; // Master visualiza estoque físico
+
+    for (const [prodId, saldoNum] of Object.entries(saldos)) {
+        const saldo = parseInt(saldoNum, 10);
+        const badgeContainer = document.getElementById('badge-container-' + prodId);
+        const cardInner = document.getElementById('card-inner-' + prodId);
+        const btnContainer = document.getElementById('btn-container-' + prodId);
+
+        if (!badgeContainer || !cardInner || !btnContainer) continue;
+        if (JA_COMPROU_LOTE) continue;
+
+        if (saldo <= 0) {
+            badgeContainer.innerHTML = '<span class="card-badge-estoque esgotado">Esgotado</span>';
+            cardInner.classList.add('esgotado');
+            btnContainer.innerHTML = `
+                <button type="button" class="btn-urna btn-urna-secondary w-100" disabled style="height: 80px; opacity: 0.5;">
+                    <span>Esgotado</span>
+                </button>
+            `;
+        } else {
+            cardInner.classList.remove('esgotado');
+            if (saldo <= 5) {
+                badgeContainer.innerHTML = `<span class="card-badge-estoque baixo">Últimas ${saldo} un!</span>`;
+            } else {
+                badgeContainer.innerHTML = `<span class="card-badge-estoque">${saldo} disponíveis</span>`;
+            }
+
+            // Se o botão estava marcado como esgotado e o estoque voltou (ex: reserva expirada de outro usuário)
+            const btnAdicionar = document.getElementById('btn-adicionar-' + prodId);
+            if (!btnAdicionar) {
+                const elQtdNoCarrinho = document.getElementById('no-carrinho-qtd-' + prodId);
+                const temNoCarrinho = elQtdNoCarrinho && parseInt(elQtdNoCarrinho.innerText, 10) > 0;
+                const textoBtn = temNoCarrinho ? 'Adicionar mais (+)' : 'Adicionar ao Carrinho';
+
+                btnContainer.innerHTML = `
+                    <button type="button" 
+                            id="btn-adicionar-${prodId}"
+                            class="btn-urna btn-urna-secondary w-100" 
+                            style="height: 80px; font-size: 20px;"
+                            onclick="adicionarAoCarrinho(${prodId}, this)">
+                        <span style="font-size: 22px;">🛒</span>
+                        <span>${textoBtn}</span>
+                    </button>
+                `;
+            }
+        }
+    }
+}
+
+// Inicializa Smart Polling e escuta eventos de foco/visibilidade
+document.addEventListener('DOMContentLoaded', () => {
+    pollingTimer = setInterval(sincronizarSaldosVitrine, POLLING_INTERVALO_MS);
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            sincronizarSaldosVitrine();
+        }
+    });
+});
 </script>
 
 <?php require __DIR__ . '/../layouts/lojinha_footer.php'; ?>

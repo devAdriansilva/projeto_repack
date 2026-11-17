@@ -278,6 +278,11 @@ switch ($route) {
         (new LojinhaController())->apiSaldo();
         break;
 
+    case '/api/estoque/saldos':
+    case '/api/estoque/saldos.php':
+        (new LojinhaController())->apiSaldos();
+        break;
+
     // -------------------------------------------------------------
     // Endpoints de API para Operador e PWA Offline
     // -------------------------------------------------------------

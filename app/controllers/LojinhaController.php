@@ -552,4 +552,31 @@ class LojinhaController
         ], JSON_UNESCAPED_UNICODE);
         exit;
     }
+
+    /**
+     * Consulta saldos de todos os produtos para sincronização em tempo real (Smart Polling)
+     * Endpoint: GET /api/estoque/saldos
+     */
+    public function apiSaldos(): void
+    {
+        header('Content-Type: application/json; charset=UTF-8');
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $tipoAcesso = $_SESSION['colaborador_tipo_acesso'] ?? 'comum';
+        $modoSimulacao = $_SESSION['lojinha_modo_simulacao'] ?? 'master';
+        $isGestor = (!empty($_SESSION['usuario_id']) && ($_SESSION['perfil'] ?? '') === 'gestao');
+        $isMaster = (($isGestor || $tipoAcesso === 'master') && $modoSimulacao !== 'colaborador');
+
+        $saldos = EstoqueLojinha::listarSaldosCompactos($isMaster);
+
+        echo json_encode([
+            'status' => 'success',
+            'timestamp' => time(),
+            'saldos' => $saldos
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 }

@@ -218,9 +218,9 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
 <?php if (!empty($nomeColab)): ?>
 <!-- Barra de Navegação Superior da Lojinha -->
 <nav class="lojinha-navbar">
-    <a href="<?= APP_URL ?>/lojinha" class="lojinha-brand" style="display: flex; align-items: center; gap: 10px;">
-        <img src="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" width="38" height="38" style="border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-        <h1 class="lojinha-brand-title" style="margin: 0; font-size: 20px; font-weight: 800;">Lojinha dos Colaboradores</h1>
+    <a href="<?= APP_URL ?>/lojinha" class="lojinha-brand" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+        <img src="<?= APP_URL ?>/assets/img/logo-repack-dark.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" height="38" style="filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));">
+        <span class="border-start ps-2.5 ms-1 d-none d-sm-inline" style="font-size: 15px; font-weight: 700; color: #475569; border-color: #E2E8F0 !important;">Lojinha dos Colaboradores</span>
     </a>
 
     <div class="lojinha-user-info">

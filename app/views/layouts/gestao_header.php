@@ -434,16 +434,16 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 <nav class="navbar navbar-expand-xl navbar-dark navbar-gestao" style="position: sticky; top: 0; z-index: 1050; min-height: 70px; padding: 10px 16px;">
     <div class="container-fluid px-0 d-flex align-items-center justify-content-between">
         
-        <!-- LATERAL ESQUERDA: Logomarca / Ícone da Lojinha & Repack + Título do Módulo -->
-        <a class="navbar-brand d-flex align-items-center gap-2.5 m-0 text-white" href="<?= APP_URL ?>/gestao/dashboard">
-            <!-- Emblema da Logomarca Oficial (Monograma R Dinâmico) -->
-            <img src="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" width="48" height="48" style="border-radius: 12px; box-shadow: 0 4px 14px rgba(16,185,129,0.35); flex-shrink: 0; border: 2px solid rgba(255,255,255,0.22); background: #0F172A;">
-            <div class="d-flex flex-column" style="line-height: 1.15;">
+        <!-- LATERAL ESQUERDA: Logomarca Oficial Integrada ([R] + EPACK) + Título do Módulo -->
+        <a class="navbar-brand d-flex align-items-center gap-3 m-0 text-white" href="<?= APP_URL ?>/gestao/dashboard">
+            <!-- Emblema da Logomarca Oficial Integrada (Monograma R Dinâmico + EPACK) -->
+            <img src="<?= APP_URL ?>/assets/img/logo-repack.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" height="42" style="flex-shrink: 0;">
+            <div class="d-flex flex-column border-start ps-2.5 ms-1" style="line-height: 1.15; border-color: rgba(255, 255, 255, 0.2) !important;">
                 <div class="d-flex align-items-center gap-1.5">
-                    <strong style="letter-spacing: -0.2px; font-size: 19px; font-weight: 900;">Gestão do Repack</strong>
+                    <strong style="letter-spacing: -0.2px; font-size: 16px; font-weight: 800; color: #F1F5F9;">Painel de Gestão</strong>
                     <span class="badge bg-secondary ms-1 d-none d-sm-inline" style="font-size: 10px; font-weight: 600; opacity: 0.9;"><?= APP_VERSION ?></span>
                 </div>
-                <span style="font-size: 13px; color: #CBD5E1; font-weight: 700;">Lojinha & Operação</span>
+                <span style="font-size: 12px; color: #94A3B8; font-weight: 600;">Lojinha & Operação</span>
             </div>
         </a>
 

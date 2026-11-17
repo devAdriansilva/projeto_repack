@@ -50,19 +50,69 @@ function adicionarAoCarrinho(produtoId, btnElement) {
         return data;
     })
     .then(data => {
-        // Atualiza contador no cabeçalho
+        // 1. Atualiza contador no cabeçalho
         const contador = document.getElementById('headerCarrinhoContador');
         if (contador && data.resumo) {
             contador.innerText = data.resumo.itens_carrinho;
         }
 
-        // Atualiza banner de cota se presente na tela
+        // 2. Atualiza banner de cota se presente na tela
         const elLimite = document.getElementById('cotaLimiteRestante');
         if (elLimite && data.resumo) {
             elLimite.innerText = data.resumo.limite_restante;
         }
 
-        // Feedback de sucesso no botão
+        // 3. Atualiza indicador de itens no meu carrinho para este produto
+        const itemQtd = (data.dados && data.dados.item_quantidade !== undefined) ? parseInt(data.dados.item_quantidade, 10) : null;
+        const elNoCarrinhoContainer = document.getElementById('no-carrinho-container-' + produtoId);
+        const elNoCarrinhoQtd = document.getElementById('no-carrinho-qtd-' + produtoId);
+        if (elNoCarrinhoContainer && elNoCarrinhoQtd && itemQtd !== null) {
+            elNoCarrinhoQtd.innerText = itemQtd;
+            elNoCarrinhoContainer.style.display = 'block';
+        }
+
+        // 4. Atualiza saldo restante na gôndola e estado do card
+        const saldoRestante = (data.dados && data.dados.saldo_disponivel !== undefined) ? parseInt(data.dados.saldo_disponivel, 10) : null;
+        const badgeContainer = document.getElementById('badge-container-' + produtoId);
+        const cardInner = document.getElementById('card-inner-' + produtoId);
+        const btnContainer = document.getElementById('btn-container-' + produtoId);
+
+        if (badgeContainer && saldoRestante !== null) {
+            if (saldoRestante <= 0) {
+                badgeContainer.innerHTML = '<span class="card-badge-estoque esgotado">Esgotado</span>';
+                if (cardInner) cardInner.classList.add('esgotado');
+                if (btnContainer) {
+                    btnContainer.innerHTML = `
+                        <button type="button" class="btn-urna btn-urna-secondary w-100" disabled style="height: 80px; opacity: 0.5;">
+                            <span>Esgotado</span>
+                        </button>
+                    `;
+                }
+                return; // Produto esgotou
+            } else if (saldoRestante <= 5) {
+                badgeContainer.innerHTML = `<span class="card-badge-estoque baixo">Últimas ${saldoRestante} un!</span>`;
+            } else {
+                badgeContainer.innerHTML = `<span class="card-badge-estoque">${saldoRestante} disponíveis</span>`;
+            }
+        }
+
+        // 5. Se o comprador comum atingiu o limite da cota individual do lote
+        const limiteRestante = (data.resumo && data.resumo.limite_restante !== undefined) ? parseInt(data.resumo.limite_restante, 10) : null;
+        if (limiteRestante !== null && limiteRestante <= 0) {
+            document.querySelectorAll('[id^="btn-adicionar-"]').forEach(btn => {
+                const parent = btn.parentElement;
+                if (parent) {
+                    parent.innerHTML = `
+                        <button type="button" class="btn-urna btn-urna-warning w-100" disabled style="height: 80px; font-size: 17px; padding: 0 8px;">
+                            <span>Quantidade Máxima de Itens Atingida</span>
+                        </button>
+                    `;
+                }
+            });
+            return;
+        }
+
+        // 6. Feedback visual instantâneo no botão e retorno a estado ativo
         btnElement.classList.remove('btn-urna-secondary');
         btnElement.classList.add('btn-urna-primary');
         btnElement.innerHTML = `
@@ -73,8 +123,16 @@ function adicionarAoCarrinho(produtoId, btnElement) {
         `;
 
         setTimeout(() => {
-            window.location.reload();
-        }, 800);
+            if (btnElement && btnElement.isConnected) {
+                btnElement.disabled = false;
+                btnElement.classList.remove('btn-urna-primary');
+                btnElement.classList.add('btn-urna-secondary');
+                btnElement.innerHTML = `
+                    <span style="font-size: 22px;">🛒</span>
+                    <span>Adicionar mais (+)</span>
+                `;
+            }
+        }, 1200);
     })
     .catch(err => {
         alert(err.message);

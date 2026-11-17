@@ -415,19 +415,15 @@ class EstoqueLojinha
                    FROM carrinho_temporario ct
                    WHERE ct.produto_id = p.id 
                      AND ct.expiracao_em > NOW()
-                     AND ct.usuario_id != :uid_outros_2
                ), 0))"
             : "GREATEST(0, COALESCE(el.quantidade_total, 0) - COALESCE(el.quantidade_reservada_gestao, 0) - COALESCE((
                    SELECT SUM(ct.quantidade)
                    FROM carrinho_temporario ct
                    WHERE ct.produto_id = p.id 
                      AND ct.expiracao_em > NOW()
-                     AND ct.usuario_id != :uid_outros_2
                ), 0))";
 
-        $sqlWhere = $isMaster
-            ? "WHERE saldo_disponivel > 0 OR no_meu_carrinho > 0 OR quantidade_total > 0"
-            : "WHERE saldo_disponivel > 0 OR no_meu_carrinho > 0";
+        $sqlWhere = "WHERE quantidade_total > 0";
 
         $stmt = $pdo->prepare("
             SELECT * FROM (
@@ -464,11 +460,45 @@ class EstoqueLojinha
         $stmt->execute([
             'uid_outros_1' => $usuarioId,
             'uid_meu' => $usuarioId,
-            'lote_id' => $loteId,
-            'uid_outros_2' => $usuarioId
+            'lote_id' => $loteId
         ]);
 
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Retorna array associativo [produto_id => saldo_disponivel] para sincronização em tempo real (Smart Polling)
+     * @param bool $isMaster
+     * @return array<int, int>
+     */
+    public static function listarSaldosCompactos(bool $isMaster = false): array
+    {
+        $pdo = Database::getConnection();
+        $pdo->exec("DELETE FROM carrinho_temporario WHERE expiracao_em < NOW()");
+
+        $subReserva = $isMaster ? "0" : "COALESCE(el.quantidade_reservada_gestao, 0)";
+
+        $stmt = $pdo->query("
+            SELECT p.id AS produto_id,
+                   GREATEST(0, COALESCE(el.quantidade_total, 0) - {$subReserva} - COALESCE((
+                       SELECT SUM(ct.quantidade)
+                       FROM carrinho_temporario ct
+                       WHERE ct.produto_id = p.id 
+                         AND ct.expiracao_em > NOW()
+                   ), 0)) AS saldo_disponivel
+            FROM produtos p
+            LEFT JOIN estoque_lojinha el ON el.produto_id = p.id
+            WHERE p.ativo = 1 
+              AND p.deleted_at IS NULL
+              AND p.produto_pai_id IS NULL
+              AND COALESCE(el.quantidade_total, 0) > 0
+        ");
+
+        $saldos = [];
+        while ($row = $stmt->fetch()) {
+            $saldos[(int)$row['produto_id']] = (int)$row['saldo_disponivel'];
+        }
+        return $saldos;
     }
 
     /**

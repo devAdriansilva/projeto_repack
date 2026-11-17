@@ -268,6 +268,8 @@ class Pedido
             'status' => 'success',
             'carrinho_id' => $carrinhoId,
             'total_carrinho' => $totalCarrinho + $quantidade,
+            'item_quantidade' => $minhaQtdAtual + $quantidade,
+            'saldo_disponivel' => max(0, $disponivelParaMim - $quantidade),
             'limite_restante' => max(0, $limiteLote - ($totalComprado + $totalCarrinho + $quantidade)),
             'timeout_minutos' => $minutosTimeout
         ];

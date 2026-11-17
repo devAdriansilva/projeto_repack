@@ -69,10 +69,10 @@ if ($operadorAtivoId) {
 
 <!-- Barra Superior Minimalista do Quiosque -->
 <header class="quiosque-header" style="justify-content: space-between; align-items: center; padding: 6px 16px; min-height: 52px; background-color: var(--surface); border-bottom: 2px solid var(--border);">
-    <!-- Identificador com Logomarca Oficial (Monograma R), Versão e Marca do Desenvolvedor -->
-    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #94A3B8; letter-spacing: 0.5px; user-select: none;">
-        <img src="<?= APP_URL ?>/assets/img/logo-icon.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" width="28" height="28" style="border-radius: 7px; box-shadow: 0 2px 6px rgba(0,0,0,0.18);">
-        <span style="color: #0F172A; font-weight: 900;">REPACK <span style="font-weight: 600; font-size: 11px; color: #64748B; background: #F1F5F9; padding: 2px 6px; border-radius: 6px; margin-left: 2px; border: 1px solid #E2E8F0;"><?= APP_VERSION ?></span></span>
+    <!-- Identificador com Logomarca Oficial Integrada (Monograma R + EPACK), Versão e Marca do Desenvolvedor -->
+    <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: #94A3B8; letter-spacing: 0.5px; user-select: none;">
+        <img src="<?= APP_URL ?>/assets/img/logo-repack-dark.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" height="28" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));">
+        <span style="font-weight: 600; font-size: 11px; color: #64748B; background: #F1F5F9; padding: 2px 6px; border-radius: 6px; border: 1px solid #E2E8F0;"><?= APP_VERSION ?></span>
         <span style="color: #CBD5E1;">•</span>
         <span style="font-size: 12px; font-weight: 600; color: #64748B;">
             Dev: <strong style="color: #2563EB; font-weight: 800;">AdrianSilvaDev</strong>
