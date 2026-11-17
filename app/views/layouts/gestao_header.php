@@ -81,19 +81,19 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             background-color: #0F172A;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            padding: 8px 18px;
+            padding: 8px 14px;
         }
 
         .navbar-gestao .nav-link {
             color: #CBD5E1 !important;
             font-weight: 600;
-            font-size: 13.5px;
-            padding: 6px 13px;
+            font-size: 12.5px;
+            padding: 5px 10px;
             border-radius: 8px;
             white-space: nowrap;
             display: inline-flex;
             align-items: center;
-            gap: 7px;
+            gap: 5px;
             transition: all 0.15s ease;
             text-decoration: none;
             line-height: 1.4;
@@ -431,24 +431,19 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
 <body class="gestao-body">
 
 <!-- Barra de Navegação Superior da Gestão (Fixa no topo com Z-Index soberano) -->
-<nav class="navbar navbar-expand-xl navbar-dark navbar-gestao" style="position: sticky; top: 0; z-index: 1050; min-height: 70px; padding: 10px 16px;">
+<nav class="navbar navbar-expand-xl navbar-dark navbar-gestao" style="position: sticky; top: 0; z-index: 1050; min-height: 60px; padding: 8px 14px;">
     <div class="container-fluid px-0 d-flex align-items-center justify-content-between">
         
-        <!-- LATERAL ESQUERDA: Logomarca Oficial Integrada ([R] + EPACK) + Título do Módulo -->
-        <a class="navbar-brand d-flex align-items-center gap-3 m-0 text-white" href="<?= APP_URL ?>/gestao/dashboard">
+        <!-- LATERAL ESQUERDA: Logomarca Oficial Integrada ([R] + EPACK) + Versão -->
+        <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-white flex-shrink-0 me-3 me-xxl-4" href="<?= APP_URL ?>/gestao/dashboard">
             <!-- Emblema da Logomarca Oficial Integrada (Monograma R Dinâmico + EPACK) -->
-            <img src="<?= APP_URL ?>/assets/img/logo-repack.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" height="42" style="flex-shrink: 0;">
-            <div class="d-flex flex-column border-start ps-2.5 ms-1" style="line-height: 1.15; border-color: rgba(255, 255, 255, 0.2) !important;">
-                <div class="d-flex align-items-center gap-1.5">
-                    <strong style="letter-spacing: -0.2px; font-size: 16px; font-weight: 800; color: #F1F5F9;">Painel de Gestão</strong>
-                    <span class="badge bg-secondary ms-1 d-none d-sm-inline" style="font-size: 10px; font-weight: 600; opacity: 0.9;"><?= APP_VERSION ?></span>
-                </div>
-                <span style="font-size: 12px; color: #94A3B8; font-weight: 600;">Lojinha & Operação</span>
-            </div>
+            <img src="<?= APP_URL ?>/assets/img/logo-repack.svg?v=<?= APP_VERSION ?>" alt="Logo Repack" height="34" style="flex-shrink: 0;">
+            <span class="badge bg-secondary" style="font-size: 10px; font-weight: 700; opacity: 0.9;"><?= APP_VERSION ?></span>
+            <span class="border-start ps-2 ms-1 text-white-50 fw-bold d-none d-xxl-inline" style="font-size: 13px; border-color: rgba(255, 255, 255, 0.2) !important;">Gestão</span>
         </a>
 
         <!-- DESKTOP (>= 1200px): Links Horizontais Centrais + Atalhos Rápidos + Usuário -->
-        <div class="d-none d-xl-flex align-items-center gap-3">
+        <div class="d-none d-xl-flex align-items-center gap-2 flex-nowrap">
             <!-- Módulos de Gestão Centrais -->
             <ul class="navbar-nav d-flex flex-row align-items-center gap-1 mb-0">
                 <li class="nav-item">
@@ -463,12 +458,12 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/lotes') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/lotes">
-                        <span>🏷️</span><span>Lotes de Vendas</span>
+                        <span>🏷️</span><span>Lotes</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= strpos($rotaAtual, '/gestao/estoque') === 0 ? 'active' : '' ?>" href="<?= APP_URL ?>/gestao/estoque">
-                        <span>🏪</span><span>Estoque Lojinha</span>
+                        <span>🏪</span><span>Estoque</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -489,14 +484,14 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
             </ul>
 
             <!-- Atalhos Rápidos da Gestão no Desktop -->
-            <div class="d-flex align-items-center gap-2">
-                <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm text-nowrap" style="background: rgba(139, 92, 246, 0.12); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.35); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 11px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;" title="Acessar Vitrine da Lojinha">
-                    <span style="font-size: 14px;">🛍️</span>
+            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                <a href="<?= APP_URL ?>/lojinha" class="btn btn-sm text-nowrap" style="background: rgba(139, 92, 246, 0.12); color: #C4B5FD; border: 1px solid rgba(139, 92, 246, 0.35); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 8px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;" title="Acessar Vitrine da Lojinha">
+                    <span style="font-size: 13px;">🛍️</span>
                     <span>Lojinha</span>
                 </a>
 
-                <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm text-nowrap" style="background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1.5px solid rgba(16, 185, 129, 0.45); font-size: 13px; font-weight: 700; border-radius: 8px; padding: 5px 12px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.2s;" title="Retornar à Bancada de Repack">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                <a href="<?= APP_URL ?: '/' ?>" class="btn btn-sm text-nowrap" style="background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1.5px solid rgba(16, 185, 129, 0.45); font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 8px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;" title="Retornar à Bancada de Repack">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
                         <path d="M2 10h4v4H2z" fill="currentColor" fill-opacity="0.3"/>
                         <path d="M6 8h10a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H6"/>
                         <path d="M12 16v4a2 2 0 0 1-2 2H9a1 1 0 0 1-1-1v-5"/>
@@ -507,23 +502,23 @@ $rotaAtual = '/' . trim($rotaAtual, '/');
                 </a>
             </div>
 
-            <div class="vr bg-secondary mx-1" style="height: 20px; opacity: 0.25;"></div>
+            <div class="vr bg-secondary mx-0.5" style="height: 18px; opacity: 0.25;"></div>
 
             <!-- Crachá Desktop do Usuário -->
-            <div class="d-inline-flex align-items-center gap-2 px-2.5 py-1 rounded-pill flex-shrink-0" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);">
-                <div style="width: 22px; height: 22px; background: #3B82F6; color: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;">
+            <div class="d-inline-flex align-items-center gap-1.5 px-2 py-1 rounded-pill flex-shrink-0" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12);">
+                <div style="width: 22px; height: 22px; background: #3B82F6; color: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0;">
                     👤
                 </div>
-                <span style="color: #F1F5F9; font-weight: 700; font-size: 13px; white-space: nowrap;">
+                <span class="text-truncate" style="max-width: 130px; color: #F1F5F9; font-weight: 700; font-size: 12px; white-space: nowrap;" title="<?= sanitize_html($nomeGestor) ?>">
                     <?= sanitize_html($nomeGestor) ?>
                 </span>
-                <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 800; border: 1px solid #F59E0B; padding: 2px 6px; border-radius: 4px;">
+                <span class="badge" style="background: #FEF3C7; color: #92400E; font-size: 10px; font-weight: 800; border: 1px solid #F59E0B; padding: 2px 5px; border-radius: 4px; flex-shrink: 0;">
                     <?= sanitize_html($matriculaGestor) ?>
                 </span>
             </div>
 
             <!-- Botão Sair Desktop -->
-            <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-outline-danger fw-bold px-2.5 py-1 d-inline-flex align-items-center gap-1 flex-shrink-0" style="border-radius: 7px; font-size: 12.5px; border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5; text-decoration: none;" title="Encerrar sessão administrativa">
+            <a href="<?= APP_URL ?>/gestao/logout" class="btn btn-sm btn-outline-danger fw-bold px-2 py-1 d-inline-flex align-items-center gap-1 flex-shrink-0" style="border-radius: 7px; font-size: 12px; border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5; text-decoration: none;" title="Encerrar sessão administrativa">
                 <span>Sair</span>
             </a>
         </div>

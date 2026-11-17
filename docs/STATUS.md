@@ -1129,6 +1129,18 @@
       - Suíte oficial `tests/test_fase5.php` (35/35) e teste de concorrência aprovados com 100% de sucesso.
       - Versão da aplicação incrementada para `v1.87` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-091 (17/11/2026):** Descompressão e Harmonização da Barra Superior do Painel de Gestão.
+    - **Demanda do Usuário:**
+      - Resolver a compressão horizontal da barra superior da gestão (`app/views/layouts/gestao_header.php`), onde em resoluções desktop médias a badge de versão sobrepunha o botão Dashboard e o crachá da gestora ficava cortado no canto direito.
+    - **Solução Implementada:**
+      - Otimização da marca na lateral esquerda: altura do logo calibrada para 34px, badge de versão limpo e visível ao lado (`v1.88`), eliminação do texto longo repetitivo "Painel de Gestão / Lojinha & Operação" em telas médias e margem de segurança garantida (`me-3 me-xxl-4`), assegurando espaçamento confortável e zero sobreposição com o botão Dashboard.
+      - Enxugamento dos rótulos dos links centrais: "Lotes de Vendas" simplificado para "Lotes" e "Estoque Lojinha" para "Estoque", economizando espaço horizontal sem perda semântica.
+      - Compactação ergonômica de padding dos links (`5px 10px`) e atalhos rápidos (`4px 8px`).
+      - Proteção do crachá do usuário e botão de saída: crachá compacto com `max-width: 130px`, `text-truncate` e `flex-shrink: 0`, garantindo exibição completa e folgada do crachá e do botão "Sair" na extrema direita da tela.
+    - **Testes & Versionamento:**
+      - Testes automatizados `tests/test_fase5.php` (35/35) e concorrência executados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v1.88` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
