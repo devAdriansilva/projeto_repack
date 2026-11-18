@@ -241,13 +241,13 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
             padding: 3px 8px;
         }
         .card-produto-titulo {
-            font-size: 16.5px;
-            font-weight: 600;
-            color: #111827;
+            font-size: 19px;
+            font-weight: 800;
+            color: #000000;
             margin-bottom: 6px;
-            line-height: 1.35;
-            letter-spacing: -0.2px;
-            min-height: 46px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+            min-height: 48px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -339,11 +339,12 @@ $itensCarrinhoCount = $resumo['itens_carrinho'] ?? 0;
                 padding: 4px 8px !important;
             }
             .card-produto-titulo {
-                font-size: 15.5px !important;
-                font-weight: 600 !important;
-                line-height: 1.35 !important;
-                letter-spacing: -0.2px !important;
-                min-height: 43px !important;
+                font-size: 18px !important;
+                font-weight: 800 !important;
+                color: #000000 !important;
+                line-height: 1.3 !important;
+                letter-spacing: -0.3px !important;
+                min-height: 48px !important;
                 margin-bottom: 6px !important;
             }
             .btn-urna {

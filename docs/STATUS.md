@@ -1316,6 +1316,18 @@
       - Suíte integrada `tests/test_fase5.php` executada e 100% validada (35/35).
       - Versão da aplicação incrementada para `v2.01` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-106 (17/11/2026):** Fortalecimento do Peso e Contraste dos Títulos dos Produtos (Extra Bold e Preto Absoluto).
+    - **Demanda do Usuário:**
+      - "as fontes ficaram fracas. Precisamos dar mais força" (aumentar a densidade, espessura e intensidade visual dos nomes dos produtos).
+    - **Aprimoramentos Tipográficos:**
+      - **Peso Visual:** Elevado de `600` para **`800` (Extra Bold)**, conferindo presença marcante e encorpada às letras.
+      - **Escala:** Aumentada de `15.5px` para **`18px`** no mobile (`min-height: 48px`) e **`19px`** no desktop.
+      - **Contraste Absoluto:** Cor alterada para preto puro **`#000000`** com tracking condensado (`letter-spacing: -0.3px`) e entrelinha firme de `1.3`, garantindo nitidez máxima sem perda de elegância.
+      - Preservação intacta de layout, botões e formatação Title Case.
+    - **Testes & Versionamento:**
+      - Testes automatizados executados com 100% de sucesso (`tests/test_fase5.php` - 35/35).
+      - Versão da aplicação incrementada para `v2.02` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
