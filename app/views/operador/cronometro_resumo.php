@@ -76,11 +76,11 @@ $pageTitle = "Produção - Conferência do Lote";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 16px;">
-    <h1 style="margin: 0; font-size: 28px; line-height: 1.25; font-weight: 900; color: #0F172A;">
+<div style="text-align: center; margin-bottom: 12px;">
+    <h1 style="margin: 0; font-size: 22px; line-height: 1.2; font-weight: 900; color: #0F172A;">
         CONFIRMAR PRODUÇÃO
     </h1>
-    <span style="display: inline-block; font-size: 15px; font-weight: 800; color: #059669; background: #ECFDF5; border: 2px solid #10B981; padding: 4px 14px; border-radius: 9999px; margin-top: 6px;">
+    <span style="display: inline-block; font-size: 13px; font-weight: 800; color: #059669; background: #ECFDF5; border: 2px solid #10B981; padding: 3px 12px; border-radius: 9999px; margin-top: 4px;">
         CONFERÊNCIA DO LOTE / TURNO
     </span>
 </div>
@@ -88,68 +88,68 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- ============================================================= -->
 <!-- CARTÃO DE RESUMO CONSOLIDADO DO LOTE                          -->
 <!-- ============================================================= -->
-<div class="urna-card" style="width: 100%; padding: 18px 14px; border-radius: 20px; border: 3.5px solid #0F172A; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08); background: #FFFFFF; margin-bottom: 18px;">
+<div class="urna-card" style="width: 100%; padding: 14px 12px; border-radius: 16px; border: 2.5px solid #0F172A; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06); background: #FFFFFF; margin-bottom: 14px;">
     
     <!-- Linha 0: Data da Produção em Destaque -->
-    <div style="border-bottom: 2px solid #E2E8F0; padding-bottom: 12px; margin-bottom: 12px; text-align: center;">
-        <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">DATA DA PRODUÇÃO:</span>
-        <div style="font-size: 24px; font-weight: 900; color: #0F172A; margin-top: 2px;">
-            📅 <?= $dataProducaoFormatada ?> <span style="color: #059669; font-size: 18px; font-weight: 900;"><?= $sufixoData ?></span>
+    <div style="border-bottom: 1.5px solid #E2E8F0; padding-bottom: 10px; margin-bottom: 10px; text-align: center;">
+        <span style="font-size: 13px; font-weight: 900; color: #64748B; text-transform: uppercase;">DATA DA PRODUÇÃO:</span>
+        <div style="font-size: 20px; font-weight: 900; color: #0F172A; margin-top: 2px;">
+            📅 <?= $dataProducaoFormatada ?> <span style="color: #059669; font-size: 15px; font-weight: 900;"><?= $sufixoData ?></span>
         </div>
     </div>
 
     <!-- Linha 1: Período e Duração Total -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; border-bottom: 2px solid #E2E8F0; padding-bottom: 14px; text-align: center;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-bottom: 1.5px solid #E2E8F0; padding-bottom: 10px; text-align: center;">
         <div>
-            <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">HORÁRIO DO LOTE:</span>
-            <div style="color: #1E40AF; font-size: 22px; font-weight: 900; margin-top: 2px;">
+            <span style="font-size: 13px; font-weight: 900; color: #64748B; text-transform: uppercase;">HORÁRIO DO LOTE:</span>
+            <div style="color: #1E40AF; font-size: 18px; font-weight: 900; margin-top: 2px;">
                 <?= sanitize_html($horaInicio) ?> ➔ <?= sanitize_html($horaFim) ?>
             </div>
         </div>
         <div>
-            <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">DURAÇÃO TOTAL:</span>
-            <div style="color: #0F172A; font-size: 22px; font-weight: 900; margin-top: 2px;">
+            <span style="font-size: 13px; font-weight: 900; color: #64748B; text-transform: uppercase;">DURAÇÃO TOTAL:</span>
+            <div style="color: #0F172A; font-size: 18px; font-weight: 900; margin-top: 2px;">
                 <?= $duracaoFormatada ?>
             </div>
         </div>
     </div>
 
     <!-- Linha 2: Volume Total e Tempo Médio -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 0; border-bottom: 2px solid #E2E8F0; text-align: center;">
-        <div style="border-right: 2px solid #E2E8F0; padding-right: 6px;">
-            <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">TOTAL REEMBALADO:</span>
-            <div style="font-size: 38px; font-weight: 900; color: #0F172A; line-height: 1.05; margin-top: 2px;">
-                <span id="displayTotalReembaladoResumo"><?= $totalPacotes ?></span> <span style="font-size: 18px; color: #64748B; font-weight: 800;">pcts</span>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px 0; border-bottom: 1.5px solid #E2E8F0; text-align: center;">
+        <div style="border-right: 1.5px solid #E2E8F0; padding-right: 4px;">
+            <span style="font-size: 13px; font-weight: 900; color: #64748B; text-transform: uppercase;">TOTAL REEMBALADO:</span>
+            <div style="font-size: 30px; font-weight: 900; color: #0F172A; line-height: 1.05; margin-top: 2px;">
+                <span id="displayTotalReembaladoResumo"><?= $totalPacotes ?></span> <span style="font-size: 15px; color: #64748B; font-weight: 800;">pcts</span>
             </div>
         </div>
         <div>
-            <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">TEMPO MÉDIO:</span>
-            <div style="font-size: 22px; font-weight: 900; color: #059669; line-height: 1.15; margin-top: 6px;">
+            <span style="font-size: 13px; font-weight: 900; color: #64748B; text-transform: uppercase;">TEMPO MÉDIO:</span>
+            <div style="font-size: 18px; font-weight: 900; color: #059669; line-height: 1.15; margin-top: 4px;">
                 <span id="displayTempoMedioResumo"><?= $tempoMedioTexto ?></span>
             </div>
         </div>
     </div>
 
     <!-- Linha 3: Relação Interativa dos Itens (Com Botões +, - e Excluir) -->
-    <div style="padding-top: 14px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <div style="font-size: 18px; font-weight: 900; color: #0F172A; text-transform: uppercase;">
+    <div style="padding-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div style="font-size: 15px; font-weight: 900; color: #0F172A; text-transform: uppercase;">
                 ITENS DO LOTE (<span id="displayContadorItens"><?= count($itens) ?></span>):
             </div>
-            <span style="font-size: 13px; font-weight: 800; color: #64748B;">
+            <span style="font-size: 12px; font-weight: 800; color: #64748B;">
                 Ajuste se necessário:
             </span>
         </div>
 
-        <div id="containerItensResumo" style="display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; padding-right: 2px;">
+        <div id="containerItensResumo" style="display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; padding-right: 2px;">
             <!-- Renderizado dinamicamente via JS com controles interativos -->
         </div>
 
-        <div id="avisoLoteVazioResumo" style="display: none; text-align: center; padding: 22px 14px; background: #FEF2F2; border: 2px dashed #EF4444; border-radius: 16px; margin-top: 10px;">
-            <div style="font-size: 19px; font-weight: 900; color: #991B1B;">
+        <div id="avisoLoteVazioResumo" style="display: none; text-align: center; padding: 18px 10px; background: #FEF2F2; border: 2px dashed #EF4444; border-radius: 14px; margin-top: 8px;">
+            <div style="font-size: 16px; font-weight: 900; color: #991B1B;">
                 ⚠️ Todos os itens foram removidos do lote!
             </div>
-            <div style="font-size: 15px; font-weight: 700; color: #DC2626; margin-top: 4px;">
+            <div style="font-size: 13px; font-weight: 700; color: #DC2626; margin-top: 2px;">
                 Clique em "CORRIGIR" abaixo para adicionar novos produtos.
             </div>
         </div>
@@ -157,17 +157,17 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <!-- ============================================================= -->
-<!-- RODAPÉ DE DUPLA CONFIRMAÇÃO DA URNA ELETRÔNICA (80PX)        -->
+<!-- RODAPÉ DE DUPLA CONFIRMAÇÃO DA URNA ELETRÔNICA (66PX)        -->
 <!-- ============================================================= -->
-<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 18px 0 0 0; gap: 14px;">
-    <a href="<?= APP_URL ?>/operador/cronometro?origem=voltar" class="btn-urna btn-urna-secondary" style="min-height: 80px; font-size: 24px; font-weight: 900; border-radius: 20px; background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%); color: #FFFFFF; border: 3.5px solid #1E40AF; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px;">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
+<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 14px 0 0 0; gap: 10px;">
+    <a href="<?= APP_URL ?>/operador/cronometro?origem=voltar" onclick="sincronizarLoteLocalStorage()" class="btn-urna btn-urna-secondary" style="min-height: 66px; font-size: 20px; font-weight: 900; border-radius: 16px; background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%); color: #FFFFFF; border: 2.5px solid #1E40AF; box-shadow: 0 3px 10px rgba(37, 99, 235, 0.2); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
             <line x1="21" y1="12" x2="3" y2="12"></line>
             <polyline points="11 4 3 12 11 20"></polyline>
         </svg>
         <span>CORRIGIR</span>
     </a>
-    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarLote" onclick="confirmarLoteProducao()" style="min-height: 80px; font-size: 24px; font-weight: 900; border-radius: 20px;">
+    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarLote" onclick="confirmarLoteProducao()" style="min-height: 66px; font-size: 20px; font-weight: 900; border-radius: 16px;">
         CONFIRMAR
     </button>
 </div>
@@ -209,48 +209,48 @@ function renderizarItensResumo() {
     let html = '';
     itensLoteResumo.forEach((item, index) => {
         const fotoThumb = item.foto_url 
-            ? `<img src="${escapeHtml(item.foto_url)}" style="width: 58px; height: 58px; object-fit: contain; border-radius: 12px; border: 2px solid #CBD5E1; background: #FFF; padding: 2px; flex-shrink: 0;" alt="Foto">`
-            : `<div style="width: 58px; height: 58px; border-radius: 12px; background: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0;">📦</div>`;
+            ? `<img src="${escapeHtml(item.foto_url)}" style="width: 48px; height: 48px; object-fit: contain; border-radius: 10px; border: 1.5px solid #CBD5E1; background: #FFF; padding: 2px; flex-shrink: 0;" alt="Foto">`
+            : `<div style="width: 48px; height: 48px; border-radius: 10px; background: #E2E8F0; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">📦</div>`;
 
         html += `
-            <div style="display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; border: 3px solid #CBD5E1; border-radius: 20px; padding: 12px 16px; gap: 12px;">
-                <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; text-align: left;">
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #F8FAFC; border: 2px solid #CBD5E1; border-radius: 14px; padding: 10px 12px; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; text-align: left;">
                     ${fotoThumb}
                     <div style="flex: 1; min-width: 0;">
                         <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
-                            <span style="background: #0F172A; color: #FFFFFF; font-size: 15px; font-weight: 900; padding: 2px 8px; border-radius: 6px;">
+                            <span style="background: #0F172A; color: #FFFFFF; font-size: 13px; font-weight: 900; padding: 2px 6px; border-radius: 6px;">
                                 SKU ${escapeHtml(item.codigo)}
                             </span>
-                            <span style="font-size: 13px; color: #64748B; font-weight: 700;">
+                            <span style="font-size: 12px; color: #64748B; font-weight: 700;">
                                 ${escapeHtml(item.embalagem || '')}
                             </span>
                         </div>
-                        <div style="font-size: 20px; font-weight: 900; color: #0F172A; line-height: 1.2; word-break: break-word;">
+                        <div style="font-size: 16px; font-weight: 900; color: #0F172A; line-height: 1.2; word-break: break-word;">
                             ${escapeHtml(item.nome)}
                         </div>
                     </div>
                 </div>
 
                 <!-- Controles Interativos de Quantidade e Exclusão (+, -, ✕) -->
-                <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
                     <!-- Botão Menos -->
                     <button type="button" 
                             onclick="alterarPacotesResumo(${index}, -1)" 
-                            style="width: 48px; height: 48px; border-radius: 14px; font-size: 28px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 3px solid #0F172A; background: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation;" 
+                            style="width: 40px; height: 40px; border-radius: 12px; font-size: 24px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 2.5px solid #0F172A; background: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation;" 
                             aria-label="Diminuir pacotes">
                         −
                     </button>
 
                     <!-- Quantidade em Destaque -->
-                    <div style="min-width: 65px; height: 48px; background: #ECFDF5; border: 2.5px solid #10B981; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 6px;">
-                        <span style="font-size: 22px; font-weight: 900; color: #065F46; line-height: 1;">${item.pacotes}</span>
-                        <span style="font-size: 11px; font-weight: 800; color: #059669; line-height: 1; margin-top: 1px;">pcts</span>
+                    <div style="min-width: 54px; height: 40px; background: #ECFDF5; border: 2px solid #10B981; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 4px;">
+                        <span style="font-size: 18px; font-weight: 900; color: #065F46; line-height: 1;">${item.pacotes}</span>
+                        <span style="font-size: 10px; font-weight: 800; color: #059669; line-height: 1; margin-top: 1px;">pcts</span>
                     </div>
 
                     <!-- Botão Mais -->
                     <button type="button" 
                             onclick="alterarPacotesResumo(${index}, 1)" 
-                            style="width: 48px; height: 48px; border-radius: 14px; font-size: 26px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 3px solid #0F172A; background: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation;" 
+                            style="width: 40px; height: 40px; border-radius: 12px; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 2.5px solid #0F172A; background: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation;" 
                             aria-label="Aumentar pacotes">
                         +
                     </button>
@@ -258,7 +258,7 @@ function renderizarItensResumo() {
                     <!-- Botão Excluir -->
                     <button type="button" 
                             onclick="removerItemResumo(${index})" 
-                            style="width: 48px; height: 48px; border-radius: 14px; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 2.5px solid #EF4444; background: #FEF2F2; color: #DC2626; cursor: pointer; margin-left: 4px;" 
+                            style="width: 40px; height: 40px; border-radius: 12px; font-size: 18px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 2px solid #EF4444; background: #FEF2F2; color: #DC2626; cursor: pointer; margin-left: 2px;" 
                             aria-label="Excluir item do lote">
                         ✕
                     </button>
@@ -323,6 +323,16 @@ function sincronizarLoteLocalStorage() {
     } catch(e) {}
 }
 
+function formatarDataHoraLocal(d = new Date()) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function formatarDataLocalIso(d = new Date()) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 async function confirmarLoteProducao() {
     if (itensLoteResumo.length === 0) {
         alert('O lote está vazio. Adicione pelo menos um produto antes de confirmar.');
@@ -334,7 +344,7 @@ async function confirmarLoteProducao() {
     btn.innerText = 'GRAVANDO...';
 
     const operadorId = <?= (int)($_SESSION['operador_id'] ?? 1) ?>;
-    const dataRef = dataProducaoLote || (new Date().toISOString().split('T')[0]);
+    const dataRef = dataProducaoLote || formatarDataLocalIso(new Date());
 
     const horaIni = horaInicioLote;
     const horaFim = horaFimLote;
@@ -358,7 +368,7 @@ async function confirmarLoteProducao() {
         data_hora_inicio: dataHoraInicio,
         data_hora_fim: dataHoraFim,
         itens: payloadItens,
-        created_at: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        created_at: formatarDataHoraLocal(new Date())
     };
 
     try {
