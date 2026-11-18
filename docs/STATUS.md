@@ -1429,6 +1429,24 @@
       - Bateria completa de testes automatizados (`tests/test_fase5.php` - 35/35 e `tests/test_produtividade_lote.php` - 11/11) executada com 100% de sucesso.
       - Versão da aplicação incrementada para `v2.08` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-113 (18/11/2026):** Saneamento de Carimbo Temporal de Entrada de Estoque e Trava Contra Datas Futuras.
+    - **Demanda do Usuário & Diagnóstico:**
+      - O card "Carimbo de Última Entrada de Itens no Estoque" na gestão de estoque (`app/views/gestao/estoque.php`) exibia de forma anômala uma data futura (`11/12/2026 15:58`) com a etiqueta "há instantes" e o apontamento `Bancada Repack: BRAHMA CHOPP LATA 350ML SH C/12 NPAL +2 un`.
+      - **Causa Raiz Identificada:**
+        1. Em importação anterior à correção do normalizador de datas, linhas de planilha brasileira datadas de `12/11/2026` foram salvas no MySQL Alwaysdata como `2026-12-11` (11 de Dezembro) devido à leitura padrão US de barras em `strtotime()`.
+        2. Por estarem em Dezembro de 2026 (data futura em relação a Novembro), as consultas SQL com `ORDER BY created_at DESC LIMIT 1` ficavam permanentemente sequestradas por esses registros.
+        3. A função `calcularTempoRelativo()` calculava `$tempo = time() - strtotime($dataHora)`. Quando a data é futura, `$tempo < 0`, satisfazendo a condição `$tempo < 60` e exibindo absurdamente "há instantes".
+    - **Ações e Correções Implementadas:**
+      - **Model `app/models/EstoqueLojinha.php`:**
+        - `calcularTempoRelativo()`: tratamento estrito para datas futuras (`$tempo < 0`), retornando a data e hora formatadas sem a indicação inverídica de "há instantes" (com tolerância de 120s apenas para pequenas divergências de clock entre PHP e MySQL).
+        - `obterUltimaEntradaEstoque()`: adição do filtro mandatória de corte temporal `AND created_at <= NOW()` em todas as 3 fontes (`importacoes_csv_log`, `apontamentos_bo` e `inventarios_estoque_historico`), desempate secundário por `id DESC`, e filtragem de salvaguarda em PHP contra relógios dessincronizados.
+        - `obterUltimaImportacaoCsv()`: adição de `WHERE created_at <= NOW()` e ordenação composta `ORDER BY created_at DESC, id DESC`.
+      - **Saneamento no Banco de Dados (Alwaysdata & Local):**
+        - Execução de script corretivo saneando os 23 registros espúrios de `2026-12-11` para suas datas reais em `2026-11-12`, restabelecendo a integridade histórica do estoque.
+    - **Testes & Versionamento:**
+      - Validação com 35/35 testes automatizados da Fase 5 (`tests/test_fase5.php`) e 23/23 testes de importação CSV (`tests/test_importacao_csv_bo.php`).
+      - Versão da aplicação incrementada para `v2.09` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

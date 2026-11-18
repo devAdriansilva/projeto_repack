@@ -538,7 +538,18 @@ class EstoqueLojinha
      */
     public static function calcularTempoRelativo(string $dataHora): string
     {
-        $tempo = time() - strtotime($dataHora);
+        $ts = strtotime($dataHora);
+        if ($ts === false) {
+            return date('d/m/Y');
+        }
+
+        $tempo = time() - $ts;
+
+        // Se a data estiver no futuro ou relógio ligeiramente adiantado
+        if ($tempo < 0) {
+            return ($tempo > -120) ? "há instantes" : date('d/m/Y H:i', $ts);
+        }
+
         if ($tempo < 60) {
             return "há instantes";
         }
@@ -554,8 +565,7 @@ class EstoqueLojinha
         if ($dias < 30) {
             return "há " . $dias . ($dias === 1 ? " dia" : " dias");
         }
-        $ts = strtotime($dataHora);
-        return ($ts !== false) ? date('d/m/Y', $ts) : date('d/m/Y');
+        return date('d/m/Y', $ts);
     }
 
     /**
@@ -570,7 +580,8 @@ class EstoqueLojinha
                 SELECT i.*, u.nome AS usuario_nome
                 FROM importacoes_csv_log i
                 LEFT JOIN usuarios u ON u.id = i.usuario_id
-                ORDER BY i.created_at DESC
+                WHERE i.created_at <= NOW()
+                ORDER BY i.created_at DESC, i.id DESC
                 LIMIT 1
             ");
             $stmt->execute();
@@ -607,8 +618,8 @@ class EstoqueLojinha
                        'Importação CSV' AS canal
                 FROM importacoes_csv_log i
                 LEFT JOIN usuarios u ON u.id = i.usuario_id
-                WHERE i.unidades_lojinha > 0
-                ORDER BY i.created_at DESC
+                WHERE i.unidades_lojinha > 0 AND i.created_at <= NOW()
+                ORDER BY i.created_at DESC, i.id DESC
                 LIMIT 1
             ");
             if ($stmtCsv && ($csv = $stmtCsv->fetch())) {
@@ -625,8 +636,8 @@ class EstoqueLojinha
                 FROM apontamentos_bo b
                 LEFT JOIN produtos p ON p.id = b.produto_id
                 LEFT JOIN usuarios u ON u.id = b.usuario_id
-                WHERE b.destino = 'lojinha' AND b.deleted_at IS NULL
-                ORDER BY b.created_at DESC
+                WHERE b.destino = 'lojinha' AND b.deleted_at IS NULL AND b.created_at <= NOW()
+                ORDER BY b.created_at DESC, b.id DESC
                 LIMIT 1
             ");
             if ($stmtBo && ($bo = $stmtBo->fetch())) {
@@ -643,8 +654,8 @@ class EstoqueLojinha
                 FROM inventarios_estoque_historico inv
                 LEFT JOIN produtos p ON p.id = inv.produto_id
                 LEFT JOIN usuarios u ON u.id = inv.usuario_id
-                WHERE inv.diferenca > 0
-                ORDER BY inv.created_at DESC
+                WHERE inv.diferenca > 0 AND inv.created_at <= NOW()
+                ORDER BY inv.created_at DESC, inv.id DESC
                 LIMIT 1
             ");
             if ($stmtInv && ($inv = $stmtInv->fetch())) {
@@ -655,12 +666,27 @@ class EstoqueLojinha
                 return null;
             }
 
-            // Ordena pela data/hora mais recente
-            usort($entradas, function($a, $b) {
-                return strtotime($b['created_at']) <=> strtotime($a['created_at']);
+            // Filtra entradas caso haja relógio do MySQL adiantado em relação ao PHP
+            $limiteTimestamp = time() + 120;
+            $entradasValidas = array_filter($entradas, function($item) use ($limiteTimestamp) {
+                $ts = strtotime($item['created_at']);
+                return ($ts !== false && $ts <= $limiteTimestamp);
             });
 
-            $recente = $entradas[0];
+            if (empty($entradasValidas)) {
+                $entradasValidas = $entradas;
+            }
+
+            // Ordena pela data/hora mais recente com desempate por id
+            usort($entradasValidas, function($a, $b) {
+                $diff = strtotime($b['created_at']) <=> strtotime($a['created_at']);
+                if ($diff !== 0) {
+                    return $diff;
+                }
+                return ($b['id'] ?? 0) <=> ($a['id'] ?? 0);
+            });
+
+            $recente = array_values($entradasValidas)[0];
             $recente['data_formatada'] = date('d/m/Y H:i', strtotime($recente['created_at']));
             $recente['tempo_relativo'] = self::calcularTempoRelativo($recente['created_at']);
 
