@@ -1447,6 +1447,18 @@
       - Validação com 35/35 testes automatizados da Fase 5 (`tests/test_fase5.php`) e 23/23 testes de importação CSV (`tests/test_importacao_csv_bo.php`).
       - Versão da aplicação incrementada para `v2.09` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-114 (18/11/2026):** Correção de Erro de Sintaxe JS que Travava a Inicialização das Datas e Turno no Registro de Produção.
+    - **Diagnóstico da Imagem Enviada pelo Usuário:**
+      - Tela de "Registrar Produção" exibia campos de data estáticos com `--/--` nos botões HOJE e ONTEM, resumo de data com `--/--/----` e turno da Manhã marcado às 15:20 (sem alternar para o turno da Tarde).
+      - **Causa Raiz Identificada:** Em `app/views/operador/cronometro.php`, havia uma duplicidade de encerramento de bloco (`inicializarLongPressBusca(); });`) nas linhas 356-357, gerando `Uncaught SyntaxError: Unexpected token '}'`. Essa falha de parsing impedia o navegador de executar qualquer função JS subsequente (`inicializarDatas()`, `detectarTurnoAutomatico()`, busca de SKU, etc.).
+    - **Solução Implementada:**
+      - Remoção do trecho duplicado em `app/views/operador/cronometro.php`.
+      - Validação de integridade sintática JS via script Node.js em todas as views do operador (`cronometro.php`, `cronometro_resumo.php`, `avaria_passo1.php`, `avaria_passo2.php`, `avaria_resumo.php` e `home.php`), com 100% de sucesso.
+      - Incremento de versão para `v2.10` em `app/config/config.php` e `public/service-worker.js` para forçar atualização do cache do Service Worker PWA no smartphone.
+    - **Testes & Versionamento:**
+      - Testes automatizados executados com 100% de aprovação (`tests/test_fase5.php` - 35/35 e `tests/test_produtividade_lote.php` - 11/11).
+      - Versão da aplicação incrementada para `v2.10` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

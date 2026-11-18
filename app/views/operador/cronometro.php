@@ -353,8 +353,6 @@ window.addEventListener('DOMContentLoaded', () => {
     atualizarDuracaoLote();
     inicializarLongPressBusca();
 });
-    inicializarLongPressBusca();
-});
 
 // Controle de Modo de Teclado e Busca (Código 123 vs Nome ABC)
 let modoBuscaAtual = 'codigo'; // 'codigo' ou 'nome'
