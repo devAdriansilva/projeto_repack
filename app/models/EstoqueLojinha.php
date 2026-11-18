@@ -554,7 +554,8 @@ class EstoqueLojinha
         if ($dias < 30) {
             return "há " . $dias . ($dias === 1 ? " dia" : " dias");
         }
-        return date('d/m/Y', strtotime($dataHora));
+        $ts = strtotime($dataHora);
+        return ($ts !== false) ? date('d/m/Y', $ts) : date('d/m/Y');
     }
 
     /**

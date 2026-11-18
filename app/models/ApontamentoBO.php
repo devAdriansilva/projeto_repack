@@ -807,7 +807,8 @@ class ApontamentoBO
             $stmtCheca->execute(['hash' => $hash]);
             $jaImportado = $stmtCheca->fetch();
             if ($jaImportado) {
-                $dtFormatada = date('d/m/Y \à\s H:i', strtotime($jaImportado['created_at']));
+                $tsJa = !empty($jaImportado['created_at']) ? strtotime((string)$jaImportado['created_at']) : false;
+                $dtFormatada = ($tsJa !== false) ? date('d/m/Y \à\s H:i', $tsJa) : date('d/m/Y \à\s H:i');
                 throw new DomainException("Este arquivo CSV já foi importado anteriormente em {$dtFormatada} ({$jaImportado['nome_arquivo']}). Se desejar importar novamente, marque a opção 'Forçar reimportação'.");
             }
         }
@@ -853,7 +854,7 @@ class ApontamentoBO
                 $qtd = $r['quantidade'];
                 $motivo = $r['motivo'];
                 $descricao = $r['descricao'] ?: "Produto SKU {$cod}";
-                $dataRegistro = !empty($r['data']) ? date('Y-m-d H:i:s', strtotime($r['data'])) : date('Y-m-d H:i:s');
+                $dataRegistro = self::normalizarDataRegistro($r['data'] ?? '');
 
                 // Se produto não existir, cadastra sob demanda
                 if (!isset($produtosMap[$cod])) {
@@ -939,5 +940,57 @@ class ApontamentoBO
             $pdo->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * Converte e normaliza com segurança qualquer formato de data presente em planilhas Excel/CSV
+     * (Suporta DD/MM/YYYY, DD-MM-YYYY, YYYY-MM-DD, horas opcionais e número serial do Excel)
+     * @param string|null $dataRaw
+     * @return string Formato 'YYYY-MM-DD HH:MM:SS' garantido
+     */
+    public static function normalizarDataRegistro(?string $dataRaw): string
+    {
+        if (empty($dataRaw)) {
+            return date('Y-m-d H:i:s');
+        }
+
+        $dataRaw = trim($dataRaw);
+
+        // 1. Formatos Brasileiros: DD/MM/YYYY ou DD-MM-YYYY (com hora opcional HH:MM ou HH:MM:SS)
+        if (preg_match('#^(\d{1,2})[/.-](\d{1,2})[/.-](\d{2,4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?#', $dataRaw, $m)) {
+            $dia = str_pad($m[1], 2, '0', STR_PAD_LEFT);
+            $mes = str_pad($m[2], 2, '0', STR_PAD_LEFT);
+            $ano = strlen($m[3]) === 2 ? '20' . $m[3] : $m[3];
+            $hora = isset($m[4]) ? str_pad($m[4], 2, '0', STR_PAD_LEFT) : date('H');
+            $min = isset($m[5]) ? str_pad($m[5], 2, '0', STR_PAD_LEFT) : date('i');
+            $seg = isset($m[6]) ? str_pad($m[6], 2, '0', STR_PAD_LEFT) : date('s');
+
+            if (checkdate((int)$mes, (int)$dia, (int)$ano)) {
+                return sprintf('%04d-%02d-%02d %02d:%02d:%02d', (int)$ano, (int)$mes, (int)$dia, (int)$hora, (int)$min, (int)$seg);
+            }
+        }
+
+        // 2. Formato Internacional / ISO: YYYY-MM-DD (com hora opcional)
+        if (preg_match('#^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?#', $dataRaw, $m)) {
+            $hora = $m[4] ?? date('H');
+            $min = $m[5] ?? date('i');
+            $seg = $m[6] ?? date('s');
+            return sprintf('%s-%s-%s %02d:%02d:%02d', $m[1], $m[2], $m[3], (int)$hora, (int)$min, (int)$seg);
+        }
+
+        // 3. Serial numérico de data do Excel (ex: 45612)
+        if (is_numeric($dataRaw) && (float)$dataRaw > 30000 && (float)$dataRaw < 60000) {
+            $excelTimestamp = (int)((((float)$dataRaw) - 25569) * 86400);
+            return date('Y-m-d H:i:s', $excelTimestamp);
+        }
+
+        // 4. Tentativa via strtotime com validação de tipo estrita
+        $ts = strtotime($dataRaw);
+        if ($ts !== false && $ts > 0) {
+            return date('Y-m-d H:i:s', $ts);
+        }
+
+        // Fallback seguro: data e hora atual
+        return date('Y-m-d H:i:s');
     }
 }

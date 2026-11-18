@@ -147,6 +147,21 @@ try {
 }
 assertTest($reimportouForcado, "Reimportação com flag 'forcarReimportacao = true' aceita com sucesso");
 
+// [5] Testando Robustez do Parser de Datas (Brasileiro, Excel e Inválidas)
+echo "\n[5] Testando Normalização Segura de Datas em Planilhas...\n";
+$d1 = ApontamentoBO::normalizarDataRegistro('18/11/2026');
+assertTest($d1 === '2026-11-18 ' . date('H:i:s'), "Formato brasileiro DD/MM/YYYY convertido para YYYY-MM-DD: {$d1}");
+
+$d2 = ApontamentoBO::normalizarDataRegistro('18/11/2026 14:35:10');
+assertTest($d2 === '2026-11-18 14:35:10', "Formato brasileiro com hora DD/MM/YYYY HH:MM:SS convertido com perfeição: {$d2}");
+
+$d3 = ApontamentoBO::normalizarDataRegistro('data_invalida_que_retornaria_false');
+assertTest(preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $d3) === 1, "String inválida não quebra date() e recebe fallback seguro: {$d3}");
+
+$csvDataBr = "SKU;QUANTIDADE;MOTIVO;DATA\n9084;1;Amassada;18/11/2026";
+$resBr = ApontamentoBO::processarImportacaoCsv($csvDataBr, $gestorId, 'teste_databr_' . uniqid() . '.csv', [], true);
+assertTest($resBr['status'] === 'success', "CSV corporativo com coluna DATA brasileira importado com 100% de sucesso");
+
 echo "\n============================================\n";
 echo "RESULTADO DOS TESTES DE IMPORTAÇÃO CSV:\n";
 echo "Sucessos: {$sucessos} | Falhas: {$falhas}\n";

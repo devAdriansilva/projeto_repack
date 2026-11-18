@@ -1395,6 +1395,17 @@
       - Testes automatizados oficiais (`tests/test_fase5.php`) validados com 35/35 sucessos.
       - Versão da aplicação incrementada para `v2.06` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-111 (18/11/2026):** Correção do Erro Fatal de Timestamp no Parser de Datas da Importação de B.O. (Excel/CSV).
+    - **Diagnóstico da Imagem Enviada pelo Usuário:**
+      - Mensagem: `Falha na importação do CSV: date(): Argument #2 ($timestamp) must be of type ?int, bool given`.
+      - *Causa Raiz:* No PHP 8.1+, a função nativa `date()` exige rigorosamente um inteiro ou nulo no 2º argumento. Quando a planilha corporativa importada continha coluna de data em formato brasileiro (`DD/MM/YYYY`), a função `strtotime()` retornava `false` (pois barras indicam formato americano `m/d/Y`). Passar `false` (tipo `bool`) para `date()` disparava a exceção fatal `TypeError`.
+    - **Solução Implementada:**
+      - **Normalizador de Datas (`ApontamentoBO::normalizarDataRegistro`):** Criação de método tolerante e à prova de falhas com suporte nativo a formatos brasileiros (`DD/MM/YYYY`, `DD-MM-YYYY` com ou sem hora), formato ISO internacional (`YYYY-MM-DD`), serial numérico de datas do Excel (dias desde 1899) e fallback seguro em `date('Y-m-d H:i:s')`.
+      - **Blindagem em EstoqueLojinha:** Proteção das chamadas a `date(..., strtotime(...))` com validação explícita de inteiro antes da formatação.
+    - **Testes & Versionamento:**
+      - Suíte de importação `tests/test_importacao_csv_bo.php` expandida (23/23 testes aprovados com formatos brasileiros e datas inválidas) e `tests/test_fase5.php` (35/35).
+      - Versão da aplicação incrementada para `v2.07` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
