@@ -76,11 +76,11 @@ $pageTitle = "Produção - Conferência do Lote";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 20px;">
-    <h1 class="headline-xl" style="margin: 0; font-size: 50px; font-weight: 900; color: #0F172A;">
+<div style="text-align: center; margin-bottom: 16px;">
+    <h1 style="margin: 0; font-size: 28px; line-height: 1.25; font-weight: 900; color: #0F172A;">
         CONFIRMAR PRODUÇÃO
     </h1>
-    <span style="display: inline-block; font-size: 22px; font-weight: 900; color: #059669; background: #ECFDF5; border: 2.5px solid #10B981; padding: 6px 22px; border-radius: 9999px; margin-top: 8px;">
+    <span style="display: inline-block; font-size: 15px; font-weight: 800; color: #059669; background: #ECFDF5; border: 2px solid #10B981; padding: 4px 14px; border-radius: 9999px; margin-top: 6px;">
         CONFERÊNCIA DO LOTE / TURNO
     </span>
 </div>
@@ -88,68 +88,68 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- ============================================================= -->
 <!-- CARTÃO DE RESUMO CONSOLIDADO DO LOTE                          -->
 <!-- ============================================================= -->
-<div class="urna-card" style="width: 100%; padding: 28px 20px; border-radius: 34px; border: 7px solid #0F172A; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18); background: #FFFFFF; margin-bottom: 24px;">
+<div class="urna-card" style="width: 100%; padding: 18px 14px; border-radius: 20px; border: 3.5px solid #0F172A; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08); background: #FFFFFF; margin-bottom: 18px;">
     
     <!-- Linha 0: Data da Produção em Destaque -->
-    <div style="border-bottom: 4px solid #E2E8F0; padding-bottom: 16px; margin-bottom: 16px; text-align: center;">
-        <span style="font-size: 20px; font-weight: 900; color: #64748B; text-transform: uppercase;">DATA DA PRODUÇÃO:</span>
-        <div style="font-size: 40px; font-weight: 900; color: #0F172A; margin-top: 4px;">
-            📅 <?= $dataProducaoFormatada ?> <span style="color: #059669; font-size: 26px; font-weight: 900;"><?= $sufixoData ?></span>
+    <div style="border-bottom: 2px solid #E2E8F0; padding-bottom: 12px; margin-bottom: 12px; text-align: center;">
+        <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">DATA DA PRODUÇÃO:</span>
+        <div style="font-size: 24px; font-weight: 900; color: #0F172A; margin-top: 2px;">
+            📅 <?= $dataProducaoFormatada ?> <span style="color: #059669; font-size: 18px; font-weight: 900;"><?= $sufixoData ?></span>
         </div>
     </div>
 
-    <!-- Linha 1: Período e Duração Total com Fontes Monumentais -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-bottom: 4px solid #E2E8F0; padding-bottom: 18px; text-align: center;">
+    <!-- Linha 1: Período e Duração Total -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; border-bottom: 2px solid #E2E8F0; padding-bottom: 14px; text-align: center;">
         <div>
-            <span style="font-size: 22px; font-weight: 900; color: #64748B; text-transform: uppercase;">HORÁRIO DO LOTE:</span>
-            <div style="color: #1E40AF; font-size: 38px; font-weight: 900; margin-top: 4px;">
+            <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">HORÁRIO DO LOTE:</span>
+            <div style="color: #1E40AF; font-size: 22px; font-weight: 900; margin-top: 2px;">
                 <?= sanitize_html($horaInicio) ?> ➔ <?= sanitize_html($horaFim) ?>
             </div>
         </div>
         <div>
-            <span style="font-size: 22px; font-weight: 900; color: #64748B; text-transform: uppercase;">DURAÇÃO TOTAL:</span>
-            <div style="color: #0F172A; font-size: 38px; font-weight: 900; margin-top: 4px;">
+            <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">DURAÇÃO TOTAL:</span>
+            <div style="color: #0F172A; font-size: 22px; font-weight: 900; margin-top: 2px;">
                 <?= $duracaoFormatada ?>
             </div>
         </div>
     </div>
 
-    <!-- Linha 2: Volume Total e Tempo Médio Recalculados em Tempo Real -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 20px 0; border-bottom: 4px solid #E2E8F0; text-align: center;">
-        <div style="border-right: 3px solid #E2E8F0; padding-right: 8px;">
-            <span style="font-size: 20px; font-weight: 900; color: #64748B; text-transform: uppercase;">TOTAL REEMBALADO:</span>
-            <div style="font-size: 64px; font-weight: 900; color: #0F172A; line-height: 1.05; margin-top: 4px;">
-                <span id="displayTotalReembaladoResumo"><?= $totalPacotes ?></span> <span style="font-size: 24px; color: #64748B; font-weight: 800;">pcts</span>
+    <!-- Linha 2: Volume Total e Tempo Médio -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px 0; border-bottom: 2px solid #E2E8F0; text-align: center;">
+        <div style="border-right: 2px solid #E2E8F0; padding-right: 6px;">
+            <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">TOTAL REEMBALADO:</span>
+            <div style="font-size: 38px; font-weight: 900; color: #0F172A; line-height: 1.05; margin-top: 2px;">
+                <span id="displayTotalReembaladoResumo"><?= $totalPacotes ?></span> <span style="font-size: 18px; color: #64748B; font-weight: 800;">pcts</span>
             </div>
         </div>
         <div>
-            <span style="font-size: 20px; font-weight: 900; color: #64748B; text-transform: uppercase;">TEMPO MÉDIO:</span>
-            <div style="font-size: 38px; font-weight: 900; color: #059669; line-height: 1.15; margin-top: 10px;">
+            <span style="font-size: 15px; font-weight: 900; color: #64748B; text-transform: uppercase;">TEMPO MÉDIO:</span>
+            <div style="font-size: 22px; font-weight: 900; color: #059669; line-height: 1.15; margin-top: 6px;">
                 <span id="displayTempoMedioResumo"><?= $tempoMedioTexto ?></span>
             </div>
         </div>
     </div>
 
     <!-- Linha 3: Relação Interativa dos Itens (Com Botões +, - e Excluir) -->
-    <div style="padding-top: 20px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-            <div style="font-size: 24px; font-weight: 900; color: #0F172A; text-transform: uppercase;">
+    <div style="padding-top: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div style="font-size: 18px; font-weight: 900; color: #0F172A; text-transform: uppercase;">
                 ITENS DO LOTE (<span id="displayContadorItens"><?= count($itens) ?></span>):
             </div>
-            <span style="font-size: 16px; font-weight: 800; color: #64748B;">
-                Ajuste as quantidades se necessário:
+            <span style="font-size: 13px; font-weight: 800; color: #64748B;">
+                Ajuste se necessário:
             </span>
         </div>
 
-        <div id="containerItensResumo" style="display: flex; flex-direction: column; gap: 14px; max-height: 480px; overflow-y: auto; padding-right: 2px;">
+        <div id="containerItensResumo" style="display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; padding-right: 2px;">
             <!-- Renderizado dinamicamente via JS com controles interativos -->
         </div>
 
-        <div id="avisoLoteVazioResumo" style="display: none; text-align: center; padding: 28px 16px; background: #FEF2F2; border: 3px dashed #EF4444; border-radius: 20px; margin-top: 10px;">
-            <div style="font-size: 24px; font-weight: 900; color: #991B1B;">
+        <div id="avisoLoteVazioResumo" style="display: none; text-align: center; padding: 22px 14px; background: #FEF2F2; border: 2px dashed #EF4444; border-radius: 16px; margin-top: 10px;">
+            <div style="font-size: 19px; font-weight: 900; color: #991B1B;">
                 ⚠️ Todos os itens foram removidos do lote!
             </div>
-            <div style="font-size: 18px; font-weight: 700; color: #DC2626; margin-top: 4px;">
+            <div style="font-size: 15px; font-weight: 700; color: #DC2626; margin-top: 4px;">
                 Clique em "CORRIGIR" abaixo para adicionar novos produtos.
             </div>
         </div>
@@ -157,17 +157,17 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <!-- ============================================================= -->
-<!-- RODAPÉ DE DUPLA CONFIRMAÇÃO DA URNA ELETRÔNICA               -->
+<!-- RODAPÉ DE DUPLA CONFIRMAÇÃO DA URNA ELETRÔNICA (80PX)        -->
 <!-- ============================================================= -->
-<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
-    <a href="<?= APP_URL ?>/operador/cronometro?origem=voltar" class="btn-urna btn-urna-secondary" style="min-height: 135px; font-size: 40px; font-weight: 900; border-radius: 36px; background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%); color: #FFFFFF; border: 6px solid #1E40AF; box-shadow: 0 10px 26px rgba(37, 99, 235, 0.35); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 14px;">
-        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
+<div class="dupla-confirmacao-rodape" style="width: 100%; margin: 18px 0 0 0; gap: 14px;">
+    <a href="<?= APP_URL ?>/operador/cronometro?origem=voltar" class="btn-urna btn-urna-secondary" style="min-height: 80px; font-size: 24px; font-weight: 900; border-radius: 20px; background: linear-gradient(145deg, #2563EB 0%, #1D4ED8 100%); color: #FFFFFF; border: 3.5px solid #1E40AF; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
             <line x1="21" y1="12" x2="3" y2="12"></line>
             <polyline points="11 4 3 12 11 20"></polyline>
         </svg>
         <span>CORRIGIR</span>
     </a>
-    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarLote" onclick="confirmarLoteProducao()" style="min-height: 135px; font-size: 42px; font-weight: 900; border-radius: 36px;">
+    <button type="button" class="btn-urna btn-urna-primary" id="btnConfirmarLote" onclick="confirmarLoteProducao()" style="min-height: 80px; font-size: 24px; font-weight: 900; border-radius: 20px;">
         CONFIRMAR
     </button>
 </div>

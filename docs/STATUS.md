@@ -1342,6 +1342,31 @@
       - Testes automatizados oficiais (`tests/test_fase5.php`) executados com 100% de aprovação (35/35).
       - Versão da aplicação incrementada para `v2.03` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-108 (18/11/2026):** Harmonização Proporcional do Layout Mobile: Correção de Textos Cortados na Home e Resolução de Sobreposição no Registro de Produção.
+    - **Diagnóstico da Inconsistência:**
+      - Testes anteriores realizados em monitor desktop (PC) levaram à inflação de escalas tipográficas e alturas de botões para facilitar a leitura à distância.
+      - No smartphone físico:
+        1. Na Home do Operador (`app/views/operador/home.php`), os 3 botões ultrapassavam o limite de 100vh, empurrando o texto inferior para fora da tela e cortando *"REGISTRAR B.O."*, *"REGISTRAR PRODUÇÃO"* e *"BAIXA NA LOJINHA"* pela metade.
+        2. No Registro de Produção (`app/views/operador/cronometro.php`), o título *"REGISTRAR PRODUÇÃO"* sobrepunha uma palavra sobre a outra devido à colisão entre `font-size: 46px` e `line-height: 32px` herdado de `.headline-lg`, além de campos, bordas e botões excessivamente gigantescos.
+    - **Ajustes Implementados:**
+      - **Home do Operador (`app/views/operador/home.php`):**
+        - Redimensionamento das caixas de ícones para `clamp(85px, 11.5vh, 120px)` x `clamp(80px, 11vh, 110px)`.
+        - Calibração dos rótulos de texto para `clamp(20px, 5.2vw, 26px)` com `line-height: 1.15`.
+        - Encaixe perfeito dos 3 botões em 100% da viewport vertical de qualquer smartphone, eliminando cortes de texto.
+      - **Registro de Produção (`app/views/operador/cronometro.php`):**
+        - Título descompactado para `font-size: 28px` com `line-height: 1.25` explícito, eliminando o atropelamento de palavras.
+        - Molduras de blocos suavizadas para `3.5px` sólidas e paddings internos calibrados para `18px 14px`.
+        - Botões de data e turno ajustados para alturas harmônicas (`70px` a `80px`) e fontes equilibradas (`19px` a `24px`).
+        - Campo de SKU ajustado para `height: 72px` com dígitos de `38px` e botão de limpar proporcional.
+        - Foto do produto calibrada para `max-width: 220px` x `height: 160px`.
+        - Seletor de quantidade `[-] [ 1 ] [+]` calibrado para `70px` x `70px` e botão "ADICIONAR AO LOTE" de `65px`.
+        - Botões de rodapé "CANCELAR" e "CONFERIR" calibrados para a altura padrão da Urna Eletrônica de `80px` com fontes de `24px`.
+      - **Conferência de Produção (`app/views/operador/cronometro_resumo.php`):**
+        - Harmonização completa do cartão de resumo consolidado e botões "CORRIGIR" e "CONFIRMAR" para `min-height: 80px`.
+    - **Testes & Versionamento:**
+      - Testes automatizados `tests/test_produtividade_lote.php` (11/11) validados com 100% de sucesso.
+      - Versão da aplicação incrementada para `v2.04` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo

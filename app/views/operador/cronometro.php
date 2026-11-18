@@ -25,11 +25,11 @@ $pageTitle = "Registrar Produção por Lote";
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 
-<div style="text-align: center; margin-bottom: 18px;">
-    <h1 class="headline-lg" style="margin: 0; font-size: 46px; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
+<div style="text-align: center; margin-bottom: 16px;">
+    <h1 style="margin: 0; font-size: 28px; line-height: 1.25; font-weight: 900; color: #0F172A; letter-spacing: 0.5px;">
         REGISTRAR PRODUÇÃO
     </h1>
-    <span style="display: inline-block; font-size: 20px; font-weight: 800; color: #059669; background: #ECFDF5; border: 2.5px solid #10B981; padding: 6px 20px; border-radius: 9999px; margin-top: 8px;">
+    <span style="display: inline-block; font-size: 15px; font-weight: 800; color: #059669; background: #ECFDF5; border: 2px solid #10B981; padding: 4px 14px; border-radius: 9999px; margin-top: 6px;">
         📦 LANÇAMENTO POR LOTE / TURNO
     </span>
 </div>
@@ -37,87 +37,87 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- ============================================================= -->
 <!-- BLOCO 1: PERÍODO DO LOTE / TURNO TRABALHADO                   -->
 <!-- ============================================================= -->
-<div class="urna-card" style="width: 100%; padding: 26px 20px; border-radius: 30px; border: 6px solid #0F172A; background: #FFFFFF; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08);">
+<div class="urna-card" style="width: 100%; padding: 18px 14px; border-radius: 20px; border: 3.5px solid #0F172A; background: #FFFFFF; margin-bottom: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.06);">
     
     <!-- Seção 1A: DATA DA PRODUÇÃO (Hoje, Ontem ou Outra) -->
-    <div style="font-size: 26px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 14px; text-align: center; letter-spacing: 0.5px;">
+    <div style="font-size: 20px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 10px; text-align: center; letter-spacing: 0.5px;">
         1. DATA DA REEMBALAGEM:
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-        <button type="button" id="btnDataHoje" class="btn-urna" onclick="selecionarDataProducao('hoje')" style="min-height: 85px; padding: 8px 4px; border-radius: 20px; background: #ECFDF5; color: #065F46; border: 5px solid #10B981; font-size: 24px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; box-shadow: 0 4px 12px rgba(16,185,129,0.25);">
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+        <button type="button" id="btnDataHoje" class="btn-urna" onclick="selecionarDataProducao('hoje')" style="min-height: 70px; padding: 6px 4px; border-radius: 14px; background: #ECFDF5; color: #065F46; border: 4px solid #10B981; font-size: 19px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; box-shadow: 0 4px 10px rgba(16,185,129,0.2);">
             <span>📅 HOJE</span>
-            <span id="labelDataHoje" style="font-size: 17px; font-weight: 800; color: #047857;">--/--</span>
+            <span id="labelDataHoje" style="font-size: 14px; font-weight: 800; color: #047857;">--/--</span>
         </button>
 
-        <button type="button" id="btnDataOntem" class="btn-urna" onclick="selecionarDataProducao('ontem')" style="min-height: 85px; padding: 8px 4px; border-radius: 20px; background: #F1F5F9; color: #334155; border: 3px solid #94A3B8; font-size: 24px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; opacity: 0.65;">
+        <button type="button" id="btnDataOntem" class="btn-urna" onclick="selecionarDataProducao('ontem')" style="min-height: 70px; padding: 6px 4px; border-radius: 14px; background: #F1F5F9; color: #334155; border: 2.5px solid #94A3B8; font-size: 19px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; opacity: 0.65;">
             <span>📅 ONTEM</span>
-            <span id="labelDataOntem" style="font-size: 17px; font-weight: 800; color: #64748B;">--/--</span>
+            <span id="labelDataOntem" style="font-size: 14px; font-weight: 800; color: #64748B;">--/--</span>
         </button>
 
-        <button type="button" id="btnDataOutra" class="btn-urna" onclick="selecionarDataProducao('outra')" style="min-height: 85px; padding: 8px 4px; border-radius: 20px; background: #F1F5F9; color: #334155; border: 3px solid #94A3B8; font-size: 22px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; opacity: 0.65;">
+        <button type="button" id="btnDataOutra" class="btn-urna" onclick="selecionarDataProducao('outra')" style="min-height: 70px; padding: 6px 4px; border-radius: 14px; background: #F1F5F9; color: #334155; border: 2.5px solid #94A3B8; font-size: 18px; font-weight: 900; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; opacity: 0.65;">
             <span>🗓️ OUTRA</span>
-            <span style="font-size: 16px; font-weight: 800; color: #64748B;">DATA</span>
+            <span style="font-size: 13px; font-weight: 800; color: #64748B;">DATA</span>
         </button>
     </div>
 
     <!-- Campo Seletor de Data Customizada (Escondido por padrão) -->
-    <div id="wrapperDataPersonalizada" style="display: none; margin-bottom: 18px; background: #F8FAFC; padding: 16px; border-radius: 20px; border: 3px dashed #94A3B8; text-align: center;">
-        <label for="inputDataProducao" style="font-size: 22px; font-weight: 900; color: #1E293B; display: block; margin-bottom: 8px;">
+    <div id="wrapperDataPersonalizada" style="display: none; margin-bottom: 14px; background: #F8FAFC; padding: 12px; border-radius: 16px; border: 2.5px dashed #94A3B8; text-align: center;">
+        <label for="inputDataProducao" style="font-size: 18px; font-weight: 900; color: #1E293B; display: block; margin-bottom: 6px;">
             SELECIONE A DATA ESPECÍFICA:
         </label>
-        <input type="date" id="inputDataProducao" class="input-sku-gigante" style="min-height: 65px; font-size: 32px; font-weight: 900; text-align: center; border-radius: 18px; border: 4px solid #0F172A; width: 100%; max-width: 340px; margin: 0 auto; display: block;" onchange="aplicarDataPersonalizada(this.value)">
+        <input type="date" id="inputDataProducao" style="min-height: 52px; font-size: 22px; font-weight: 900; text-align: center; border-radius: 14px; border: 3px solid #0F172A; width: 100%; max-width: 280px; margin: 0 auto; display: block;" onchange="aplicarDataPersonalizada(this.value)">
     </div>
 
     <!-- Seção 1B: TURNO DO LOTE -->
-    <div style="font-size: 26px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin: 18px 0 14px 0; text-align: center; letter-spacing: 0.5px; border-top: 3.5px solid #E2E8F0; padding-top: 18px;">
+    <div style="font-size: 20px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin: 14px 0 10px 0; text-align: center; letter-spacing: 0.5px; border-top: 2px solid #E2E8F0; padding-top: 14px;">
         2. TURNO DO LOTE:
     </div>
 
     <!-- 2 Botões Grandes e Proporcionais de Turno (Manhã e Tarde) -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-        <button type="button" id="btnTurnoManha" class="btn-urna" onclick="selecionarTurno('manha')" style="min-height: 110px; padding: 14px 10px; border-radius: 24px; background: #FEF3C7; color: #92400E; border: 6px solid #F59E0B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(245,158,11,0.25);">
-            <span style="font-size: 34px; font-weight: 900; line-height: 1;">☀️ MANHÃ</span>
-            <span style="font-size: 26px; font-weight: 900; color: #B45309;">07:00 às 12:00</span>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+        <button type="button" id="btnTurnoManha" class="btn-urna" onclick="selecionarTurno('manha')" style="min-height: 80px; padding: 10px 8px; border-radius: 16px; background: #FEF3C7; color: #92400E; border: 4px solid #F59E0B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 4px 12px rgba(245,158,11,0.2);">
+            <span style="font-size: 24px; font-weight: 900; line-height: 1;">☀️ MANHÃ</span>
+            <span style="font-size: 17px; font-weight: 800; color: #B45309;">07:00 às 12:00</span>
         </button>
 
-        <button type="button" id="btnTurnoTarde" class="btn-urna" onclick="selecionarTurno('tarde')" style="min-height: 110px; padding: 14px 10px; border-radius: 24px; background: #E0E7FF; color: #3730A3; border: 6px solid #6366F1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; opacity: 0.6;">
-            <span style="font-size: 34px; font-weight: 900; line-height: 1;">⛅ TARDE</span>
-            <span style="font-size: 26px; font-weight: 900; color: #4338CA;">14:00 às 17:00</span>
+        <button type="button" id="btnTurnoTarde" class="btn-urna" onclick="selecionarTurno('tarde')" style="min-height: 80px; padding: 10px 8px; border-radius: 16px; background: #E0E7FF; color: #3730A3; border: 4px solid #6366F1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; opacity: 0.6;">
+            <span style="font-size: 24px; font-weight: 900; line-height: 1;">⛅ TARDE</span>
+            <span style="font-size: 17px; font-weight: 800; color: #4338CA;">14:00 às 17:00</span>
         </button>
     </div>
 
     <!-- Botão de Turno Personalizado / Outro Horário -->
-    <div style="text-align: center; margin-bottom: 14px;">
-        <button type="button" id="btnTurnoOutro" onclick="alternarHorarioPersonalizado()" style="background: #F1F5F9; border: 3.5px solid #94A3B8; color: #1E293B; font-size: 24px; font-weight: 900; border-radius: 18px; padding: 12px 28px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;">
+    <div style="text-align: center; margin-bottom: 12px;">
+        <button type="button" id="btnTurnoOutro" onclick="alternarHorarioPersonalizado()" style="background: #F1F5F9; border: 2.5px solid #94A3B8; color: #1E293B; font-size: 16px; font-weight: 800; border-radius: 14px; padding: 8px 18px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
             <span>⚙️ OUTRO HORÁRIO / PERSONALIZAR</span>
         </button>
     </div>
 
     <!-- Campos de Ajuste Fino de Horário (Escondido por padrão, abre ao personalizar) -->
-    <div id="wrapperHorariosPersonalizados" style="display: none; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; background: #F8FAFC; padding: 18px; border-radius: 20px; border: 3px dashed #94A3B8;">
+    <div id="wrapperHorariosPersonalizados" style="display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; background: #F8FAFC; padding: 14px; border-radius: 16px; border: 2px dashed #94A3B8;">
         <div>
-            <label for="inputHoraInicio" style="display: block; font-size: 26px; font-weight: 900; color: #1E293B; margin-bottom: 8px; text-align: center;">
+            <label for="inputHoraInicio" style="display: block; font-size: 18px; font-weight: 900; color: #1E293B; margin-bottom: 6px; text-align: center;">
                 HORA INÍCIO:
             </label>
-            <input type="time" id="inputHoraInicio" class="input-sku-gigante" style="min-height: 70px; font-size: 36px; font-weight: 900; text-align: center; border-radius: 18px; border: 4px solid #0F172A; width: 100%;" value="07:00" onchange="atualizarDuracaoLote()">
+            <input type="time" id="inputHoraInicio" style="min-height: 52px; font-size: 24px; font-weight: 900; text-align: center; border-radius: 14px; border: 3px solid #0F172A; width: 100%;" value="07:00" onchange="atualizarDuracaoLote()">
         </div>
         <div>
-            <label for="inputHoraFim" style="display: block; font-size: 26px; font-weight: 900; color: #1E293B; margin-bottom: 8px; text-align: center;">
+            <label for="inputHoraFim" style="display: block; font-size: 18px; font-weight: 900; color: #1E293B; margin-bottom: 6px; text-align: center;">
                 HORA TÉRMINO:
             </label>
-            <input type="time" id="inputHoraFim" class="input-sku-gigante" style="min-height: 70px; font-size: 36px; font-weight: 900; text-align: center; border-radius: 18px; border: 4px solid #0F172A; width: 100%;" value="12:00" onchange="atualizarDuracaoLote()">
+            <input type="time" id="inputHoraFim" style="min-height: 52px; font-size: 24px; font-weight: 900; text-align: center; border-radius: 14px; border: 3px solid #0F172A; width: 100%;" value="12:00" onchange="atualizarDuracaoLote()">
         </div>
     </div>
 
     <!-- Faixa Destaque Consolidada com Data e Duração -->
-    <div style="text-align: center; margin-top: 16px; background: #F0FDF4; border: 3px solid #86EFAC; border-radius: 18px; padding: 14px;">
-        <div style="font-size: 22px; font-weight: 800; color: #166534; margin-bottom: 4px;">
-            DATA DA PRODUÇÃO: <strong id="displayDataProducaoResumo" style="color: #0F172A; font-size: 26px;">--/--/----</strong>
+    <div style="text-align: center; margin-top: 12px; background: #F0FDF4; border: 2.5px solid #86EFAC; border-radius: 14px; padding: 10px 12px;">
+        <div style="font-size: 16px; font-weight: 800; color: #166534; margin-bottom: 2px;">
+            DATA DA PRODUÇÃO: <strong id="displayDataProducaoResumo" style="color: #0F172A; font-size: 19px;">--/--/----</strong>
         </div>
-        <span style="font-size: 26px; font-weight: 900; color: #14532D;">
+        <span style="font-size: 17px; font-weight: 900; color: #14532D;">
             DURAÇÃO DO BLOCO: 
-            <span id="displayDuracaoTotal" style="color: #059669; font-size: 34px; font-weight: 900;">5h 00min</span>
+            <span id="displayDuracaoTotal" style="color: #059669; font-size: 24px; font-weight: 900;">5h 00min</span>
         </span>
     </div>
 </div>
@@ -125,22 +125,22 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- ============================================================= -->
 <!-- BLOCO 2: INCLUSÃO DE PRODUTO NO LOTE (SKU + QUANTIDADE)       -->
 <!-- ============================================================= -->
-<div class="urna-card" style="width: 100%; padding: 26px 20px; border-radius: 30px; border: 6px solid #0F172A; background: #FFFFFF; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08);">
-    <div style="font-size: 26px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 16px; text-align: center; letter-spacing: 0.5px;">
+<div class="urna-card" style="width: 100%; padding: 18px 14px; border-radius: 20px; border: 3.5px solid #0F172A; background: #FFFFFF; margin-bottom: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.06);">
+    <div style="font-size: 20px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 12px; text-align: center; letter-spacing: 0.5px;">
         3. INCLUIR ITEM REEMBALADO:
     </div>
 
     <div class="sku-entry-container" style="margin-bottom: 0;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-            <label for="inputCodigoSku" id="labelModoBusca" style="font-size: 34px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+            <label for="inputCodigoSku" id="labelModoBusca" style="font-size: 20px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">
                 CÓDIGO (SKU):
             </label>
             <!-- Seletor Rápido de Teclado (Código 123 vs Nome ABC) -->
-            <div style="display: inline-flex; background: #F1F5F9; border: 3px solid #CBD5E1; border-radius: 18px; padding: 4px; gap: 4px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);">
-                <button type="button" id="btnModoCodigo" onclick="alternarModoBusca('codigo')" style="min-height: 46px; padding: 6px 16px; border-radius: 14px; font-size: 19px; font-weight: 900; border: none; cursor: pointer; background: #0F172A; color: #FFFFFF; transition: all 0.15s ease; touch-action: manipulation;" title="Teclado Numérico (Código SKU)">
+            <div style="display: inline-flex; background: #F1F5F9; border: 2px solid #CBD5E1; border-radius: 14px; padding: 3px; gap: 3px;">
+                <button type="button" id="btnModoCodigo" onclick="alternarModoBusca('codigo')" style="min-height: 38px; padding: 4px 12px; border-radius: 10px; font-size: 16px; font-weight: 900; border: none; cursor: pointer; background: #0F172A; color: #FFFFFF; transition: all 0.15s ease; touch-action: manipulation;" title="Teclado Numérico (Código SKU)">
                     🔢 123
                 </button>
-                <button type="button" id="btnModoNome" onclick="alternarModoBusca('nome')" style="min-height: 46px; padding: 6px 16px; border-radius: 14px; font-size: 19px; font-weight: 900; border: none; cursor: pointer; background: transparent; color: #64748B; transition: all 0.15s ease; touch-action: manipulation;" title="Teclado Alfanumérico (Busca por Nome)">
+                <button type="button" id="btnModoNome" onclick="alternarModoBusca('nome')" style="min-height: 38px; padding: 4px 12px; border-radius: 10px; font-size: 16px; font-weight: 900; border: none; cursor: pointer; background: transparent; color: #64748B; transition: all 0.15s ease; touch-action: manipulation;" title="Teclado Alfanumérico (Busca por Nome)">
                     🔤 ABC
                 </button>
             </div>
@@ -155,69 +155,70 @@ require_once __DIR__ . '/../layouts/header.php';
                    placeholder="9068" 
                    value=""
                    autocomplete="off"
+                   style="height: 72px; min-height: 72px; font-size: 38px; font-weight: 900; border-radius: 16px; border: 3.5px solid #0F172A; padding: 6px 58px 6px 14px; letter-spacing: 3px;"
                    oninput="processarEntradaSku(this.value)">
             <button type="button" 
                     id="btnLimparSku" 
                     class="btn-limpar-sku" 
-                    style="display: none;" 
+                    style="display: none; width: 42px; height: 42px; font-size: 20px; right: 10px;" 
                     onclick="limparSku()" 
                     aria-label="Limpar código">✕</button>
         </div>
-        <div style="font-size: 14px; font-weight: 700; color: #64748B; text-align: center; margin-top: 8px;">
+        <div style="font-size: 13px; font-weight: 700; color: #64748B; text-align: center; margin-top: 6px;">
             💡 Dica: Toque em <strong>🔤 ABC</strong> ou <strong>segure o campo</strong> para buscar pelo nome.
         </div>
 
         <!-- Card de Confirmação Imediata do SKU (Com Foto Monumental e Alto Contraste) -->
-        <div class="card-confirmacao-sku" id="cardConfirmacaoSku" style="display: none; margin-top: 18px; border: 5px solid #10B981; border-radius: 24px; padding: 20px; text-align: center; background: #F0FDF4;">
-            <div class="badge-status-ok" style="font-size: 22px; font-weight: 900; color: #065F46; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                <svg width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
+        <div class="card-confirmacao-sku" id="cardConfirmacaoSku" style="display: none; margin-top: 14px; border: 3px solid #10B981; border-radius: 16px; padding: 12px; text-align: center; background: #F0FDF4;">
+            <div class="badge-status-ok" style="font-size: 18px; font-weight: 900; color: #065F46; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
                 </svg>
                 <span>PRODUTO IDENTIFICADO</span>
             </div>
 
-            <!-- Foto Destaque do Produto (Monumental para Acessibilidade) -->
-            <div id="wrapperFotoProduto" style="text-align: center; margin: 12px 0 14px 0;">
+            <!-- Foto Destaque do Produto (Harmonizada) -->
+            <div id="wrapperFotoProduto" style="text-align: center; margin: 8px 0 10px 0;">
                 <img id="imgFotoProduto" 
                      src="" 
                      alt="Foto do Produto" 
-                     style="width: 100%; max-width: 380px; height: 320px; object-fit: contain; border-radius: 24px; background: #FFFFFF; border: 5px solid #059669; box-shadow: 0 10px 28px rgba(5,150,105,0.22); padding: 8px; display: none;">
+                     style="width: 100%; max-width: 220px; height: 160px; object-fit: contain; border-radius: 14px; background: #FFFFFF; border: 2.5px solid #059669; box-shadow: 0 4px 12px rgba(5,150,105,0.18); padding: 4px; display: none;">
             </div>
 
-            <div class="nome-produto-destaque" id="displayNomeProduto" style="font-size: 32px; font-weight: 900; color: #0F172A; line-height: 1.2; word-break: break-word;">
+            <div class="nome-produto-destaque" id="displayNomeProduto" style="font-size: 20px; font-weight: 900; color: #0F172A; line-height: 1.25; word-break: break-word;">
                 Nome do Produto
             </div>
-            <div class="detalhes-produto" style="margin-top: 10px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                <span class="badge-sku" id="displaySkuBadge" style="font-size: 20px; font-weight: 900; background: #0F172A; color: #FFFFFF; padding: 4px 14px; border-radius: 10px;">SKU 0000</span>
-                <span class="badge-embalagem" id="displayEmbalagem" style="font-size: 20px; font-weight: 800; background: #E2E8F0; color: #334155; padding: 4px 14px; border-radius: 10px;">Padrão</span>
+            <div class="detalhes-produto" style="margin-top: 8px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+                <span class="badge-sku" id="displaySkuBadge" style="font-size: 14px; font-weight: 900; background: #0F172A; color: #FFFFFF; padding: 3px 10px; border-radius: 8px;">SKU 0000</span>
+                <span class="badge-embalagem" id="displayEmbalagem" style="font-size: 14px; font-weight: 800; background: #E2E8F0; color: #334155; padding: 3px 10px; border-radius: 8px;">Padrão</span>
             </div>
         </div>
 
         <!-- Card de Erro: SKU Não Encontrado -->
-        <div id="cardNaoEncontrado" style="display: none; background: #FEF2F2; border: 4px solid #EF4444; border-radius: 20px; padding: 18px; margin-top: 16px; text-align: center;">
-            <div style="font-size: 24px; font-weight: 900; color: #991B1B;">
+        <div id="cardNaoEncontrado" style="display: none; background: #FEF2F2; border: 3px solid #EF4444; border-radius: 16px; padding: 14px; margin-top: 12px; text-align: center;">
+            <div style="font-size: 18px; font-weight: 900; color: #991B1B;">
                 ⚠️ Código <span id="codigoNaoEncontrado"></span> não cadastrado!
             </div>
         </div>
 
         <!-- Sugestões de Busca Rápida -->
-        <div id="wrapperSugestoes" style="display: none; margin-top: 14px; width: 100%;">
-            <div style="font-size: 19px; font-weight: 900; color: #475569; margin-bottom: 8px;">TOQUE PARA SELECIONAR:</div>
+        <div id="wrapperSugestoes" style="display: none; margin-top: 12px; width: 100%;">
+            <div style="font-size: 16px; font-weight: 900; color: #475569; margin-bottom: 6px;">TOQUE PARA SELECIONAR:</div>
             <div id="listaSugestoes" class="lista-sugestoes-sku"></div>
         </div>
 
         <!-- Seletor Horizontal de Quantidade (Rigorosamente Lado a Lado [-] [ 1 ] [+]) -->
-        <div style="margin-top: 26px; text-align: center;">
-            <label for="displayQtd" style="display: block; font-size: 34px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 14px; letter-spacing: 0.5px;">
+        <div style="margin-top: 20px; text-align: center;">
+            <label for="displayQtd" style="display: block; font-size: 20px; font-weight: 900; color: #0F172A; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px;">
                 QUANTIDADE DE PACOTES:
             </label>
 
             <!-- Container Horizontal Flexível Travado em Linha Única sem Quebra -->
-            <div style="display: flex; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center; justify-content: center; gap: clamp(8px, 2.5vw, 16px); width: 100%; margin: 0 auto; max-width: 480px; box-sizing: border-box;">
+            <div style="display: flex; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center; justify-content: center; gap: 10px; width: 100%; margin: 0 auto; max-width: 420px; box-sizing: border-box;">
                 <!-- Botão Menos -->
                 <button type="button" 
                         onclick="alterarQuantidade(-1)" 
-                        style="flex: 0 0 auto; width: clamp(75px, 20vw, 105px); height: clamp(75px, 20vw, 105px); border-radius: 24px; font-size: clamp(46px, 12vw, 68px); font-weight: 900; display: flex; align-items: center; justify-content: center; border: 5px solid #0F172A; background-color: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 14px rgba(0,0,0,0.12); padding: 0;" 
+                        style="flex: 0 0 auto; width: 70px; height: 70px; border-radius: 16px; font-size: 38px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 3.5px solid #0F172A; background-color: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding: 0;" 
                         aria-label="Diminuir">
                     −
                 </button>
@@ -233,23 +234,23 @@ require_once __DIR__ . '/../layouts/header.php';
                        onfocus="this.select()" 
                        oninput="atualizarQuantidadeDigitada(this.value)" 
                        onblur="validarQuantidadeBlur()" 
-                       style="flex: 1 1 auto; min-width: 75px; max-width: 190px; height: clamp(75px, 20vw, 105px); background-color: #FFFFFF; border: 5px solid #0F172A; border-radius: 24px; font-size: clamp(46px, 12vw, 68px); font-weight: 900; color: #0F172A; text-align: center; box-sizing: border-box; padding: 0 8px; outline: none; touch-action: manipulation; box-shadow: 0 4px 14px rgba(0,0,0,0.12);" 
+                       style="flex: 1 1 auto; min-width: 75px; max-width: 130px; height: 70px; background-color: #FFFFFF; border: 3.5px solid #0F172A; border-radius: 16px; font-size: 38px; font-weight: 900; color: #0F172A; text-align: center; box-sizing: border-box; padding: 0 8px; outline: none; touch-action: manipulation; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" 
                        aria-label="Quantidade de pacotes">
 
                 <!-- Botão Mais -->
                 <button type="button" 
                         onclick="alterarQuantidade(1)" 
-                        style="flex: 0 0 auto; width: clamp(75px, 20vw, 105px); height: clamp(75px, 20vw, 105px); border-radius: 24px; font-size: clamp(46px, 12vw, 68px); font-weight: 900; display: flex; align-items: center; justify-content: center; border: 5px solid #0F172A; background-color: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 14px rgba(0,0,0,0.12); padding: 0;" 
+                        style="flex: 0 0 auto; width: 70px; height: 70px; border-radius: 16px; font-size: 38px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 3.5px solid #0F172A; background-color: #FFFFFF; color: #0F172A; cursor: pointer; touch-action: manipulation; box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding: 0;" 
                         aria-label="Aumentar">
                     +
                 </button>
             </div>
         </div>
 
-        <!-- Botão Monumental de Adicionar Item ao Lote -->
-        <div style="margin-top: 26px;">
-            <button type="button" id="btnAdicionarAoLote" class="btn-urna btn-urna-primary" onclick="adicionarItemAoLote()" style="min-height: 95px; font-size: 34px; font-weight: 900; border-radius: 28px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 14px; background: linear-gradient(145deg, #059669 0%, #047857 100%); border: 5px solid #065F46; box-shadow: 0 8px 22px rgba(5,150,105,0.35);">
-                <span style="font-size: 38px;">➕</span> <span>ADICIONAR AO LOTE</span>
+        <!-- Botão Adicionar Item ao Lote (Harmonizado) -->
+        <div style="margin-top: 20px;">
+            <button type="button" id="btnAdicionarAoLote" class="btn-urna btn-urna-primary" onclick="adicionarItemAoLote()" style="min-height: 65px; font-size: 20px; font-weight: 900; border-radius: 16px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(145deg, #059669 0%, #047857 100%); border: 3.5px solid #065F46; box-shadow: 0 6px 16px rgba(5,150,105,0.25);">
+                <span style="font-size: 24px;">➕</span> <span>ADICIONAR AO LOTE</span>
             </button>
         </div>
     </div>
@@ -258,44 +259,44 @@ require_once __DIR__ . '/../layouts/header.php';
 <!-- ============================================================= -->
 <!-- BLOCO 3: LISTA DOS ITENS DO LOTE (COMANDA ATUAL)              -->
 <!-- ============================================================= -->
-<div class="urna-card" style="width: 100%; padding: 26px 20px; border-radius: 30px; border: 6px solid #0F172A; background: #FFFFFF; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 3.5px solid #E2E8F0; padding-bottom: 12px;">
-        <div style="font-size: 26px; font-weight: 900; color: #0F172A; text-transform: uppercase;">
+<div class="urna-card" style="width: 100%; padding: 18px 14px; border-radius: 20px; border: 3.5px solid #0F172A; background: #FFFFFF; margin-bottom: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.06);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid #E2E8F0; padding-bottom: 10px;">
+        <div style="font-size: 20px; font-weight: 900; color: #0F172A; text-transform: uppercase;">
             3. ITENS NO LOTE (<span id="contadorItensLote">0</span>)
         </div>
-        <button type="button" onclick="limparTodoLote()" style="background: none; border: none; color: #DC2626; font-size: 19px; font-weight: 900; cursor: pointer; text-decoration: underline;">
+        <button type="button" onclick="limparTodoLote()" style="background: none; border: none; color: #DC2626; font-size: 16px; font-weight: 900; cursor: pointer; text-decoration: underline;">
             Limpar Todos
         </button>
     </div>
 
     <!-- Container Dinâmico da Lista de Produtos -->
-    <div id="listaItensLote" style="display: flex; flex-direction: column; gap: 14px; max-height: 520px; overflow-y: auto; padding-right: 2px;">
+    <div id="listaItensLote" style="display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; padding-right: 2px;">
         <!-- Inserido dinamicamente via JS -->
     </div>
 
     <!-- Mensagem Vazia Inicial -->
-    <div id="msgLoteVazio" style="text-align: center; padding: 36px 16px; background: #F8FAFC; border: 3px dashed #CBD5E1; border-radius: 22px;">
-        <span style="font-size: 46px;">📋</span>
-        <div style="font-size: 24px; font-weight: 900; color: #475569; margin-top: 10px;">
+    <div id="msgLoteVazio" style="text-align: center; padding: 26px 14px; background: #F8FAFC; border: 2px dashed #CBD5E1; border-radius: 16px;">
+        <span style="font-size: 38px;">📋</span>
+        <div style="font-size: 19px; font-weight: 900; color: #475569; margin-top: 8px;">
             Nenhum produto adicionado ao lote ainda.
         </div>
-        <div style="font-size: 19px; font-weight: 700; color: #94A3B8; margin-top: 6px;">
+        <div style="font-size: 15px; font-weight: 700; color: #94A3B8; margin-top: 4px;">
             Digite o código do produto acima e clique em "Adicionar ao Lote".
         </div>
     </div>
 
     <!-- Rodapé Consolidado do Lote -->
-    <div id="cardConsolidadoLote" style="display: none; margin-top: 20px; padding: 20px; border-top: 4px solid #CBD5E1; background: #F8FAFC; border-radius: 22px;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; text-align: center;">
-            <div style="border-right: 3px solid #E2E8F0; padding-right: 8px;">
-                <div style="font-size: 20px; font-weight: 900; color: #64748B; text-transform: uppercase;">TOTAL DO LOTE:</div>
-                <div style="font-size: 54px; font-weight: 900; color: #0F172A; line-height: 1.1; margin-top: 4px;">
-                    <span id="displayTotalPacotesLote">0</span> <span style="font-size: 24px; color: #64748B; font-weight: 800;">pcts</span>
+    <div id="cardConsolidadoLote" style="display: none; margin-top: 16px; padding: 14px; border-top: 2.5px solid #CBD5E1; background: #F8FAFC; border-radius: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+            <div style="border-right: 2px solid #E2E8F0; padding-right: 6px;">
+                <div style="font-size: 16px; font-weight: 900; color: #64748B; text-transform: uppercase;">TOTAL DO LOTE:</div>
+                <div style="font-size: 36px; font-weight: 900; color: #0F172A; line-height: 1.1; margin-top: 2px;">
+                    <span id="displayTotalPacotesLote">0</span> <span style="font-size: 18px; color: #64748B; font-weight: 800;">pcts</span>
                 </div>
             </div>
             <div>
-                <div style="font-size: 20px; font-weight: 900; color: #64748B; text-transform: uppercase;">TEMPO MÉDIO:</div>
-                <div style="font-size: 38px; font-weight: 900; color: #059669; line-height: 1.15; margin-top: 8px;">
+                <div style="font-size: 16px; font-weight: 900; color: #64748B; text-transform: uppercase;">TEMPO MÉDIO:</div>
+                <div style="font-size: 24px; font-weight: 900; color: #059669; line-height: 1.15; margin-top: 6px;">
                     <span id="displayTempoMedioPorPacote">--</span>
                 </div>
             </div>
@@ -304,22 +305,22 @@ require_once __DIR__ . '/../layouts/header.php';
 </div>
 
 <!-- ============================================================= -->
-<!-- BLOCO 4: DUPLA CONFIRMAÇÃO DA URNA (RODAPÉ MONUMENTAL 140PX)  -->
+<!-- BLOCO 4: DUPLA CONFIRMAÇÃO DA URNA (RODAPÉ HARMONIZADO 80PX)   -->
 <!-- ============================================================= -->
 <form id="formAvancarLote" action="<?= APP_URL ?>/operador/cronometro/resumo" method="POST" onsubmit="return validarAvancoLote(event)">
     <input type="hidden" name="payload_lote" id="inputPayloadLote" value="">
 
-    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 26px 0 0 0; gap: 20px;">
-        <a href="<?= APP_URL ?>/operador?limpar_cronometro=1" onclick="cancelarRascunhoLote()" class="btn-urna btn-urna-warning" style="min-height: 140px; font-size: 46px; font-weight: 900; border-radius: 36px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 14px;">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
+    <div class="dupla-confirmacao-rodape" style="width: 100%; margin: 18px 0 0 0; gap: 14px;">
+        <a href="<?= APP_URL ?>/operador?limpar_cronometro=1" onclick="cancelarRascunhoLote()" class="btn-urna btn-urna-warning" style="min-height: 80px; font-size: 24px; font-weight: 900; border-radius: 20px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
             <span>CANCELAR</span>
         </a>
-        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancarLote" style="min-height: 140px; font-size: 44px; font-weight: 900; border-radius: 36px; display: flex; align-items: center; justify-content: center; gap: 14px;">
+        <button type="submit" class="btn-urna btn-urna-primary" id="btnAvancarLote" style="min-height: 80px; font-size: 24px; font-weight: 900; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;">
             <span>CONFERIR</span>
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink: 0;">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
             </svg>

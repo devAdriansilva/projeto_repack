@@ -49,20 +49,20 @@ require_once __DIR__ . '/../layouts/header.php';
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    padding: 6px 12px !important;
-    gap: 8px !important;
-    border-radius: 26px !important;
-    border-width: 6px !important;
+    padding: 8px 12px !important;
+    gap: 6px !important;
+    border-radius: 22px !important;
+    border-width: 4.5px !important;
     box-sizing: border-box !important;
     text-decoration: none !important;
 }
 
 .btn-operador-icone-wrapper {
-    width: clamp(160px, 22vh, 215px) !important;
-    height: clamp(150px, 20vh, 195px) !important;
-    border-radius: 28px !important;
+    width: clamp(85px, 11.5vh, 120px) !important;
+    height: clamp(80px, 11vh, 110px) !important;
+    border-radius: 18px !important;
     background: #FFFFFF !important;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
     padding: 0 !important;
     overflow: hidden !important;
     flex-shrink: 0 !important;
@@ -74,22 +74,22 @@ require_once __DIR__ . '/../layouts/header.php';
 .btn-operador-icone-wrapper.btn-operador-icone-emoji {
     background: #FFFFFF !important;
     border: none !important;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
 }
 
 .btn-operador-icone-wrapper.btn-operador-icone-emoji span {
-    font-size: clamp(95px, 14vh, 130px) !important;
+    font-size: clamp(60px, 8.5vh, 80px) !important;
     line-height: 1 !important;
     display: block !important;
-    transform: scale(1.08) !important;
+    transform: scale(1.05) !important;
 }
 
 .btn-operador-img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    transform: scale(1.12) !important;
-    border-radius: 28px !important;
+    transform: scale(1.08) !important;
+    border-radius: 18px !important;
     display: block !important;
 }
 
@@ -105,22 +105,22 @@ require_once __DIR__ . '/../layouts/header.php';
 }
 
 .btn-operador-label {
-    font-size: clamp(30px, 8.2vw, 44px) !important;
+    font-size: clamp(20px, 5.2vw, 26px) !important;
     font-weight: 900 !important;
     justify-content: center !important;
     text-align: center !important;
-    gap: 12px !important;
+    gap: 8px !important;
     line-height: 1.15 !important;
     display: flex !important;
     align-items: center !important;
     width: 100% !important;
-    letter-spacing: 0.8px !important;
+    letter-spacing: 0.5px !important;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25) !important;
 }
 
 .btn-operador-label svg {
-    width: clamp(36px, 6vw, 50px) !important;
-    height: clamp(36px, 6vw, 50px) !important;
+    width: clamp(26px, 4.5vw, 34px) !important;
+    height: clamp(26px, 4.5vw, 34px) !important;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25)) !important;
 }
 
