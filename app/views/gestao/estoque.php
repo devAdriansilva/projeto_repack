@@ -1121,6 +1121,14 @@ function escapeHtml(text) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
+
+// Acionamento automático se a URL contiver ?importar=1
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('importar') === '1') {
+        abrirModalImportacaoCsv();
+    }
+});
 </script>
 
 <!-- ========================================================================= -->

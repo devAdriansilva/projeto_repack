@@ -9,10 +9,16 @@ declare(strict_types=1);
 require __DIR__ . '/../layouts/gestao_header.php';
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
         <h1 class="headline-lg mb-1">Auditoria e Retificação de B.O.</h1>
         <p class="body-md text-muted mb-0">Correção de apontamentos operacionais com registro de justificativa e rebalanceamento de estoque.</p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <a href="<?= APP_URL ?>/gestao/estoque?importar=1" class="btn btn-outline-success fw-bold px-3 py-2" style="border-radius: 12px; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+            <span>📥</span>
+            <span>Importar Planilha de B.O. (Excel / CSV)</span>
+        </a>
     </div>
 </div>
 

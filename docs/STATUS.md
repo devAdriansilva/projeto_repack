@@ -1378,14 +1378,22 @@
            - Sincronização explícita via `onclick="sincronizarLoteLocalStorage()"` no botão "CORRIGIR" em `app/views/operador/cronometro_resumo.php`.
       2. **Divergência de Fuso Horário (+3 Horas):** Registros de apontamentos estavam sendo gravados com 3 horas a mais que o horário de Brasília.
          - *Causa Raiz:* No envio do lote em `app/views/operador/cronometro_resumo.php`, o timestamp era gerado via `new Date().toISOString().slice(0, 19).replace('T', ' ')`, o qual produz horário em UTC (GMT 0). Ao ser recebido pelo backend em timezone `America/Sao_Paulo` (UTC-3), o PHP salvava o horário 3 horas adiantado.
-         - *Solução:* Substituição por `formatarDataHoraLocal(new Date())` (com ano, mês, dia, horas, minutos e segundos locais do cliente) e `formatarDataLocalIso(new Date())`, garantindo registro fiel ao fuso local.
-      3. **Calibração Fina de Escala Mobile (~15-20%):** Ajuste estético adicional nas telas mobile para máximo conforto visual e ergonomia:
-         - *Home (`app/views/operador/home.php`):* Ícones reduzidos para `clamp(52px, 6.5vh, 72px)` x `clamp(48px, 6vh, 68px)`, fontes para `clamp(15px, 3.8vw, 18px)`, eliminando quebras indesejadas e respiração visual perfeita nos 3 cards.
-         - *Registro de Produção (`app/views/operador/cronometro.php`):* Título em `22px`, molduras em `2.5px`, botões de data e turno com alturas confortáveis (`56px` a `64px`), campo de SKU em `60px` com fonte `32px`, foto em `160x120px`, stepper horizontal em `58x58px` e botões de rodapé em `66px`.
-         - *Resumo de Produção (`app/views/operador/cronometro_resumo.php`):* Cartão em `2.5px`, números métricos harmônicos (`30px` total, `18px` média) e botões "CORRIGIR" e "CONFIRMAR" em `66px`.
+         - *Solução:* Substituição por `formatarDataHoraLocal(new Date())` e `formatarDataLocalIso(new Date())`, garantindo registro fiel ao fuso local.
+      3. **Calibração Fina de Escala Mobile (~15-20%):** Ajuste estético adicional nas telas mobile para máximo conforto visual e ergonomia.
     - **Testes & Versionamento:**
       - Bateria completa de testes automatizados (`tests/test_fase5.php` - 35/35 e `tests/test_produtividade_lote.php` - 11/11) executada com 100% de sucesso.
       - Versão da aplicação incrementada para `v2.05` em `app/config/config.php` e `public/service-worker.js`.
+
+  - [x] **MANUT-110 (18/11/2026):** Visibilidade Universal da Importação de Planilhas de B.O. (Excel / CSV) no Dashboard e na Aba B.O.
+    - **Diagnóstico da Demanda do Usuário:**
+      - A funcionalidade de importação de planilhas corporativas de B.O. (Excel / CSV) estava presente exclusivamente dentro da sub-aba `Estoque`, tornando-a invisível para a gestão ao navegar no `Dashboard` ou na aba `Ajuste B.O.`.
+    - **Solução Implementada:**
+      - **Aba Ajuste B.O. (`app/views/gestao/correcao_bo.php`):** Inclusão de botão em destaque no cabeçalho: `[📥 Importar Planilha de B.O. (Excel / CSV)]` apontando para `/gestao/estoque?importar=1`.
+      - **Aba Dashboard (`app/views/gestao/dashboard.php`):** Inclusão de botão de atalho rápido no cabeçalho superior: `[📥 Importar B.O. (Excel / CSV)]`.
+      - **Abertura Automática do Modal (`app/views/gestao/estoque.php`):** Listener JavaScript `DOMContentLoaded` com leitura de `URLSearchParams` para abrir instantaneamente o modal de importação quando a rota receber o parâmetro `?importar=1`.
+    - **Testes & Versionamento:**
+      - Testes automatizados oficiais (`tests/test_fase5.php`) validados com 35/35 sucessos.
+      - Versão da aplicação incrementada para `v2.06` em `app/config/config.php` e `public/service-worker.js`.
 
 ---
 

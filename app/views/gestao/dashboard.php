@@ -116,6 +116,11 @@ $labelsTipoAvaria = [
     </div>
     
     <div class="d-flex align-items-center gap-2 flex-wrap">
+        <a href="<?= APP_URL ?>/gestao/estoque?importar=1" class="btn btn-outline-success fw-bold px-3 py-2 shadow-sm" style="border-radius: 10px; font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; min-height: 46px; background: #FFFFFF;" title="Importar planilha de quebras e avarias (Excel / CSV)">
+            <span>📥</span>
+            <span>Importar B.O. (Excel / CSV)</span>
+        </a>
+
         <div class="d-flex align-items-center gap-2 bg-white px-3 py-2 rounded-3 border shadow-sm" style="min-height: 46px;">
             <div class="form-check form-switch m-0" style="min-height: auto;">
                 <input class="form-check-input" type="checkbox" role="switch" id="switchAutoRefresh" checked style="cursor: pointer; transform: scale(1.15);">
