@@ -48,6 +48,7 @@ public/uploads/**
 !public/uploads/produtos/*.*
 
 # Dumps e Backups de Banco de Dados
+scratch/
 *.sql.gz
 *.sql.bak
 *.dump

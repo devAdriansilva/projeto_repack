@@ -1406,6 +1406,29 @@
       - Suíte de importação `tests/test_importacao_csv_bo.php` expandida (23/23 testes aprovados com formatos brasileiros e datas inválidas) e `tests/test_fase5.php` (35/35).
       - Versão da aplicação incrementada para `v2.07` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-112 (18/11/2026):** Harmonização Proporcional do Fluxo de Registro de B.O. (Avarias) para Dispositivos Móveis (Passos 1, 2 e Resumo).
+    - **Demanda do Usuário & Diagnóstico:**
+      - O fluxo de B.O. (Avarias) havia permanecido com a escala hiper-inflacionada ("modo PC"), com botões de 140px, fontes de 46px-104px, fotos de 400px e campos gigantescos, gerando quebras, poluição visual e rolagem excessiva em smartphones.
+    - **Ajustes Implementados:**
+      - **Passo 1 (`app/views/operador/avaria_passo1.php`):**
+        - Título principal calibrado para `22px` com badge harmônica `⚠️ LANÇAMENTO DE AVARIA`.
+        - Campo de SKU reduzido de 160px para `height: 60px` com dígitos em `32px`, borda de `2.5px solid #0F172A` e botão de limpar compacto (`36px`).
+        - Card de produto identificado harmonizado com foto em `160x120px` (em vez de 400x380px), nome em `18px` e badges em `13px`.
+        - Seletor de quantidade ajustado para stepper horizontal padronizado (`[-] [ 1 ] [+]`) com botões de `58x58px` e visor central em `58px`.
+        - Botões de rodapé ("CANCELAR" e "PRÓXIMO ➔") calibrados para `min-height: 66px` e fonte `20px`.
+      - **Passo 2 (`app/views/operador/avaria_passo2.php`):**
+        - Título em `22px` e cartão compacto de identificação do produto com foto de `50px` e texto em `16px`.
+        - Os 7 botões verticais de avaria (`.btn-avaria-opcao`) calibrados para `min-height: 58px`, fontes em `17px`, emojis de `26px` e espaçamento reduzido para `8px`, eliminando rolagem massiva.
+        - Botão "VOLTAR / CORRIGIR" calibrado para `min-height: 66px` e fonte `20px`.
+      - **Conferência / Resumo (`app/views/operador/avaria_resumo.php`):**
+        - Cartão central com moldura de `2.5px`, foto em `160x120px`, nome em `18px`, quantidade em `42px` e tipo de avaria em `22px` com badge de destino (Lojinha ou Descarte).
+        - Botões "CORRIGIR" e "CONFIRMAR" em `66px` com fonte de `20px`.
+      - **Folha de Estilos (`public/assets/css/urna.css`):**
+        - Calibração global de `.btn-avaria-opcao`, `.btn-counter` e `.counter-display` para manter consistência sem herdar medidas legadas de 140px/160px.
+    - **Testes & Versionamento:**
+      - Bateria completa de testes automatizados (`tests/test_fase5.php` - 35/35 e `tests/test_produtividade_lote.php` - 11/11) executada com 100% de sucesso.
+      - Versão da aplicação incrementada para `v2.08` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
