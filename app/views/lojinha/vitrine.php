@@ -376,7 +376,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                         </div>
 
                         <h3 class="card-produto-titulo" title="<?= sanitize_html($p['nome']) ?>">
-                            <?= sanitize_html($p['nome']) ?>
+                            <?= sanitize_html(mb_convert_case(mb_strtolower($p['nome'], 'UTF-8'), MB_CASE_TITLE, 'UTF-8')) ?>
                         </h3>
                     </div>
 

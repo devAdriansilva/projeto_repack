@@ -1303,6 +1303,19 @@
       - Testes automatizados executados com 100% de sucesso (`tests/test_fase5.php` - 35/35).
       - Versão da aplicação incrementada para `v2.00` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-105 (17/11/2026):** Refinamento Tipográfico Editorial nos Nomes dos Produtos (Inspirado no Padrão E-Commerce).
+    - **Demanda do Usuário:**
+      - "Foque apenas na tipografia. não altere layout ou botões" (adotar legibilidade dos cards de referência da imagem enviada pelo usuário).
+    - **Aprimoramentos Tipográficos Aplicados:**
+      - **Capitalização Legível (Title Case):** Conversão automática dos nomes de produtos para Sentence/Title Case via `mb_convert_case()` UTF-8 em `app/views/lojinha/vitrine.php`. Elimina a barreira de leitura de palavras em maiúsculas maciças (ALL-CAPS), permitindo reconhecimento instantâneo das silhuetas das palavras.
+      - **Peso & Contraste:** Redefinição de `.card-produto-titulo` com `font-weight: 600` (semi-bold refinado) e cor grafite de alto contraste `#111827`.
+      - **Entrelinha e Tracking:** Aumento da entrelinha para `1.35` (respiro vertical natural) e tracking moderno de `letter-spacing: -0.2px`.
+      - **Escala Calibrada:** `15.5px` no mobile (`min-height: 43px`) e `16.5px` no desktop (`min-height: 46px`), exibindo até 2 linhas completas sem estourar o card.
+      - **Restrição Rigorosa:** Nenhum elemento de layout, margem, padding ou botões foi alterado.
+    - **Testes & Versionamento:**
+      - Suíte integrada `tests/test_fase5.php` executada e 100% validada (35/35).
+      - Versão da aplicação incrementada para `v2.01` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
