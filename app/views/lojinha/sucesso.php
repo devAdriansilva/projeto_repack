@@ -7,6 +7,32 @@ declare(strict_types=1);
  */
 
 $pageTitle = 'Comprovante do Pedido - ' . ($pedido['codigo_pedido'] ?? '');
+
+$isGestor = (!empty($_SESSION['usuario_id']) && ($_SESSION['perfil'] ?? '') === 'gestao');
+$isOperador = (!empty($_SESSION['operador_id']) || ($_SESSION['perfil'] ?? '') === 'operador');
+$podeImprimir = $isGestor || $isOperador;
+
+// Montagem antecipada e segura do texto do comprovante para compartilhamento WhatsApp / Clipboard
+$itensFormatadosArr = [];
+foreach ($pedido['itens'] as $it) {
+    $nomeTratado = mb_convert_case(mb_strtolower($it['produto_nome'], 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
+    $itensFormatadosArr[] = "• " . (int)$it['quantidade'] . "x " . $nomeTratado;
+}
+$itensTextoSeguro = implode("\n", $itensFormatadosArr);
+
+$textoWhatsApp = "🧾 *COMPROVANTE DE PEDIDO - LOJINHA REPACK*\n" .
+    "----------------------------------------\n" .
+    "📦 *Código de Retirada:* *" . $pedido['codigo_pedido'] . "*\n" .
+    "👤 *Colaborador:* " . $pedido['usuario_nome'] . " (" . $pedido['usuario_matricula'] . ")\n" .
+    "🏢 *Setor:* " . $pedido['usuario_setor'] . "\n" .
+    "📅 *Data:* " . date('d/m/Y \à\s H:i', strtotime($pedido['created_at'])) . "\n" .
+    "----------------------------------------\n" .
+    "🛒 *ITENS DO PEDIDO (" . (int)$pedido['quantidade_total'] . " un):*\n" .
+    $itensTextoSeguro . "\n" .
+    "----------------------------------------\n" .
+    "🔗 *Ver Comprovante Online:*\n" .
+    APP_URL . "/lojinha/sucesso?codigo=" . urlencode($pedido['codigo_pedido']);
+
 require __DIR__ . '/../layouts/lojinha_header.php';
 ?>
 
@@ -156,7 +182,7 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                             <?php foreach ($pedido['itens'] as $item): ?>
                                 <tr>
                                     <td>
-                                        <strong><?= sanitize_html($item['produto_nome']) ?></strong>
+                                        <strong><?= sanitize_html(mb_convert_case(mb_strtolower($item['produto_nome'], 'UTF-8'), MB_CASE_TITLE, 'UTF-8')) ?></strong>
                                     </td>
                                     <td class="text-muted" style="font-size: 12px;">
                                         <?= sanitize_html($item['produto_codigo']) ?>
@@ -179,29 +205,147 @@ require __DIR__ . '/../layouts/lojinha_header.php';
                 </div>
             </div>
 
-            <!-- Botões de Ação do Comprovante com Escolha de Impressora -->
-            <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center btn-acao-comprovante">
-                <!-- Opção 1: Impressora Regular (Folha A4 em 1 Página) -->
-                <button type="button" class="btn btn-outline-primary py-2 px-3 fw-bold" onclick="imprimirComprovante('a4')" title="Imprimir em folha sulfite padrão A4 (cabe em 1 página)">
-                    🖨️ Imprimir (Folha A4)
+            <!-- Toast de Feedback de Cópia -->
+            <div id="toastCopiado" class="alert alert-success py-2 px-3 mb-3" style="display: none; border-radius: 10px; font-size: 14px; font-weight: 700;">
+                ✅ Comprovante copiado para a área de transferência! Pronto para colar no WhatsApp.
+            </div>
+
+            <!-- Botões de Ação do Comprovante para o Comprador -->
+            <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center btn-acao-comprovante mb-2">
+                <!-- Opção 1: Salvar Comprovante (PDF) -->
+                <button type="button" class="btn btn-primary py-2.5 px-4 fw-bold d-inline-flex align-items-center justify-content-center gap-2" onclick="salvarComprovantePDF()" title="Salvar comprovante digital em PDF no seu aparelho">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/>
+                    </svg>
+                    <span>Salvar Comprovante</span>
                 </button>
 
-                <!-- Opção 2: Impressora de Cupom Fiscal (Térmica 80mm) -->
-                <button type="button" class="btn btn-outline-secondary py-2 px-3 fw-bold" onclick="imprimirComprovante('cupom')" title="Imprimir em bobina térmica de 80mm">
-                    🧾 Imprimir (Cupom 80mm)
+                <!-- Opção 2: Compartilhar Pedido (WhatsApp / App Nativo) -->
+                <button type="button" class="btn btn-success py-2.5 px-4 fw-bold d-inline-flex align-items-center justify-content-center gap-2" style="background-color: #10B981; border-color: #059669;" onclick="compartilharComprovante()" title="Compartilhar comprovante pelo WhatsApp ou outros aplicativos">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/>
+                    </svg>
+                    <span>Compartilhar Pedido</span>
                 </button>
 
-                <!-- Voltar à Vitrine -->
-                <a href="<?= APP_URL ?>/lojinha" class="btn btn-success py-2 px-4 fw-bold text-decoration-none">
+                <!-- Opção 3: Voltar à Vitrine -->
+                <a href="<?= APP_URL ?>/lojinha" class="btn btn-outline-secondary py-2.5 px-4 fw-bold text-decoration-none d-inline-flex align-items-center justify-content-center">
                     <span>Voltar à Vitrine</span>
                 </a>
             </div>
+
+            <!-- Atalhos Rápidos para Compartilhamento -->
+            <div class="d-flex flex-wrap gap-2 justify-content-center btn-acao-comprovante mb-1" style="font-size: 13.5px;">
+                <button type="button" class="btn btn-link text-decoration-none text-success p-0 fw-bold d-inline-flex align-items-center gap-1" onclick="abrirWhatsAppDirect()" title="Abrir conversa no WhatsApp com o comprovante">
+                    <span>💬 Enviar Direto pelo WhatsApp</span>
+                </button>
+                <span class="text-muted">&bull;</span>
+                <button type="button" class="btn btn-link text-decoration-none text-secondary p-0 fw-bold d-inline-flex align-items-center gap-1" onclick="copiarTextoComprovante()" title="Copiar texto formatado do comprovante">
+                    <span>📋 Copiar Dados</span>
+                </button>
+            </div>
+
+            <?php if (!empty($podeImprimir)): ?>
+                <!-- Seção Restrita: Operação / Gestão Repack para Separação Física -->
+                <div class="mt-4 pt-3 border-top btn-acao-comprovante text-center">
+                    <div class="text-muted small fw-bold mb-2 text-uppercase" style="letter-spacing: 0.5px;">
+                        ⚙️ Opções Operacionais (Gestor / Operador Repack)
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                        <button type="button" class="btn btn-outline-primary btn-sm fw-bold px-3" onclick="imprimirComprovante('a4')" title="Imprimir folha A4 para separação">
+                            🖨️ Imprimir (Folha A4)
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm fw-bold px-3" onclick="imprimirComprovante('cupom')" title="Imprimir em bobina térmica 80mm">
+                            🧾 Imprimir (Cupom 80mm)
+                        </button>
+                    </div>
+                </div>
+            <?php endif; ?>
 
         </div>
     </div>
 </div>
 
 <script>
+const textoComprovante = <?= json_encode($textoWhatsApp) ?>;
+const codigoPedido = <?= json_encode($pedido['codigo_pedido']) ?>;
+const urlComprovante = <?= json_encode(APP_URL . '/lojinha/sucesso?codigo=' . urlencode($pedido['codigo_pedido'])) ?>;
+
+// Salvar Comprovante como PDF via folha A4
+function salvarComprovantePDF() {
+    document.body.classList.remove('modo-print-cupom');
+    document.body.classList.add('modo-print-a4');
+    window.print();
+    setTimeout(() => {
+        document.body.classList.remove('modo-print-a4');
+    }, 1000);
+}
+
+// Compartilhamento Inteligente (Nativo no Mobile com Fallback para WhatsApp)
+function compartilharComprovante() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Comprovante Pedido ' + codigoPedido,
+            text: textoComprovante,
+            url: urlComprovante
+        }).catch(err => {
+            if (err.name !== 'AbortError') {
+                abrirWhatsAppDirect();
+            }
+        });
+    } else {
+        abrirWhatsAppDirect();
+    }
+}
+
+// Envio Direto via Link do WhatsApp
+function abrirWhatsAppDirect() {
+    const urlWhats = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(textoComprovante);
+    window.open(urlWhats, '_blank');
+}
+
+// Copiar Texto para Área de Transferência
+function copiarTextoComprovante() {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textoComprovante).then(() => {
+            exibirToastCopiado();
+        }).catch(() => {
+            fallbackCopyText(textoComprovante);
+        });
+    } else {
+        fallbackCopyText(textoComprovante);
+    }
+}
+
+function fallbackCopyText(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        exibirToastCopiado();
+    } catch (err) {
+        prompt('Copie o comprovante abaixo:', text);
+    }
+    document.body.removeChild(textArea);
+}
+
+function exibirToastCopiado() {
+    const toast = document.getElementById('toastCopiado');
+    if (toast) {
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 4000);
+    }
+}
+
+<?php if (!empty($podeImprimir)): ?>
+// Impressão para Gestor / Operador Repack
 function imprimirComprovante(tipo) {
     document.body.classList.remove('modo-print-a4', 'modo-print-cupom');
     
@@ -213,11 +357,11 @@ function imprimirComprovante(tipo) {
 
     window.print();
 
-    // Restaura classes após envio para a impressora
     setTimeout(() => {
         document.body.classList.remove('modo-print-a4', 'modo-print-cupom');
     }, 1000);
 }
+<?php endif; ?>
 </script>
 
 <?php require __DIR__ . '/../layouts/lojinha_footer.php'; ?>

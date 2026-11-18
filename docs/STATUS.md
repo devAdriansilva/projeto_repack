@@ -1328,6 +1328,20 @@
       - Testes automatizados executados com 100% de sucesso (`tests/test_fase5.php` - 35/35).
       - Versão da aplicação incrementada para `v2.02` em `app/config/config.php` e `public/service-worker.js`.
 
+  - [x] **MANUT-107 (18/11/2026):** Adaptação do Comprovante do Pedido para Comprador Comum (Salvar e Compartilhar via WhatsApp) e Restrição das Opções de Impressão.
+    - **Demanda do Usuário:**
+      - Remover dos compradores comuns as opções de impressão física (folha A4 e cupom 80mm), mantendo essas opções restritas para Gestores e Operadores na separação física.
+      - Oferecer para o comprador comum as ações de "Salvar Comprovante" (PDF digital) e "Compartilhar Pedido" (com texto formatado para envio direto via WhatsApp ou clipboard).
+    - **Ajustes Implementados:**
+      - **Ações do Comprador em `app/views/lojinha/sucesso.php`:**
+        - **Salvar Comprovante:** Botão `salvarComprovantePDF()` que gera e salva o documento em PDF no aparelho através do diálogo nativo do navegador, sem menus ou botões.
+        - **Compartilhar Pedido:** Botão `compartilharComprovante()` integrado ao Web Share API nativo (mobile) com fallback inteligente direto para WhatsApp (`api.whatsapp.com/send`).
+        - **Atalhos Adicionais:** Links rápidos para envio direto no WhatsApp e cópia formatada dos dados do pedido para a área de transferência com feedback visual.
+      - **Restrição Operacional:** Opções de impressão de folha A4 e cupom térmico 80mm isoladas exclusivamente para sessões de Gestor (`$_SESSION['perfil'] === 'gestao'`) ou Operador do Repack (`$_SESSION['perfil'] === 'operador'`).
+    - **Testes & Versionamento:**
+      - Testes automatizados oficiais (`tests/test_fase5.php`) executados com 100% de aprovação (35/35).
+      - Versão da aplicação incrementada para `v2.03` em `app/config/config.php` e `public/service-worker.js`.
+
 ---
 
 ## Próximo Passo
